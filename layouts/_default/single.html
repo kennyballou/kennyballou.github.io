@@ -1,0 +1,17 @@
+{{ partial "header.html" . }}
+<body>
+{{ partial "subheader.html" . }}
+<section id="main">
+    <div>
+        <div class="colleft">
+            <article id="content">
+                {{ .Content}}
+            </article>
+        </div>
+        <div class="colright">
+            {{ partial "author.html" . }}
+        </div>
+    </div>
+</section>
+</body>
+{{ partial "footer.html" . }}
