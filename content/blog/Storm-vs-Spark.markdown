@@ -346,9 +346,9 @@ matter of answering the above questions.
 
 ## References ##
 
-[spark_jira_issues]: https://localhost/media/spark_issues_chart.png
+[spark_jira_issues]: https://kennyballou.com/media/spark_issues_chart.png
 
-[storm_jira_issues]: https://localhost/media/storm_issues_chart.png
+[storm_jira_issues]: https://kennyballou.com/media/storm_issues_chart.png
 
 [1]: http://storm.incubator.apache.org/documentation/Home.html
 

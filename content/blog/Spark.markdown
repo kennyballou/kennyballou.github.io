@@ -596,7 +596,7 @@ Spark and Apache Storm.
 
 ## Related Links / References ##
 
-[satimg]: https://localhost/media/SentimentAnalysisTopology.png
+[satimg]: https://kennyballou.com/media/SentimentAnalysisTopology.png
 
 [1]: http://spark.apache.org/
 

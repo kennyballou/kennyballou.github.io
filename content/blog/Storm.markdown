@@ -523,7 +523,7 @@ Streaming with Apache Spark.
 
 ## Related Links / References ##
 
-[satimg]: https://localhost/media/SentimentAnalysisTopology.png
+[satimg]: https://kennyballou.com/media/SentimentAnalysisTopology.png
 
 [1]: http://storm.incubator.apache.org/
 
