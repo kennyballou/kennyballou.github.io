@@ -1,0 +1,141 @@
+---
+title: "Vim Tips 2015-05-07"
+description: "Vim Tips: Visual Mode and Macros"
+tags:
+  - "Vim"
+  - "Tips and Tricks"
+  - "Editors"
+date: "2015-05-07"
+categories:
+  - "Development"
+  - "Editors"
+  - "Tools"
+slug: "vim-tips-2015-05-7"
+---
+
+Many Vim users may have, accidentally or not, discovered the dot (`.`) command
+in Vim. It's a main stay for a lot of Vim users and is clearly one of those
+actions that should be in more editors. Except when it is the wrong action for
+the job.
+
+More often than not, the visual selection mode and one-off macros are a better
+choice.
+
+## Visual Mode ##
+
+I won't go into all of the cool things that can be accomplished with Vim's
+visual mode, but I will showcase a few examples where the visual editor is
+clearly a better choice than the dot (`.`).
+
+Visual mode offers, in essence, a multi-line cursor for which you can do a lot
+of changes, quickly.
+
+### Visual Mode Basics ###
+
+To enter visual mode, it is as simple as pressing `^v` or `ctrl-v`. Next you
+will want to select what you want to change with your typical movement commands
+(`h`, `j`, `k`, `l`, and of course `w`, `e` and all the rest). Finally, you
+finish with the action: `I` if you want to insert before the selection, `A` if
+you want to append after the selection, `C` if you want to change the
+selection, and `d`, `D`, `x` if you want to remove the selection, just to name
+a few.
+
+### Some Examples ###
+
+For (a bad) example, if you need to comment out a contiguous set of lines, you
+can easily accomplish this with the visual mode.
+
+{{< video "/media/videos/comment.ogg" "video/ogg" 600 400 >}}
+
+A related example to prefixing is indentation changes, I often use the visual
+mode to fix code indentation when changing block-level indentation or when
+copying code into a markdown file.
+
+{{< video "/media/videos/indent.ogg" "video/ogg" 600 400 >}}
+
+As another example, if you need to change a single word in multiple columns,
+visual mode will make easy work of this (especially when the columns are
+aligned, if not see macros below or [substitution ranges][2] from the previous
+tip).
+
+{{< video "/media/videos/cw.ogg" "video/ogg" 600 400 >}}
+
+For more information on Visual Mode, you can check Vim's [visual][1] help
+document.
+
+## Macros ##
+
+For when visual mode may not be enough or when the change is repetitive in
+operations but not in columns or what have you, it's time to bust out the
+macros. Vim macros are easily available for use you can use all the registers
+to record and store each macro.
+
+### Macro Basics ###
+
+To record a macro, it's as simple as `q<register-label><commands>q`. That is,
+press `q`, select a register (a-z1-0), enter your commands as if you were using
+Vim normally, and finally `q` again to finish. Once your macro is recorded, you
+can use it with `@<register-label>`. And, like most Vim commands, you can
+attach a repetition to it: `<n>@<register-label>` where `<n>` is the number of
+times to repeat the command.
+
+You can also replay the last macro with `@@`.
+
+### Some Examples ###
+
+As a simplistic example, we can use a macro to convert it into, say, JSON (this
+example is clearly taken from the [Vim Wikia][3]).
+
+Let's say we have the following data:
+
+    one     first example
+    two     second example
+    three   third example
+    four    fourth example
+
+And we want to change it to the following:
+
+    data = {
+        'one': 'first example',
+        'two': 'second example',
+        'three': 'third example',
+        'four': 'fourth example',
+    }
+
+We can do this by performing the following:
+
+First, we want to start recording our macro. While the cursor is under the 'o'
+of 'one', we will press `qd` to record our macro to the `d` register.
+
+Next, we will want to change the tabbing by performing a substitution:
+
+    :s/\s\+/': '
+
+Then, we will insert our first tick with:
+
+    I'
+
+And append the last tick and comma with:
+
+    A',
+
+Before we finish recording, one of the more important operations of making
+macros repeatable is moving the cursor to the next line and putting it into the
+correct position for the next execution. Therefore, move the cursor the begging
+of the line and move down one line:
+
+    0j
+
+Finally, press `q` to finish recording.
+
+We should now be able to press `3@d` and watch as the rest of the lines change.
+
+To finish up the example, we'll manually enter `data = {` and the tailing `}`.
+
+{{< video "/media/videos/macros.ogg" "video/ogg" 600 400 >}}
+
+[1]: http://vimdoc.sourceforge.net/htmldoc/visual.html
+
+[2]: https://kennyballou.com/blog/2015/03/vim-tips-2015-03-17/
+
+[3]: http://vim.wikia.com/wiki/Macros
