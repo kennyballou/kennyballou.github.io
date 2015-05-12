@@ -6,6 +6,7 @@ tags:
   - "Distributed Systems"
   - "Readings"
 date: "2015-05-08"
+updated: "2015-05-12"
 categories:
   - "Distributed Systems"
 slug: "readings-in-distributed-systems"
@@ -53,6 +54,8 @@ throw all that out and figure out what *really* happens to distributed systems.
 *   [Paxos][12]
 
     -   [Understanding Paxos (Part 1)][13]
+
+    -   [Lessons learned from implementing Paxos (2013)][34]
 
 *   [Vector Clock][14]
 
@@ -181,3 +184,5 @@ More links from the [Jepsen essays][19]:
 [32]: http://ferd.ca/it-s-about-the-guarantees.html
 
 [33]: http://ferd.ca/lessons-learned-while-working-on-large-scale-server-software.html
+
+[34]: http://blog.willportnoy.com/2012/06/lessons-learned-from-paxos.html
