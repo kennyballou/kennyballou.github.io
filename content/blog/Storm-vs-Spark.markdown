@@ -143,12 +143,14 @@ order of magnitude less.
 Spark Open and Closed JIRA Issues (last 30 days):
 
 {{< figure src="/media/spark_issues_chart.png"
-    link="https://issues.apache.org/jira/browse/SPARK/" >}}
+    link="https://issues.apache.org/jira/browse/SPARK/"
+    alt="Apache Spark JIRA issues" >}}
 
 Storm Open and Closed JIRA Issues (last 30 days):
 
 {{< figure src="/media/storm_issues_chart.png"
-    link="https://issues.apache.org/jira/browse/STORM/" >}}
+    link="https://issues.apache.org/jira/browse/STORM/"
+    alt="Apache Storm JIRA issues" >}}
 
 ### Contributor/ Community Size ###
 

@@ -107,7 +107,8 @@ High-Availability is baked into this virtual cluster.
 
 ### Overview ###
 
-{{< figure src="/media/SentimentAnalysisTopology.png" >}}
+{{< figure src="/media/SentimentAnalysisTopology.png"
+    alt="Sentiment Analysis Topology">}}
 
 I wrote a simple Kafka producer that reads files off disk and sends them to the
 Kafka cluster. This is how we feed the whole system and is used in lieu of

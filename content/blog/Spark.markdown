@@ -231,7 +231,8 @@ reporting purposes.
 This project follows a very similar process structure as the Storm Topology
 from last time.
 
-{{< figure src="/media/SentimentAnalysisTopology.png" >}}
+{{< figure src="/media/SentimentAnalysisTopology.png"
+    alt="Sentiment Analysis Topology" >}}
 
 However, each node in the above graph is actually a transformation on the
 current DStream and not an individual process (or group of processes).
