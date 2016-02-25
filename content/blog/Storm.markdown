@@ -107,7 +107,7 @@ High-Availability is baked into this virtual cluster.
 
 ### Overview ###
 
-![Sentiment Analysis Topology][satimg]
+{{< figure src="/media/SentimentAnalysisTopology.png" >}}
 
 I wrote a simple Kafka producer that reads files off disk and sends them to the
 Kafka cluster. This is how we feed the whole system and is used in lieu of
@@ -522,8 +522,6 @@ Stay tuned, as the next post in this series will be an overview look at
 Streaming with Apache Spark.
 
 ## Related Links / References ##
-
-[satimg]: https://kennyballou.com/media/SentimentAnalysisTopology.png
 
 [1]: http://storm.incubator.apache.org/
 

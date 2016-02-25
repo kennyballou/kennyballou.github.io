@@ -26,11 +26,7 @@ branching.
 
 ## What is Git± ##
 
-![XKCD on Git](http://imgs.xkcd.com/comics/git.png "If that doesn't fix it,
-git.txt contains the phone number of a friend of mine who understands git. Just
-wait through a few minutes of 'It's really pretty simple, just think of
-branches as...' and eventually you'll learn the commands that will fix
-everything.")
+{{< figure src="http://imgs.xkcd.com/comics/git.png" caption="If that doesn't fix it, git.txt contains the phone number of a friend of mine who understands git.  Just wait through a few minutes of 'It's really pretty simple, just think of branches as...' and eventually you'll learn the commands that will fix everything." >}}
 
 Git is a few things to many people, and creating a standard definition is our
 first step to fully understanding the nebulous Git.
@@ -179,7 +175,7 @@ filename for `foo.txt`.
 
 Visually, this may look like something similar to the following image:
 
-![Git Tree 1][git-tree-1]
+{{< figure src="/media/git-tree-1.png" >}}
 
 If we inspect the `.git/objects` directory, we should see a new object:
 
@@ -205,7 +201,7 @@ filename of the object or folder name if the element is a tree.
 
 A more complicated example of a Git tree may look like the following image:
 
-![Git Tree 2][git-tree-2]
+{{< figure src="/media/git-tree-2.png" >}}
 
 Now we have file names and the ability to track folders, however, we are still
 managing and holding onto the checksums ourselves. Furthermore, we have no
@@ -262,7 +258,7 @@ Finally, after a blank line, the rest of the file is reserved for the commit
 message; since "our first commit" message is short, it only takes a single
 line.
 
-![git commit 1][git-commit-1]
+{{< figure src="/media/git-commit-1.png" >}}
 
 To inform Git that we have created a commit, we need to add some information to
 a few files. First, we need create the `master` reference. We do this by
@@ -557,7 +553,7 @@ isn't yet made aware, the code has diverged from a single path of existence to
 multiple paths. This is a form of implicit branching and explicit branching
 isn't much different.
 
-![Code Branching][code-branching]
+{{< figure src="/media/code-branching.png" >}}
 
 The structure of Git makes branching trivial, in fact, all that's required is
 to create a file that marks the branch point of the code. That is, to create a
@@ -565,7 +561,7 @@ file under `.git/refs/heads` that contains the branch's base commit hash. From
 there, the code can safely move forward without changing anything of the other
 branches.
 
-![Git Branching][git-branching-1]
+{{< figure src="/media/git-branching-1.png" >}}
 
 Branching in Git is accomplished with [`git-branch(1)`][20] and
 [`git-checkout(1)`][21].
@@ -598,9 +594,9 @@ The first Git will try is called "fast-forward" merging, where Git will attempt
 to play the source branch's commits against the target branch, from the common
 history point forward.
 
-![Git Fast Forward Merge Initial][git-ff-merge-1]
+{{< figure src="/media/git-ff-merge-1.png" >}}
 
-![Git Fast Forward Merge Replay][git-ff-merge-2]
+{{< figure src="/media/git-ff-merge-2.png" >}}
 
 However, this can only be accomplished if the target branch doesn't have any
 changes of its own.
@@ -612,7 +608,7 @@ and attempt to re-apply the merge, the resolution of the merge will be in the
 merge commit. For more information on merging, see the [`git-merge(1)`][22]
 documentation.
 
-![Git Resolve Merge][git-resolve-merge]
+{{< figure src="/media/git-resolve-merge.png" >}}
 
 ## Summary ##
 
@@ -686,19 +682,3 @@ Beyond these problems, Git is a very powerful and capable source control tool.
 [22]: https://www.kernel.org/pub/software/scm/git/docs/git-merge.html
 
 [23]: https://kennyballou.com/git-in-reverse.pdf
-
-[code-branching]: https://kennyballou.com/media/code-branching.png
-
-[git-branching-1]: https://kennyballou.com/media/git-branching-1.png
-
-[git-commit-1]: https://kennyballou.com/media/git-commit-1.png
-
-[git-ff-merge-1]: https://kennyballou.com/media/git-ff-merge-1.png
-
-[git-ff-merge-2]: https://kennyballou.com/media/git-ff-merge-2.png
-
-[git-resolve-merge]: https://kennyballou.com/media/git-resolve-merge.png
-
-[git-tree-1]: https://kennyballou.com/media/git-tree-1.png
-
-[git-tree-2]: https://kennyballou.com/media/git-tree-2.png

@@ -2,19 +2,10 @@
 <body>
 {{ partial "subheader.html" . }}
 <section id="main">
-    <div>
-        <div class="colleft">
-            {{ range first 10 .Data.Pages }}
-                {{ if eq .Section "blog" }}
-                    {{ .Render "summary" }}
-                {{ end }}
-            {{ end }}
-        </div>
-        <div class="colright">
-            {{ partial "author.html" . }}
-        </div>
-    <div>
+    {{ range first 10 .Data.Pages }}
+        {{ if eq .Section "blog" }}
+            {{ .Render "summary" }}
+        {{ end }}
+    {{ end }}
 </section>
-
-
 {{ partial "footer.html" . }}

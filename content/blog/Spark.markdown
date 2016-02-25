@@ -231,7 +231,7 @@ reporting purposes.
 This project follows a very similar process structure as the Storm Topology
 from last time.
 
-![Sentiment Analysis Topology][satimg]
+{{< figure src="/media/SentimentAnalysisTopology.png" >}}
 
 However, each node in the above graph is actually a transformation on the
 current DStream and not an individual process (or group of processes).
@@ -595,8 +595,6 @@ Stay tuned, as the next post will be a more in-depth comparison between Apache
 Spark and Apache Storm.
 
 ## Related Links / References ##
-
-[satimg]: https://kennyballou.com/media/SentimentAnalysisTopology.png
 
 [1]: http://spark.apache.org/
 

@@ -1,5 +1,5 @@
 ---
-title: "about me"
+title: "About Me"
 keywords: []
 tags: []
 pubdate: "2014-10-10"
@@ -8,8 +8,6 @@ lastmod: "2016-01-19"
 topics: []
 slug: about-me
 ---
-
-# About Me #
 
 I am a life-long learner, developer, mathematician, and overall thinker. I
 enjoy solving problems and learning about technologies and discussing new and
