@@ -1,11 +1,9 @@
 {{ partial "header.html" . }}
 <body>
 {{ partial "subheader.html" . }}
-<section id="main">
-    {{ range first 10 .Data.Pages }}
-        {{ if eq .Section "blog" }}
-            {{ .Render "summary" }}
-        {{ end }}
+{{ range first 10 .Data.Pages }}
+    {{ if eq .Section "blog" }}
+        {{ .Render "summary" }}
     {{ end }}
-</section>
+{{ end }}
 {{ partial "footer.html" . }}
