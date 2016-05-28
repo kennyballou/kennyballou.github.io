@@ -1,3 +1,4 @@
+.PHONY: build deploy
 OUTPUT=`pwd`/../www/blog/
 all: build
 
