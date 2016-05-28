@@ -4,5 +4,5 @@ all: build
 build:
 	@hugo -d ${OUTPUT}
 
-deploy:
+deploy: build
 	@rsync -avz ${OUTPUT} kennyballou.com:/srv/www/blog/
