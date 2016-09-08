@@ -154,12 +154,12 @@ support thus no longer requiring the `ncurses` library altogether. We hope that
 the `openssl` libraries are the same, so we don't have to worry about that
 mess, and we move on.
 
-This time, when we attempt to deploy the application get a different, obscure
-error: something about our `musl` C library isn't found on the target system.
-Right, because we are trying to create a small image, we opted to use the
-`musl` C library because of it's size and being easily supported in the Alpine
-Linux container. Trying to use GNU C library is too cumbersome and would only
-inflate the image beyond any gains we would achieve by using Alpine in the
+This time, when we attempt to deploy the application, we get a different,
+obscure error: something about our `musl` C library isn't found on the target
+system.  Right, because we are trying to create a small image, we opted to use
+the `musl` C library because of its size and being easily supported in the
+Alpine Linux container. Trying to use GNU C library is too cumbersome and would
+only inflate the image beyond any gains we would achieve by using Alpine in the
 first place.
 
 That's not going to work.
