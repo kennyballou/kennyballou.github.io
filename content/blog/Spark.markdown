@@ -617,7 +617,7 @@ Spark and Apache Storm.
 
 *   [Apache Spark][5]
 
-[6]: http://www.zdatainc.com/2014/07/real-time-streaming-apache-storm-apache-kafka/
+[6]: https://kennyballou.com/blog/2014/07/real-time-streaming-storm-and-kafka
 
 *   [Real-Time Streaming with Apache Storm and Apache Kafka][6]
 
