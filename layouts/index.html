@@ -1,7 +1,7 @@
 {{ partial "header.html" . }}
 <body>
 {{ partial "subheader.html" . }}
-{{ range first 10 .Data.Pages }}
+{{ range .Data.Pages }}
     {{ if eq .Section "blog" }}
         {{ .Render "summary" }}
     {{ end }}
