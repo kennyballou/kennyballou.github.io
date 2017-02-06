@@ -14,7 +14,7 @@ enjoy solving problems and learning about technologies and discussing new and
 different ideas.
 
 I graduated from Boise State University, majoring in Applied Mathematics and
-minored in Computer Science. I've been programming professionally for neearly a
+minored in Computer Science. I've been programming professionally for nearly a
 decade and currently am working as a software developer for zData Inc. in
 Boise, Idaho.
 
