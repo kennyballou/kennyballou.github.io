@@ -1,0 +1,283 @@
+---
+title: "Git Packfiles"
+description: "Introduction to Git Packfiles"
+tags:
+  - "Git"
+  - "Internals"
+  - "Learning"
+date: "2017-03-01"
+categories:
+  - "Development"
+slug: "git-packfiles"
+---
+
+Previously, in [Git in Reverse][3], we learned about [Git][1] and how it
+internally stores information. Namely, we went over the ["loose" object][9]
+format that Git uses for storage. However, in the last post, we did not discuss
+how Git uses another storage format to more compactly store files, changes, and
+ultimately objects. In this post we will discuss packfiles and how Git uses
+these primarily for using less bandwidth and, only secondarily, using less
+storage space for storing repository contents.
+
+We're only going to discuss the high-level details of packfiles, there are
+[plenty][2] of [sources][5] that [describe][6] the [details][4] better.
+
+## Packfiles ##
+
+Packfiles, like [git objects before][3], are an internal file set for storing
+objects in a more compressed format. That is, instead of storing _each_ version
+of a file in its entirety, Git can store a single version of the file in its
+entirety and maintain an internal set of objects which contain patches to
+derive the other versions. Furthermore, Git can store entire repository's
+objects into a single packfile, thus eliminating large numbers of small files
+and improving efficiency of object access.
+
+The actual files themselves are in the `.git/objects/pack` folder of a
+repository and there are both pack, `.pack`, files and index, `.idx`,
+files.
+
+Here is the packfile that contains this repository (as of this writing):
+
+    ± find .git/objects/pack -type f
+    .git/objects/pack/pack-31966bc41ef450ccfecdfb5ef6cd98f7097eea38.pack
+    .git/objects/pack/pack-31966bc41ef450ccfecdfb5ef6cd98f7097eea38.idx
+
+Notice, there are not two "packs", but two files that describe the same "pack".
+There is the `.pack` file itself. This is the file that contains the actual
+objects. There is also the `.idx` file which provides an "index" of the objects
+contained in the pack.
+
+We'll take a small moment to describe each in a little more detail.
+
+### Packs ###
+
+Packfiles are relatively straight forward, there's a 12 byte header, first four
+spell "PACK", next four provide the version, "2" as of this writing, and the
+final four provide the number of objects in this pack. Following the header,
+there's a number of objects stored in a very compact but variable length
+format.  Finally, there's a 20 byte trailer that is the checksum of the
+packfile's contents-- header and objects.
+
+In the header, the number of objects is encoded in a 4-byte integer, thus,
+there can only be \\(2^{32}\\) or little over 4 billion objects in a packfile.
+However, this does not give an upper bound of the _size_ of the pack files
+themselves on disk. The length of each object is encoded in a variable length
+integer prefacing each object in the packfile.
+
+The format of the objects in the packfile is not as they usually exist in the
+loose format, but it will compress them _more_, usually resulting in less space
+used on disk. That is, the objects stored in the packfile may be a base,
+_undeltified_ object, or it may be a _deltified_ object.
+
+Undeltified objects are not necessarily as interesting, for one, because they
+are already [covered][3]. The deltified objects, however, are pretty
+interesting, and definitely different.
+
+The deltified objects, as the name might imply, contain the delta, or,
+preferably, the patch and the base object name to create the defined object.
+That is, Git will store inside a regular Git object a patch used to derive
+the defined object. But it only does this in the context of packfiles.
+Furthermore, the structure allows for the base object to itself be a deltified
+object, thus, making it possible to only store one version of the full file,
+but then derive all other versions from deltas or patches.
+
+While it is entirely possible to use only the packfile itself to access the
+contained objects, it's not very efficient for random access.  Therefore, the
+index file is created to maintain a way to peer into the packfile efficiently.
+
+### Indexes ###
+
+Packfile indexes solve the random object access efficiency problems caused by
+heavily compacting objects into a single file.
+
+Although, the contents of the index are little more complicated than the pack
+file.
+
+In version 1 of packfiles, the index does not have a header. In version 2,
+the current version, there are 8 bytes dedicated to the header: the first 4
+bytes will always be `255, 116, 79, 99`, because these are invalid bytes for
+the fanout table; the other 4 bytes of the header are dedicated to the version,
+currently, `2`.
+
+Following the "$header", there is, what Git calls, a fanout table. This header
+table consists of 256 4-byte integers, each entry of the table records the
+number of objects whose first byte are less than or equal to this entry.
+
+That is, if the repository has 2 objects that start with `00`, there will be a
+2 in the `00`th entry of the table. Furthermore, if there are 3 objects that
+start with `01`, the `01`th entry will report _5_ objects. Remember, each entry
+in the table is the sum of all previous entries ("less than or equal to this
+entry"). Examining at the 256th entry would provide the total number of objects
+in the packfile.
+
+Following the fanout table is a sorted table of 20-byte SHA-1 hashes.
+
+In version 2, there is another table following the sorted hashes that consists
+of 4-byte CRC32 values of the packed object data. This table enables easier
+copying of data between packfiles. For example, this improves the efficiency of
+creating new packfiles for new objects.
+
+Next, is another table of 4-byte offset values, usually packed into 31-bits,
+larger offsets being encoded as offsets for indexes into the next table.
+
+Last table, 8-byte offset entries, this table will be empty if the packfile is
+less than 2GiB.
+
+Finally, there is a 20-byte checksum of the packfile and another 20-byte
+checksum of all of the above data.
+
+All of these tables are used to make sure Git has very quick and efficient
+access to objects in the repository.
+
+### Plumbing ###
+
+Git will automatically create packfiles when synchronizing a repository (e.g.,
+pushing, pulling, cloning), but they can also be created manually with the
+[`git-gc`][7] command. Let's assume there are some loose objects in the current
+repository.
+
+    ± find .git/objects -type f
+    .git/objects/f2/e90bed364168fcca0893437fb569d762cdbbce
+    .git/objects/f4/2946046ed0926d5c7b34772642478390a696c9
+    .git/objects/87/713bb957eef1ed6a8d12f36b2d8b328a72b453
+    .git/objects/8c/d57af30ad9bf0f2e0640d0141eb908d276d2f1
+    .git/objects/1f/846d4278f5741d33111d28c03d29b589dabffe
+    .git/objects/be/020e47fadb8d80281259b1f886c3940dc51a19
+    .git/objects/d1/2254d273712af99e0585e7dd9dfea2106d5692
+    .git/objects/ea/41dba10b54a794284e0be009a11f0ff3716a28
+    .git/objects/98/c37b0fb33a8b2f7ac4c5d94571382071ae859c
+    .git/objects/4d/5fcadc293a348e88f777dc0920f11e7d71441c
+    .git/objects/e6/9de29bb2d1d6434b8b29ae775ad8c2e48c5391
+    ± git gc
+    Counting objects: 11, done.
+    Delta compression using up to 4 threads.
+    Compressing objects: 100% (5/5), done.
+    Writing objects: 100% (11/11), done.
+    Total 11 (delta 0), reused 0 (delta 0)
+    ± find .git/objects -type f
+    .git/objects/info/packs
+    .git/objects/pack/pack-1fc05518e49da3867792b704561b68d5b00e6317.idx
+    .git/objects/pack/pack-1fc05518e49da3867792b704561b68d5b00e6317.pack
+
+We started with 11 objects, in the loose format, we ran [`git-gc`][7] and we
+are left with a packfile.
+
+The output of [`git-gc`][7] tells us how many objects we packed, how many delta
+objects were used to create the pack, in this case, 0, and how many objects
+were copied from an existing pack and how many deltas from an existing pack,
+both 0 in this example.
+
+Of course, we can also examine the packfile with the [`git-verify-pack`][8]
+command:
+
+    ± git verify-pack -v .git/objects/pack/pack-1fc05518e49da3867792b704561b68d5b00e6317.idx
+    f2e90bed364168fcca0893437fb569d762cdbbce commit 225 153 12
+    d12254d273712af99e0585e7dd9dfea2106d5692 commit 220 145 165
+    98c37b0fb33a8b2f7ac4c5d94571382071ae859c commit 172 117 310
+    e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 blob   0 9 427
+    be020e47fadb8d80281259b1f886c3940dc51a19 blob   9 18 436
+    f42946046ed0926d5c7b34772642478390a696c9 tree   93 81 454
+    87713bb957eef1ed6a8d12f36b2d8b328a72b453 tree   31 40 535
+    8cd57af30ad9bf0f2e0640d0141eb908d276d2f1 tree   31 40 575
+    1f846d4278f5741d33111d28c03d29b589dabffe tree   31 42 615
+    ea41dba10b54a794284e0be009a11f0ff3716a28 tree   62 50 657
+    4d5fcadc293a348e88f777dc0920f11e7d71441c tree   31 42 707
+    non delta: 11 objects
+    .git/objects/pack/pack-1fc05518e49da3867792b704561b68d5b00e6317.pack: ok
+
+> It does not matter whether the `.pack` or `.idx` file are specified to the
+> [`git-verify-pack`][8] command, the output will be the same. However, tab
+> completion will prefer the `.idx` files.
+
+This output has a lot of information to it: first, it tells us about all the
+objects in the packfile, we see our 11 original objects from before. But we are
+also given each object's type, size, size in pack, and offset into the
+packfile, respectively. For undeltified objects, these sizes won't be very
+different, but for deltified objects, these two sizes can be significantly
+different.
+
+This output also tells us the pack contains no deltified objects. Let's see
+what this would look like with deltified objects:
+
+    ± git gc
+    Counting objects: 17, done.
+    Delta compression using up to 4 threads.
+    Compressing objects: 100% (9/9), done.
+    Writing objects: 100% (17/17), done.
+    Total 17 (delta 1), reused 10 (delta 0)
+    ± git verify-pack -v .git/objects/pack/pack-21f02890d9770ec6b5a566c3c82c03e69f530c19.idx
+    47f24ac6ba3af12714f0dbf7219b9d854f269097 commit 219 146 12
+    8cfd10e321ac6349132ceb93774f0a881a1b9316 commit 219 146 158
+    f2e90bed364168fcca0893437fb569d762cdbbce commit 225 153 304
+    d12254d273712af99e0585e7dd9dfea2106d5692 commit 220 145 457
+    98c37b0fb33a8b2f7ac4c5d94571382071ae859c commit 172 117 602
+    5716ca5987cbf97d6bb54920bea6adde242d87e6 blob   4 13 719
+    be020e47fadb8d80281259b1f886c3940dc51a19 blob   9 18 732
+    257cc5642cb1a054f08cc83f2d943e56fd3ebe99 blob   4 13 750
+    3783c58c8b17ba95b2917e5f92a0395efcec9759 tree   93 100 763
+    87713bb957eef1ed6a8d12f36b2d8b328a72b453 tree   31 40 863
+    8cd57af30ad9bf0f2e0640d0141eb908d276d2f1 tree   31 40 903
+    1f846d4278f5741d33111d28c03d29b589dabffe tree   31 42 943
+    7470c9c852271284dfb0cb8f3ad9047709847e0d tree   93 101 985
+    e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 blob   0 9 1086
+    f42946046ed0926d5c7b34772642478390a696c9 tree   25 37 1095 1 7470c9c852271284dfb0cb8f3ad9047709847e0d
+    ea41dba10b54a794284e0be009a11f0ff3716a28 tree   62 50 1132
+    4d5fcadc293a348e88f777dc0920f11e7d71441c tree   31 42 1182
+    non delta: 16 objects
+    chain length = 1: 1 object
+    .git/objects/pack/pack-21f02890d9770ec6b5a566c3c82c03e69f530c19.pack: ok
+    ± find .git/objects -type f
+    .git/objects/info/packs
+    .git/objects/pack/pack-21f02890d9770ec6b5a566c3c82c03e69f530c19.idx
+    .git/objects/pack/pack-21f02890d9770ec6b5a566c3c82c03e69f530c19.pack
+
+Notice, we repacked the repository then listed the contents of the new pack,
+also notice the old pack is gone, but the objects that were in the old pack are
+still available in the new pack.
+
+More importantly, notice that `f42946` is a deltified object based on
+`7470c9c`. That is, the tree defined in `f42946` is derived by patching
+`7470c9c` with the contents of the object in the packfile. This is also evident
+in the size listings, the size on disk of the loose object is 25 bytes, but the
+size in the pack is 37. The increase in size is often, unfortunately, due to
+how text compression sometimes _doesn't_ work. This is the first look of what
+Git calls "chains".
+
+Chains are a simple way to describe the length of a deltified object set. The
+longest chain in this repository is only 1. But if we examine bigger
+repositories, this number could be much higher. Git itself, for example, has a
+chain length of 46 for one object, or another 6 objects with a chain length of
+44 each.
+
+Another thing to note, unlike the loose object format, it's much more difficult
+to get to the contents of the objects in the packfile _using_ only the packfile
+without some effort. However, `git-cat-file` and other plumbing commands will
+still work as expected given an object name, even if the object is contained
+within a packfile.
+
+## Summary ##
+
+Hopefully, we now have a deeper knowledge of the compact object format Git
+uses, namely, packfiles. Remember, the motivation for these files was not
+efficiency in storage, but efficiency in network bandwidth when transferring
+objects and lookup speed when there's a large number of loose objects. Thus, if
+working in stealth mode, it can be sometimes important to run [`git-gc`][7]
+occasionally to keep your private repository quick and efficient.
+
+[1]: https://git-scm.com/
+
+[2]: https://git-scm.com/book/en/v2/Git-Internals-Packfiles
+
+[3]: {{< relref "blog/git-in-reverse.markdown" >}}
+
+[4]: https://codewords.recurse.com/issues/three/unpacking-git-packfiles/
+
+[5]: https://git-scm.com/docs/git-verify-pack
+
+[6]: https://git.kernel.org/cgit/git/git.git/tree/Documentation/technical/pack-format.txt
+
+[7]: https://www.kernel.org/pub/software/scm/git/docs/git-gc.html
+
+[8]: https://www.kernel.org/pub/software/scm/git/docs/git-verify-pack.html
+
+[9]: http://stackoverflow.com/questions/5709687/what-are-the-loose-objects-that-the-git-gui-refers-to#5710039
