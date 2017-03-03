@@ -7,7 +7,7 @@ build:
 
 .PHONY: deploy
 deploy: build
-	@rsync -avz ${OUTPUT} kennyballou.com:/srv/www/blog/
+	@rsync -avz ${OUTPUT} kennyballou.com:/srv/www/.
 
 .PHONY: serve
 serve:
