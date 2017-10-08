@@ -1,4 +1,5 @@
-OUTPUT=`pwd`/../www/blog/
+OUTPUT=`pwd`/build
+
 all: build
 
 .PHONY: build
@@ -7,7 +8,7 @@ build:
 
 .PHONY: deploy
 deploy: build
-	@rsync -avz ${OUTPUT} kennyballou.com:/srv/www/.
+	@rsync -avz ${OUTPUT}/ kennyballou.com:/srv/www/blog/.
 
 .PHONY: serve
 serve:
