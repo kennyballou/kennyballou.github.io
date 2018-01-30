@@ -1,0 +1,90 @@
+#+TITLE: Vim Tips 2015-03-17
+#+DESCRIPTION: First vim tip post of a series of unknown size
+#+TAGS: Vim
+#+TAGS: Tips and Tricks
+#+TAGS: Editors
+#+DATE: 2015-03-17
+#+SLUG: vim-tips-2015-03-17
+#+LINK: vim-wiki-folding http://vim.wikia.com/wiki/Folding
+#+LINK: vim-wiki-ranges http://vim.wikia.com/wiki/Ranges
+#+LINK: zzapper-vim-tips http://zzapper.co.uk/vimtips.html
+
+#+BEGIN_PREVIEW
+This is the start of a series of posts about better Vim usage.  It's yet to be
+determined how often and how frequent this will run, but expect more than just
+this first post.
+#+END_PREVIEW
+
+** Folds
+
+When using manual folding, creating a fold in Vim is as easy as one command:
+
+In normal mode, ~zf<movement>~.
+
+For example, while in Java code and on a Method opening curly brace, type
+~zf%~.
+
+And a fold is now created around that method.  You can toggle it open and
+closed with ~za~, you can also open it with ~zo~ and you can close it with
+~zc~.
+
+Similarly, to remove a fold created by ~zf~, use ~zd<movement>~ to remove
+folds.
+
+From the above example, while in normal mode, typing ~zd%~ will remove the fold
+for the method's block.
+
+For more information about folding and the other modes, visit the
+[[vim-wiki-folding][Vim wiki page]] on folding.
+
+** Substitution Range
+
+Here are some more explicit examples of the range options provided when doing
+substitutions:
+
+To substitute the first occurrence of the pattern in the current line:
+
+#+BEGIN_EXAMPLE sed
+:s/foo/bar
+#+END_EXAMPLE
+
+All occurrences:
+
+#+BEGIN_EXAMPLE sed
+    :s/foo/bar/g
+#+END_EXAMPLE
+
+Entire file, first occurrence:
+
+#+BEGIN_EXAMPLE sed
+    :%s/foo/bar/
+#+END_EXAMPLE
+
+Entire file, all occurrences:
+
+#+BEGIN_EXAMPLE sed
+    :%s/foo/bar/g
+#+END_EXAMPLE
+
+Now for something completely different, specific ranges:
+
+#+BEGIN_EXAMPLE
+    :<starting line>,<ending line>s/foo/bar[/g]
+#+END_EXAMPLE
+
+End today's kicker: changing from a line to the end of the file:
+
+#+BEGIN_EXAMPLE
+    :<start>,$s/foo/bar[/g]
+#+END_EXAMPLE
+
+Visit [[vim-wiki-ranges][Vim Ranges]] to view more information about the ranges
+available in Vim.
+
+** References
+
+-  [[zzapper-vim-tips][Vim Tips]]
+
+-  [[vim-wiki-folding][Vim Wikia: Folding]]
+
+-  [[vim-wiki-ranges][Vim Wikia: Ranges]]
