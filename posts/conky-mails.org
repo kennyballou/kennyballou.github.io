@@ -1,0 +1,103 @@
+#+TITLE: Conky Mail Notifications using Maildirs
+#+DESCRIPTION: How to configure ~conky~ to use local ~maildirs~
+#+TAGS: conky
+#+TAGS: maildir
+#+TAGS: notifications
+#+DATE: 2017-10-08
+#+SLUG: conky-maildirs-config
+#+LINK: conky-github https://github.com/brndnmtthws/conky
+#+LINK: wiki-maildir https://en.wikipedia.org/wiki/Maildir
+#+LINK: conky-github-search-mail-spool https://github.com/brndnmtthws/conky/search?utf8=%E2%9C%93&q=mail_spool&type=
+#+LINK: conky-github-mail-src https://github.com/brndnmtthws/conky/blob/master/src/mail.cc#L255
+
+#+BEGIN_PREVIEW
+Configuring [[conky-github][~conky~]] to display a count and symbol of new mail
+turned out to be more tricky than I had originally anticipated.  This small
+post quickly explores the issues and my own misunderstandings that led to a
+working [[conky-github][~conky~]] configuration and a better understanding of
+[[wiki-maildir][~maildir~]].
+#+END_PREVIEW
+
+#+BEGIN_QUOTE
+  When the documentation fails you, use the source.
+#+END_QUOTE
+
+I've been trying to configure [[conky-github][~conky~]] to show an icon if
+there is new mail in my local [[wiki-maildir][~maildir~]].  However, I'm
+seemingly unable to achieve the desired result.
+
+Here is a trimmed down version of my [[conky-github][~conky~]] configuration
+for reference:
+
+#+BEGIN_QUOTE
+  This is using [[conky-github][~conky~]]'s new 1.10 syntax.
+#+END_QUOTE
+
+#+BEGIN_EXAMPLE toml
+    conky.config = {
+        out_to_x = false,
+        own_window = false,
+        out_to_console = true,
+        background = false,
+    };
+
+    conky.text = [[
+        ${mails ${HOME}/.mail/} 
+    ]];
+#+END_EXAMPLE
+
+However, when attempting to run this through [[conky-github][~conky~]], I
+receive the following error:
+
+#+BEGIN_EXAMPLE
+    conky: cannot open directory
+#+END_EXAMPLE
+
+I also tried adding the ~mail_spool~ configuration setting to the
+~conky.config~ table and removing the folder from the ~${mails}~ variable.
+Furthermore, I tried both of the above using the ~${new_mails}~ variable as
+well, similarly to no avail.
+
+#+BEGIN_QUOTE
+  I actually receive a different error suggesting that ~mail_spool~ is no
+  longer a valid configuration setting.
+  [[conky-github-search-mail-spool][Searching the code base]], I feel this is
+  accurate.
+#+END_QUOTE
+
+Another variation of the above I have tried is to try quoting the directory
+path, which failed with a different error suggesting [[conky-github][~conky~]]
+is attempting to literally open the quoted folder.
+
+It wasn't until I read the source of [[conky-github-mail-src][~conky~]] that I
+was able to figure out what the /actual/ issue was.
+
+What was not obvious to me from the documentation was that ~$mails~ and friends
+request a literal [[wiki-maildir][~maildir~]] as its parameter.  This means,
+it's required to specify a folder with the triplet of folders: ~cur~, ~new~,
+and ~tmp~ under it.  Without which, [[conky-github][~conky~]] returns the error
+"cannot open directory" because [[conky-github][~conky~]] is trying to open the
+directory ~{provided-mail-directory}/cur~ instead of the provided directory.
+
+Therefore, to solve my issue, I had changed the path given to ~$mails~ to the
+following:
+
+#+BEGIN_EXAMPLE
+    ${mails ${HOME}/{email-account}/INBOX}
+#+END_EXAMPLE
+
+Where ~{email-account}~ is the email account I want updates for.
+
+This has been a frustrating experience, and the documentation around
+[[conky-github][~conky~]] is unfortunately out of date.  But this is partially
+my own fault, my understanding of [[wiki-maildir][~maildir~]] was incorrect and
+certainly led me astray.
+
+I'm debating whether to submit a pull request for expanding the documentation
+around [[wiki-maildir][~maildir~]] usage in the ~$*mails~ variables but it's
+likely my own misunderstanding of [[wiki-maildir][~maildir~]] that led me to so
+much issue.
+
+Next, onto [[conky-github][~conky~]]'s use of ~if_match~ and ~$battery_short~
+to display different battery symbols based on "charging", "discharging" and
+"full" states.
