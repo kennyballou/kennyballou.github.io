@@ -1,0 +1,166 @@
+#+TITLE: Vim Tips 2015-05-07
+#+DESCRIPTION: Vim Tips: Visual Mode and Macros
+#+TAGS: Vim
+#+TAGS: Tips and Tricks
+#+TAGS: Editors
+#+DATE: 2015-05-17
+#+SLUG: vim-tips-2015-05-7
+#+LINK: kb-vim-tips-2015-03-17 https://kennyballou.com/blog/2015/03/vim-tips-2015-03-17/
+#+LINK: vimdoc-visual http://vimdoc.sourceforge.net/htmldoc/visual.html
+#+LINK: vim-wikia-macros http://vim.wikia.com/wiki/Macros
+
+#+BEGIN_PREVIEW
+Many Vim users may have, accidentally or not, discovered the dot (~.~) command
+in Vim.  It's a main stay for a lot of Vim users and is clearly one of those
+actions that should be in more editors.  Except when it is the wrong action for
+the job.
+#+END_PREVIEW
+
+More often than not, the visual selection mode and one-off macros are a better
+choice.
+
+** Visual Mode
+
+I won't go into all of the cool things that can be accomplished with Vim's
+visual mode, but I will showcase a few examples where the visual editor is
+clearly a better choice than the dot (~.~).
+
+Visual mode offers, in essence, a multi-line cursor for which you can do a lot
+of changes, quickly.
+
+*** Visual Mode Basics
+
+To enter visual mode, it is as simple as pressing ~^v~ or ~ctrl-v~.  Next you
+will want to select what you want to change with your typical movement commands
+(~h~, ~j~, ~k~, ~l~, and of course ~w~, ~e~ and all the rest).  Finally, you
+finish with the action: ~I~ if you want to insert before the selection, ~A~ if
+you want to append after the selection, ~C~ if you want to change the
+selection, and ~d~, ~D~, ~x~ if you want to remove the selection, just to name
+a few.
+
+*** Some Examples
+
+For (a bad) example, if you need to comment out a contiguous set of lines, you
+can easily accomplish this with the visual mode.
+
+
+#+BEGIN_embed-video
+#+HTML: <video controls="controls" width="90%" height="90%">
+#+HTML: <source src="/media/videos/comment.ogg" type="video/ogg"/>
+Your browser does not support the video tag.
+#+HTML: </video>
+#+END_embed-video
+
+A related example to prefixing is indentation changes, I often use the visual
+mode to fix code indentation when changing block-level indentation or when
+copying code into a markdown file.
+
+#+BEGIN_embed-video
+#+HTML: <video controls="controls" width="90%" height="90%">
+#+HTML: <source src="/media/videos/indent.ogg" type="video/ogg"/>
+Your browser does not support the video tag.
+#+HTML: </video>
+#+END_embed-video
+
+As another example, if you need to change a single word in multiple columns,
+visual mode will make easy work of this (especially when the columns are
+aligned, if not see macros below or [[kb-vim-tips-2015-03-17][substitution
+ranges]] from the previous tip).
+
+#+BEGIN_embed-video
+#+HTML: <video controls="controls" width="90%" height="90%">
+#+HTML: <source src="/media/videos/cw.ogg" type="video/ogg"/>
+Your browser does not support the video tag.
+#+HTML: </video>
+#+END_embed-video
+
+For more information on Visual Mode, you can check Vim's
+[[vimdoc-visual][visual]] help document.
+
+** Macros
+
+For when visual mode may not be enough or when the change is repetitive in
+operations but not in columns or what have you, it's time to bust out the
+macros.  Vim macros are easily available for use you can use all the registers
+to record and store each macro.
+
+*** Macro Basics
+
+To record a macro, it's as simple as ~q<register-label><commands>q~.  That is,
+press ~q~, select a register (a-z1-0), enter your commands as if you were using
+Vim normally, and finally ~q~ again to finish.  Once your macro is recorded,
+you can use it with ~@<register-label>~.  And, like most Vim commands, you can
+attach a repetition to it: ~<n>@<register-label>~ where ~<n>~ is the number of
+times to repeat the command.
+
+You can also replay the last macro with ~@@~.
+
+*** Some Examples
+
+As a simplistic example, we can use a macro to convert it into, say, JSON (this
+example is clearly taken from the [[vim-wikia-macros][Vim Wikia]]).
+
+Let's say we have the following data:
+
+#+BEGIN_EXAMPLE
+    one     first example
+    two     second example
+    three   third example
+    four    fourth example
+#+END_EXAMPLE
+
+And we want to change it to the following:
+
+#+BEGIN_EXAMPLE
+    data = {
+        'one': 'first example',
+        'two': 'second example',
+        'three': 'third example',
+        'four': 'fourth example',
+    }
+#+END_EXAMPLE
+
+We can do this by performing the following:
+
+First, we want to start recording our macro.  While the cursor is under the 'o'
+of 'one', we will press ~qd~ to record our macro to the ~d~ register.
+
+Next, we will want to change the tabbing by performing a substitution:
+
+#+BEGIN_EXAMPLE
+    :s/\s\+/': '
+#+END_EXAMPLE
+
+Then, we will insert our first tick with:
+
+#+BEGIN_EXAMPLE
+    I'
+#+END_EXAMPLE
+
+And append the last tick and comma with:
+
+#+BEGIN_EXAMPLE
+    A',
+#+END_EXAMPLE
+
+Before we finish recording, one of the more important operations of making
+macros repeatable is moving the cursor to the next line and putting it into the
+correct position for the next execution.  Therefore, move the cursor the
+begging of the line and move down one line:
+
+#+BEGIN_EXAMPLE
+    0j
+#+END_EXAMPLE
+
+Finally, press ~q~ to finish recording.
+
+We should now be able to press ~3@d~ and watch as the rest of the lines change.
+
+To finish up the example, we'll manually enter ~data = {~ and the tailing ~}~.
+
+#+BEGIN_embed-video
+#+HTML: <video controls="controls" width="90%" height="90%">
+#+HTML: <source src="/media/videos/macros.ogg" type="video/ogg" />
+Your browser does not support the video tag.
+#+HTML: </video>
+#+END_embed-video
