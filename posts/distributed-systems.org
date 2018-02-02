@@ -1,0 +1,158 @@
+#+TITLE: Yet Another Page on Readings in Distributed Systems
+#+DESCRIPTION: My own list of links, articles, paper, etc. I enjoyed reading about distributed systems
+#+TAGS: Distributed Systems
+#+TAGS: Readings
+#+DATE: 2015-05-08
+#+UPDATED: 2015-05-12
+#+SLUG: readings-in-distributed-systems
+#+LINK: aphyr-post-network-reliable http://aphyr.com/posts/288-the-network-is-reliable
+#+LINK: wiki-fallacies-of-distributed-computing http://en.wikipedia.org/wiki/Fallacies_of_Distributed_Computing
+#+LINK: wiki-cap-theorem http://en.wikipedia.org/wiki/CAP_theorem
+#+LINK: lysefgg-cap http://learnyousomeerlang.com/distribunomicon#my-other-cap-is-a-theorem
+#+LINK: cap-paper http://lpd.epfl.ch/sgilbert/pubs/BrewersConjecture-SigAct.pdf
+#+LINK: codehale-cant-partition-tolerance http://codahale.com/you-cant-sacrifice-partition-tolerance/
+#+LINK: wiki-consistency-model http://en.wikipedia.org/wiki/Consistency_model
+#+LINK: wiki-list-consistency-models http://en.wikipedia.org/wiki/Category:Consistency_models
+#+LINK: wiki-linearizability http://en.wikipedia.org/wiki/Linearizability
+#+LINK: bailis-linear-vs-serial http://www.bailis.org/blog/linearizability-versus-serializability/
+#+LINK: wiki-eventual-consistency http://en.wikipedia.org/wiki/Eventual_consistency
+#+LINK: wiki-paxos http://en.wikipedia.org/wiki/Paxos_(computer_science)
+#+LINK: distributed-thoughts-understanding-paxos http://distributedthoughts.wordpress.com/2013/09/22/understanding-paxos-part-1/
+#+LINK: willportnoy-lessons-paxos http://blog.willportnoy.com/2012/06/lessons-learned-from-paxos.html
+#+LINK: wiki-vector-clock http://en.wikipedia.org/wiki/Vector_clock
+#+LINK: wiki-split-brain http://en.wikipedia.org/wiki/Split-brain_(computing)
+#+LINK: wiki-network-partitions http://en.wikipedia.org/wiki/Network_partitioning
+#+LINK: cemerick-ds-end-api https://speakerdeck.com/cemerick/distributed-systems-and-the-end-of-the-api
+#+LINK: linkedin-blog-the-log http://engineering.linkedin.com/distributed-systems/log-what-every-software-engineer-should-know-about-real-time-datas-unifying
+#+LINK: aphyr-jepsen-tag http://aphyr.com/tags/jepsen
+#+LINK: aphyr-jepsen-call-me-maybe http://aphyr.com/posts/281-call-me-maybe
+#+LINK: snookles-tcp-incast http://www.snookles.com/slf-blog/2012/01/05/tcp-incast-what-is-it/
+#+LINK: growse-hdfs-partition-tolerance https://www.growse.com/2014/07/18/partition-tolerance-and-hadoop-part-1-hdfs/
+#+LINK: aphyr-jepsen-zookeeper http://aphyr.com/posts/291-call-me-maybe-zookeeper
+#+LINK: aphyr-jepsen-kafka http://aphyr.com/posts/293-call-me-maybe-kafka
+#+LINK: aphyr-jepsen-cassandra http://aphyr.com/posts/294-call-me-maybe-cassandra
+#+LINK: wiki-acid http://en.wikipedia.org/wiki/ACID
+#+LINK: aphyr-jepsen-postgres http://aphyr.com/posts/282-call-me-maybe-postgres
+#+LINK: ferd-lessons-large-scale http://ferd.ca/lessons-learned-while-working-on-large-scale-server-software.html
+#+LINK: ferd-about-guarantees http://ferd.ca/it-s-about-the-guarantees.html
+#+LINK: ferd-queues-overload http://ferd.ca/queues-don-t-fix-overload.html
+#+LINK: ferd-erlang-anger http://www.erlang-in-anger.com/
+#+LINK: aphyr-async-replication http://aphyr.com/posts/287-asynchronous-replication-with-failover
+#+LINK: aphyr-strong-consistency-models http://aphyr.com/posts/313-strong-consistency-models
+
+#+BEGIN_QUOTE
+  "Distributed systems are hard." -Everyone.
+#+END_QUOTE
+
+#+BEGIN_PREVIEW
+This page is dedicated to general discussion of distributed systems, references
+to general overviews and the like. Distributed systems are difficult and even
+the well established ones aren't
+[[aphyr-post-network-reliable][bulletproof]]. How can we make this better? As
+SysAdmins? As Developers? First we can attempt to understand some of the issues
+related to designing and implementing distributed systems. Then we can throw
+all that out and figure out what /really/ happens to distributed systems.
+#+END_PREVIEW
+
+** Recommended Reading
+
+*** General
+
+- [[wiki-fallacies-of-distributed-computing][Fallacies of Distributed
+  Computing]]
+
+- [[wiki-cap-theorem][CAP Theorem]]
+
+  - [[lysefgg-cap][LYSEFGG: Distribunomicon: My other cap is a theorem]]
+
+  - For a more entertaining introduction to CAP, Hebert's ''Learn You Some
+    Erlang for Great Good'' has a really good subsection on the topic that
+    includes the zombie apocalypse and some introduction to how a blend between
+    AP and CP systems can be achieved.
+
+  - [[cap-paper][CAP Theorem Proof]]
+
+  - [[codehale-cant-partition-tolerance][You can't sacrifice partition
+    tolerance]]
+
+- [[wiki-consistency-model][Consistency Model]]
+
+  - [[wiki-list-consistency-models][List of Consistency Models]]
+
+  - [[wiki-linearizability][Linearizability]]
+
+  - [[bailis-linear-vs-serial][Linearizability versus Serializability]]
+
+  - [[wiki-eventual-consistency][Eventual Consistency]]
+
+- [[wiki-paxos][Paxos]]
+
+  - [[distributed-thoughts-understanding-paxos][Understanding Paxos (Part 1)]]
+
+  - [[willportnoy-lessons-paxos][Lessons learned from implementing Paxos
+    (2013)]]
+
+- [[wiki-vector-clock][Vector Clock]]
+
+- [[wiki-split-brain][Split-Brain]]
+
+- [[wiki-network-partitions][Network Partitions]]
+
+- [[cemerick-ds-end-api][Distributed Systems and the End of the API]]
+
+- [[linkedin-blog-the-log][The Log]]: What every software engineer should know
+  about real time data's unifying abstraction
+
+The [[aphyr-jepsen-tag][Jepsen]] "Call me maybe" articles are really good, well
+written essays on topics and technologies related to distributed systems.
+
+Introductory post to the "Call me maybe" series:
+
+- [[aphyr-jepsen-call-me-maybe][Call me maybe]]
+
+Here are some personal recommendations:
+
+- [[aphyr-post-network-reliable][The Network is Reliable]]
+
+- [[aphyr-strong-consistency-models][Strong Consistency Models]]
+
+- [[aphyr-async-replication][Asynchronous Replication with Failover]]
+
+Really anything from Ferd Herbert is good. Particularly, the first and last
+chapters of [[ferd-erlang-anger][Erlang In Anger]] which includes longer essays
+from his blog posts.
+
+- [[ferd-queues-overload][Queues Don't Fix Overload]]
+
+- [[ferd-about-guarantees][It's About the Guarantees]]
+
+- [[ferd-lessons-large-scale][Lessons Learned while Working on Large-Scale
+  Server Software]]
+
+*** General Networking
+
+-  [[snookles-tcp-incast][TCP incast]]
+
+*** Hadoop ecosystem
+
+This link is more specific to HDFS and is a rather limited experiment but
+nonetheless a good read to further understand partition issues that can arise
+in Hadoop systems:
+
+- [[growse-hdfs-partition-tolerance][Partition Tolerance in HDFS]]
+
+More links from the [[aphyr-jepsen-tag][Jepsen essays]]:
+
+- [[aphyr-jepsen-zookeeper][Call me maybe: Zookeeper]]
+
+- [[aphyr-jepsen-kafka][Call me maybe: Kafka]]
+
+- [[aphyr-jepsen-cassandra][Call me maybe: Cassandra]]
+
+*** Databases
+
+- [[wiki-acid][Wikipedia ACID]]
+
+- [[aphyr-jepsen-postgres][Call me maybe: Postgres]]
+
+
