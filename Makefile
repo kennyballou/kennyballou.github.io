@@ -52,3 +52,7 @@ $(BUILD_DIR)/%: $(STATIC_DIR)/% | $(BUILD_DIR)
 .PHONY: clean
 clean:
 	-rm -r $(BUILD_DIR)
+
+.PHONY: deploy
+deploy: clean all
+	aws s3 cp --recursive $(BUILD_DIR)/ s3://blog.kennyballou.com/
