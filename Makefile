@@ -11,6 +11,7 @@ POSTS_ORG_SUM_OUTPUT:=$(patsubst posts/%.org, posts/%.sum.html, $(POSTS_ORG_INPU
 POSTS_ORG_HTML_OUTPUT:=$(foreach post,$(POSTS_ORG_INPUT),$(BUILD_DIR)$(call blog_dir,$(post))/index.html)
 STATIC_FILES:=$(shell find $(STATIC_DIR) -type f)
 STATIC_FILES_OUT:=$(patsubst $(STATIC_DIR)/%,$(BUILD_DIR)/%,$(STATIC_FILES))
+TEMPLATE_FILES:=$(wildcard templates/*.html)
 
 .PHONY: all
 all: $(BUILD_DIR)/index.html \
@@ -30,7 +31,8 @@ posts/%.sum.xml: posts/%.org posts/%.preview.org
 $(BUILD_DIR):
 	mkdir -p $@
 
-$(BUILD_DIR)/index.html: $(POSTS_ORG_SUM_OUTPUT) | $(BUILD_DIR)
+$(BUILD_DIR)/index.html: $(POSTS_ORG_SUM_OUTPUT) $(TEMPLATE_FILES) Makefile \
+					   | $(BUILD_DIR)
 	$(SCRIPTS_DIR)/generate_index_html.sh $^ > $@
 
 $(BUILD_DIR)/index.xml: $(POSTS_ORG_SUM_XML_OUTPUT) | $(BUILD_DIR)
@@ -39,7 +41,10 @@ $(BUILD_DIR)/index.xml: $(POSTS_ORG_SUM_XML_OUTPUT) | $(BUILD_DIR)
 define BLOG_BUILD_DEF
 $(BUILD_DIR)$(call blog_dir,$T):
 	mkdir -p $$@
-$(BUILD_DIR)$(call blog_dir,$T)/index.html: $T | $(BUILD_DIR)$(call blog_dir,$T)
+$(BUILD_DIR)$(call blog_dir,$T)/index.html: $T \
+											$(TEMPLATE_FILES) \
+											Makefile \
+										  | $(BUILD_DIR)$(call blog_dir,$T)
 	$(SCRIPTS_DIR)/generate_post_html.sh $$< > $$@
 endef
 
