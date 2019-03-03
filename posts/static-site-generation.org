@@ -1,0 +1,339 @@
+#+TITLE: (New) Static Site Generation
+#+DESCRIPTION: Migration from Hugo to org-mode, some scripts, and pandoc
+#+TAGS: Emacs
+#+TAGS: Org-mode
+#+TAGS: GNU/Linux
+#+TAGS: Bash
+#+TAGS: Make
+#+TAGS: Pandoc
+#+DATE: 2019-03-03
+#+SLUG: static-site-generation
+#+LINK: blog-git https://git.devnulllabs.io/blog.kennyballou.com.git/
+#+LINK: golang https://golang.org
+#+LINK: hugo https://gohugo.io/
+#+LINK: wiki-markdown https://en.wikipedia.org/wiki/Markdown
+#+LINK: org-mode https://org-mode.org
+#+LINK: org-manual https://orgmode.org/manual/
+#+LINK: org-mode-publish https://orgmode.org/manual/Publishing.html#Publishing
+#+LINK: wiki-rst https://en.wikipedia.org/wiki/ReStructuredText
+#+LINK: justin-abrah-org-publish https://justin.abrah.ms/emacs/orgmode_static_site_generator.html
+#+LINK: panchekha-org-publish https://pavpanchekha.com/blog/org-mode-publish.html
+#+LINK: evenchick-org-publish https://www.evenchick.com/blog/blogging-with-org-mode.html
+#+LINK: ogbe-org-publish https://ogbe.net/blog/blogging_with_org.html
+#+LINK: pandoc https://pandoc.org
+
+#+BEGIN_PREVIEW
+For a few years, I've been using [[hugo][Hugo]] for blog generation.  Recently,
+I've decided I wanted to take static site generation into a different
+direction.  Specifically, I wanted to use a different source markup and I
+wanted to write my own tool set for generating the actual HTML.
+#+END_PREVIEW
+
+We'll walk through the motivation of changing the content into a different
+format and changing the generation process into a completely custom set of
+scripts.
+
+** Motivation
+
+When I first set down to build a blog 5 years ago, I had a pretty basic set of
+requirements.
+
+- Lightweight
+
+- Native Markdown Support
+
+- Minimal Dependencies
+
+[[hugo][Hugo]] met all of these requirements quite well.  The templating engine
+is fairly simplistic; It supports Markdown; It's a written in [[golang][Go]],
+therefore, only the built artifact is necessary for site generation.
+
+If it fits so well, why change?
+
+It worked well for what I was asking, however, as I wrote more and time went
+on, the features of [[hugo][Hugo]] became more and more complex and created a
+mismatch of how I wanted to express the text in the markup.  I've felt this was
+going in a direction I did not need nor wanted.  More specifically, the issues
+start surfacing more in the [[wiki-markdown][Markdown]] side.
+[[wiki-markdown][Markdown]] simply lacks some features in its markup that is
+corrected by blocks of HTML inline and other hacks that are standard in only
+some specific "flavor" or translator implementation.  [[hugo][Hugo]] attempts
+to patch this over with its implementation of ~shortcode templates~, however,
+these still felt unnatural.
+
+The final nail was discovering [[org-mode][Org-mode]].  I liked the weight of
+[[wiki-markdown][Markdown]], but I didn't like its lack of features when
+needed.  I liked [[wiki-rst][rStructured Text]], however, I felt it was always
+too heavy for the documents I was working on.
+
+In finally giving Emacs a full try (another blog post), I discovered
+[[org-mode][Org-mode]].  It was the exact middle weight I was looking for
+between [[wiki-markdown][Markdown]] and [[wiki-rst][reST]].
+
+Thus, I was in search of a new tool for generating static HTML from a set of
+source files written in [[org-mode][Org-mode]].
+
+[[org-mode][Org-mode]] (within Emacs) has a native publish mode, and I had
+discovered [[justin-abrah-org-publish][several]]
+[[panchekha-org-publish][posts]] on how [[ogbe-org-publish][people]] are doing
+[[evenchick-org-publish][exactly]] this.  However,
+[[org-mode-publish][Org-publish]] isn't exactly what I was looking for.
+
+Therefore, let's revise the current list of requirements:
+
+- Makefile driven
+
+- Does not require Emacs to generate
+
+That is, I wanted a ~Makefile~ that could generate the site contents.
+Furthermore, and no less importantly, I wanted the ~Makefile~ to not include
+lines like ~Emacs --quick --batch ...~.  This obviously creates a bit of a
+challenge since [[org-mode][Org-mode]] is an Emacs mode.
+
+I decided I could probably generate the content myself with a few scripts and
+invocations to [[pandoc][Pandoc]].
+
+** High-Level Implementation
+
+The core of the implementation of the new site generation is blog posts written
+in [[org-mode][Org-mode]], processed by several shell scripts, using
+[[pandoc][Pandoc]] to perform the translation from raw [[org-mode][Org-mode]]
+markup to HTML, all of which is orchestrated by a ~Makefile~.
+
+I'm not going extol [[org-mode][Org-mode]]'s capabilities in this post.
+There's plenty of resources on it already, no greater authority than the
+[[org-manual][Org-mode Manual]] itself.
+
+There is, in fact, some limitations of [[org-mode][Org-mode]] due to the
+choices of not allowing the generation to include ~Emacs~ itself.
+
+Along the tour of the implementation, it's important to note a guiding
+principle in the conversion was not breaking existing links.  That is, I was
+and am satisfied with the folders and slug usage for posts and I didn't want
+the new version to break existing links.
+
+** Detailed Implementation
+
+The easy part is generating each post.  This is simply an ~index.html~ in the
+correct folder.  The majority of the complexities stem from the summaries and
+main ~index~ page.
+
+*** Post Content Generation
+
+To generate a blog post's ~index.html~ page, we consider the following ~make~
+target:
+
+#+BEGIN_SRC makefile
+blog_dir = $(shell $(SCRIPTS_DIR)/org-get-slug.sh $(1))
+TEMPLATE_FILES:=$(wildcard templates/*.html)
+
+define BLOG_BUILD_DEF
+$(BUILD_DIR)$(call blog_dir,$T):
+	mkdir -p $$@
+$(BUILD_DIR)$(call blog_dir,$T)/index.html: $T \
+											$(TEMPLATE_FILES) \
+											Makefile \
+										  | $(BUILD_DIR)$(call blog_dir,$T)
+	$(SCRIPTS_DIR)/generate_post_html.sh $$< > $$@
+endef
+
+$(foreach T,$(POSTS_ORG_INPUT),$(eval $(BLOG_BUILD_DEF)))
+#+END_SRC
+
+This definition is fairly opaque now.  However, the definition will expand for
+each post when the ~foreach~ macro expands.  For example, when run, the
+following targets will be defined for this post:
+
+#+BEGIN_SRC makefile
+$(BUILD_DIR)/blog/2019/03/static-site-generation:
+	mkdir -p $@
+$(BUILD_DIR)/blog/2019/03/static-site-generation/index.html: posts/static-site-generation.org \
+															 $(TEMPLATE_FILES) \
+															 Makefile \
+														   | $(BUILD_DIR)/blog/2019/03/static-site-generation
+	$(SCRIPTS_DIR)/generate_post.html $< > $@
+#+END_SRC
+
+This will create the correct directory for each post, e.g.,
+~/blog/2019/03/static-site-generation~, and place the translated HTML into this
+directory as ~index.html~.
+
+#+BEGIN_QUOTE
+Note: it doesn't actually translate to ~$(TEMPLATE_FILES)~.  During the
+expansion of the definition, the variable ~$(TEMPLATE_FILES)~ is similarly
+expanded.  This is acceptable, however, since it's a static list of files and
+has no bearing on which post's target is being expanded.
+#+END_QUOTE
+
+The ~generate_post.sh~ script is fairly basic:
+
+#+BEGIN_SRC bash
+#!/usr/bin/env bash
+# Generate HTML for blog post
+
+ORGIN=${1}
+PROJ_ROOT=$(git rev-parse --show-toplevel)
+source ${PROJ_ROOT}/scripts/site-templates.sh
+source ${PROJ_ROOT}/scripts/org-metadata.sh
+DISPLAY_DATE=$(date -d ${DATE} +'%a %b %d, %Y')
+SORT_DATE=$(date -d ${DATE} +'%Y	%m	%d	')
+
+cat ${HTML_HEADER_FILE}
+cat ${HTML_SUB_HEADER_FILE}
+echo -n "<h1 class=\"title\">${TITLE}</h1>"
+echo -n "<div class=\"post-meta\">"
+echo -n '<ul class="tags"><li><i class="fa fa-tags"></i></li>'
+echo -n "${TAGS}" | awk '{ printf "<li>%s</li>", $0}'
+echo -n '</ul>'
+echo -n "<h4>${DISPLAY_DATE}</h4></div>"
+pandoc --from org \
+       --to html \
+       ${ORGIN}
+cat ${HTML_FOOTER_FILE}
+
+#+END_SRC
+
+The ~org-metadata.sh~ script, reads the [[org-mode][Org-mode]] preamble, lines
+starting with ~#+~, and puts them into different variables available for other
+scripts.  For example, the ~TITLE~, ~DATE~, ~TAGS~ are pulled out and used to
+generate the title section of each post.  Furthermore, some templates are
+pulled in to generate the headers and footers of each page.  The templates are
+written directly in HTML and really serve only to simplify each page with
+otherwise largely duplicated content.
+
+*** Summary Page Generation
+
+The summary page is a bit more involved to generate.  A few questions had to be
+answered before it was possible: how to generate the summary text? And how
+to sort and order posts?
+
+To answer the first question, I dug into how [[hugo][Hugo]] was generating
+these summaries.  It turns out, it really only takes the first couple hundred
+characters and calls it the "summary".  This depends largely on the content of
+each post to actually describe the post in the first couple hundred characters.
+Obviously, this led to some awkward results, especially with links and section
+headings mixed in.
+
+To achieve similar results, it /would/ be fairly easy to write a script to
+simply take the first few hundred characters after the preamble and output this
+into something to be collected for the summary page.  However, a better
+solution is available since we are taking full control over the generation
+process.  Namely, we can put the preview content into a specific
+[[org-mode][Org-mode]] block to be parsed out and used explicitly for this
+purpose.  If the summary for a post is only a sentence or two, the summary
+generation process won't then start reading extra text, if the summary requires
+a little more detail, it won't be cut short by the arbitrary read limit.
+
+To generate the preview content, the ~generate_post_preview.sh~ script is used:
+
+#+BEGIN_SRC bash
+#!/usr/bin/env bash
+# Generate HTML post summary tags
+
+ORGIN=${1}
+PROJ_ROOT=$(git rev-parse --show-toplevel)
+
+source ${PROJ_ROOT}/scripts/org-metadata.sh
+
+echo "${LINKS}"
+echo "${PREVIEW}"
+#+END_SRC
+
+The ~LINKS~ variable is included in this file because we are generating an
+intermediate file for [[pandoc][Pandoc]] to generate the summary content.
+Without the ~LINKS~, any links included in the preview section would be broken.
+
+The second question actually turns out to be pretty easy in practice: we parse
+the ~#+ DATE:~ line from the preamble and prepend it to the summary content.
+
+From the ~org-metadata.sh~ script:
+
+#+BEGIN_SRC bash file:org-metadata.sh
+ORIGIN=${1}
+DATE=$(awk -F': ' '/^#\+DATE:/ { printf "%s", $2}' ${ORGIN})
+#+END_SRC
+
+Then, from the ~generate_post_summary_html.sh~ script:
+
+#+BEGIN_SRC bash file: generate_post_summary_html.sh
+#!/usr/bin/env bash
+# Generate HTML post summary tags
+
+ORGIN=${1}
+GENERATED_PREVIEW_FILE=${2}
+PROJ_ROOT=$(git rev-parse --show-toplevel)
+
+source ${PROJ_ROOT}/scripts/org-metadata.sh
+DISPLAY_DATE=$(date -d ${DATE} +'%a %b %d, %Y')
+SORT_DATE=$(date -d ${DATE} +'%Y	%m	%d	')
+PREVIEW_CONTENT=$(cat ${GENERATED_PREVIEW_FILE} | pandoc -f org -t html)
+
+echo -n "${SORT_DATE}"
+echo -n '<article class="post"><header>'
+echo -n "<h2><a href=\"${SLUG}\">${TITLE}</a></h2>"
+echo -n "<div class=\"post-meta\">${DISPLAY_DATE}</div></header>"
+echo -n "<blockquote>$(echo ${PREVIEW_CONTENT})</blockquote>"
+echo -n '<ul class="tags"><li><i class="fa fa-tags"></i></li>'
+echo -n "${TAGS}" | awk '{ printf "<li>%s</li>", $0}'
+echo -n '</ul>'
+echo -n '<footer>'
+echo -n "<a href=\"${SLUG}\">Read More</a>"
+echo -n "</footer>"
+echo ""
+#+END_SRC
+
+Finally, this is all put together with the ~generate_index_html.sh~ script:
+
+#+BEGIN_SRC bash
+#!/usr/bin/env bash
+# Generate index.html page
+
+INPUT_FILES=${@}
+PROJ_ROOT=$(git rev-parse --show-toplevel)
+source ${PROJ_ROOT}/scripts/site-templates.sh
+
+cat "${HTML_HEADER_FILE}"
+echo "<body>"
+cat "${HTML_SUB_HEADER_FILE}"
+cat ${INPUT_FILES} | sort -r -n -k1 -k2 -k3 | awk -F'	' '{print $4}'
+echo "</body>"
+cat "${HTML_FOOTER_FILE}"
+#+END_SRC
+
+Specifically, the following line is of interest with respect to properly
+sorting:
+
+#+BEGIN_SRC bash
+cat ${INPUT_FILES} | sort -r -n -k1 -k2 -k3 | awk -F'	' '{print $4}'
+#+END_SRC
+
+Use the tab-separated date fields from before, and use them to sort each of the
+post summaries onto the ~index.html~ page.
+
+*** RSS/XML Generation
+
+I also wanted to keep the RSS/XML feeds going.  However, as it turns out,
+generating the RSS feed was achieved by performing essentially the same steps
+used for generating the summary ~index.html~ page.
+
+** Future Work
+
+There is a fairly obvious limitation of the summary page generation, but only
+really obvious if I write more content.  There was and is no current archive
+page.  Moreover, _all_ posts are put into the ~index.html~ summary page.
+If/when more posts are written and published, a solution for the first page
+will be necessary.  However, this was necessary regardless of whether the blog
+is generated using [[hugo][Hugo]] or generated via the new process.
+
+** Parting Thoughts
+
+Like many projects, this was started because I personally was dissatisfied with
+the current state of options.  However, that said, I did not write these
+scripts to be used directly for someone else.  I'm not sure I would necessarily
+recommend this approach to someone else, unless, of course, they wanted to do
+it to learn or to otherwise take control of their content.  That said, I hope
+this captures the essence of the scripts, their major functions, and the
+motivations behind them.  The scripts are available, WITHOUT WARRANTY, under
+the [[gnu-gpl][GNU General Public License (version 3)]].
+
+If you have questions or comments, feel free to reach out to me.
