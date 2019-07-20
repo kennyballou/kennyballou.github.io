@@ -1,0 +1,580 @@
+#+TITLE: NixOS Setup and Configuration
+#+DESCRIPTION: NixOS setup with RAID, LUKS, and LVM
+#+TAGS: GNU/Linux
+#+TAGS: nixos
+#+TAGS: nix
+#+TAGS: md
+#+TAGS: luks
+#+TAGS: lvm
+#+DATE: 2019-07-23
+#+SLUG: nixos-md-luks-lvm-setup
+#+LINK: arch-dm-crypt-dev-enc https://wiki.archlinux.org/index.php/Dm-crypt/Device_encryption
+#+LINK: arch-dm-crypt-prep https://wiki.archlinux.org/index.php/Dm-crypt/Drive_preparation
+#+LINK: arch-linux https://www.archlinux.org/
+#+LINK: arch-lvm https://wiki.archlinux.org/index.php/LVM
+#+LINK: bios https://en.wikipedia.org/wiki/BIOS
+#+LINK: cfg.nix.git https://git.devnulllabs.io/cfg.nix.git
+#+LINK: docker https://www.docker.com/
+#+LINK: fhs http://www.pathname.com/fhs/
+#+LINK: fralef-docker-iptables https://fralef.me/docker-and-iptables.html
+#+LINK: gentoo https://gentoo.org/
+#+LINK: gentoo-lvm https://wiki.gentoo.org/wiki/LVM
+#+LINK: glibc https://www.gnu.org/software/libc/
+#+LINK: gnu https://www.gnu.org
+#+LINK: grub2 https://www.gnu.org/software/grub/
+#+LINK: hivestream-gentoo http://www.hivestream.de/gentoo-installation-with-raid-lvm-luks-and-systemd.html
+#+LINK: linux https://www.kernel.org/
+#+LINK: luks https://gitlab.com/cryptsetup/cryptsetup/blob/master/README.md
+#+LINK: lvm https://www.sourceware.org/lvm2/
+#+LINK: md http://neil.brown.name/blog/mdadm
+#+LINK: moby-nftables-issue https://github.com/moby/moby/issues/26824
+#+LINK: nftables https://wiki.nftables.org/wiki-nftables/index.php/Main_Page
+#+LINK: nix https://nixos.org/nix/
+#+LINK: nix-paper https://www.usenix.org/legacy/events/lisa04/tech/full_papers/dolstra/dolstra.pdf
+#+LINK: nixos https://nixos.org/
+#+LINK: nixos-manual https://nixos.org/nixos/manual/index.html
+#+LINK: nixos-paper https://nixos.org/~eelco/pubs/nixos-icfp2008-final.pdf
+#+LINK: nixos-post https://kennyballou.com/blog/2019/07/nixos
+#+LINK: stephank-docker-nftables https://stephank.nl/p/2017-06-05-ipv6-on-production-docker.html
+#+LINK: uefi https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface
+#+LINK: wiki-btrfs https://en.wikipedia.org/wiki/Btrfs
+#+LINK: wiki-ext4 https://en.wikipedia.org/wiki/Ext4
+#+LINK: wiki-luks https://en.wikipedia.org/wiki/Linux_Unified_Key_Setup
+#+LINK: wiki-lvm https://en.wikipedia.org/wiki/Logical_Volume_Manager_%28Linux%29
+#+LINK: wiki-md https://en.wikipedia.org/wiki/Mdadm
+#+LINK: wiki-raid https://en.wikipedia.org/wiki/RAID
+#+LINK: wiki-serpent https://en.wikipedia.org/wiki/Serpent_(cipher)
+#+LINK: wiki-twofish https://en.wikipedia.org/wiki/Twofish
+#+LINK: wiki-xfs https://en.wikipedia.org/wiki/XFS
+
+
+#+BEGIN_PREVIEW
+A brief overview (read instructions) on setting up a new [[nixos][NixOS]]
+system with [[lvm][LVM]] on [[luks][LUKS]] on [[md][md]].  We will go through
+drive preparation, basic [[nixos][NixOS]] installation instructions, and slight
+modifications to the instructions for installing a new system from
+configuration.
+#+END_PREVIEW
+
+** NixOS
+
+[[nixos-post][Previously]], we introduced the concepts and ideas behind
+[[nixos][NixOS]] and by extension [[nix][nix]], the package manager.  We,
+therefore, will not be reiterating the discussion here.
+
+** System Installation and Configuration
+
+Installing [[nixos][NixOS]] is fairly straight forward.  However, that is a
+relative term.  My experience is with [[arch-linux][Arch Linux]] and more
+recently [[gentoo-linux][Gentoo]], both not known for having forgiving
+installations.
+
+#+begin_quote
+I don't want to replace the [[nixos-manual][manual]], I only want to really
+supplement it with the steps where I deviated from its path or add information
+for *my* personal configuration/preferences.
+#+end_quote
+
+That said, we will focus on disk preparation and partitioning as that is the
+most complicated portion of our installation.
+
+We will walk through the installation of two machines, first, will be my
+current laptop with two SSD's, second, my main desktop with six hard drives.
+Since we are doing two setups, we will also have a chance to do both
+[[bios][BIOS]] and [[uefi][UEFI]] partitioning schemes.
+
+#+begin_quote
+I am assuming the use of the [[nixos][NixOS]] [[nixos-live][live installation]]
+medium.
+#+end_quote
+
+*** Laptop
+
+**** Disk Preparation
+
+#+begin_quote
+I am assuming the use of the [[nixos][NixOS]] [[nixos-live][live installation]]
+medium.
+#+end_quote
+
+Since this will be an encrypted everything (sans ~/boot~), we will need to
+securely erase all the drives.
+
+For each drive, ~${device}~, perform the following:
+
+#+begin_quote
+Lines beginning with ~#~ are commands to be executed as the ~root~ user.
+#+end_quote
+
+#+begin_example
+# cryptsetup open --type plain --key-file=/dev/urandom ${device} wipe-me
+# dd if=/dev/zero of=/dev/mapper/wipe-me status=progress
+# cryptsetup close
+#+end_example
+
+#+begin_quote
+For large hard drives, this step can take a considerable amount of time.  This
+can be done in parallel by using different identifiers than ~wipe-me~.
+
+This probably *cannot* be parallelized if using the more paranoid random source
+~/dev/random~ device instead of ~/dev/urandom~ as there will likely not be
+enough entropy for more than one device.
+#+end_quote
+
+Concretely, this may look like:
+
+#+begin_example
+# cryptsetup open --type plain --key-file=/dev/urandom /dev/sda wipe-me
+# dd if=/dev/zero of=/dev/mapper/wipe-me status=progress
+# cryptsetup close
+#+end_example
+
+After securely erasing each hard drive to be used, we will next setup the
+various partitions for each drive.  Since we will be using [[lvm][~LVM~]] on a
+[[luks][~LUKS~]] container, residing on a [[wiki-raid][RAID 1]] pair of hard
+drives, our partitioning scheme will be pretty simple.
+
+Since [[nixos][NixOS]], by default, uses [[grub2][Grub2]], we will need to
+create a 2 MB first partition for [[bios][BIOS]] systems.
+
+After partitioning the disk, the partition table should look similar to the
+following:
+
+#+begin_example
+Device       Start        End    Sectors  Size Type
+/dev/sda1     2048       6143       4096    2M BIOS boot
+/dev/sda2     6144    1054719    1048576  512M Linux filesystem
+/dev/sda3  1054720 1953525134 1952470415  931G Linux RAID
+#+end_example
+
+Perform or replicate the partition table to the second disk.  After which, we
+will begin the configuration of the mirror.
+
+#+begin_quote
+Certainly, it's possible to securely erase one disk, partition it, then copy it
+to the other disk via ~dd if=/dev/sda of=/dev/sdb status=progress~.
+#+end_quote
+
+We will create two mirrors for this configuration, one for the ~/boot~
+partition and another for the [[luks][~LUKS~]] container:
+
+#+begin_example
+# mdadm --create /dev/md1 --level=mirror --raid-devices=2 /dev/sda2 /dev/sdb2
+# mdadm --create /dev/md2 --level=mirror --raid-devices=2 /dev/sda3 /dev/sdb3
+#+end_example
+
+After creating the mirrors, we need to create the [[luks][~LUKS~]] container
+and the format the ~/boot~ partition.
+
+Boot Partition:
+
+#+begin_example
+# mkfs.ext4 -L boot /dev/md1
+#+end_example
+
+[[luks][~LUKS~]] Container:
+
+#+begin_quote
+When configuring encrypted containers, there are lot of different options and
+parameters to choose from.  For example, there are various cryptography schemes
+and modes to choose from.  ~AES-XTS-PLAIN64~ is a solid choice since most CPU's
+will have extensions for doing ~AES~, increasing the throughput.  I personally,
+have been looking into the other ~AES~ finalists such as
+[[wiki-twofish][Twofish]] and [[wiki-serpent][Serpent]].
+#+end_quote
+
+#+begin_example
+# cryptsetup -v \
+             --type luks \
+             --cipher twofish-xts-plain64 \
+             --key-size 512 \
+             --hash sha512 \
+             --iter-time 5000 \
+             --use-random \
+             --verify-passphrase \
+             luksFormat \
+             /dev/md2
+#+end_example
+
+Once the [[luks][~LUKS~]] container is created, open it:
+
+#+begin_example
+# cryptsetup open /dev/md2 cryptroot
+#+end_example
+
+Now, we can begin creating the [[lvm][~LVM~]] volumes:
+
+#+begin_example
+# pvcreate /dev/mapper/cryptroot
+# vgcreate vg0 /dev/mapper/cryptroot
+# lvcreate -L 1G vg0 -n root
+# lvcreate -L 10G vg0 -n var
+# lvcreate -L 20G vg0 -n opt
+# lvcreate -L 32G vg0 -n swap
+# lvcreate -L 100G vg0 -n nix
+# lvcreate -L 100G vg0 -n home
+# lvcreate -L 100G vg0 -n docker
+#+end_example
+
+Notice, there is no ~/usr~ in our [[lvm][~LVM~]] configuration.  Furthermore,
+notice ~/~ is particularly small.  [[nixos][NixOS]] is particularly different
+when it comes [[fhs][Filesystem Hierarchy]].  Notably, there is a large portion
+of the volume set aside for ~/nix~.  The majority of the "system" will be in
+this directory.
+
+Now we need to format the volumes:
+
+#+begin_example
+# mkfs.ext4 -L root /dev/mapper/vg0-root
+# mkfs.ext4 -L var /dev/mapper/vg0-var
+# mkfs.ext4 -L opt /dev/mapper/vg0-opt
+# mkswap /dev/mapper/vg0-swap
+# mkfs.xfs -L nix /dev/mapper/vg0-nix
+# mkfs.xfs -L home /dev/mapper/vg0-home
+# mkfs.btrfs -L docker /dev/mapper/vg0-docker
+#+end_example
+
+Most volumes will be formatted with the [[wiki-ext4][~ext4~ filesystem]],
+typical for standard [[gnu][GNU]]/[[linux][Linux]] systems.  However, we will
+use [[wiki-xfs][~XFS~]] for ~/nix~ and ~/home~.  [[wiki-xfs][~XFS~]] is
+particularly well suited for purposes of these directories.  Furthermore, since
+[[docker][~Docker~]] is an (unfortunate) necessity, creating a proper
+[[wiki-cow][COW]] filesystem using [[wiki-btrfs][~Btrfs~]], we get better
+management of [[docker][Docker]] images.
+
+Next, we will mount these volumes into various folders to begin the
+installation, creating the folder trees as necessary to mount:
+
+#+begin_example
+# mount /dev/mapper/vg0-root /mnt/
+# mkdir -p /mnt/{var,nix,home,boot,opt}
+# mount /dev/md1 /mnt/boot
+# mount /dev/mapper/vg0-opt /mnt/opt
+# mount /dev/mapper/vg0-var /mnt/var
+# mount /dev/mapper/vg0-home /mnt/home
+# mount /dev/mapper/vg0-nix /mnt/nix
+# mkdir -p /mnt/var/lib/docker
+# mount /dev/mapper/vg0-docker /mnt/var/lib/docker
+#+end_example
+
+*** Desktop
+
+The desktop preparation and configuration are very similar to the laptop.
+However, as noted above, the complication comes from the fact that instead of a
+single pair of drives, we will have 3 pairs of drives.  Everything else is
+essentially the same.
+
+**** Disk Preparation
+
+We first start by securely erasing all the devices:
+
+#+begin_example
+# cryptsetup open --type plain --key-file /dev/urandom /dev/nvme0n1 wipe-me
+# dd if=/dev/zero of=/dev/mapper/wipe-me
+# cryptsetup close wipe-me
+#+end_example
+
+#+begin_quote
+Remember, we don't _have_ to securely erase _every_ device since we will be
+mirroring several of them together.  This does require that each drive are
+*identical*.  If they are not identical, it is likely safer to erase every
+drive.
+#+end_quote
+
+Next, we will begin by partitioning each of the devices:
+
+#+begin_example
+# gdisk /dev/nvme0n1
+Command (? for help): n
+Partition number (1-128, default 1): 1
+First sector:
+Last sector: +512M
+Hex code or GUID: EF00
+Command (? for help): n
+First sector: 
+Last sector: 
+Hex code or GUID: FD00
+Command (? for help): w
+#+end_example
+
+This will create the boot ~EFI~ system partition and the first encrypted
+container partition.
+
+We do essentially the same thing for each of the pairs.  However, the next two
+only need a single partition for the [[md][~md~]] container.
+
+Unlike the secure erasing above, we _do_ need to create the partition tables
+for *each* device.
+
+After partitioning the drives, we will construct the [[wiki-raid][mirrors]]:
+
+#+begin_example
+# mdadm --create /dev/md1 --level=mirror --raid-devices=2 --metadata 1.0 /dev/nvme0n1p1 /dev/nvme1n1p1
+# mdadm --create /dev/md2 --level=mirror --raid-devices=2 /dev/nvme0n1p2 /dev/nvme1n1p2
+# mdadm --create /dev/md3 --level=mirror --raid-devices=2 /dev/sda1 /dev/sdb1
+# mdadm --create /dev/md4 --level=mirror --raid-devices=2 /dev/sdd1 /dev/sde1
+#+end_example
+
+We need to create the ~/boot~ mirror with ~metadata 1.0~ so that the super blocks
+are put at the end of the RAID such that the ~UEFI~ does not get confused when
+attempting to boot the system.  Otherwise, we use the default for all other
+mirrors.
+
+To monitor the progress of the mirror synchronization, use the following
+command:
+
+#+begin_example
+# watch cat /proc/mdstat
+#+end_example
+
+It's not vitally important that the mirrors are synchronized before
+continuing.  Although, from a reliability perspective, it is "safer".
+
+#+begin_quote
+It's also possible to specify the second device as ~missing~ in each of the
+above commands.  This way, the synchronization process can effectively be
+deferred until the end.
+#+end_quote
+
+After creating each of the mirrors, we need to format the ~/boot~ ~EFI~ system
+partition.  This is a ~UEFI~ system, therefore, we will be using ~vfat~ for the
+filesystem.
+
+#+begin_example
+# mkfs.vfat -n boot /dev/md1
+#+end_example
+
+Now, we must create the various [[luks][~LUKS~]] containers:
+
+#+begin_example
+# cryptsetup -v \
+             --type luks \
+             --cipher twofish-xts-plain64 \
+             --key-size 512 \
+             --hash sha512 \
+             --iter-time 5000 \
+             --use-random \
+             --verify-passphrase \
+             luksFormat \
+             /dev/md2
+# cryptsetup -v \
+             --type luks \
+             --cipher twofish-xts-plain64 \
+             --key-size 512 \
+             --hash sha512 \
+             --iter-time 5000 \
+             --use-random \
+             --verify-passphrase \
+             luksFormat \
+             /dev/md3
+# cryptsetup -v \
+             --type luks \
+             --cipher twofish-xts-plain64 \
+             --key-size 512 \
+             --hash sha512 \
+             --iter-time 5000 \
+             --use-random \
+             --verify-passphrase \
+             luksFormat \
+             /dev/md4
+#+end_example
+
+Next, we will open and start creating our [[lvm][~LVM~]] volumes:
+
+#+begin_example
+# cryptsetup open /dev/md2 cvg0
+# cryptsetup open /dev/md3 cvg1
+# cryptsetup open /dev/md4 cvg2
+#+end_example
+
+Now the [[lvm][~LVM~]] setup:
+
+#+begin_example
+# pvcreate /dev/mapper/cvg0
+# vgcreate vg0 /dev/mapper/cvg0
+# pvcreate /dev/mapper/cvg1
+# vgcreate vg1 /dev/mapper/cvg1
+# pvcreate /dev/mapper/cvg2
+# vgcreate vg2 /dev/mapper/cvg2
+#+end_example
+
+Now that the volume groups are created, we will start creating the actual
+logical volumes:
+
+#+begin_example
+# lvcreate -L 1G -n root vg0
+# lvcreate -L 100G -n nix vg0
+# lvcreate -L 15G -n opt vg0
+# lvcreate -L 20G -n var vg1
+# lvcreate -L 100G -n docker vg1
+# lvcreate -L 64G -n swap vg1
+# lvcreate -L 1T -n home vg2
+#+end_example
+
+Finally, we can format each of the partitions:
+
+#+begin_example
+# mkfs.ext4 -L root /dev/mapper/vg0-root
+# mkfs.ext4 -L opt /dev/mapper/vg0-opt
+# mkfs.xfs -L nix /dev/mapper/vg0-nix
+# mkfs.ext4 -L var /dev/mapper/vg1-var
+# mkfs.btrfs -L docker /dev/mapper/vg1-docker
+# mkfs.xfs -L home /dev/mapper/vg2-home
+# mkswap /dev/mapper/vg1-swap
+#+end_example
+
+Before moving onto the next step, we first need to mount each of volumes in the
+desired path:
+
+#+begin_example
+# mount /dev/mapper/vg0-root /mnt
+# mkdir -p /mnt/{boot,home,nix,var,opt}
+# mount /dev/md1 /mnt/boot
+# mount /dev/mapper/vg0-nix /mnt/nix
+# mount /dev/mapper/vg0-opt /mnt/opt
+# mount /dev/mapper/vg1-var /mnt/var
+# mkdir -p /mnt/var/lib/docker
+# mount /dev/mapper/vg1-docker /mnt/docker
+# mount /dev/mapper/vg2-home /mnt/home
+#+end_example
+
+*** NixOS Configuration and Installation
+
+Once the disk preparation is complete, we can follow the steps from the
+[[nixos-manual][NixOS Manual]] to create the initial configuration:
+
+#+begin_example
+# nixos-generate-config --root /mnt
+#+end_example
+
+After this is done, we can move onto configuring the system the way we want.
+However, this is where we will deviate slightly from the manual.  First, we
+will need to install ~git~ so we can pull down our configuration.
+
+#+begin_quote
+The following steps are very personal.  You're free to use my
+[[cfg.nix.git][configuration]] if you do not have your own, or if you would
+like to try it out.  However, you will likely want different things from _your_
+system.  Change the following steps as necessary.
+#+end_quote
+
+#+begin_example
+# nix-env -i git
+# cd /mnt/etc/
+# mv nixos nixos.bak
+# git clone git://git.devnulllabs.io/cfg.nix.git nixos
+# cd nixos
+# cp ../nixos.bak/hardware-configuration.nix .
+#+end_example
+
+My set of [[nix][Nix]] [[cfg.nix.git][configuration]] includes subfolders for
+each machine.  To setup a new machine, I soft link ("symlink") the machine's
+~configuration.nix~ into the ~[/mnt]/etc/nixos~ folder.  If this is a new
+machine or a rebuild, I typically merge the differences between the
+~hardware-configuration.nix~ files.  After which, I perform the regular
+installation.
+
+#+begin_example
+nixos-install --no-root-passwd
+#+end_example
+
+Once this finishes, the installation and configuration is done.  Reboot the
+machine, remove the installation/live media, use the freshly installed machine
+as if it was always there.
+
+**** UEFI Notes
+
+Aside from learning about the ~mdadm~ metadata placement being an issue for
+[[wiki-uefi][UEFI]] systems to boot, I also had played around with the various
+settings for [[grub][GRUB]] to install correctly without errors and warnings.
+
+Here's the full [[grub][GRUB]] configuration:
+
+#+begin_src nix
+boot.loader.systemd-boot = {
+  enable = true;
+  editor = false;
+};
+boot.loader.efi = {
+  canTouchEfiVariables = false;
+};
+boot.loader.grub = {
+  enable = true;
+  copyKernels = true;
+  efiInstallAsRemovable = true;
+  efiSupport = true;
+  fsIdentifier = "uuid";
+  splashMode = "stretch";
+  version = 2;
+  device = "nodev";
+  extraEntries = ''
+    menuentry "Reboot" {
+      reboot
+    }
+    menuentry "Poweroff" {
+      halt
+    }
+  '';
+};
+#+end_src
+
+Of particular importance are the following variables:
+
+- ~boot.loader.systemd-boot.enable~
+
+- ~boot.loader.efi.canTouchEfiVariables~
+
+- ~boot.loader.grub.efiInstallAsRemovable~
+
+- ~boot.loader.grub.device~
+
+Ideally, ~boot.loader.grub.efiSupport~ would be sufficient to tell
+[[grub][GRUB]] to install the [[wiki-uefi][UEFI]] payload instead.  However, as
+it turns out, there is a few more settings required to ensure proper booting in
+[[wiki-uefi][UEFI]] environments, particularly when using [[raid][RAID]].
+
+According to the manual, it's required to set ~boot.loader.systemd-boot.enable~
+to ~true~.  Setting ~boot.loader.grub.device~ or ~boot.loader.grub.devices~ to
+anything other than ~"nodev"~ or ~[ "nodev" ]~ disables
+~boot.loader.grub.efiSupport~.  Moreover, with
+~boot.loader.efi.canTouchEfiVariables~, the installation/build process attempts
+to run ~efibootmgr~ to modify the NVRAM of the motherboard, setting the boot
+targets, this fails when used with ~boot.loader.grub.device = "nodev"~.
+Therefore, it is required to set ~boot.loader.efi.canTouchEfiVariables = false~
+and ~boot.loader.grub.efiInstallAsRemovable~ such that installation process
+simply places the [[grub][GRUB]] [[wiki-uefi][UEFI]] payload in the "default"
+search location for the motherboard, consulted before the NVRAM settings.
+
+**** Docker, ~nftables~, and NixOS Notes
+
+In developing the system configuration, I came across some issues with respect
+to [[docker][Docker]] and [[nftables][~nftables~]].  The
+[[nftables][~nftables~]] project became standard in the [[linux][Linux]] kernel
+in version 3.13 and replaces the myriad of existing ~{ip,ip6,arp,eb}_tables~
+tools and (kernel) code.  Specifically, any [[linux][Linux]] kernel above 3.13,
+~iptables~ and friends are now simply a user-space front-end to the
+[[nftables][~nftables~]] kernel backend.  However, [[docker][Docker]] still
+does not support [[nftables][~nftables~]] directly; there's an
+[[moby-nftables-issue][issue]] from 2016.
+
+With some [[stephank-docker-nftables][digging]] and
+[[fralef-docker-iptables][work]], there's a way to get [[nftables][~nftables~]]
+and [[docker][Docker]] to work nicely with each other.
+
+Specifically, we configure [[docker][Docker]] to not modify the ~iptables~
+rules using the ~--iptables=false~ configuration flag for the daemon.  In this
+configuration, we can tightly control the firewall with whatever tool we wish,
+in this case, [[nftables][~nftables~]].  This comes with the added benefit of
+bound ports are not automatically opened to the world.
+
+However, when using [[nixos][NixOS]], any modification to the
+[[nftables][~nftables~]] ruleset will require a reload.  However, with
+[[docker][Docker]] loaded as well, this reload process can actually bring down
+the firewall completely since [[docker][Docker]] (even with ~--iptables=false~)
+will attempt to load the ~iptables~ kernel module, blocking the resulting
+~nftables~ module load.  When using a system such as [[gentoo][Gentoo]] this
+was never an issue, since the configuration completely ignore the ~iptables~
+subsystem (since it was compiled out).  In [[nixos][NixOS]], there's a bit more
+dance involved for the time being.
+
+This is really a minor annoyance as the firewall rules are only seldom changed.
