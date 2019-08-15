@@ -1,0 +1,461 @@
+#+TITLE: NixOS
+#+DESCRIPTION: NixOS
+#+TAGS: GNU/Linux
+#+TAGS: nixos
+#+TAGS: nix
+#+DATE: 2019-07-19
+#+SLUG: nixos
+#+LINK: ansible https://www.ansible.com/
+#+LINK: configuration-management-wiki https://en.wikipedia.org/wiki/Software_configuration_management
+#+LINK: fhs https://refspecs.linuxfoundation.org/fhs.shtml
+#+LINK: glibc https://www.gnu.org/software/libc/
+#+LINK: gnu https://www.gnu.org
+#+LINK: guile-scheme https://www.gnu.org/software/guile/
+#+LINK: guix https://guix.gnu.org/
+#+LINK: linux https://www.kernel.org/
+#+LINK: man-symlink-2 http://man7.org/linux/man-pages/man2/symlink.2.html
+#+LINK: mozilla-firefox https://www.mozilla.org/en-US/firefox/
+#+LINK: nftables https://wiki.nftables.org/wiki-nftables/index.php/Main_Page
+#+LINK: nix https://nixos.org/nix/
+#+LINK: nix-expression https://nixos.wiki/wiki/Nix_Expression_Language
+#+LINK: nix-expressions https://nixos.wiki/wiki/Nix_Expression_Language
+#+LINK: nix-paper https://www.usenix.org/legacy/events/lisa04/tech/full_papers/dolstra/dolstra.pdf
+#+LINK: nixos https://nixos.org/
+#+LINK: nixos-manual https://nixos.org/nixos/manual/index.html
+#+LINK: nixos-paper https://nixos.org/~eelco/pubs/nixos-icfp2008-final.pdf
+#+LINK: puppet https://puppet.com/
+#+LINK: python https://python.org
+#+LINK: salt-stack https://www.saltstack.com/
+#+LINK: wiki-dsl https://en.wikipedia.org/wiki/Domain-specific_language
+#+LINK: wiki-dsl https://en.wikipedia.org/wiki/Domain-specific_language
+#+LINK: wiki-luks https://en.wikipedia.org/wiki/Linux_Unified_Key_Setup
+#+LINK: wiki-raid https://en.wikipedia.org/wiki/RAID
+#+LINK: wiki-unix-epoch https://en.wikipedia.org/wiki/Unix_time
+
+
+#+BEGIN_PREVIEW
+[[nixos][NixOS]] is a new kind of [[gnu][GNU]]/[[linux][Linux]] distribution,
+borrowing the ideas of functional programming languages to bring about a
+revolution of how we think about operating systems and software development.
+#+END_PREVIEW
+
+** NixOS
+
+[[nixos][NixOS]] is a "functional" [[gnu][GNU]]/[[linux][Linux]] distribution
+extending the ideas of functional programming languages to operating systems.
+
+To illustrate, most operating systems are more analogous to imperative
+languages where the programmer instructs, via the various incantations of the
+language, the computer to perform some operation.  Many of these instructions
+modify state-- variables, files, network packets.  Functional programming
+languages can be instructive, but many of them feel more declarative in nature.
+That is, instead of telling what the computer to do, the programmer defines the
+result of the computation.  Side-effects, as they are known, are either
+disallowed completely or require a certain amount of "ceremony" to be
+performed.
+
+Following this imperfect analogy, [[gnu][GNU]]/[[linux][Linux]] distributions
+typically follow the imperative paradigm: the operator issues instructions that
+modify the state of the system.  Installing and configuring some software
+package, for example, requires the operator to run a series of commands that
+first install the package, another series of commands to configure the software
+to the desired state, and finally, the system and the resulting software is
+ready for use.
+
+In contrast, [[nixos][NixOS]] follows the functional paradigm.  The entire
+system, from the boot loader to the available software and its configuration
+can all be traced to a single file: ~/etc/nixos/configuration.nix~.
+
+In the system configuration file for [[nixos][NixOS]], we declare the various
+end states of the system:
+
+- system packages
+
+- system services
+
+- users and groups
+
+- kernel modules loaded during boot
+
+- boot loader configuration
+
+- mount points
+
+The vast majority of the system can be codified into this configuration file.
+Currently missing is disk partitioning and allocation and user data.
+
+To understand better the concepts behind [[nixos][NixOS]], we will take a brief
+detour through [[nix][Nix]], the package manager.
+
+*** Nix (the package manager)
+
+Beyond the comparisons of language paradigms, there are some other _really_
+neat ideas that come from the [[nix][Nix]] family.  Specifically, I want to
+discuss the dependency management of [[nix][Nix]] and, therefore,
+[[nixos][NixOS]].
+
+Recall the description of the "imperative" operating systems above: many
+software packages have dependencies on various other components and packages.
+Typically the distribution managers resolve the dependencies into a coherent
+tree such that all packages resolve to the correct (read available) version of
+[[glibc][~glibc~]].  However, maintainers are human and maintainership is
+non-trivial.  Packages slip through, and core breakages happen.  Worse, the
+possible matrix of configurations and various packages is mind-numbingly
+large.
+
+Concretely, what this may look like can be demonstrated by a simple example.
+Let's say an operator installs package ~A~ which depends on package ~C~.
+Later, our example operator installs another package ~B~, which also depends on
+package ~C~.  For now, we will say that package ~C~ is the same version.  So
+far, all is good.  Nothing is broken, and the system is stable.  However, some
+time later, package ~B~ needs to be updated and causes a resulting update to
+package ~C~.  Now package ~A~ may not work.  Its version of package ~C~ is now
+replaced by the version pulled in by package ~B~.  This may be fine, but by a
+similar token, it may also be plainly broken.  Worse, it may be only _subtly_
+broken, the breakage is not noticed by cursory testing.
+
+Using [[nix][Nix]], this situation is impossible.  Package ~A~ has its own
+complete dependency graph, including package ~C~'s dependency graph.  The same
+holds for package ~B~, [[nix][Nix]] stores the entire dependency graph of each
+package separate from each other package.
+
+Therefore, given our above example of package management mishaps, when package
+~B~ updates and pulls in a new version of package ~C~.  The version of ~C~ used
+by ~A~ is left untouched and package ~A~ works just the same as before.
+
+*** Nix Store
+
+After examining the above example, how does [[nix][Nix]] accomplish this?
+
+If we think about the [[fhs][Filesystem Hierarchy Standard]], an executable
+package is installed into some ~bin~ directory, its dynamically linked objects
+are in a ~lib~ directory, its configuration may be in a ~etc~ directory.
+
+With a [[nix][Nix]] package, the package has all same directories, however,
+they are isolated in the "store".  The [[nix][Nix]] store is typically a
+directory ~/nix/store/~ that contains each package in its ~hash-name-version~
+folder.  For example, let's look at [[mozilla-firefox][Firefox]]:
+
+#+begin_example
+% ls -al $(which firefox)
+lrwxrwxrwx 1 root root 68 Dec 31  1969 /run/current-system/sw/bin/firefox -> /nix/store/78gl44fjjira5jsgyj8vdwsnw8wdwngs-firefox-68.0/bin/firefox
+% ls -l /nix/store/78gl44fjjira5jsgyj8vdwsnw8wdwngs-firefox-68.0/
+total 0
+dr-xr-xr-x 2 root root 21 Dec 31  1969 bin
+dr-xr-xr-x 3 root root 21 Dec 31  1969 lib
+dr-xr-xr-x 2 root root 42 Dec 31  1969 nix-support
+dr-xr-xr-x 4 root root 39 Dec 31  1969 share
+#+end_example
+
+There's a few things to notice here.  One, the directories are all read-only;
+two, the modified time is set to [[wiki-unix-epoch][UNIX Epoch]]; third, the
+entire folder structure necessary for [[mozilla-firefox][Firefox]] to run is in
+this store.
+
+Let's examine a package that requires dynamic linking to correctly execute, the
+[[python][Python]] interpreter:
+
+#+begin_example
+% ls -l $(which python)
+lrwxrwxrwx 1 root root 68 Dec 31  1969 /run/current-system/sw/bin/python -> /nix/store/dmh36s38dcpc91grfsh6wqrm65rz5hfh-pythonOverlay/bin/python
+% ls -l /nix/store/dmh36s38dcpc91grfsh6wqrm65rz5hfh-pythonOverlay
+total 4
+dr-xr-xr-x 2 root root 4096 Dec 31  1969 bin
+lrwxrwxrwx 1 root root   65 Dec 31  1969 include -> /nix/store/10rqw9cx8x2knwdaxhlyb4drla8v8zzk-python3-3.7.4/include
+dr-xr-xr-x 3 root root  113 Dec 31  1969 lib
+dr-xr-xr-x 3 root root   17 Dec 31  1969 share
+#+end_example
+
+Now, let's examine the linked objects:
+
+#+begin_example
+% ldd $(which python)
+linux-vdso.so.1 (0x00007ffd3c3d9000)
+libpython3.7m.so.1.0 => /nix/store/10rqw9cx8x2knwdaxhlyb4drla8v8zzk-python3-3.7.4/lib/libpython3.7m.so.1.0 (0x00007f6ccf964000)
+libpthread.so.0 => /nix/store/681354n3k44r8z90m35hm8945vsp95h1-glibc-2.27/lib/libpthread.so.0 (0x00007f6ccf943000)
+libdl.so.2 => /nix/store/681354n3k44r8z90m35hm8945vsp95h1-glibc-2.27/lib/libdl.so.2 (0x00007f6ccf93e000)
+libcrypt.so.1 => /nix/store/681354n3k44r8z90m35hm8945vsp95h1-glibc-2.27/lib/libcrypt.so.1 (0x00007f6ccf904000)
+libncursesw.so.6 => /nix/store/adc71v5apk4dzcxg7cjqgszjg1a6pd0z-ncurses-6.1-20190112/lib/libncursesw.so.6 (0x00007f6ccf892000)
+libutil.so.1 => /nix/store/681354n3k44r8z90m35hm8945vsp95h1-glibc-2.27/lib/libutil.so.1 (0x00007f6ccf88b000)
+libm.so.6 => /nix/store/681354n3k44r8z90m35hm8945vsp95h1-glibc-2.27/lib/libm.so.6 (0x00007f6ccf6f5000)
+libgcc_s.so.1 => /nix/store/681354n3k44r8z90m35hm8945vsp95h1-glibc-2.27/lib/libgcc_s.so.1 (0x00007f6ccf4df000)
+libc.so.6 => /nix/store/681354n3k44r8z90m35hm8945vsp95h1-glibc-2.27/lib/libc.so.6 (0x00007f6ccf329000)
+/nix/store/681354n3k44r8z90m35hm8945vsp95h1-glibc-2.27/lib/ld-linux-x86-64.so.2 => /nix/store/681354n3k44r8z90m35hm8945vsp95h1-glibc-2.27/lib64/ld-linux-x86-64.so.2 (0x00007f6ccfccf000)
+#+end_example
+
+Each of the linked objects, sans the kernel object, are found in the
+[[nix][Nix]] store.
+
+Furthermore, if we examine the [[python][Python]] ~lib~ folder:
+
+#+begin_example
+% ls -l /nix/store/dmh36s38dcpc91grfsh6wqrm65rz5hfh-pythonOverlay/lib
+total 12
+lrwxrwxrwx 1 root root   78 Dec 31  1969 libpython3.7m.so -> /nix/store/10rqw9cx8x2knwdaxhlyb4drla8v8zzk-python3-3.7.4/lib/libpython3.7m.so
+lrwxrwxrwx 1 root root   82 Dec 31  1969 libpython3.7m.so.1.0 -> /nix/store/10rqw9cx8x2knwdaxhlyb4drla8v8zzk-python3-3.7.4/lib/libpython3.7m.so.1.0
+lrwxrwxrwx 1 root root   75 Dec 31  1969 libpython3.so -> /nix/store/10rqw9cx8x2knwdaxhlyb4drla8v8zzk-python3-3.7.4/lib/libpython3.so
+lrwxrwxrwx 1 root root   71 Dec 31  1969 pkgconfig -> /nix/store/10rqw9cx8x2knwdaxhlyb4drla8v8zzk-python3-3.7.4/lib/pkgconfig
+dr-xr-xr-x 3 root root 8192 Dec 31  1969 python3.7
+#+end_example
+
+The shared objects and folders are also symbolic links to other packages and
+folders in the [[nix][Nix]] store.
+
+This leads us to the following observation: packages in the [[nix][Nix]] store
+are comprised of the outputs of the package and associated symbolic links to
+the package's inputs.
+
+*** Nix Profiles
+
+Packages in [[nix][Nix]] are directory trees found in the [[nix][Nix]] store,
+what are profiles?  Perhaps, more appropriately, what are user environments?
+
+When setting up [[nix][Nix]] as a package manager either in [[nixos][NixOS]] or
+a different [[gnu][GNU]]/[[linux][Linux]] distribution, there's typically a
+symbolic link in the user's home directory:
+
+#+begin_example
+% ls -l ~/.nix-profile
+lrwxrwxrwx 1 kb users 41 May 15  2017 /home/kb/.nix-profile -> /nix/var/nix/profiles/per-user/kb/profile
+#+end_example
+
+However, this link is to another link.  Let's follow the rabbit:
+
+#+begin_example
+% ls -l /nix/var/nix/profiles/per-user/kb/profile
+lrwxrwxrwx 1 kb users 14 Jul 30 15:15 /nix/var/nix/profiles/per-user/kb/profile -> profile-3-link
+#+end_example
+
+This indirect symbolic link points to a symbolic link in the same directory.
+Let's keep following:
+
+#+begin_example
+% ls -l /nix/var/nix/profiles/per-user/kb/profile-3-link
+lrwxrwxrwx 1 kb users 60 Jul 30 15:15 /nix/var/nix/profiles/per-user/kb/profile-3-link -> /nix/store/d7d6hcv8v2crb98nhh00nrr2bkh034kc-user-environment
+% ls -l /nix/store/d7d6hcv8v2crb98nhh00nrr2bkh034kc-user-environment
+dr-xr-xr-x 2 root root 156 Dec 31  1969 bin
+lrwxrwxrwx 1 root root  63 Dec 31  1969 etc -> /nix/store/k0hyks88khah4hvb19i0d6swsawyzz5a-awscli-1.16.170/etc
+dr-xr-xr-x 2 root root  35 Dec 31  1969 lib
+lrwxrwxrwx 1 root root  60 Dec 31  1969 manifest.nix -> /nix/store/lqc7v4cb77fzgnrqn0miz1fpkzb3dxc2-env-manifest.nix
+lrwxrwxrwx 1 root root  65 Dec 31  1969 share -> /nix/store/k0hyks88khah4hvb19i0d6swsawyzz5a-awscli-1.16.170/share
+#+end_example
+
+After following three links, we are referred to a directory tree in the
+[[nix][Nix]] store.
+
+Let's examine the ~bin~ directory quickly:
+
+#+begin_example
+% ls -l /nix/store/d7d6hcv8v2crb98nhh00nrr2bkh034kc-user-environment/bin
+total 0
+lrwxrwxrwx 1 root root 67 Dec 31  1969 aws -> /nix/store/k0hyks88khah4hvb19i0d6swsawyzz5a-awscli-1.16.170/bin/aws
+lrwxrwxrwx 1 root root 82 Dec 31  1969 aws_bash_completer -> /nix/store/k0hyks88khah4hvb19i0d6swsawyzz5a-awscli-1.16.170/bin/aws_bash_completer
+lrwxrwxrwx 1 root root 77 Dec 31  1969 aws_completer -> /nix/store/k0hyks88khah4hvb19i0d6swsawyzz5a-awscli-1.16.170/bin/aws_completer
+lrwxrwxrwx 1 root root 89 Dec 31  1969 cargo-generate-nixfile -> /nix/store/s11zqp9r8h4r65iqv272b477igb9a9mw-rust_carnix-0.10.0/bin/cargo-generate-nixfile
+lrwxrwxrwx 1 root root 91 Dec 31  1969 cargo_generate_nixfile.d -> /nix/store/s11zqp9r8h4r65iqv272b477igb9a9mw-rust_carnix-0.10.0/bin/cargo_generate_nixfile.d
+lrwxrwxrwx 1 root root 73 Dec 31  1969 carnix -> /nix/store/s11zqp9r8h4r65iqv272b477igb9a9mw-rust_carnix-0.10.0/bin/carnix
+lrwxrwxrwx 1 root root 75 Dec 31  1969 carnix.d -> /nix/store/s11zqp9r8h4r65iqv272b477igb9a9mw-rust_carnix-0.10.0/bin/carnix.d
+#+end_example
+
+Currently, this example profile only has two packages installed:
+
+#+begin_example
+% nix-env -q
+awscli-1.16.170
+rust_carnix-0.10.0
+#+end_example
+
+But from this example so far, we see that user environments are comprised of
+symbolic link "forests" of the packages that make up the current profile.
+
+Let's follow this example again, however, we going to modify the user
+environment by adding a package:
+
+#+begin_example
+% nix-env -i autogen
+#+end_example
+
+Starting with second link:
+
+#+begin_example
+% ls -l /nix/var/nix/profiles/per-user/kb/profile
+lrwxrwxrwx 1 kb users 14 Aug 13 05:52 /nix/var/nix/profiles/per-user/kb/profile -> profile-4-link
+#+end_example
+
+The profile link now points to a different link.  Let's keep going:
+
+#+begin_example
+% ls -l /nix/var/nix/profiles/per-user/kb/profile-4-link
+lrwxrwxrwx 1 kb users 60 Aug 13 05:52 /nix/var/nix/profiles/per-user/kb/profile-4-link -> /nix/store/xslnn9gs5gkgdvzgb0w3b0iggbsszag5-user-environment
+#+end_example
+
+The user-profile now points to a completely different symlink forest in the
+[[nix][Nix]] store.
+
+The old profile still exists.  Let's switch (rollback) to it:
+
+#+begin_example
+% nix-env --rollback                                                (1)
+switching from generation 4 to 3
+% ls -l /nix/var/nix/profiles/per-user/kb/profile
+lrwxrwxrwx 1 kb users 14 Aug 13 05:56 /nix/var/nix/profiles/per-user/kb/profile -> profile-3-link
+% ls -l /nix/var/nix/profiles/per-user/kb/profile-3-link
+lrwxrwxrwx 1 kb users 60 Jul 30 15:15 /nix/var/nix/profiles/per-user/kb/profile-3-link -> /nix/store/d7d6hcv8v2crb98nhh00nrr2bkh034kc-user-environment
+#+end_example
+
+Rolling back to a previous profile was effortless and we went back to _exactly_
+the same store path that we had previously.
+
+Since the [[man-symlink-2][~symlink(2)~]] operation is atomic, changing profile
+generations is atomic.  Adding a package to the profile is atomic: that is,
+once the package is downloaded, built, added to the store, and the set of links
+are compiled into a new profile, the switch to this new profile is entirely
+atomic.  If the any of the previous steps fail, the user profile is not
+adversely affected.
+
+*** System Profiles
+
+After user profiles, we are left with system profiles.  What exactly is
+[[nixos][NixOS]]?  If any of the above provides any foreshadowing, the answer
+may seem obvious: a system profile is a forest of symbolic links to the
+packages, services, and other system configuration that comprise a
+[[gnu][GNU]]/[[linux][Linux]] system.
+
+However, that may not be obvious.
+
+Let's start by first reiterating that [[nixos][NixOS]] is different than
+traditional [[gnu][GNU]]/[[linux][Linux]] distributions, very different.  One
+of the most notable differences that is important to this discussion is the
+lack of adherence to the [[fhs][Filesystem Hierarchy Standard]].  Chiefly, in
+the root of the filesystem of a [[nixos][NixOS]] system, there is almost no
+need for ~/bin~, ~/usr~, and ~/lib~.
+
+#+begin_example
+% ls -l /
+total 57
+drwxr-xr-x   2 root root  4096 Aug  2 09:04 bin
+drwxr-xr-x   5 root root  1024 Jun  5 17:01 boot
+drwxr-xr-x  21 root root  4140 Aug 13 05:37 dev
+drwxr-xr-x  26 root root  4096 Aug  2 09:04 etc
+drwxr-xr-x   3 root root    19 May 16 10:54 gnu
+drwxr-xr-x   3 root root    29 May  8 07:24 home
+drwx------   2 root root 16384 Jun  5 16:02 lost+found
+drwxr-xr-x   4 root root    30 May 16 09:49 nix
+drwxr-xr-x   5 root root  4096 Jun  5 20:01 opt
+dr-xr-xr-x 257 root root     0 Aug  2 09:03 proc
+drwx------   6 root root  4096 Aug 12 23:04 root
+drwxr-xr-x  20 root root   640 Aug 14 20:56 run
+dr-xr-xr-x  13 root root     0 Aug  2 09:03 sys
+drwxrwxrwt  55 root root 16384 Aug 14 21:00 tmp
+drwxr-xr-x   3 root root  4096 Jun  5 17:01 usr
+drwxr-xr-x   9 root root  4096 Aug  2 09:04 var
+#+end_example
+
+In the above output, there /is/ both ~/bin~ and ~/usr~, but no ~/lib~.  What is
+in ~/bin~ and ~/usr~?  Two things: one, ~/bin/sh~ and two, ~/usr/bin/env~.
+These are kept around as ways to resolve issues with porting packages into the
+[[nix][Nix]] environment.
+
+#+begin_example
+% ls -l /bin/
+total 4
+lrwxrwxrwx 1 root root 75 Aug  2 09:04 sh -> /nix/store/93h01q6yg13xdrabvqbddzbk11w6a928-bash-interactive-4.4-p23/bin/sh
+% ls -lR /usr
+/usr:
+total 4
+drwxr-xr-x 2 root root 4096 Aug  2 09:04 bin
+/usr/bin:
+total 4
+lrwxrwxrwx 1 root root 66 Aug  2 09:04 env -> /nix/store/d9s1kq1bnwqgxwcvv4zrc36ysnxg8gv7-coreutils-8.30/bin/env
+#+end_example
+
+Notice, however, that these files are in fact symbolic links into the
+[[nix][Nix]] store.
+
+If there is nothing in ~/bin~ and nothing in ~/usr~, where does the system find
+all of the install programs?
+
+The answer: ~/run/current-system~:
+
+#+begin_example
+% ls -l /run/current-system
+lrwxrwxrwx 1 root root 88 Aug  2 09:04 /run/current-system -> /nix/store/9c3k3ky5lg3x937984902v1d7148m7c5-nixos-system-phenex-19.03.173147.77295b0bd26
+% ls -l /nix/store/9c3k3ky5lg3x937984902v1d7148m7c5-nixos-system-phenex-19.03.173147.77295b0bd26
+total 48
+-r-xr-xr-x 1 root root 16455 Dec 31  1969 activate
+lrwxrwxrwx 1 root root    91 Dec 31  1969 append-initrd-secrets -> /nix/store/vynm9pvxlzd8rracmmkhpj2a3g79whbw-append-initrd-secrets/bin/append-initrd-secrets
+dr-xr-xr-x 2 root root    37 Dec 31  1969 bin
+-r--r--r-- 1 root root     0 Dec 31  1969 configuration-name
+lrwxrwxrwx 1 root root    51 Dec 31  1969 etc -> /nix/store/a04f5cdfinc8p4n6x0hw9a0jn5l2mi9i-etc/etc
+-r--r--r-- 1 root root    57 Dec 31  1969 extra-dependencies
+dr-xr-xr-x 2 root root     6 Dec 31  1969 fine-tune
+lrwxrwxrwx 1 root root    65 Dec 31  1969 firmware -> /nix/store/ak22608y0db7m4bzwmps23gi4f0s13dc-firmware/lib/firmware
+-r-xr-xr-x 1 root root  5568 Dec 31  1969 init
+-r--r--r-- 1 root root     9 Dec 31  1969 init-interface-version
+lrwxrwxrwx 1 root root    57 Dec 31  1969 initrd -> /nix/store/n7x32hhg41mflx9xvmmw61piwjdr81m1-initrd/initrd
+lrwxrwxrwx 1 root root    65 Dec 31  1969 kernel -> /nix/store/sgkk7pqh7jqvy6rvgnkk367amrpknw91-linux-4.19.59/bzImage
+lrwxrwxrwx 1 root root    58 Dec 31  1969 kernel-modules -> /nix/store/nrmlrwxyqmp4dbcldrlvibv0h61356bf-kernel-modules
+-r--r--r-- 1 root root    10 Dec 31  1969 kernel-params
+-r--r--r-- 1 root root    24 Dec 31  1969 nixos-version
+lrwxrwxrwx 1 root root    55 Dec 31  1969 sw -> /nix/store/11pfbzzamqvnbfxis4pbnzhrvarn3pj1-system-path
+-r--r--r-- 1 root root    12 Dec 31  1969 system
+lrwxrwxrwx 1 root root    64 Dec 31  1969 systemd -> /nix/store/9zkhhvix7rlqlj8pf8s2kbw8b88rky75-systemd-239.20190219
+#+end_example
+
+The various files and directories in this derivation are what is necessary for
+the current generation of the system.  Similar to user environments, upgrades
+and rollbacks are atomic.  Installing a package into the system packages, for
+example, will happen in isolation.  Only after the build process is complete
+and successful does the forest of links get changed.
+
+However, because there is some necessary artifacts of state when running a
+system, this isolation is certainly not perfect.  Particularly so with the
+interaction of services and their underlying configuration.
+
+** Alternatives
+
+Aside from [[nixos][NixOS]], there is also [[guix][Guix]], a [[gnu][GNU]]
+alternative to [[nix][Nix]] and [[nixos][NixOS]].  Many of the ideas of
+[[guix][Guix]] are derived from [[nix][Nix]].  In fact, early on in the life of
+the [[guix][Guix]] project, [[guix][Guix]] interacted with the [[nix][Nix]]
+daemon directly.  This is no longer the case as [[guix][Guix]] has its own
+daemon now, however, the design is very similar.
+
+The configuration language of [[guix][Guix]] is, in proper [[gnu][GNU]] style,
+[[guile-scheme][Guile Scheme]] instead of a [[wiki-dsl][DSL]]--
+[[nix-expressions][nix]].
+
+[[guix][Guix]], as a [[gnu][GNU]] project, also takes a hard-line stance on
+software freedom and therefore does not and will not include any non-free code
+in the package repositories.  Furthermore, this also means that [[guix][Guix]]
+the package manager will not be supported on other operating systems such as
+Apple MacOS and Microsoft Windows.
+
+Another alternative is using any number of
+[[configuraiton-management-wiki][Configuration Management]] solutions on a
+typical [[gnu][GNU]]/[[linux][Linux]] distribution.  However, solutions such as
+[[ansible][Ansible]], [[puppet][Puppet]], and [[salt-stack][Salt]] fail in a
+very similar way that tradition distrubtions fail: they are dependent on
+ordering and distrubtion managers and software maintainers to create
+appropriate software dependency graphs.  Failure in dependency management
+yields failures in the system.  Furthermore, once a package is no longer
+available in the official repositories, it is no longer trivially available to
+be installed via the software configuraiton tools.
+
+** Impressions and Thoughts
+
+[[nix][Nix]] and by extension [[nixos][NixOS]] (hopefully) solve some really
+annoying problems I tend to keep running into when developing software and
+immutable, reproducible infrastructure.  I'm really excited about the
+possibilities [[nix][Nix]] can bring.  However, until I can really sit down and
+_use_ [[nix][Nix]] for development, I can't say anything with certainty.
+
+In time, I will provide more detail on my impressions and review [[nix][Nix]]
+and [[nixos][NixOS]] in more depth.  However, if nothing else, being able to
+codify systems and environments in a reproducible manner is already a huge win.
+
+I highly recommend reading [[nixos-paper][NixOS: A Purely Functional Linux
+Distribution]] and [[nix-paper][Nix: A Safe and Policy-Free System for Software
+Development]] by Dolstra /et al./.  Both papers are very good explanations and
+breakdowns of the motivation and ideas behind [[nix][Nix]] and
+[[nixos][NixOS]].
