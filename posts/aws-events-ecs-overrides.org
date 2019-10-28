@@ -1,0 +1,188 @@
+#+TITLE: AWS ECS Container Overrides for Events Targets
+#+DESCRIPTION: Override commands for ECS tasks when using Event Rules
+#+TAGS: AWS
+#+TAGS: CloudFormation
+#+TAGS: Events
+#+TAGS: ECS
+#+DATE: 2019-10-29
+#+SLUG: aws-ecs-events-target-input
+#+LINK: conky-post https://kennyballou.com/blog/2017/10/conky-maildirs-config
+#+LINK: aws-cloudwatch-events https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/WhatIsCloudWatchEvents.html
+#+LINK: aws-cloudformation https://aws.amazon.com/cloudformation/
+#+LINK: aws-ec2 https://aws.amazon.com/ec2/
+#+LINK: aws-ecs https://aws.amazon.com/ecs/
+#+LINK: aws-cfn-rule-resource https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-events-rule.html
+#+LINK: aws-cfn-rule-targets https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-events-rule-target.html
+#+LINK: aws-events-target-ecsparameters https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-events-rule-target.html#cfn-events-rule-target-ecsparameters
+#+LINK: aws-events-target-runcommandparameters https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-events-rule-target.html#cfn-events-rule-target-runcommandparameters
+#+LINK: aws-events-target-input https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-events-rule-target.html#cfn-events-rule-target-input
+#+LINK: aws-ecs-run-task-api https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_RunTask.html
+#+LINK: aws-container-overrides https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ContainerOverride.html
+#+LINK: aws-api https://docs.aws.amazon.com/index.html
+
+
+#+BEGIN_PREVIEW
+Using [[aws-cloudformation][AWS CloudFormation]] to configure
+[[aws-cloudwatch-events][AWS CloudWatch Events]] to target [[aws-ecs][ECS]] is
+not as well documented as it should be.  Here, we will walk-through a highly
+specific use case where the documentation wasn't there to help, how the
+solution was found, and possibly some insight when facing similar issues in the
+future.
+#+END_PREVIEW
+
+In a previous [[conky-post][post]], I made the fecicious call out to use the
+source.
+
+#+BEGIN_QUOTE
+  When the documentation fails you, use the source.
+#+END_QUOTE
+
+What to do when there isn't source (code) available?
+
+** Problem
+
+While attempting to make some infrastucture changes, I wanted to create a
+scheduled [[aws-cloudwatch-events][event]] to target a specific
+[[aws-ecs][task]].  However, I needed to be able to override the command
+arguments sent to the [[aws-ecs][task]] for specific instances of the schedule.
+I started with the [[aws-cfn-rule-resource][Events Rule Cloudformation
+Documentation]].  Following from there, I dug into the
+[[aws-cfn-rule-targets][targets]] documentation.  Thus far, I might have the
+following JSON for my [[aws-cloudformation][CloudFormation]] template:
+
+#+begin_src json
+"ScheduledEvent": {
+    "Type": "AWS::Events::Rule",
+    "Properties": {
+        "Description": "Scheduled Event that happens periodically",
+        "Name": {"Fn::Sub": "${Name}-${AWS::Region}-ScheduledEvent"},
+        "ScheduleExpression": "rate(15 minutes)",
+        "Targets": [
+            {
+                "Arn": {"Fn::Sub": "arn:aws:ecs:${AWS::Region}:${AWS::AccountId}:cluster/${ECSCluster}"},
+                "Id": {"Fn::Sub": "${Name}-Scheduled-Events"},
+                "RoleArn": {"Fn::GetAtt": ["SchedulerEventsRole", "Arn"]},
+                "EcsParameters": {
+                    "TaskCount": 1,
+                    "TaskDefinitionArn": {"Ref": "TaskDefinition"},
+                }
+            }
+        ]
+    }
+}
+#+end_src
+
+However, what variable is used to override the command parameters of the task?
+The documentation has a few keys that might be useful for this prupose.
+[[aws-events-target-ecsparameters][~EcsParameters~]] seems the most promising
+from the beginning but this key is more for informing the
+[[aws-cloudwatch-events][Events Rule]] how to target the [[aws-ecs][ECS Task]].
+[[aws-events-target-runcommandparameters][~RunCommandParameters~]] also seems
+promissing, however, this is for [[aws-ec2][EC2]] targets.  Finally,
+[[aws-events-target-input][~Input~]] seems to be the last available option that
+seems generic enough to fit the needs.
+
+#+begin_quote
+Valid JSON text passed to the target.  If you use this property, nothing from
+the event text itself is passed to the target.
+#+end_quote
+
+This is particularly vague.  I suppose we can insert some "text" and see what
+happens.
+
+** Exploring the Problem
+
+#+begin_quote
+Otherwising shooting in the dark...
+#+end_quote
+
+Focusing in on the ~Input~ key, I first tried the following:
+
+#+begin_src json
+"Input": "command overrides go here",
+#+end_src
+
+However, this failed in [[aws-cloudformation][CloudFormation]] with the
+follwing message:
+
+#+begin_example
+JSON syntax error in input for target ...
+#+end_example
+
+Obivously plain strings are not compatiable JSON.
+
+Let's try an "object" instead:
+
+#+begin_src json
+"Input": "{\"command\": \"command overrides go here\"}",
+#+end_src
+
+[[aws-cloudformation][CloudFormation]] accepted this construction.  However,
+nothing seemed to work the way expected.  At first, I was curious how even the
+body of the "Input" key was being passed along to the task.  From the task
+side, printing the standard input and the arguments yielded nothing.  Examining
+the target from the [[aws-cloudwatch-events][Events console]] didn't seem to
+shed any light on the issue, everything looked fine.  Of note, however, is that
+there was no mention of the "Input" or override variables available from this
+screen.
+
+Next, I looked into the [[aws-ecs][ECS console]] examining the scheduled tasks
+for the cluster, I could see the task.  Examinging the task showed an error
+stating the "command" key was invalid in this context.
+
+Finally, I gave up and used the console to edit the target and the "Input" key.
+Doing so yielded the JSON structure I was needing to override for the task at
+hand.
+
+#+begin_src json
+{
+    "containerOverrides": [
+        {
+            "name": "container name",
+            "command": [
+                "command overrides go here"
+            ]
+        }
+    ]
+}
+#+end_src
+
+** Solution
+
+However, the "Input" key is a string encoded JSON structure, so the full
+solution is the following snippet:
+
+#+begin_src json
+"ScheduledEvent": {
+    "Type": "AWS::Events::Rule",
+    "Properties": {
+        "Description": "Scheduled Event that happens periodically",
+        "Name": {"Fn::Sub": "${Name}-${AWS::Region}-ScheduledEvent"},
+        "ScheduleExpression": "rate(15 minutes)",
+        "Targets": [
+            {
+                "Arn": {"Fn::Sub": "arn:aws:ecs:${AWS::Region}:${AWS::AccountId}:cluster/${ECSCluster}"},
+                "Id": {"Fn::Sub": "${Name}-Scheduled-Events"},
+                "Input": "{\"containerOverrides\": [{\"name\": \"container name\", \"command\": [\"command overrides go here!\"]}]}",
+                "RoleArn": {"Fn::GetAtt": ["SchedulerEventsRole", "Arn"]},
+                "EcsParameters": {
+                    "TaskCount": 1,
+                    "TaskDefinitionArn": {"Ref": "TaskDefinition"},
+                }
+            }
+        ]
+    }
+}
+#+end_src
+
+This structure may seem familiar.  This structure is documented in the
+[[aws-container-overrides][AWS API documentation]], which is referenced in the
+[[aws-ecs-run-task-api][ECS RunTask API]] documentation.
+
+** Conclusion
+
+The connection between "Input" is a JSON encoded string and pass the
+"containerOverrides" structure is missing or not obvious at best.  Hopefully,
+this simple example helps guide others to the right solution.  If nothing else,
+it will remind me that when a variable is particularly vague about its usage,
+it might help to examine the [[aws-api][AWS API documentation]] more closely.
