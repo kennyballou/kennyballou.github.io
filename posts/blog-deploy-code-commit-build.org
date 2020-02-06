@@ -1,0 +1,451 @@
+#+TITLE: Blog Content Deploy with AWS Code Commit and Code Build
+#+DESCRIPTION: Automatically Deploy content with Amazon CodeCommit and CodeBuild
+#+TAGS: AWS
+#+TAGS: CodeCommit
+#+TAGS: CodeBuild
+#+TAGS: Lambda
+#+TAGS: SNS
+#+TAGS: Automation
+#+TAGS: Deployment
+#+DATE: 2020-02-12
+#+SLUG: blog-deploy-code-commit-and-build
+#+LINK: aws https://aws.amazon.com/
+#+LINK: aws-cfn-lambda-perms https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html
+#+LINK: aws-cloudformation https://aws.amazon.com/cloudformation/
+#+LINK: aws-cloudwatch-events https://aws.amazon.com/cloudwatch/
+#+LINK: aws-code-build https://aws.amazon.com/codebuild/
+#+LINK: aws-code-commit https://aws.amazon.com/codecommit/
+#+LINK: aws-lambda https://aws.amazon.com/lambda/
+#+LINK: aws-s3 https://aws.amazon.com/s3/
+#+LINK: aws-sns https://aws.amazon.com/sns/
+#+LINK: aws-web-console https://console.aws.amazon.com/
+#+LINK: blog-buildspec https://git.devnulllabs.io/blog.kennyballou.com.git/tree/buildspec.yml
+#+LINK: blog-git https://git.devnulllabs.io/blog.kennyballou.com.git/
+#+LINK: blog-home https://kennyballou.com
+#+LINK: blog-hosting-with-aws-s3-cloudfront https://kennyballou/blog/2020/02/hosting-with-aws-s3-cloudfront
+#+LINK: debian-pandoc https://hub.docker.com/repository/docker/kennyballou/debian-pandoc
+#+LINK: git https://git-scm.com/
+#+LINK: github https://github.com/
+#+LINK: github-actions https://help.github.com/en/actions/automating-your-workflow-with-github-actions
+#+LINK: gitlab https://gitlab.com/
+#+LINK: gitlab-cicd https://about.gitlab.com/stages-devops-lifecycle/continuous-integration/
+#+LINK: gnu-bash https://www.gnu.org/software/bash/
+#+LINK: gnu-make https://www.gnu.org/software/make/
+#+LINK: pandoc https://pandoc.org/
+#+LINK: srht https://sr.ht/
+#+LINK: srht-builds https://builds.sr.ht/
+#+LINK: ssh https://www.ssh.com/ssh
+#+LINK: ssh-config https://linux.die.net/man/5/ssh_config
+#+LINK: static-site-generation https://kennyballou.com/blog/2019/03/static-site-generation
+
+#+BEGIN_PREVIEW
+In a previous post, I discussed a new [[static-site-generation][static site
+generation]] process being used for this [[blog-home][blog]].  More recently, I
+discussed [[blog-hosting-with-aws][moving and hosting]] in [[aws][AWS]] Now, I
+want to briefly discuss how it's now, finally, being auto deployed via
+[[git][Git]] and [[aws-code-build][AWS Code Build]].
+#+END_PREVIEW
+
+** Overview
+   :PROPERTIES:
+   :ID:       0965d067-3013-4dbc-b3e7-a16cb2f0972b
+   :END:
+
+The basic idea is fairly straight forward and is typical of most continuous
+deployment pipelines found elsewhere.  Upon pushing to a particular branch,
+submit a job to build and deploy to some environment.  Since this blog has low
+risks we push straight to "production", where production is simply an
+[[aws-s3][S3 bucket]] as described [[blog-hosting-with-aws][before]].
+
+Examining this deployment flow from the [[aws][AWS]] perspective, a branch is
+updated in [[aws-code-commit][AWS CodeCommit]], this submits a message to an
+[[aws-sns][AWS SNS]] topic.  From here, a [[aws-lambda][Lambda]] function
+receives the event and submits a build request to [[aws-code-build][AWS
+CodeBuild]].  This certainly feels as complex as it sounds.  Unfortunately,
+this complexity is necessary as [[aws][AWS]] doesn't currently provide a
+batteries included solution that is appropriately sized for the current
+problem.
+
+The motivation for this choice in "architecture" is as such,
+[[aws-code-commit][CodeCommit]] can only send events ("triggers") to _either_
+[[aws-sns][SNS]] or [[aws-lambda][Lambda]]; furthermore, sending the event to
+[[aws-sns][SNS]] allows for more flexibility in later subscriptions if
+necessary (as is for cases that are not this blog).
+
+Another available option explored earlier was using
+[[aws-cloudwatch-events][CloudWatch Events]] to trigger the
+[[aws-lambda][Lambda]] job and in doing so, being able to access little more
+information about the commit submitted.  However, this has other filtering
+issues when considering its usage with many [[aws-code-commit][CodeCommit
+repositories]].
+
+** CloudFormation
+   :PROPERTIES:
+   :ID:       f458c5ad-8496-449e-aa89-6dc119d47dcf
+   :END:
+
+Let's consider the specifics of creating the necessary components in
+[[aws-cloudformation][AWS CloudFormation]].
+
+#+begin_quote
+Notice, the values will likely be very specific to this blog.  If attempting to
+replicate for your own usage (which you should feel free to do so!), you will
+likely need to update a few values to your needs.
+#+end_quote
+
+First, we need an [[aws-sns][SNS]] topic:
+
+#+begin_src json
+"CodeCommitEventsSnsTopic": {
+    "Type": "AWS::SNS::Topic",
+    "Properties": {
+        "DisplayName": "CodeCommit Events",
+        "TopicName": "codecommit-events"
+    }
+}
+#+end_src
+
+Next, we need we will need a few [[aws-iam][IAM]] roles and policies for
+[[aws-code-build][CodeBuild]] and [[aws-lambda][Lambda]].
+
+Here are the two [[aws-iam][IAM]] resources for [[aws-code-build][CodeBuild]]:
+
+#+begin_src json
+"CodeBuildIamManagedPolicy": {
+    "Type": "AWS::IAM::ManagedPolicy",
+    "Properties": {
+        "Description": "CodeBuild Service Policy",
+        "PolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Action": [
+                        "logs:CreateLogStream",
+                        "logs:PutLogEvents"
+                    ],
+                    "Resource": [
+                        {"Fn::Join": [":", [
+                            "arn:aws:logs",
+                            {"Ref": "AWS::Region"},
+                            {"Ref": "AWS::AccountId"},
+                            "log-group:/aws/codebuild/CodeBuild*"]]},
+                        {"Fn::Join": [":", [
+                            "arn:aws:logs",
+                            {"Ref": "AWS::Region"},
+                            {"Ref": "AWS::AccountId"},
+                            "log-group:/aws/codebuild/CodeBuild*",
+                            "log-stream:*"]]}
+                    ]
+                }, {
+                    "Effect": "Allow",
+                    "Action": [
+                        "codecommit:GitPull"
+                    ],
+                    "Resource": [
+                        {"Fn::Join": [":", [
+                            "arn:aws:codecommit",
+                            {"Ref": "AWS::Region"},
+                            {"Ref": "AWS::AccountId"},
+                            "*"]]}
+                    ]
+                }, {
+                    "Effect": "Allow",
+                    "Action": [
+                        "s3:PutObject",
+                        "s3:Get*",
+                        "s3:List"
+                    ],
+                    "Resource": [
+                        {"Fn::GetAtt": ["BlogContentBucket", "Arn"]},
+                        {"Fn::Join": ["", [{"Fn::GetAtt": ["BlogContentBucket", "Arn"]}, "/*"]]}
+                    ]
+                }
+            ]
+        }
+
+    }
+},
+"CodeBuildIamServiceRole": {
+    "Type": "AWS::IAM::Role",
+    "Properties": {
+        "AssumeRolePolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Action": "sts:AssumeRole",
+                    "Principal": {
+                        "Service": "codebuild.amazonaws.com"
+                    },
+                    "Effect": "Allow"
+                }
+            ]
+        },
+        "ManagedPolicyArns": [
+            {"Ref": "CodeBuildIamManagedPolicy"}
+        ]
+    }
+}
+#+end_src
+
+Next are the two for [[aws-lambda][Lambda]].
+
+#+begin_src json
+"LambdaCodeCommitBuildIamManagedPolicy": {
+    "Type": "AWS::IAM::ManagedPolicy",
+    "Properties": {
+        "Description": "Lambda CodeCommit-Build Execution Policy",
+        "PolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Action": [
+                        "logs:CreateLogStream",
+                        "logs:PutLogEvents"
+                    ],
+                    "Resource": [
+                        {"Fn::Join": [":", [
+                            "arn:aws:logs",
+                            {"Ref": "AWS::Region"},
+                            {"Ref": "AWS::AccountId"},
+                            "log-group:/aws/lambda/codecommit-build-bae089e8-3871-4067-9a3d-bac114f08438:*"
+                        ]]}
+                    ]
+                }, {
+                    "Effect": "Allow",
+                    "Action": [
+                        "codebuild:StartBuild"
+                    ],
+                    "Resource": [
+                        {"Fn::Join": [":", [
+                            "arn:aws:codebuild",
+                            {"Ref": "AWS::Region"},
+                            {"Ref": "AWS::AccountId"},
+                            "project/*"]]}
+                    ]
+                }
+            ]
+        }
+
+    }
+},
+"LambdaCodeCommitBuildIamServiceRole": {
+    "Type": "AWS::IAM::Role",
+    "Properties": {
+        "AssumeRolePolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Action": "sts:AssumeRole",
+                    "Principal": {
+                        "Service": "lambda.amazonaws.com"
+                    },
+                    "Effect": "Allow"
+                }
+            ]
+        },
+        "ManagedPolicyArns": [
+            {"Ref": "LambdaCodeCommitBuildIamManagedPolicy"}
+        ]
+    }
+}
+#+end_src
+
+Finally, the [[aws-lambda][Lambda]] function needs to subscribe to the
+[[aws-sns][SNS]] topic.
+
+#+begin_src json
+"CodeCommitBuildSnsSubscription": {
+    "Type": "AWS::SNS::Subscription",
+    "Properties": {
+        "Protocol": "lambda",
+        "Endpoint": {"Fn::GetAtt": [
+            "CodeCommitBuildLambdaFunction", "Arn"]},
+        "TopicArn": {"Ref": "CodeCommitEventsSnsTopic"}
+    }
+}
+#+end_src
+
+Lest we forget, an all to often forgotton resource necessary for creating
+[[aws-lambda][Lambda]] functions via [[aws-cloudformation][CloudFormation]],
+we need a [[aws-cfn-lambda-perms][Lambda Permission]] resource:
+
+#+begin_src json
+"CodeCommitBuildLambdaPermission": {
+    "Type": "AWS::Lambda::Permission",
+    "Properties": {
+        "FunctionName": {"Fn::GetAtt": [
+            "CodeCommitBuildLambdaFunction", "Arn"]},
+        "Action": "lambda:InvokeFunction",
+        "Principal": "sns.amazonaws.com",
+        "SourceArn": {"Ref": "CodeCommitEventsSnsTopic"}
+    }
+}
+#+end_src
+
+Finally, we need to add the [[aws-codebuild][CodeBuild]] resources:
+
+#+begin_src json
+"BlogCodeBuildLogGroup": {
+    "Type": "AWS::Logs::LogGroup",
+    "Properties": {
+        "LogGroupName": {"Fn::Join": ["-", [
+            "/aws/codebuild/CodeBuild",
+            {"Ref": "BlogBucketName"}]]},
+        "RetentionInDays": 14
+    }
+},
+"BlogCodeBuild": {
+    "Type": "AWS::CodeBuild::Project",
+    "Properties": {
+        "Name": "BlogCI",
+        "Description": "Blog Build Project",
+        "Artifacts": {
+            "Type": "NO_ARTIFACTS"
+        },
+        "Environment": {
+            "ComputeType": "BUILD_GENERAL1_SMALL",
+            "Image": "kennyballou/debian-pandoc:latest",
+            "Type": "LINUX_CONTAINER"
+        },
+        "LogsConfig": {
+            "CloudWatchLogs": {
+                "GroupName": {"Fn::Join": ["-", [
+                    "/aws/codebuild/CodeBuild",
+                    {"Ref": "BlogBucketName"}
+                ]]},
+                "Status": "ENABLED"
+            }
+        },
+        "ServiceRole": {"Ref": "CodeBuildIamServiceRole"},
+        "Source": {
+            "Type": "CODECOMMIT",
+            "Location": {"Fn::GetAtt": ["BlogContentRepository",
+                                        "CloneUrlHttp"]}
+        }
+    }
+}
+#+end_src
+
+With these resources added, we can now move onto some of the other details
+necessary.
+
+** ~buildspec.yml~
+   :PROPERTIES:
+   :ID:       92ecfa58-ff40-4bc0-8dba-ab07e8548d26
+   :END:
+
+Depending on how complicated the blog content is, the ~buildspec.yml~ file can
+be trivial to very complex.  If most of the build instructions are already
+captured in a script or [[gnu-make][=Makefile=]], the build specificiation will
+likely be fairly straightforward.
+
+For this blog, the [[blog-buildspec][~buildspec.yml~]] file is as follows:
+
+#+begin_src yaml
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - make
+      - make deploy
+#+end_src
+
+Realistically, a line could be removed but is left for clarity.
+
+** Docker
+   :PROPERTIES:
+   :ID:       bce37766-fbeb-4d5b-8574-3efe9f4d370d
+   :END:
+
+Since this blog is [[static-site-generation][built using]] [[pandoc][Pandoc]]
+and some [[gnu-bash][Bash scripts]], a custom [[debian-pandoc][build image]]
+was created.
+
+It's referenced in the [[aws-codebuild][CodeBuild]] resource defined above.
+
+However, if using different tools to generate content, using the provided
+images from [[aws][AWS]] may be possible.
+
+** Git Remote
+   :PROPERTIES:
+   :ID:       3efbcff6-d4f0-404c-b3c2-66bd36b31a66
+   :END:
+
+A [[git][git]] repository may have any number of remote repositories associated
+with it.  Consider forked projects or repositories on [[github][GitHub]] for a
+moment: before opening a pull request against the parent project, it's good
+practice to make sure the changes are based on the latest changes in the parent
+branch.  To trivially achieve this, the local clone of the repository (the
+fork) can be configured to have both the remotes associated, e.g.:
+
+#+begin_src bash
+% git clone ssh://github.com/yours/${forked_project}
+% cd ${forked_project}
+% git remote add upstream ssh://github.com/parent/${forked_project}
+#+end_src
+
+Now, ensuring the changes to be submitted are based on the latest changes in
+the parent only requires a few commands (and possible some merge conflict
+resolution):
+
+#+begin_src bash
+% git remote update -p
+% git rebase upstream/master
+% git push --force-with-lease origin pr-branch
+#+end_src
+
+#+begin_quote
+I am making some assumptions of workflow and that the PR branch is _yours_ and
+you're, therefore, allowed to do *whatever* you want to its history.
+#+end_quote
+
+Similarly, for auto deploying blog content, we need to add the new repository
+from [[aws-codecommit][CodeCommit]] to the blog's remotes.
+
+#+begin_src bash
+git remote add aws ssh://git-codecommit.us-east-1.amazonaws.com/v1/repos/blog.kennyballou.com
+#+end_src
+
+#+begin_quote
+I recommend using [[ssh-config][SSH Config]] files to ease using [[git][Git]],
+[[ssh][SSH]], and [[aws-codecommit][CodeCommit]].  Especially so if multiple
+[[aws][AWS]] accounts are involved, each with their own set of repositories.
+#+end_quote
+
+Afterwhich, when content is ready to be published, it is as simple as pushing
+the branch to the other remote.  Assuming that we're already on the ~master~
+branch, push to the different remote:
+
+#+begin_src bash
+% git push aws master
+#+end_src
+
+** Parting Thoughts
+   :PROPERTIES:
+   :ID:       daadda86-f820-42d9-814d-3a0a5656c2b2
+   :END:
+
+Honestly, there may be easier and cheaper ways to host some simple
+infrastructure for running and building projects.  [[github][GitHub]] now has
+[[github-actions][Actions]].  [[gitlab][GitLab]] has [[gitlab-cicd][CI/CD
+pipelines]] as part of their offering.  A new forge, [[srht][Source Hut]], has
+[[srht-builds][builds]].  There likely are many more variations I fail to
+mention as I'm not aware of them.  That said, [[aws][AWS]] does provide a 100
+minutes of [[aws-codebuild][CodeBuild]] free each month and
+[[aws-codecommit][CodeCommit]] has some pretty high thresholds before AWS
+begins incuring charges.
+
+However, for me, when already [[blog-hosting-with-aws][hosting]] the content
+via [[aws-s3][S3]] and [[aws-cloudfront][CloudFront]], having the ability to
+implicitly authorize write access to the [[aws-codebuild][CodeBuild]] job, it
+is more convincing to run everything within [[aws][AWS]], even if [[aws][AWS]]
+doesn't always bring the batteries.
+
+Finally, setting up these resources via the [[aws-web-console][AWS web
+console]] may be easier than setting them up via
+[[aws-cloudformation][CloudFormation]], it is the hope that the pain suffered
+in configuring and connecting the various resources together is helpful to
+someone else in a similar position.
