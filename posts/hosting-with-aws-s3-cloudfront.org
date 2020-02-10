@@ -1,0 +1,520 @@
+#+TITLE: Hosting with AWS S3 and CloudFront
+#+DESCRIPTION: Static Site Hosting with Amazon
+#+TAGS: AWS
+#+TAGS: S3
+#+TAGS: CloudFront
+#+TAGS: Lambda
+#+DATE: 2020-02-12
+#+SLUG: hosting-with-aws-s3-cloudfront
+#+LINK: aws https://aws.amazon.com/
+#+LINK: aws-acm https://aws.amazon.com/acm/
+#+LINK: aws-announce-lambda-python https://aws.amazon.com/about-aws/whats-new/2019/08/lambdaedge-adds-support-for-python-37/
+#+LINK: aws-cfn-lambda-perms https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html
+#+LINK: aws-cloudfront https://aws.amazon.com/cloudfront/
+#+LINK: aws-cw-logs https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/WhatIsCloudWatchLogs.html
+#+LINK: aws-lambda https://aws.amazon.com/lambda/
+#+LINK: aws-lambda-edge https://aws.amazon.com/lambda/edge/
+#+LINK: aws-lambda-edge-default-directory https://aws.amazon.com/blogs/compute/implementing-default-directory-indexes-in-amazon-s3-backed-amazon-cloudfront-origins-using-lambdaedge/
+#+LINK: aws-s3 https://aws.amazon.com/s3/
+#+LINK: aws-web-console https://console.aws.amazon.com/
+#+LINK: blog-git https://git.devnulllabs.io/blog.kennyballou.com.git/
+#+LINK: blog-home https://kennyballou.com
+#+LINK: blog-infra-git https://git.devnulllabs.io/kennyballou.com.git/
+#+LINK: blog-infra-uri-log-group-commit https://git.devnulllabs.io/kennyballou.com.git/commit/?id=787ab0b4b18003875346c7f9e98f1b2264fded46
+#+LINK: davidbaumgold-host-s3-cloudfront https://www.davidbaumgold.com/tutorials/host-static-site-aws-s3-cloudfront/
+#+LINK: debian-pandoc https://hub.docker.com/repository/docker/kennyballou/debian-pandoc
+#+LINK: git https://git-scm.com/
+#+LINK: github https://github.com/
+#+LINK: github-actions https://help.github.com/en/actions/automating-your-workflow-with-github-actions
+#+LINK: gitlab https://gitlab.com/
+#+LINK: gitlab-cicd https://about.gitlab.com/stages-devops-lifecycle/continuous-integration/
+#+LINK: gnu-bash https://www.gnu.org/software/bash/
+#+LINK: gnu-make https://www.gnu.org/software/make/
+#+LINK: ludovicroguet-host-s3-cloudfront-lambda https://fourteenislands.io/2018/03/static-website-hosting-on-aws-with-s3-cloudfront-lambda-edge/
+#+LINK: pandoc https://pandoc.org/
+#+LINK: python https://www.python.org/
+#+LINK: rgfindl-cfn-template https://rgfindl.github.io/2017/08/07/static-website-cloudformation-template/
+#+LINK: srht https://sr.ht/
+#+LINK: srht-builds https://builds.sr.ht/
+#+LINK: ssh https://www.ssh.com/ssh
+#+LINK: ssh-config https://linux.die.net/man/5/ssh_config
+#+LINK: static-site-generation https://kennyballou.com/blog/2019/03/static-site-generation
+#+LINK: vickylai-host-s3-cloudfront https://vickylai.com/verbose/hosting-your-static-site-with-aws-s3-route-53-and-cloudfront/
+#+LINK: wiki-cdn https://en.wikipedia.org/wiki/Content_delivery_network
+#+LINK: wiki-cname-records https://en.wikipedia.org/wiki/CNAME_record
+#+LINK: wiki-dns-records https://en.wikipedia.org/wiki/List_of_DNS_record_types
+
+#+BEGIN_PREVIEW
+There are many posts already out about how to host static sites in
+[[aws-s3][S3]] and [[aws-cloudfront][CloudFront]].  However, I would like to
+add to the discussion a small contribution of how to do this by creating the
+resources in [[aws-cfn][CloudFormation]], and specifically, how to ensure all
+content is served _via_ [[aws-cloudfront][CloudFront]] and is strictly not
+available via [[aws-s3][S3]].
+#+END_PREVIEW
+
+** Introduction
+   :PROPERTIES:
+   :ID:       c5040a15-f7b4-422f-9b38-fc4bee3f10cc
+   :END:
+
+There are [[vikylai-host-s3-cloudfront][many]],
+[[davidbaumgold-host-s3-cloudfront][many]]
+[[ludovicroguet-host-s3-cloudfront-lambda][posts]] on hosting static sites via
+[[aws-s3][S3]] and [[aws-cloudfront][CloudFront]].  There are even existing
+[[aws-cfn][CloudFormation templates]] [[rgfindl-cfn-template][available]] that
+can be used to make this process repeatable and consistent.
+
+This post will simply add to this knowledge and I will attempt to capture any
+notes or changes that have occurred since I ventured to migrate from managing a
+virtual machine that hosts the content of this blog into [[aws-s3][S3]] served
+via [[aws-cloudfront][CloudFront]].
+
+** Overview
+   :PROPERTIES:
+   :ID:       43ac2a36-a5df-4fe9-847b-3c60c2165cf6
+   :END:
+
+There has been a particular evolution to hosting static sites via [[aws][AWS]]
+since the company and its offerings have changed themselves.  For example, a
+few years ago, the only solution was to use [[aws-s3][S3]] directly, which
+meant the [[aws-s3][S3]] bucket needed to be public and the traffic could not
+be encrypted.  Then, with the introduction of [[aws-cloudfront][CloudFront]],
+it became possible to leverage Amazon's infrastructure to more readily
+distribute content without making huge investments in private
+[[wiki-cdn][content delivery networks (CDNs)]], furthermore, it soon became
+possible to encrypt the traffic as well.  Finally, one of the more recent
+developments is the ability to have [[aws-lambda][Lambda]] functions
+distributed globally with [[aws-cloudfront][CloudFront]], making it possible to
+customize or more appropriate serve the desired content.  This blog uses these
+[[aws-lambda-edge][Lambda@Edge]] functions to help serve content via
+[[aws-cloudfront][CloudFront]] with the files residing in [[aws-s3][S3]].
+
+The necessity of the [[aws-lambda-edge][Lambda@Edge]] functionallity is
+properly motivated by [[aws-s3][S3]]'s inability to set default documents for
+each directory.  For example, if we want to serve a post like
+=https://example.com/blog/year/month/post-slug/=, we are unable to since there
+is no object in [[aws-s3][S3]] by that "key".  Therefore, we can use the
+[[aws-lambda-edge][Lambda]] function to rewrite the URL from
+[[aws-cloudfront][CloudFront]] between [[aws-s3][S3]] to retreive the
+=index.html= or =/index.html= object of the folder correctly.
+
+Another change from other posts is that this set of configuration will force
+the content to be served from [[aws-cloudfront][CloudFront]].  It will not be,
+or at least should not be, possible to access the content from the
+[[aws-s3][S3]] bucket directly.  This serves a few purposes, the bucket does
+not have to be public in any way, therefore, accidental write access is not
+possible by acciendental misconfiguration.  Furthermore, all content can be
+served quickly and securely because of the configuration of
+[[aws-cloudfront][CloudFront]].
+
+** CloudFormation
+   :PROPERTIES:
+   :ID:       2c943547-cc9e-4c40-afad-bd59e19fb043
+   :END:
+
+We'll briefly go through the various resources needed for hosting a static site
+via [[aws-s3][S3]] and [[aws-cloudfront][CloudFront]].
+
+*** S3 Bucket
+    :PROPERTIES:
+    :ID:       ebaf5cd3-43ff-4b04-93ce-423928bae5e2
+    :END:
+
+Obviously, we will need a bucket to house the content.
+
+#+begin_src json
+"BlogContentBucket": {
+    "Type": "AWS::S3::Bucket",
+    "Properties": {
+        "AccessControl": "Private",
+        "BucketName": {"Ref": "BlogBucketName"},
+        "LifecycleConfiguration": {
+            "Rules": [
+                {
+                    "NoncurrentVersionExpirationInDays": 90,
+                    "Status": "Enabled"
+                }
+            ]
+        },
+        "VersioningConfiguration": {
+            "Status": "Enabled"
+        },
+        "WebsiteConfiguration": {
+            "IndexDocument": "index.html",
+            "ErrorDocument": "404.html"
+        }
+    }
+}
+#+end_src
+
+#+begin_quote
+I have added a lifecycle policy to automatically remove older versions after 90
+days.  Feel free to remove or change this as desired.
+#+end_quote
+
+We also want to make sure that the [[aws-cloudfront][CloudFront]] distribution
+will be the only resource (other than ourselves) that can access objects from
+the bucket.  Therefore, we need to setup a bucket policy and an Origin Access
+ID.
+
+#+begin_src json
+"OriginAccessId": {
+    "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
+    "Properties": {
+        "CloudFrontOriginAccessIdentityConfig": {
+            "Comment": "S3 Bucket Access"
+        }
+    }
+},
+"BlogContentBucketPolicy": {
+    "Type": "AWS::S3::BucketPolicy",
+    "Properties": {
+        "Bucket": {"Ref": "BlogContentBucket"},
+        "PolicyDocument": {
+            "Statement": [
+                {
+                    "Action": ["s3:GetObject"],
+                    "Effect": "Allow",
+                    "Resource": [
+                        {"Fn::Join": ["/", [
+                            {"Fn::GetAtt": [
+                                "BlogContentBucket", "Arn"]},
+                            "*"
+                        ]]}
+                    ],
+                    "Principal": {
+                        "CanonicalUser": {"Fn::GetAtt": [
+                            "OriginAccessId",
+                            "S3CanonicalUserId"]}
+                    }
+                }
+            ]
+        }
+    }
+}
+#+end_src
+
+*** ACM
+    :PROPERTIES:
+    :ID:       1d215d6c-acce-49cb-b5ca-058cb3483eca
+    :END:
+
+[[aws-acm][AWS Certificate Manager]] offers free certificates and these can be
+used with [[aws-cloudfront][CloudFront]] pretty trivially, so we will set up
+this resource as well.
+
+#+begin_src json
+"SSLCertificate": {
+    "Type": "AWS::CertificateManager::Certificate",
+    "Properties": {
+        "DomainName": {"Ref": "DomainName"}
+    }
+}
+#+end_src
+
+Ideally the validation could be done via DNS validation, however, this can be
+tricky when done via [[aws-cloudformation][CloudFormation]].
+
+*** Route53
+    :PROPERTIES:
+    :ID:       0c853a1a-915f-41fe-93e3-51207dfa0afe
+    :END:
+
+Since this blog is hosted under the "naked" domain, it's best to use
+[[aws-route53][Route53]] for mapping the alias of
+[[aws-cloudfront][CloudFront]] to the [[wiki-dns-records][=A=]] record of the
+domain.  Therefore, we will create the hosted zone and then an alias record set
+in the freshly created hosted zone.
+
+#+begin_src json
+"HostedZone": {
+    "Type": "AWS::Route53::HostedZone",
+    "Properties": {
+        "Name": {"Ref": "DomainName"}
+    }
+}
+#+end_src
+
+#+begin_src json
+"BlogAliasRecord": {
+    "Type": "AWS::Route53::RecordSet",
+    "Properties": {
+        "AliasTarget": {
+            "DNSName": {"Fn::GetAtt": ["CFDistribution", "DomainName"]},
+            "HostedZoneId": {"Ref": "CloudFrontHostedZone"}
+        },
+        "HostedZoneId": {"Ref": "HostedZone"},
+        "Name": {"Ref": "DomainName"},
+        "Type": "A"
+    }
+}
+#+end_src
+
+If using a non-naked domain, such as =www=, this could defined to be a
+[[wiki-cname-records][=CNAME=]] record to the [[aws-cloudfront][CloudFront]]
+distribution.
+
+*** Lambda@Edge
+    :PROPERTIES:
+    :ID:       88bef35c-ad18-4b01-91c8-33fa579f696f
+    :END:
+
+Of all the resources, this will actually be the most complicated.
+
+First, we need to create a role and policy for the function's permissions.
+
+#+begin_src json
+"URIRewriteLambdaRole": {
+    "Type": "AWS::IAM::Role",
+    "Properties": {
+        "AssumeRolePolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Action": "sts:AssumeRole",
+                    "Principal": {
+                        "Service": [
+                            "edgelambda.amazonaws.com",
+                            "lambda.amazonaws.com"
+                        ]
+                    }
+                }
+            ]
+        },
+        "Policies": [
+            {
+                "PolicyName": "GrantCloudwatchLogAccess",
+                "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "logs:CreateLogGroup",
+                                "logs:CreateLogStream",
+                                "logs:PutLogEvents"
+                            ],
+                            "Resource": [
+                                "*"
+                            ]
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}
+#+end_src
+
+#+begin_quote
+Restricting the permissions is possible, but requires that the role is first
+created with more open permissions since it is not possible to directly tell a
+[[aws-lambda][Lambda]] function to use a specific [[aws-cw-logs][LogGroup]].
+See this [[blog-infra-uri-log-group-commit][commit]] for more information.
+#+end_quote
+
+Next, we can create the [[aws-lambda][Lambda]] function resource.
+
+#+begin_src json
+"URIRewriteLambdaFunction": {
+    "Type": "AWS::Lambda::Function",
+    "Properties": {
+        "Description": "Lambda Function performing URI rewriting",
+        "Code": {
+            "ZipFile": {"Fn::Join": ["\n", [
+                "def handler(event, _context):",
+                "    whitelist = [",
+                "        'asc',",
+                "        'css',",
+                "        'gif',",
+                "        'html',",
+                "        'ico',",
+                "        'jpeg',",
+                "        'jpg',",
+                "        'js',",
+                "        'json',",
+                "        'map',",
+                "        'md',",
+                "        'ogg',",
+                "        'pdf',",
+                "        'png',",
+                "        'pug',",
+                "        'sass',",
+                "        'scss',",
+                "        'svg',",
+                "        'txt',",
+                "        'xml',",
+                "    ]",
+                "    request = event['Records'][0]['cf']['request']",
+                "    extension = request['uri'].split('.')[-1]",
+                "    if extension is None or extension not in whitelist:",
+                "        if request['uri'][-1] == '/':",
+                "            request['uri'] += 'index.html'",
+                "        else:",
+                "            request['uri'] += '/index.html'",
+                "    return request"
+            ]]}
+
+        },
+        "Handler": "index.handler",
+        "MemorySize": 128,
+        "Role": {"Fn::GetAtt": ["URIRewriteLambdaRole", "Arn"]},
+        "Runtime": "python3.7",
+        "Tags": [
+            {"Key": "Domain", "Value": {"Ref": "DomainName"}}
+        ]
+    }
+}
+#+end_src
+
+Fairly [[aws-announce-lambda-python][recently]], [[python][Python]] 3.7 became
+available for [[aws-lambda-edge][Lambda@Edge]].
+
+A benefit of using [[python][Python]] [[aws-lambda][Lambda]] runtime is that it
+still supports directly uploading code to the function via the "ZipFile" key.
+
+#+begin_quote
+Notice, this function is easy enough that directly wrapping it into JSON isn't
+too bad.  However, a better approach under development is a simple utility that
+can perform the encoding at build time.  A future post, perhaps.
+#+end_quote
+
+Finally, to associate the function with [[aws-cloudfront][CloudFront]], we need
+to create a "version" alias of the function.
+
+#+begin_src json
+"URIRewriteLambdaVersion": {
+    "Type": "AWS::Lambda::Version",
+    "Properties": {
+        "FunctionName": {"Fn::GetAtt": [
+            "URIRewriteLambdaFunction", "Arn"]},
+        "Description": "Lambda Function performing URI rewriting"
+    }
+}
+#+end_src
+
+*** CloudFront
+    :PROPERTIES:
+    :ID:       f0296b7b-c42b-4c29-94ef-a9d8d0961838
+    :END:
+
+Finally, we can put everything together into the [[aws-cloudfront][CloudFront]]
+Distribution.
+
+#+begin_src json
+"CFDistribution": {
+    "Type": "AWS::CloudFront::Distribution",
+    "Properties": {
+        "DistributionConfig": {
+            "Aliases": [
+                {"Ref": "DomainName"}
+            ],
+            "DefaultRootObject": "index.html",
+            "Enabled": true,
+            "IPV6Enabled": true,
+            "HttpVersion": "http2",
+            "DefaultCacheBehavior": {
+                "TargetOriginId": {"Fn::Join": [".", [
+                    "s3",
+                    {"Ref": "BlogBucketName"}]]},
+                "ViewerProtocolPolicy": "redirect-to-https",
+                "MinTTL": 0,
+                "DefaultTTL": 3600,
+                "AllowedMethods": ["HEAD", "GET"],
+                "CachedMethods": ["HEAD", "GET"],
+                "ForwardedValues": {
+                    "QueryString": true,
+                    "Cookies": {
+                        "Forward": "none"
+                    }
+                },
+                "LambdaFunctionAssociations": [
+                    {
+                        "EventType": "origin-request",
+                        "LambdaFunctionARN": {
+                            "Ref": "URIRewriteLambdaVersion"
+                        }
+                    }
+                ]
+            },
+            "Origins": [
+                {
+                    "S3OriginConfig": {
+                        "OriginAccessIdentity": {"Fn::Join": ["/", [
+                            "origin-access-identity/cloudfront",
+                            {"Ref": "OriginAccessId"}
+                        ]]}
+                    },
+                    "DomainName": {"Fn::Join": [".", [
+                        {"Ref": "BlogBucketName"},
+                        "s3.amazonaws.com"]]},
+                    "Id": {"Fn::Join": [".", [
+                        "s3",
+                        {"Ref": "BlogBucketName"}]]}
+                }
+            ],
+            "PriceClass": "PriceClass_100",
+            "Restrictions": {
+                "GeoRestriction": {
+                    "RestrictionType": "none",
+                    "Locations": []
+                }
+            },
+            "ViewerCertificate": {
+                "SslSupportMethod": "sni-only",
+                "MinimumProtocolVersion": "TLSv1.2_2018",
+                "AcmCertificateArn": {"Ref": "SSLCertificate"}
+            }
+        }
+    }
+}
+#+end_src
+
+** Future Work
+   :PROPERTIES:
+   :ID:       1e2a2710-27c9-4279-87f5-a1fdd4ae6e86
+   :END:
+
+The [[aws-cfn][CloudFormation]] template is not perfect.  For example, I
+personally would like to have the ability to create [[aws-acm][Certificates]]
+with Domain Validation via [[aws-cfn][CloudFormation]], however, this does not,
+last I have checked, appear to be possible because of timing issues.
+
+Another future feature could be to setup automatic build and deployments of the
+content to the bucket using more [[aws][AWS]] services.
+
+** Cost Considerations
+   :PROPERTIES:
+   :ID:       94a139d8-42c5-4f1b-a736-c15e790d7ef0
+   :END:
+
+[[aws][AWS]] is not known to be inexpensive.  Arguably, their entire business
+is built around the very fact that just about every service within [[aws][AWS]]
+has a level of accounting unheard of elsewhere.  That said, this blog has
+relatively low traffic.  Therefore, the most expensive aspect of hosting it
+right now is the hosted zone charge.  The [[aws-lambda][Lambda]] and
+[[aws-cloudfront][CloudFront]] accounts for measly 9% of the charges.
+
+However, if the content is very exciting or gathers a larger following, this
+can and _will_ go up.  For example, hosting a few hundred sites in a different
+[[aws][AWS]] via [[aws-cloudfront][CloudFront]] (not as described here), the
+cost is measured in hundreds of dollars.
+
+Overall, it made the most cost sense for this blog's application.  It may not
+for others.
+
+** Summary
+   :PROPERTIES:
+   :ID:       eb3dc199-e208-42cf-a460-90fccda928a6
+   :END:
+
+It is the goal of this post to further describe how to host a static site in
+[[aws][AWS]] using a few services that can make for _really_ inexpensive
+hosting.
+
+The code/template discussed for this blog is available
+[[blog-infra-git][online]].  I hope it can be useful to others and I encourage
+its usage or replication.  Of course, if there are any issues with it, please
+let me know.
