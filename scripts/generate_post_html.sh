@@ -18,5 +18,6 @@ echo -n '</ul>'
 echo -n "<h4>${DISPLAY_DATE}</h4></div>"
 pandoc --from org \
        --to html \
+       --katex \
        ${ORGIN}
 cat ${HTML_FOOTER_FILE}
