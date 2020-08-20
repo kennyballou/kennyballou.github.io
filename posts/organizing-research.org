@@ -1,0 +1,200 @@
+#+TITLE: Organizing Research
+#+DESCRIPTION: Organizing Research Papers
+#+TAGS: Discussion
+#+TAGS: Daily Dispatch
+#+TAGS: Organization
+#+TAGS: Org Mode
+#+TAGS: Oral Tradition
+#+DATE: 2020-08-19
+#+SLUG: organizing-research
+#+LINK: yesterday-you-said-tomorrow https://kennyballou.com/blog/2020/08/yesterday-you-said-tomorrow
+#+LINK: gnu-emacs https://www.gnu.org/software/emacs
+#+LINK: org-mode https://orgmode.org
+#+LINK: org-ref https://github.com/jkitchin/org-ref
+#+LINK: jkitchin-cmu-profile https://engineering.cmu.edu/directory/bios/kitchin-john.html
+#+LINK: technology-connections-eink https://www.youtube.com/watch?v=ytpRnRke6I0
+#+LINK: onxy-boox-max-2 https://onyxboox.com/boox_max2
+#+LINK: acm https://acm.org
+#+LINK: doi https://www.doi.org
+#+LINK: bibtex http://www.bibtex.org/
+#+LINK: zotero https://www.zotero.org/
+#+LINK: org-attach https://orgmode.org/manual/Attachments.html
+#+LINK: org-capture https://orgmode.org/manual/Capture .html
+#+LINK: org-links https://orgmode.org/manual/Hyperlinks.html
+
+
+#+BEGIN_PREVIEW
+Small tangent into the basic, how to organize research papers and related
+artifacts.  I have a few ideas for how to best handle this, but nothing
+concrete I can point to that I'm satisfied with.
+
+Is this a useless divergence into tool sharpening and small optimizations for
+little gain?  Or is this a worthwhile venture to get right early on that pays
+off in the long term?
+#+END_PREVIEW
+
+As I'm starting to dive into the "literature", as it might occasionally be
+referred to, there is a certain amassing of papers to read.  Worse, there tends
+to be a mixed bag of advice for handling the fire hose of information and how
+to not drown in the deluge of papers that tends to accompany research.
+
+There are certainly a myriad of different approaches to solving this problem.
+I have been debating a few approaches and would like to describe them and,
+ideally, exposit my way towards a final solution.
+
+** Goals, Requirements, and Motivation
+   :PROPERTIES:
+   :ID:       a0b48e68-a928-4484-9774-a05739af9701
+   :END:
+
+There are several goals and basic requirements of any organization system, here
+is no exception.  While these goals may be personal, knowing the motivation
+behind the approaches that follow, the decisions may make more sense.  With a
+different set of goals and requirements, perhaps the following _won't_ make
+sense.
+
+*** Meaningful Filenames
+    :PROPERTIES:
+    :ID:       c903eb12-b245-4d71-a1a5-7d007baf7c91
+    :END:
+
+The underlying structure and naming of files should be agnostic to any specific
+application that "manages" them.  That is, the filenames and overall directory
+structure should mirror that of the organization within an application.  I want
+to be able to simply browse the files in a regular file explorer on occasion.
+Furthermore, copying files to, say, an e-reader with limited metadata
+capabilities similarly benefits from the foundation of the organization being
+in the filesystem itself.
+
+*** DOI or Referencing Material for Cross Referencing and Linking
+    :PROPERTIES:
+    :ID:       70e28d03-fb59-414d-adf6-127e943f630c
+    :END:
+
+The organization system will need access to the [[doi][digital object identifier (DOI)]]
+of the paper as it may be needed for later queries such as citations and
+derivative work.  Since there is no clear universal [[doi][DOI]] format used between
+various journals and conferences, e.g., [[acm][ACM]] and [[citeseerx][CiteSeerX]] use different formats
+for [[doi][DOI]], I'm not especially concerned with [[doi][DOI]] information being part of the
+filename.  Regardless, this information should be available when needed.
+
+Similarly, the [[bibtex][BibTeX]] should be available immediately as well.  To some degree,
+the [[bibtex][BibTeX]] is more important than the raw [[doi][DOI]] information.
+
+Simply, information should be stored to enable a workflow of querying for a
+list of citations and derivative work.
+
+** Proposals
+   :PROPERTIES:
+   :ID:       6e2ab567-b9c3-4ca8-9f17-92d2dd34481e
+   :END:
+
+There are several possibilities worth investigating.
+
+Regardless of the approach, however, something does seem immediately obvious:
+no system will work without front-loading the work of organization when a paper
+or artifact is under consideration.  Handling the organization tasks in batches or
+letting the organization slip for even a moment may kill the entire system.
+
+If there's already a large collection of papers, it will be very difficult to
+retroactively organize everything.
+
+*** Zotero
+    :PROPERTIES:
+    :ID:       26403ea3-2ed5-4f2c-8522-a924a56d769b
+    :END:
+
+[[zotero][Zotero]] is a free and open source platform for managing research.  It's
+available in a desktop application and a online web application.  I've only
+considered the former and know very little about the latter.
+
+[[zotero][Zotero]] is an intuitive tool that has a lot of good features.  It can
+automatically pull metadata for articles, it can generate citations, the choice
+of organization is on the user, file syncing can be achieved without having to
+use their hosted service, it can archive/snapshot a web page, and, an implicit
+requirement, it's free and open source software!
+
+However, I have several issues that dissuade me from using it for my purposes.
+Chiefly, the file organization on disk is opaque, therefore, it fails to
+satisfy the first requirement above.  Furthermore, the generated [[bibtex][BibTeX]]
+references are not as complete as I would like.  Moreover, the process of
+pulling references for a new manuscript each time does not seem pleasant.
+
+*** Org Mode with Org Attach
+    :PROPERTIES:
+    :ID:       800392d0-bc65-4b2f-8f51-19df9cf63fa8
+    :END:
+
+Another approach would be to use [[org-mode][Org mode]].  Specifically, use [[org-mode][Org mode]] as an
+"index" into the files, while maintaining the filesystem structure desired as
+per the first requirement.  This can be further augmented by using
+"attachments" from [[org-mode][Org mode]].
+
+For example, the workflow for this may be something like the following:
+
+1. Downloading a paper, rename it with the full title, the last name of the
+   first author, and the year of publication, all separated by hyphens, all
+   lowercase.
+
+2. Create an entry in the appropriate [[org-mode][Org]] entry for the paper.
+
+3. Download and add the [[bibtex][BibTeX]] citation to a ~references.bib~ file.
+
+4. Using [[org-ref][~org-ref~,]] add a "citation" so that the article can be easily cited or
+   its reference material retrieved later.
+
+5. Use [[org-attach][~org-attach~]] to copy the file into the appropriate directory tree.
+
+This process can likely be augmented and idealized via [[org-capture][Capture Templates]].
+However, I have not yet explored this in depth since I have a few concerns that
+still need to be addressed regarding this solution.
+
+I can specifically override the directory used for [[org-attach][Attachments]] for specific
+entries, however, this may be an overwhelming exercise that needs to be
+duplicated many times and manually maintained .  Again, [[org-capture][Org Capture and
+templates]] may be helpful in better realizing the solution, but certainly
+further exploration is necessary.
+
+*** Org-ref
+    :PROPERTIES:
+    :ID:       6977dc3e-a6c9-4cea-bbb5-eea9a5a2f4e0
+    :END:
+
+[[jkitchin-cmu-profile][John Kitchin of CMU]] created [[org-ref][Org-Ref]], a reference system for [[org-mode][Org Mode]] that
+better integrates [[bibtex][BibTeX]] citations than [[org-links][Org Links]].  Really, [[org-ref][Org-Ref]] and the
+[[org-links][linking system]] of [[org-mode][Org]] are not even in the same ballpark.
+
+There is a lot of nice features to [[org-ref][Org Ref]]: a suite of utilities for
+downloading and automatically creating [[bibtex][BibTeX]] entries from the [[doi][DOI]] or even the
+PDF itself, among others.  It can automatically download and save the PDF into
+a specified directory.  [[org-ref][Org-Ref]] also nicely handles the process of adding
+citations to the manuscript during the writing phase.
+
+I'm not specifically sure how [[org-ref][Org-Ref]] handles saving the PDF files, how it
+names them or otherwise organize these on disk.  Given the more automatic
+nature of [[org-ref][Org-Ref]], it certainly warrants further investigation.
+
+** Discussion
+   :PROPERTIES:
+   :ID:       d27b3a9b-70ee-4954-aa69-7685b6d35190
+   :END:
+
+I'm still debating these different solutions.  I don't want to spend a ton of
+time optimizing this as there are a lot of other tasks that are more important
+than tool sharpening.
+
+There likely exists an idealized solution in the hybrid space between
+[[org-capture][Org Capture]] and [[org-ref][Org-Ref]], but it all requires some more investigation.
+
+One reason I wanted to write about this is that I feel these kinds of topics
+aren't given the attention they probably should receive.  Perhaps it's an
+uninteresting problem.  Perhaps it's too dependent on personal preferences.
+Regardless though, there seems to be very little discussion on the subject.  If
+there are discussions on the topic, they seem to exist in an ephemeral space of
+the internet or the air on which they were verbally transmitted.
+
+The solutions proposed here are certainly not universally appropriate and I by
+no means make any such claim.  But the solutions proposed seem appropriate and
+helpful to me.  Perhaps they may be helpful to someone else.  But further than
+that, it's hopefully a small step in a larger pattern of sharing tips and
+personal workflows to help others along similar journeys.
