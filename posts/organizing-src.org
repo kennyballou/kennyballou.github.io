@@ -1,0 +1,309 @@
+#+TITLE: Organizing Source
+#+DESCRIPTION: Organizing Workspace/Source Code
+#+TAGS: Discussion
+#+TAGS: Daily Dispatch
+#+TAGS: Organization
+#+TAGS: Workspace
+#+TAGS: Oral Tradition
+#+TAGS: Meta
+#+DATE: 2020-08-24
+#+SLUG: organizing-source
+#+LINK: yesterday-you-said-tomorrow https://kennyballou.com/blog/2020/08/yesterday-you-said-tomorrow
+#+LINK: organizing-research https://kennyballou.com/blog/2020/08/organizing-research
+#+LINK: gnu-emacs https://www.gnu.org/software/emacs
+#+LINK: org-mode https://orgmode.org
+#+LINK: visual-stuido https://visualstudio.microsoft.com/
+#+LINK: eclipse https://www.eclipse.org/
+#+LINK: vim https://www.vim.org\
+#+LINK: 7-habits-effective-text-editing https://www.youtube.com/watch?v=p6K4iIMlouI
+#+LINK: java https://www.oracle.com/java/
+#+LINK: maven https://maven.apache.org/
+#+LINK: wiki-revisionism https://en.wikipedia.org/wiki/Historical_revisionism
+#+LINK: golang https://golang.org/
+#+LINK: github https://github.com/
+#+LINK: go-modules https://blog.golang.org/using-go-modules
+#+LINK: working-in-public https://www.amazon.com/dp/0578675862/
+#+LINK: git https://git-scm.com
+#+LINK: devault-email-drivn-git https://drewdevault.com/2018/07/02/Email-driven-git.html
+#+LINK: devault-federated-git https://drewdevault.com/2018/07/23/Git-is-already-distributed.html
+#+LINK: apache https://www.apache.org/
+#+LINK: gnome https://www.gnome.org/
+#+LINK: dotfiles.git https://github.com/kennyballou/dotfiles
+#+LINK: qubesos https://www.qubes-os.org/
+#+LINK: archlinux https://www.archlinux.org
+#+LINK: gentoo https://gentoo.org
+#+LINK: cvs https://www.nongnu.org/cvs/
+#+LINK: mercurial https://www.mercurial-scm.org/
+
+
+#+BEGIN_PREVIEW
+Another brief digression into organizing source code and projects.  Described
+here is my current ideal, subject to change, that has evolved over the years of
+being a student, a professional, a contractor, and now a student again.
+#+END_PREVIEW
+
+** Why this Discussion
+   :PROPERTIES:
+   :ID:       f9211020-9523-43cd-8bf7-86c1b52e9758
+   :END:
+
+[[organizing-research][Previously]], we discussed how to organize research papers and related metadata.
+Today, I want to discuss how /I/ personally organize my source code.  I write
+this because I am occasionally asked about this; but even more personally, I
+wish more of these "boring" blog posts were available and easily accessible
+from others so that I could learn what/how others are going about this to see
+if there is anything I could learn or leverage in my own setup.  My first step
+to correcting this is to add my own notes on how and why I organize my
+"workspace" the way I do/have.
+
+Many developers and many languages will discuss how to structure an individual
+project, or what the best practice are around a specific language or
+technology.  However, I have found very, very few discuss the overall structure
+of many projects, or more pointedly, or to organize _all_ the different source
+trees.  This discussion may implicitly exist in mono-repository vs
+poly-repository discussions, but repository organization is still too limiting
+to my overall goal of discussing how to organize _every_ project, regardless of
+ecosystem or project set.  That is, we set out to answer "how do you organize
+all the different projects and ecosystems you're working on or dependent on?"
+
+Perhaps it's important to note that not all projects in a workspace are active
+projects but may be dependencies that needed to be adjusted to work with the
+current active project set.
+
+I will introduce and discuss the highlights of the development of my
+organization and how I arrived or was influenced in a particular direction or
+another.  Finally, I will discuss the current organization method.
+
+** Path to Organization
+   :PROPERTIES:
+   :ID:       3a18713a-359e-4d6b-a667-9ad90752da91
+   :END:
+
+The madness of my organization is derivable through a series of tools and
+stages in my development career.  Certainly, there is some [[wiki-revisionism][revisionism]] here,
+nothing is ever as clean as we may make it.
+
+*** Before University
+    :PROPERTIES:
+    :ID:       d9a9b147-89ee-4267-94ba-c7e88d4c6194
+    :END:
+
+When learning some programming in high-school, there was *NO* organization.
+Projects were loosely collected under whatever folder made sense in the moment,
+projects captured by "solutions" in [[visual-stuido][Visual Studio]].
+
+When I started my first internship, code was collectively organized under
+~C:\\dev\~.  This was in the initial developer checklists for configuring a new
+machine: something along the lines of "checkout the [[cvs][CVS]] tree to ~C:\\dev\~."
+
+As monstrous and scary as this may sound, this worked.  But it worked for a few
+reasons that may make it seem untenable today: this was it.  There was no other
+source to deal with.  If it wasn't in our [[cvs][CVS]] tree, there really wasn't any
+concern for it at the time.  Outside dependencies didn't really exist.  Aside
+from the tooling and libraries of Microsoft, there wasn't much in the realm of
+outside dependencies.  Something I find typical of certain enterprise
+structures: there is inherent risk associated with and aversion to anything not
+controlled by the capital of the enterprise itself.
+
+#+begin_quote
+I'm confident things have changed since my time there.  [[mercurial][Mercurial]] is being used
+instead of [[cvs][CVS]], for example!
+#+end_quote
+
+From this, I used the single tree construct as a foundation of organizing
+projects.
+
+*** Eclipse
+    :PROPERTIES:
+    :ID:       58b4926d-5392-49c5-89b4-f0592215cd65
+    :END:
+
+Starting university, our first tool was [[eclipse][Eclipse]].  Being relatively spoiled by
+[[visual-studio][Visual Studio]], [[eclipse][Eclipse]] seemed archaic.  But something that stuck out is the
+question it asked every time it started that never occurred to me before:
+"Select the directory as a workspace".  A very initial hint towards an overall
+(meta) structure of projects.
+
+Since I was using [[eclipse][Eclipse]] for essentially all of my school projects, I would
+always have a =~/workspace= directory, as a more natural location to place
+source, I eventually started placing more programming projects under this
+directory structure, even if the projects were not necessarily [[java][Java]]/[[eclipse][Eclipse]]
+projects.
+
+Here, I began using the =~/workspace= folder as the foundation for all
+organization after this.
+
+*** Maven
+    :PROPERTIES:
+    :ID:       b74a2024-ab5f-43ef-b24e-e252176d69e2
+    :END:
+
+As typical for editor envy, the desire to ditch [[eclipse][Eclipse]] for [[vim][Vim]] became more and
+more apparent, finding appropriate tooling for managing projects quickly became
+a necessity.
+
+Since I was mainly developing [[java][Java]] projects, [[maven][Maven]] was an obvious contender.
+While, at the time I didn't really enjoy the opinionated approach of [[maven][Maven]], the
+"correct" domain name ordering stuck out as an interesting idea for organizing
+packages in [[java][Java]].  That is, [[maven][Maven]], by default, creates a package structure
+similar to the following =com.example.projectx=, which translates to a folder
+structure of =src/main/java/com/example/projectx=.
+
+While I didn't end up using [[maven][Maven]] for a little while longer, I did eventually
+borrow a modified version of the domain name folder structure.  For example, I
+would use =com.example= as a root folder for all ~example.com~ projects.
+
+*** Golang
+    :PROPERTIES:
+    :ID:       98454288-3c83-4641-a93b-624d76ea277f
+    :END:
+
+Prior to 1.12 and Go modules, [[golang][Golang]] imposed its own project structuring.  I
+have had conflicting thoughts about this.  On one hand, the imposed homogeneity
+of projects and meta-structure was serene since it was always so easy to find
+references and dependencies.  On the other hand, it disrupted my current
+organization methods.  Furthermore, since I had effectively two different
+working trees of source code, I had more mental burden when considering
+ownership issues with respect to client or employer code.  With [[golang][Golang]]
+projects, it was no longer possible to ensure all source belonging to a
+particular organization was under a single tree.
+
+Similarly, related to the homogeneous folder structures was the encoding of the
+source repository in the dependency or code base, e.g., projects from [[github][GitHub]] were
+found in the folder path ~${GOPATH}/src/github.com/~.
+
+Now that [[go-modules][Go Modules]] are the default and the =${GOPATH}= isn't really used too
+much, I did still borrow some of the naming and organization constructs from
+[[golang][Golang]].  Chiefly, I now used =~/workspace/src= as the root of all of the projects
+instead of simply =~/workspace=.  Furthermore, while I'm not particularly
+interested in the platform the source is hosted on (more on this later), I _am_
+interested in the owning or overarching organization behind the code.
+
+*** Personal Projects, Professional Development, and Contracting
+    :PROPERTIES:
+    :ID:       f638a40b-7e43-4c8b-a5ee-6bdece7fbc2a
+    :END:
+
+As a developer, hobbyist or professional, there is a need to have a clear
+delineation between projects.  This comes both for personal desires to be
+organized, but also arises because of contractual reasons; I would rather my
+own work not be reassigned to a company just because of being hired (which _is_
+what most developer employee contracts argue, though, obligatory "INAL").
+Therefore, I need a clear mechanism for delineating ownership.  Thankfully,
+this can be baked into the folder structure itself with relative ease!
+
+I mostly stumbled into this since I had started using a personal computer for
+one internship and again later when hired full-time, and later when
+contracting.  I have tried a few different techniques to sort out the issues of
+entangling source from different organizations.
+
+The first I tried was having a separate user account on the machine for work
+and personal and this worked well enough but was a pain point for most
+everything else.  Namely, my [[dotfiles.git][dotfiles]] game wasn't where it is today, there was
+a lot of replicated files between the two user accounts.  Furthermore, this
+model does not scale as the number of "engagements" increases.
+
+Another approach I had considered but never tried was using something like
+[[qubesos][QubesOS]] since its virtual machine and isolation would functionally achieve
+separation very easily.  However, I was worried about how I would accomplish
+backups if necessary.  Furthermore, I was really happy with then [[archlinux][Arch Linux]] and
+later [[gentoo][Gentoo]].  However, this approach likely would scale better than using
+separate accounts, and in some circumstances may be the only (legally) safe way
+to achieve separation.
+
+*** Forges, Platforms, and Working in Public
+    :PROPERTIES:
+    :ID:       b9a222f2-1e66-48db-8209-df35e4c18aa7
+    :END:
+
+#+begin_quote
+Notice, this _is_ different than the mono-repository vs. poly-repository
+discussion.
+#+end_quote
+
+As noted, I'm not particularly interested in the hosting platform or forge of a
+code base or project.  The source repository may be moved, or there may even be
+several different "repositories" that host the code; this is made possible and
+evident because [[git][Git's]] [[devault-federated-git][distributed]] nature: there typically /just/ happens to be a
+single, "blessed" remote repository that most work is started from, but by
+virtue of distribution, [[git][Git]] does not necessitate nor require a single "remote".
+Therefore, I prefer to use the owning organization/entity domain name as the
+root of organizing ownership.  This could be the ~groupId~ in [[java][Java]] projects, this
+could be the parent organization or foundation in the cases of projects under
+[[apache][Apache]] or [[gnome][GNOME]], this could be the personal domain of the maintainer, /etc/.
+
+That said, not every project I clone into my workspace seems to require the
+same attention to detail.  Therefore, there might be a settling period where
+[[github][GitHub]] projects are cloned into the ~com/github/${user}/${repo}~ structure before
+being moved to a more permanent home, if at all.
+
+[[git][Git]] itself is better suited and can better handle the tracking of the various
+remote repositories for a project.  The filesystem and organization method, on
+the other hand, are not well suited to the complexities of remote repository
+management (nor should they be).  That is, if I "fork" a project on [[github][GitHub]], I
+can add my own remote repository and the upstream source repository into the
+same cloned version of the project.
+
+** Organizing Source
+   :PROPERTIES:
+   :ID:       43d180de-6590-410d-b46f-5c70cf0dd4dc
+   :END:
+
+While the historical context may not be complete enough to allow someone to
+perfectly derive my own organization, I do hope it serves as a solid foundation
+for _why_ the organization is the way it is.
+
+In my home folder, I have a single directory, ~workspace~.  Under this directory,
+there is ~src~.  Having ~src~ further allows for the addition of ~docs~ or ~pkgs~, but
+I'm not currently using this.  Finally under ~src~ there is the top-level
+domains of all the projects I have, e.g., ~com~, ~org~, ~io~, ~net~, /etc/.  Under each
+TLD, is the next domain part, e.g., ~io/devnulllabs~, ~com/github~, ~org/kernel~.
+Under each of these parent structures is the actual project folders.
+
+** tl;dr:
+   :PROPERTIES:
+   :ID:       59aadc91-f43d-4dd2-96fc-bc70c82b9b84
+   :END:
+
+#+begin_src bash
+tree -L 3 ~/workspace
+#+end_src
+
+#+begin_example
+workspace
+└── src
+    ├── com
+    │   ├── github
+    │   └── kennyballou
+    ├── dev
+    │   └── minilab
+    ├── edu
+    │   ├── bgsu
+    │   └── boisestate
+    ├── fi
+    │   └── liw
+    ├── io
+    │   └── devnulllabs
+    ├── org
+    │   ├── coreboot
+    │   ├── gnu
+    │   ├── kernel
+    │   └── soot-oss
+    └── us
+        └── crashrec
+
+20 directories, 0 files
+#+end_example
+
+** Parting Thoughts
+   :PROPERTIES:
+   :ID:       be058126-8d00-4112-9c5c-8dcb4142de8f
+   :END:
+
+Now that it's all written, I'm not sure this discussion truly warranted its own
+post.  I've wanted to read something like this from others before, but in
+seeing what it boils down to, I certainly see why no one talks about it.
+
+It's fairly easy to describe the current state of things, it's fairly easy to
+demonstrate what it looks like, but it's immensely difficult to distill the
+motivation and influences that over 12 years bring us to today.
