@@ -1,0 +1,270 @@
+#+TITLE: Granularity of (Git) Commits
+#+DESCRIPTION: How often and why
+#+TAGS: Discussion
+#+TAGS: Git
+#+TAGS: Communication
+#+DATE: 2021-03-17
+#+SLUG: commit-granularity
+#+LINK: xkcd-commit-messages https://xkcd.com/1296/
+#+LINK: xkcd-commit-messages-png https://imgs.xkcd.com/comics/git_commit.png
+#+LINK: tpope-commit-messages https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
+#+LINK: cbeams-commit-messages https://chris.beams.io/posts/git-commit/
+#+LINK: jtauberer-commit-messages https://medium.com/@joshuatauberer/write-joyous-git-commit-messages-2f98891114c4
+#+LINK: libmpdel-pr-2 https://github.com/mpdel/libmpdel/pull/2
+#+LINK: libmpdel-pr-3 https://github.com/mpdel/libmpdel/pull/3
+#+LINK: git-blame-man https://www.git-scm.com/docs/git-blame
+#+LINK: git-rebase-man https://www.git-scm.com/docs/git-rebase
+#+LINK: git-fetch-man https://www.git-scm.com/docs/git-fetch
+#+LINK: git-merge-man https://www.git-scm.com/docs/git-merge
+#+LINK: git-rerere-man https://git-scm.com/docs/git-rerere
+#+LINK: git-merge-config-man https://git-scm.com/docs/merge-config
+#+LINK: rfc-2119 https://tools.ietf.org/html/rfc2119
+#+LINK: mpd https://www.musicpd.org/
+#+LINK: github https://github.com/
+#+LINK: linux https://www.kernel.org/
+
+#+BEGIN_PREVIEW
+There are [[tpope-commit-messages][many]] [[cbeams-commit-messages][blog]] [[jtauberer-commit-messages][posts]] which extol the foundations of writing good,
+communicative commit messages.  These same posts, however, tend to otherwise
+ignore the question of granularity.  In this post, I attempt an answer to
+granularity.  The answer is, of course, it depends.
+#+END_PREVIEW
+
+#+ATTR_HTML: :align center
+#+HTML: <a href="https://xkcd.com/1296"><figure>
+#+CAPTION: Merge branch 'asdfasjkfdlas/alkdjf' into sdkjfls-final
+#+NAME: fig: XKCD on Git Commits
+[[https://imgs.xkcd.com/comics/git_commit.png]]
+#+HTML: </figure></a>
+
+** Introduction
+   :PROPERTIES:
+   :ID:       dfcb1574-d7a9-447a-a0e5-986a88a23cce
+   :END:
+
+Regardless of position on "good" or "communicative," we are often left with
+questions about the commits themselves.  How frequent should we commit?  What
+should be included in the commit?  What should be /excluded/ from the commit?
+What should the operational state of the entire code base be at each commit?
+
+What we're asking about is the granularity of commits.  How many commits
+constitutes a story, a feature, or a bug.  There are two schools of thought on
+the question, although I'm not sure it's been so explicit.  On one side, the
+discretization of work leads naturally into a series of commits.  Another, the
+task is singular, therefore, there should be only one commit that lands in
+~master~, seldom more than one.
+
+While both of these answers have tradeoffs, what you, as a developer do,
+depends entirely on your team.  Similar to good commit messages, if your team
+has a policy of a single commit per task/story/feature/bug/whatever,
+pragmatically, stick with it.  Understand why the team arrived at that answer
+before suggesting the other approach.  Vice-versa, if the team wants the
+discrete chunks of work to be committed and then a series of commits together
+combine into the completion of a task, go with it.  However, if your team
+doesn't have a consistent choice, /that/ is what should be fixed.
+
+** Single Story -> Single Commit
+   :PROPERTIES:
+   :ID:       ca580080-825e-47e1-a481-51aeb317151c
+   :END:
+
+Using a single commit for tasks comes with a lot of simplicity, but the commits
+themselves will be large.  Integrating the single commit is relatively
+simple.  Resolving merge conflicts is simpler since only the end state has to
+be considered.  Reviewers only have to test the operational build state of the
+single commit when reviewing or merging.  Comprehending the change and its
+rationale includes reading a single commit message.  Ultimately, single commits
+are associated with simplicity.
+
+However, the commit itself, the changes contained in the commit will, on
+average, be substantial and far reaching.  It may be difficult for reviewers to
+separate the signal from the noise.  If there is an issue with the commit, a
+bisection indicates the single commit is the cause of a bug, and to rapidly
+resolve the issue, a revert is issued, the whole commit goes, including any
+possible refactorings that improved the system.  Worse, these refactorings may
+be referenced down the line, causing more issues.
+
+#+begin_quote
+Arguments can be made that "refactoring" constitutes its own task, and
+therefore is in its own commit.  Unfortunately, this is not always the case.
+The history of code is far messier than even I wish to admit.
+#+end_quote
+
+** Discrete Tasks -> Multiple Atomic Commits
+   :PROPERTIES:
+   :ID:       ebba1bce-544b-4ea5-80a0-57bbb17b8335
+   :END:
+
+Instead of using a single commit which contains every single change that was
+made to accomplish the task, we can use a single commit for each of those
+tasks.  This dampens the size of each commit, but incurs a little complexity
+for the reviewing and comprehending phases of development.  Stringent adherence
+to atomic commits allows for [[git-blame-man][git blame]] to provide better contextual information
+when attempting to understand any one specific line of code.  Comparatively, it
+is easy for changes made using a single commit to become lost in the noise and
+lose context.
+
+Using atomic commits, however, can make integration tasks particularly
+difficult when using [[git-rebase-man][rebase]].  For example, a series of atomic commits are made
+on a topic branch and are ready for merging into ~master~.  During the
+development of this topic branch, other changes were made and merged before
+this topic branch lands.  Easy, [[git-fetch-man][fetch]] ~origin/master~, [[git-merge-man][merge]] ~origin/master~ into
+~master~, and [[git-rebase-man][rebase]] the topic branch onto ~master~.  Fate would have it, though,
+there are conflicts.  Worse, the conflict is in one of the first commits, and
+the changes need to be propagated through the commits appropriately for the
+series to remain sensible.  This is not easy.  Aside from enabling [[git-rerere-man][rerere]] and
+using ~diff3~ for [[git-merge-config-man][~merge.conflictstyle~]], I am personally unaware of a repeatable,
+universal way to achieve reliable results when rebasing with conflicts.
+
+The difficulty is that each commit must remain atomic and make the changes it
+states.  However, in the middle of the rebase, it is difficult to remember what
+the change should be for the specified commit.  We easily remember the end
+result, but using the end result may create empty commits or worse, more
+conflicts.
+
+#+begin_quote
+If you, dear reader, are aware of a better approach, please share.
+#+end_quote
+
+Atomic commits afford more granularity in case a change needs to be reverted.
+Although, finding that one commit may be more difficult since there are
+generally more commits to bisect.  Which leads into the next issue, each atomic
+commit [[rfc-2119][MUST]] be stable and in working order, e.g., the project is buildable
+without error, tests SHALL pass, etc.  Ensuring this is similarly not easy.
+
+While using a series of commits to communicate a single story can be complex.
+It does afford other flexibilities not possible when using the former approach.
+Specifically, pull requests consisting of multiple commits can be partially
+accepted.  [[github][GitHub]] and other source forges do not have tooling for this in their
+web UI's, but this is certainly possible and _is_ done in larger projects, e.g.,
+[[linux][Linux]].
+
+** Examples
+   :PROPERTIES:
+   :ID:       776e8b2e-476b-4949-bd00-f846393ff6f6
+   :END:
+
+Let's examine some pull requests which demonstrate both approaches.  I'm going
+to point to pull requests I have submitted since I don't want to cast any
+unintentional judgment to someone else.  They are both for the same project and
+they are essentially the same set of changes.  The [[libmpdel-pr-2][first]] has one all of the
+changes into a single commit.  It tells a larger story about enabling usage of
+UNIX Sockets for a local connection.  There are several discrete changes
+required to get there, but the it's all for the larger goal of connecting to a
+local machine's [[mpd][muisc player daemon]] via the AF_UNIX connection type.
+
+Repeated here is the single message and summary diff of the [[libmpdel-pr-2][first]] pull request:
+
+#+begin_example
+libmpdel: enable use of local UNIX sockets for MPD
+
+By using `make-network-process` we can tune the parameters for either
+network connections or local UNIX socket connections.
+
+As an added bonus, connections are very fast.  In my limited testing,
+`make-network-process` tends to be dramatically faster than the
+`open-network-stream` function.  Of course, without passing `:family
+'ipv4` to `make-network-process`, the two functions exhibit similar
+performance, so it's not as simple as "one is written in C and the other
+is written in ELisp."
+
+Deprecate/obsolete the `libmpdel-port` variable in favor of
+`libmpdel-service` which semantically makes more sense now that libmpdel
+can connect to either a port or a socket.
+
+`libmpdel-profiles` also work with the new local socket connection
+behaviour.
+
+Although I don't use `customize`, the new variable (`libmpdel-service`)
+and profiles (`libmpdel-profiles`) should be accessible via `customize`
+just the same.
+
+1 file changed, 44 insertions(+), 10 deletions(-)
+libmpdel.el | 54 ++++++++++++++++++++++++++++++++++++++++++++----------
+#+end_example
+
+The [[libmpdel-pr-3][second]] pull request is only slightly different from the first because there
+were changes in the upstream ~master~ branch that does some of the leg work that
+the first commit proposed.  However, at the discretion of the project owner and
+maintainer, the first large commit was broken down into its component commits.
+Each commit tells the story of its own change, culminating into the final
+commit closing the larger story of enabling the UNIX socket connection type.
+
+Repeated here are the series of commit messages and summary differences:
+
+#+begin_example
+add custom variable `libmpdel-family`
+
+This can be used to switch between IPv4 and IPv6 addresses.
+
+1 file changed, 7 insertions(+)
+libmpdel.el | 7 +++++++
+#+end_example
+
+#+begin_example
+Always use `make-network-process`
+
+When making a connection to MPD, whether via local UNIX socket, or TCP
+stream, `make-network-process` tends to be faster at establishing the
+connection.  In my limited testing, `make-network-process` tends to be
+dramatically faster than the `open-network-stream` function.  Of course,
+without passing `:family 'ipv4` to `make-network-process`, the two
+functions exhibit similar performance, so it's not as simple as "one is
+written in C and the other is written in ELisp."
+
+1 file changed, 7 insertions(+), 5 deletions(-)
+libmpdel.el | 12 +++++++-----
+#+end_example
+
+#+begin_example
+Add missing element to `limbpdel-profiles` docstring
+
+1 file changed, 1 insertion(+), 1 deletion(-)
+libmpdel.el | 2 +-
+#+end_example
+
+#+begin_example
+add libmpdel-family to `libmpdel-profiles`
+
+Add ability to specify the address family for connection profiles.
+
+1 file changed, 7 insertions(+), 4 deletions(-)
+libmpdel.el | 11 +++++++----
+#+end_example
+
+Clearly, each of the previous four commits are smaller and more focused than
+the single, all encompassing commit.  Each commit provides focused commentary
+to the specific lines being changed.  While it's missing in this case, since
+this is more a personal issue than a product with board of story cards, or what
+have you, it's easy to add story context to the bottom of the commit message so
+that others reading this can see more explicit motivation for the smaller
+commit.
+
+** Discussion
+   :PROPERTIES:
+   :ID:       8b3791ef-6fba-4bfa-8b77-a7d24786c018
+   :END:
+
+It's rather easy to argue for "small, atomic" commits, but I sense we have
+failed to clearly articulate what we mean by "small".  How small is "small"?
+What are the contours of our definition of "small"?  As a result, we have
+converged to one of two camps, where we say a single story is "small", or the
+individual, discretized changes are "small".
+
+#+begin_quote
+The third and/or fourth camp that exists, which is out of scope of this entire
+discussion, are commits which follow the messy history of _how_ everything came
+together.  Every commit is not buildable, tested, etc., but merely a step in
+the direction toward the completion of some task.  The first draft, if you
+will, towards the completion of a task.  In previous discussions, I've referred
+to this style has the how the changes "actually" came into existence.  Whereas,
+here, we are talking about commits which are edited to tell the story of the
+changes, how the changes /ought/ to have happened, if we were perfect and knew
+everything.
+#+end_quote
+
+I'm not going to argue either way which strategy is better.  As mentioned
+before, this is a team and/or personal choice.  It's a protocol about
+communicating changes in software that needs to be decided to effectively
+collaborate.  However, I hope I have provided sufficient informational context
+for you and your team to make a decision about which strategy to pursue.
