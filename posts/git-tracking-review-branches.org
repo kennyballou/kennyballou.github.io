@@ -1,0 +1,247 @@
+#+TITLE: Tracking Review Branches with Git
+#+DESCRIPTION: Automatically pulling pull-request branches
+#+TAGS: git
+#+TAGS: github
+#+TAGS: gitlab
+#+DATE: 2021-05-08
+#+SLUG: git-tracking-review-branches
+#+LINK: git https://git-scm.com/
+#+LINK: git-ls-remote-man https://www.git-scm.com/docs/git-ls-remote
+#+LINK: git-branch-man https://www.git-scm.com/docs/git-branch
+#+LINK: github https://github.com
+#+LINK: gitlab https://gitlab.com
+#+LINK: github-pr-gist https://gist.github.com/piscisaureus/3342247
+#+LINK: gitlab-merge-request-reviews https://docs.gitlab.com/ee/user/project/merge_requests/reviews/
+#+LINK: github-checkout-pr-locally https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/checking-out-pull-requests-locally
+#+LINK: nix-emacs-overlay https://github.com/nix-community/emacs-overlay
+#+LINK: nixpkgs https://github.com/NixOS/nixpkgs
+
+#+BEGIN_PREVIEW
+When reviewing code, it's often necessary to pull the changes under review.
+There are ad-hoc ways of doing this.  But there are also more automatic ways as
+well.  In this post, we discuss the more automatic approaches for [[github][GitHub]] and
+[[gitlab][GitLab]].  Other forges may have the ability to use this trick, we discuss how to
+discover the remote references, if they are available.
+#+END_PREVIEW
+
+#+begin_quote
+Terminology: I am going to use "pull request" to refer to [[github][GitHub's]] "pull
+requests" and [[gitlab][GitLab's]] "merge requests."  The difference in naming is purely
+cosmetic, both represent the same concept, and both borrow that concept from
+kernel development etiquette, what [[git]] was originally developed for.
+#+end_quote
+
+** GitHub
+:PROPERTIES:
+:ID:       9b9ad4e4-653e-4e80-8868-dd144f291b12
+:END:
+
+If we are working with a [[github][GitHub]] repository, we can run the following command,
+assuming =origin= is the remote where pull requests are submitted:
+
+#+begin_src bash
+git config --add remote.origin.fetch "+refs/pull/*/head:refs/remotes/origin/pull/*"
+#+end_src
+
+This command adds a line to the =remote.origin= configuration section of the
+current repository.  The =fetch= value provides a remote to local naming pattern
+to be used when fetching changes from the remote.
+
+The full =remote.origin= section should look similar to the following:
+
+#+begin_src config
+[remote "origin"]
+	fetch = +refs/heads/*:refs/remotes/origin/*
+	url = git@github.com:owner/repo.git
+	fetch = +refs/pull/*/head:refs/remotes/origin/pull/*
+#+end_src
+
+** GitLab
+:PROPERTIES:
+:ID:       d73325c5-552c-481f-b744-9547318eaf24
+:END:
+
+Similarly, if we are working with [[gitlab][GitLab]] repositories, we can use a similar
+command to accomplish the same result, again assuming =origin= as the remote:
+
+#+begin_src bash
+git config --add remote.origin.fetch "+refs/merge-requests/*/head:refs/remotes/origin/merge-requests/*"
+#+end_src
+
+Likewise, the full =remote.origin= configuration should be similar to the
+following:
+
+#+begin_src config
+[remote "origin"]
+  url = https://gitlab.com/owner/repo.git
+  fetch = +refs/heads/*:refs/remotes/origin/*
+  fetch = +refs/merge-requests/*/head:refs/remotes/origin/merge-requests/*
+#+end_src
+
+** Local Branch Prefix
+:PROPERTIES:
+:ID:       ac0df415-b1f5-4352-8abc-45f7f13b76e9
+:END:
+
+The local branch prefix can be set to any value that is desired.  Don't like
+=origin/pull/${pr}=?  Change it.  A [[github-pr-gist][common option]] is to use =origin/pr= instead.
+Similarly, don't like =origin/merge-requests/${pr}=?  Feel free to change the
+reference prefix.  Simply modify the commands above to use the appropriate
+prefix for each remote:
+
+#+begin_src bash
+git config --add remote.origin.fetch "+refs/pull/*/head:refs/remotes/origin/pr/*"
+#+end_src
+
+#+begin_src bash
+git config --add remote.origin.fetch "+refs/merge-requests/*/head:refs/remotes/origin/pr/*"
+#+end_src
+
+When choosing a prefix, it's important not to choose a prefix for pull requests
+that are often also used for branches on the remote.  For example, if
+developers often push branches to the project such as =pr/1337=, [[git]] warns that
+these references are ambiguous.
+
+** Branch Discovery
+:PROPERTIES:
+:ID:       09327560-6051-475c-9fd0-c7fe0bae9733
+:END:
+
+When using a different forge than [[github][GitHub]] or [[gitlab][GitLab]], it may be possible to
+discover the appropriate pattern for references to pull requests.
+Documentation for checking out pull request references may not be available,
+unlike  [[github-checkout-pr-locally][GitHub]] and [[gitlab-merge-request-review][GitLab]].  Therefore, we need to look to [[git][git]] itself,
+specifically, [[git-ls-remote-man][git-ls-remote]].
+
+Using [[git-ls-remote-man][git-ls-remote]], we can list *all* remote references hosted by the
+repository.  [[git-branch-man][git-branch]], by comparison, only lists references which are being
+"tracked," i.e., fetched by the fetch rules for the remote repository.
+
+#+begin_src bash
+git ls-remote
+#+end_src
+
+From the list of references, it should be evident which references refer to
+pull requests.  Unfortunately, there is no immediate way to select between open
+and closed pull requests.  For [[github][GitHub]], this means [[git-ls-remote-man][=git ls-remote=]] returns _every_
+pull requests for the repository.
+
+The following is an example listing from [[nix-emacs-overlay][nix-community/emacs-overlay]]:
+
+#+begin_example
+c30763fa3d800911ee57c4cdaf558b416e4c5780	HEAD
+5b9f3a8258c4b42c9c3dfcb77bde5d2e3abbc6eb	refs/heads/elpa
+6cce77a7865731bd64f12b0ade938c0082f869c6	refs/heads/expect
+47a2e0b85642a229aa45c03c4c590ad0e4294788	refs/heads/gccemacs
+c30763fa3d800911ee57c4cdaf558b416e4c5780	refs/heads/master
+80b60da21dbf15a683a3fcc0138a96478794bef0	refs/heads/melpa
+b74dbf73ecf7cc420740c87af4c2d113d1fdd58e	refs/heads/nativecomp-pkgs
+f911b18763ad50bf49a5928b95fb149ba638b2e2	refs/heads/updater-python
+3d7612182992cc57148c545c11cb9415bb7d23f0	refs/pull/103/head
+2ecd882d2b6e2f4f710c08419a5899d8215f7cc9	refs/pull/103/merge
+7689a4093e2986e72a2b3e981b4ae86124c1dfb6	refs/pull/105/head
+d7bdc8d3be125e90c8f01650e17b66b814609ec3	refs/pull/111/head
+9e8e8cae4dba0fe46569f010119b4ca269a3a9c0	refs/pull/118/head
+401546016dc12b1416f5a3f85e26e1b8294ee5c4	refs/pull/119/head
+997966c8d635dcada8c8bd3aa40a643745dd5ca8	refs/pull/12/head
+f911b18763ad50bf49a5928b95fb149ba638b2e2	refs/pull/121/head
+5a99e863b84825a13a125b145170b8d6aeef9200	refs/pull/121/merge
+#+end_example
+
+From the above list, we can see the pull requests are under the =refs/pull=
+path.
+
+** Manual Checkout
+:PROPERTIES:
+:ID:       59daddd1-4dc0-45b2-a94a-ae8b1291982d
+:END:
+
+Without downloading and keeping track of /all/ pull request branches, individual
+pull requests can be checked out as well.  However, doing so requires an extra
+command.
+
+#+begin_src bash
+git fetch origin pull/${pr}/head
+git checkout -b pr/${pr} FETCH_HEAD
+#+end_src
+
+[[github][GitHub]] automatically creates a merge reference between the pull request and the
+merge target branch.  This is done to check whether a pull request can be
+merged cleanly or if merge conflicts exist.  Following similar steps, we can
+checkout [[github][GitHub's]] automatically merged pull request reference:
+
+#+begin_src bash
+git fetch origin pull/${pr}/merge
+git checkout -b pr/${pr}/merge FETCH_HEAD
+#+end_src
+
+** Repositories with Many Pull Requests
+:PROPERTIES:
+:ID:       d4d68742-79b6-4e79-97ad-0a90295e8cca
+:END:
+
+While adding the extra fetch and branch prefix is a nice way to automatically
+track pull requests against a repository, the repository may have more pull
+requests than we wish to regularly fetch and update.  Consider [[nixpkgs][NixOS/nixpkgs]].
+As of this writing, the number of open pull requests is 2,540.  Furthermore,
+there has been 101,345 pull requests submitted to date.  49 pull requests were
+opened today alone.  Running =git remote update= or =git fetch upstream= with the
+added fetch for pull requests might be to demanding for a regular workflow.
+
+Instead of always downloading pull request references, instead, we can fetch
+the pull requests from a different "remote."
+
+For example, the following is the relevant sections of my =.git/config= for
+[[nixpkgs][NixOS/nixpkgs]]:
+
+#+begin_src config
+[remote "origin"]
+	url = ssh://github.com/kennyballou/nixpkgs.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[remote "upstream"]
+	url = git://github.com/nixos/nixpkgs.git
+	fetch = +refs/heads/*:refs/remotes/upstream/*
+[remote "review"]
+	url = git://github.com/nixos/nixpkgs.git
+	fetch = +refs/pull/*/head:refs/remotes/review/*
+#+end_src
+
+This way, =git fetch upstream= only fetches upstream branch changes; no pull
+request references are fetched.  Conversely, =git fetch review= fetches
+references for all pull requests.  This enables rebase workflows to still be
+relatively fast, while review workflows can still be accomplished using the
+same fetch trick as above.
+
+** tl;dr:
+:PROPERTIES:
+:ID:       53f2c709-78ed-40d4-b9d7-651dfa4ec462
+:END:
+
+To automatically fetch pull requests from [[github][GitHub]] repositories, run the
+following command, assuming =upstream= is the remote where pull requests are
+submitted:
+
+#+begin_src bash
+git config --add remote.upstream.fetch "+refs/pull/*/head:refs/remotes/upstream/pr/*"
+#+end_src
+
+Or, for [[gitlab][GitLab]] repositories, under the same assumption:
+
+#+begin_src bash
+git config --add remote.upstream.fetch "+refs/merge-requests/*/head:refs/remotes/upstream/pr/*"
+#+end_src
+
+To manually checkout a pull request branch, use the following:
+
+#+begin_src bash
+git fetch upstream pull/${pr}/head
+git checkout -b pr/${pr} FETCH_HEAD
+#+end_src
+
+Finally, if the repository contains a large number of pull requests, it may be
+preferred to use a different "remote" for tracking pull request references:
+
+#+begin_src bash
+git remote add review $(git config remote.upstream.url)
+git remote review.upstream.fetch "+refs/pull/*/head:refs/remotes/review/*"
+#+end_src
