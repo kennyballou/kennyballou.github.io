@@ -1,0 +1,127 @@
+#+TITLE: Emacs Debugging with Default Drop Firewall Policies and IPv6
+#+DESCRIPTION: A rambling in self-inflicted suffering with Java, Emacs, DAP, and Firewalls!
+#+TAGS: Firewalls
+#+TAGS: IPv6
+#+TAGS: nft
+#+TAGS: Java
+#+TAGS: DAP
+#+TAGS: Emacs
+#+DATE: 2021-07-22
+#+LINK: idea https://www.jetbrains.com/idea/
+#+LINK: java https://www.oracle.com/java/
+#+LINK: emacs https://www.gnu.org/software/emacs/
+#+LINK: lsp https://langserver.org/
+#+LINK: dap https://microsoft.github.io/debug-adapter-protocol/
+#+LINK: nft https://netfilter.org/projects/nftables/
+#+LINK: mpdel https://github.com/mpdel/mpdel
+#+LINK: libmpdel https://github.com/mpdel/libmpdel
+#+LINK: limpdel-patch https://github.com/mpdel/libmpdel/commit/124e72daf489fd46217236d2ada5c6963eb2cb65
+#+LINK: nix https://nixos.org/
+#+SLUG: default-drop-ipv6-self-inflicted-pain
+
+#+BEGIN_PREVIEW
+Debugging [[java][Java]] programs in [[emacs][Emacs]] has been a goal and overall feature I have
+wanted for some time.  However, every time I've reached for it, ~dap-java-debug~
+demonstrated an unbearably slow startup.  So much so, that it was often faster
+and more productive to launch [[idea][IntelliJ]], fight [[nix][Nix]] and [[idea][IntelliJ]] to load the
+project correctly, and launch the debugger from [[idea][IntelliJ]].
+
+No more.  The pain is gone, forced on by fighting [[idea][IntelliJ]] to load one too many
+times.
+
+tl;dr: self-inflicted pain is a strange way to deeply learn.
+#+END_PREVIEW
+
+Before programming took over, I wanted to be a security expert/red
+team/hacker.  This lead me to some strange places, one of which is the desire
+to +put hot glue in my Ethernet ports and disable WiFi+ have strict firewall
+rules.  Specifically, default policy drop on all tables, including outbound.
+
+As a result of my current research, I've been predominately in [[java][Java]] land.  I'm
+using [[emacs][Emacs]] with [[lsp][LSP]] as my full-time [[java][Java]] editor and it has not been without
+issue.  Although, it's been far more comfortable and reliable than the other
+two big IDE choices that exist (likely as a result of recursive suffering).
+That said, debugging [[java][Java]] programs has been a non-starter with [[emacs][Emacs]] and [[dap][DAP]].
+I could not explain why it would take more than 2 minutes to launch and connect
+to a debugging session facilitated by [[dap][DAP]].
+
+** Confluence of Issues
+   :PROPERTIES:
+   :ID:       bab044cd-fdcd-434d-a78b-60f3adf9f557
+   :END:
+
+Before using [[lsp][LSP]], I configured [[mpdel][mpdel]] to control mpd from within [[emacs][Emacs]].  It was
+fantastic except that initial connection.  The connection would take several
+minutes and lockup [[emacs][Emacs]] entirely.  I submitted a [[libmpdel-patch][patch]] to [[libmpdel][libmdel]] to always
+use the [[emacs][Emacs]] ~make-network-process~ (implemented in C) over ~open-network-stream~
+(implemented in Elisp).  I had concluded that the performance issues were
+entirely Elisp's fault, and therefore moved to replace it.  It worked.  But I
+couldn't exactly explain why other than the intuition that C is faster than
+Elisp (likely a sound assumption, but is not necessarily the culprit of bad
+performance).
+
+Needing to debug some code and unable to use [[idea][IntelliJ]], I reluctantly attempted
+to use ~dap-java-debug-test~.  It was slow.  Each iteration of stopping and
+starting causing more delays and fragmented thinking.  It would eventually
+work, but it was impeding progress.
+
+To resolve the issue, I thought perhaps, I needed to patch [[lsp][LSP]] and/or [[dap][DAP]] to
+use ~make-network-process~ over their current usage of ~open-network-stream~
+similar to [[libmpdel][libmpdel]].  Then, I re-read my commit message for [[libmpdel-patch][libmpdel]].
+
+#+begin_quote
+Always use make-network-process
+
+When making a connection to MPD, whether via local UNIX socket, or TCP
+stream, `make-network-process` tends to be faster at establishing the
+connection.  In my limited testing, `make-network-process` tends to be
+dramatically faster than the `open-network-stream` function.  Of course,
+without passing `:family 'ipv4` to `make-network-process`, the two
+functions exhibit similar performance, so it's not as simple as "one is
+written in C and the other is written in ELisp."
+#+end_quote
+
+There it was, staring me in the face.  ~:family 'ipv4~.  The issue isn't C versus
+Elisp, as noted, it's the family of the connection.
+
+** IPv6+4
+   :PROPERTIES:
+   :ID:       66c307b8-88b7-46e1-a269-305e1d09685c
+   :END:
+
+Having not been bitten by the IPv6 shark in a while, I've neglected any attempt
+to disable it or fiddle with it.  It simply hasn't been relevant to my regular
+development activities.  But re-reading the commit message reminded me, the
+issue may be a result of IPv6 being enabled on my machine.  I first thought to
+disable IPv6 to see if that would resolve the issue.  But ultimately I had
+rechecked my firewall rules instead.
+
+In the output chain, there was a lonely IPv4 rule:
+
+#+begin_src nft
+ip daddr 127.0.0.0/8 counter accept
+#+end_src
+
+Since the default policy is to drop, any local bound IPv6 traffic was being
+dropped.
+
+Easy enough, insert a new rule:
+
+#+begin_src nft
+ip6 daddr ::1 counter accept
+#+end_src
+
+[[emacs][Emacs]], [[dap][DAP]], and [[java][Java]] debugging worked instantly.  No more waiting for
+everything to timeout and fall back to previous versions.  No more locked up
+[[emacs][Emacs]] and fragmented thoughts.  Debugging in [[emacs][Emacs]] was as fast, if not faster,
+than [[idea][IntelliJ]].
+
+** TL;DR:
+   :PROPERTIES:
+   :ID:       b488407a-413a-458f-8cde-b3ce36b4bc0b
+   :END:
+
+Debugging [[java][Java]] programs in [[emacs][Emacs]] using [[dap][DAP]] was problematic because of firewall
+rules I imposed onto myself.  Allowing the appropriate traffic vanquished the
+problem.  Security is hard and it is far too easy to simply flush tables and
+move on.
