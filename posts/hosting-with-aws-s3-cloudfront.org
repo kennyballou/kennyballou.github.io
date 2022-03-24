@@ -11,10 +11,12 @@
 #+LINK: aws-announce-lambda-python https://aws.amazon.com/about-aws/whats-new/2019/08/lambdaedge-adds-support-for-python-37/
 #+LINK: aws-cfn-lambda-perms https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html
 #+LINK: aws-cloudfront https://aws.amazon.com/cloudfront/
+#+LINK: aws-cloudformation https://aws.amazon.com/cloudformation/
 #+LINK: aws-cw-logs https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/WhatIsCloudWatchLogs.html
 #+LINK: aws-lambda https://aws.amazon.com/lambda/
 #+LINK: aws-lambda-edge https://aws.amazon.com/lambda/edge/
 #+LINK: aws-lambda-edge-default-directory https://aws.amazon.com/blogs/compute/implementing-default-directory-indexes-in-amazon-s3-backed-amazon-cloudfront-origins-using-lambdaedge/
+#+LINK: aws-route53 https://aws.amazon.com/route53/
 #+LINK: aws-s3 https://aws.amazon.com/s3/
 #+LINK: aws-web-console https://console.aws.amazon.com/
 #+LINK: blog-git https://git.devnulllabs.io/blog.kennyballou.com.git/
@@ -48,7 +50,7 @@
 There are many posts already out about how to host static sites in
 [[aws-s3][S3]] and [[aws-cloudfront][CloudFront]].  However, I would like to
 add to the discussion a small contribution of how to do this by creating the
-resources in [[aws-cfn][CloudFormation]], and specifically, how to ensure all
+resources in [[aws-cloudformation][CloudFormation]], and specifically, how to ensure all
 content is served _via_ [[aws-cloudfront][CloudFront]] and is strictly not
 available via [[aws-s3][S3]].
 #+END_PREVIEW
@@ -58,12 +60,13 @@ available via [[aws-s3][S3]].
    :ID:       c5040a15-f7b4-422f-9b38-fc4bee3f10cc
    :END:
 
-There are [[vikylai-host-s3-cloudfront][many]],
+There are [[vickylai-host-s3-cloudfront][many]],
 [[davidbaumgold-host-s3-cloudfront][many]]
 [[ludovicroguet-host-s3-cloudfront-lambda][posts]] on hosting static sites via
 [[aws-s3][S3]] and [[aws-cloudfront][CloudFront]].  There are even existing
-[[aws-cfn][CloudFormation templates]] [[rgfindl-cfn-template][available]] that
-can be used to make this process repeatable and consistent.
+[[aws-cloudformation][CloudFormation templates]]
+[[rgfindl-cfn-template][available]] that can be used to make this process
+repeatable and consistent.
 
 This post will simply add to this knowledge and I will attempt to capture any
 notes or changes that have occurred since I ventured to migrate from managing a
@@ -477,10 +480,11 @@ Distribution.
    :ID:       1e2a2710-27c9-4279-87f5-a1fdd4ae6e86
    :END:
 
-The [[aws-cfn][CloudFormation]] template is not perfect.  For example, I
-personally would like to have the ability to create [[aws-acm][Certificates]]
-with Domain Validation via [[aws-cfn][CloudFormation]], however, this does not,
-last I have checked, appear to be possible because of timing issues.
+The [[aws-cloudformation][CloudFormation]] template is not perfect.  For
+example, I personally would like to have the ability to create
+[[aws-acm][Certificates]] with Domain Validation via
+[[aws-cloudformation][CloudFormation]], however, this does not, last I have
+checked, appear to be possible because of timing issues.
 
 Another future feature could be to setup automatic build and deployments of the
 content to the bucket using more [[aws][AWS]] services.

@@ -12,12 +12,14 @@
 #+LINK: aws https://aws.amazon.com/
 #+LINK: aws-cfn-lambda-perms https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html
 #+LINK: aws-cloudformation https://aws.amazon.com/cloudformation/
+#+LINK: aws-cloudfront https://aws.amazon.com/cloudfront/
 #+LINK: aws-cloudwatch-events https://aws.amazon.com/cloudwatch/
 #+LINK: aws-code-build https://aws.amazon.com/codebuild/
 #+LINK: aws-code-commit https://aws.amazon.com/codecommit/
 #+LINK: aws-lambda https://aws.amazon.com/lambda/
 #+LINK: aws-s3 https://aws.amazon.com/s3/
 #+LINK: aws-sns https://aws.amazon.com/sns/
+#+LINK: aws-iam https://aws.amazon.com/iam/
 #+LINK: aws-web-console https://console.aws.amazon.com/
 #+LINK: blog-buildspec https://git.devnulllabs.io/blog.kennyballou.com.git/tree/buildspec.yml
 #+LINK: blog-git https://git.devnulllabs.io/blog.kennyballou.com.git/
@@ -284,7 +286,7 @@ we need a [[aws-cfn-lambda-perms][Lambda Permission]] resource:
 }
 #+end_src
 
-Finally, we need to add the [[aws-codebuild][CodeBuild]] resources:
+Finally, we need to add the [[aws-code-build][CodeBuild]] resources:
 
 #+begin_src json
 "BlogCodeBuildLogGroup": {
@@ -364,7 +366,7 @@ Since this blog is [[static-site-generation][built using]] [[pandoc][Pandoc]]
 and some [[gnu-bash][Bash scripts]], a custom [[debian-pandoc][build image]]
 was created.
 
-It's referenced in the [[aws-codebuild][CodeBuild]] resource defined above.
+It's referenced in the [[aws-code-build][CodeBuild]] resource defined above.
 
 However, if using different tools to generate content, using the provided
 images from [[aws][AWS]] may be possible.
@@ -403,7 +405,7 @@ you're, therefore, allowed to do *whatever* you want to its history.
 #+end_quote
 
 Similarly, for auto deploying blog content, we need to add the new repository
-from [[aws-codecommit][CodeCommit]] to the blog's remotes.
+from [[aws-code-commit][CodeCommit]] to the blog's remotes.
 
 #+begin_src bash
 git remote add aws ssh://git-codecommit.us-east-1.amazonaws.com/v1/repos/blog.kennyballou.com
@@ -411,7 +413,7 @@ git remote add aws ssh://git-codecommit.us-east-1.amazonaws.com/v1/repos/blog.ke
 
 #+begin_quote
 I recommend using [[ssh-config][SSH Config]] files to ease using [[git][Git]],
-[[ssh][SSH]], and [[aws-codecommit][CodeCommit]].  Especially so if multiple
+[[ssh][SSH]], and [[aws-code-commit][CodeCommit]].  Especially so if multiple
 [[aws][AWS]] accounts are involved, each with their own set of repositories.
 #+end_quote
 
@@ -434,13 +436,13 @@ infrastructure for running and building projects.  [[github][GitHub]] now has
 pipelines]] as part of their offering.  A new forge, [[srht][Source Hut]], has
 [[srht-builds][builds]].  There likely are many more variations I fail to
 mention as I'm not aware of them.  That said, [[aws][AWS]] does provide a 100
-minutes of [[aws-codebuild][CodeBuild]] free each month and
-[[aws-codecommit][CodeCommit]] has some pretty high thresholds before AWS
+minutes of [[aws-code-build][CodeBuild]] free each month and
+[[aws-code-commit][CodeCommit]] has some pretty high thresholds before AWS
 begins incuring charges.
 
 However, for me, when already [[blog-hosting-with-aws][hosting]] the content
 via [[aws-s3][S3]] and [[aws-cloudfront][CloudFront]], having the ability to
-implicitly authorize write access to the [[aws-codebuild][CodeBuild]] job, it
+implicitly authorize write access to the [[aws-code-build][CodeBuild]] job, it
 is more convincing to run everything within [[aws][AWS]], even if [[aws][AWS]]
 doesn't always bring the batteries.
 

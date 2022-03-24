@@ -21,7 +21,7 @@
 #+LINK: wiki-stemming http://en.wikipedia.org/wiki/Stemming
 #+LINK: wiki-bag-of-words http://en.wikipedia.org/wiki/Bag-of-words_model
 #+LINK: storm-docs-stream-grouping http://storm.incubator.apache.org/documentation/Concepts.html#stream-groupings
-#+LINK: jackson-databing https://github.com/FasterXML/jackson-databind
+#+LINK: jackson-databind https://github.com/FasterXML/jackson-databind
 #+LINK: storm-trident-overview http://storm.incubator.apache.org/documentation/Trident-API-Overview.html
 #+LINK: wiki-srp http://en.wikipedia.org/wiki/Single_responsibility_principle
 #+LINK: storm-sample-project https://github.com/zdata-inc/StormSampleProject
@@ -36,6 +36,9 @@ performant.
 #+END_PREVIEW
 
 ** About Kafka
+:PROPERTIES:
+:ID:       61479b4b-0b6d-4ea4-905a-61b8d48eb5d3
+:END:
 
 [[kafka][Apache Kafka]] is a message queue rethought as a distributed commit
 log.  It follows the publish-subscribe messaging style, with speed and
@@ -54,6 +57,9 @@ ingest data faster.  For more information about Kafka's performance see
 [[kafka-benchmark][Benchmarking Kafka]].
 
 *** Initial Thoughts
+:PROPERTIES:
+:ID:       9c1190eb-1b03-41d5-ae4d-5ba7b6627549
+:END:
 
 Kafka is a very promising project, with astounding throughput and one of the
 easiest pieces of software I have had the joy of installing and configuring.
@@ -61,6 +67,9 @@ Although Kafka is not at the production 1.0 stable release yet, it's well on
 its way.
 
 ** About Storm
+:PROPERTIES:
+:ID:       fafd8d7d-f1e5-434b-b66e-e5a510ba3fba
+:END:
 
 [[storm][Apache Storm]], currently in incubation, is a real-time computational
 engine made available under the free and open-source Apache version 2.0
@@ -72,6 +81,9 @@ C.  See the [[storm][Storm]] [[storm-multi-lingual][multi-lingual]]
 documentation.
 
 *** Why Storm
+:PROPERTIES:
+:ID:       b86d156c-a319-40a5-a008-6776eb5cd5bc
+:END:
 
 Quoting from the project site:
 
@@ -85,12 +97,18 @@ Quoting from the project site:
 #+END_QUOTE
 
 *** Integration
+:PROPERTIES:
+:ID:       0cb979f5-f9b1-4b70-84c4-8a5939593970
+:END:
 
 Storm can integrate with any queuing and any database system.  In fact, there
 are already quite a few existing projects for use to integrate Storm with other
 projects, like [[storm-integrates][kestrel or Kafka]].
 
 *** Initial Thoughts
+:PROPERTIES:
+:ID:       1fda3fa7-7756-444a-8c8c-d590b28b98c8
+:END:
 
 I found Storm's verbiage around the computational pipeline to fit my mental
 model very well, thinking about streaming computational processes as directed
@@ -104,6 +122,9 @@ common patterns emerging that should be adaptable to about any
 [[storm-common-patterns][situation]].
 
 ** Test Project: Twitter Stream Sentiment Analysis
+:PROPERTIES:
+:ID:       2bc926c1-bbba-4beb-b33e-1f2f8b6cc55e
+:END:
 
 To really give Storm a try, something a little more involved than just a simple
 word counter is needed.  Therefore, I have put together a Twitter Sentiment
@@ -112,6 +133,9 @@ complicated topology, the method used for actually scoring the Twitter data is
 overly simple.
 
 *** Setup
+:PROPERTIES:
+:ID:       2a41d644-9598-49a0-863b-51dc4d46bf55
+:END:
 
 The setup used for this demo is a 5 node Vagrant virtual cluster.  Each node is
 running 64 bit CentOS 6.5, given 1 core, and 1024MB of RAM.  Every node is
@@ -124,6 +148,9 @@ Kafka, and Zookeeper are all run under supervision via
 cluster.
 
 *** Overview
+:PROPERTIES:
+:ID:       9aa28a4a-8b88-4f72-b170-392ada822ac9
+:END:
 
 [[file:/media/SentimentAnalysisTopology.png]]
 
@@ -132,12 +159,18 @@ Kafka cluster.  This is how we feed the whole system and is used in lieu of
 opening a stream to Twitter.
 
 **** Spout
+:PROPERTIES:
+:ID:       331f15c6-e483-44e2-821f-a9e26119871e
+:END:
 
 The orange node from the picture is our
 [[storm-kafka-spout-github][~KafkaSpout~]] that will be consuming incoming
 messages from the Kafka brokers.
 
 **** Twitter Data JSON Parsing
+:PROPERTIES:
+:ID:       f564d65f-012a-4430-912d-acc3c1221cb7
+:END:
 
 The first bolt, ~2~ in the image, attempts to parse the Twitter JSON data and
 emits =tweet_id= and =tweet_text=.  This implementation only processes English
@@ -145,6 +178,9 @@ tweets.  If the topology were to be more ambitious, it may pass the language
 code down and create different scoring bolts for each language.
 
 **** Filtering and Stemming
+:PROPERTIES:
+:ID:       fd99a733-e41b-459e-a9e9-407c45415fd2
+:END:
 
 This next bolt, ~3~, performs first-round data sanitization.  That is, it
 removes all non-alpha characters.
@@ -157,6 +193,9 @@ match the root, could also be performed here, or in another, later bolt.
 ~4~, when finished, will then broadcast the data to both of the classifiers.
 
 **** Classifiers
+:PROPERTIES:
+:ID:       633ed308-2496-4a6b-a246-94ee53868bb2
+:END:
 
 Each classifier is defined by its own bolt.  One classifier for the positive
 class, ~5~, and another for the negative class, ~6~.
@@ -165,6 +204,9 @@ The implementation of the classifiers follows the
 [[wiki-bag-of-words][Bag-of-words]] model.
 
 **** Join and Scoring
+:PROPERTIES:
+:ID:       032820a0-e13c-410f-979e-f48bdeb178f5
+:END:
 
 Next, bolt ~7~ joins the scores from the two previous classifiers.  The
 implementation of this bolt isn't perfect.  For example, message transaction is
@@ -174,6 +216,9 @@ To finish up the scoring, bolt ~8~ compares the scores from the classifiers and
 declares the class accordingly.
 
 **** Reporting: HDFS and HTTP POST
+:PROPERTIES:
+:ID:       4d271aa8-84ac-4fd6-a9ef-ac28101888ed
+:END:
 
 Finally, the scoring bolt broadcasts off the results to a HDFS file writer
 bolt, ~9~, and a NodeJS notifier bolt, ~10~.  The HDFS bolt fills a list until
@@ -185,6 +230,9 @@ a record is received.  This could be batched as well, but again, this is for
 demonstration purposes only.
 
 *** Implementing the Kafka Producer
+:PROPERTIES:
+:ID:       f1c52b9a-46f5-4a32-b566-05b910d34121
+:END:
 
 Here, the main portions of the code for the Kafka producer that was used to
 test our cluster are defined.
@@ -242,10 +290,14 @@ reads not block the Kafka producer or vice-versa, enabling maximum performance
 tunable by the size of the buffer.
 
 *** Implementing the Storm Topology
+:PROPERTIES:
+:ID:       db8e8ad6-aa17-45c0-bc54-a1acd5f1145d
+:END:
 
 **** Topology Definition
      :PROPERTIES:
      :CUSTOM_ID: topology-definition
+     :ID:       04c8a088-d95b-4a57-909e-facf4e393038
      :END:
 
 Moving onward to Storm, here we define the topology and how each bolt
@@ -289,6 +341,9 @@ joining bolt.  To read more about stream groupings, visit the
 [[storm-docs-stream-grouping][Storm documentation]].
 
 **** Twitter Data Filter / Parser
+:PROPERTIES:
+:ID:       b5acee39-78b9-4a32-81cf-9aa1cab59389
+:END:
 
 Parsing the Twitter JSON data is one of the first things that needs to be done.
 This is accomplished with the use of the [[jackson-databind][JacksonXML
@@ -325,6 +380,9 @@ pipeline after ensuring the existence of the desired data, namely, ~tweet_id~,
 and ~tweet_text~.
 
 **** Text Filtering
+:PROPERTIES:
+:ID:       4f5225b3-30c4-4c4e-8cc6-32e171ec95c9
+:END:
 
 As previously mentioned, punctuation and other symbols are removed because they
 are just noise to the classifiers:
@@ -354,6 +412,9 @@ Here the ~StopWords~ class is a singleton holding the list of words we wish to
 omit.
 
 **** Positive and Negative Scoring
+:PROPERTIES:
+:ID:       867b2251-1f33-4889-a287-b57088346802
+:END:
 
 Since the approach for scoring is based on a very limited
 [[wiki-bag-of-words][Bag-of-words]] model, Each class is put into its own bolt;
@@ -397,6 +458,9 @@ Similar to ~StopWords~, ~PositiveWords~ and ~NegativeWords~ are both singletons
 maintaining lists of positive and negative words, respectively.
 
 **** Joining Scores
+:PROPERTIES:
+:ID:       70e4b9e8-53c6-41c0-8737-75f67dd8856d
+:END:
 
 Joining in Storm isn't the most straight forward process to implement, although
 the process may be made simpler with the use of the
@@ -467,6 +531,9 @@ Where ~emit~ is defined simply by:
 #+END_SRC
 
 **** Deciding the Winning Class
+:PROPERTIES:
+:ID:       3b4ae28b-b65e-4807-8ff1-6d3d3b7012e5
+:END:
 
 To ensure the [[wiki-srp][Single responsibility principle]] is not violated,
 joining and scoring are split into separate bolts, though the class of the
@@ -485,6 +552,9 @@ This decider will prefer negative scores, so if there is a tie, it's
 automatically handed to the negative class.
 
 **** Report the Results
+:PROPERTIES:
+:ID:       8677abbc-948d-49bf-a999-901d0a26a4be
+:END:
 
 Finally, there are two bolts that will yield results: one that writes data to
 HDFS, and another to send the data to a web server.
@@ -566,6 +636,9 @@ message.  This can be alleviated with more instances of this bolt and more web
 servers to handle the increase in posts, and/ or a better batching process.
 
 ** Summary
+:PROPERTIES:
+:ID:       1a6e1bd7-cc82-411a-82a7-9c24e8c1eaae
+:END:
 
 The full source of this test application can be found on
 [[storm-sample-project][Github]].
@@ -578,6 +651,9 @@ Stay tuned, as the next post in this series will be an overview look at
 Streaming with Apache Spark.
 
 ** Related Links / References
+:PROPERTIES:
+:ID:       19d9ee90-fc1f-4bc1-aece-f3c31fe4be7f
+:END:
 
 -  [[storm][Apache Storm Project Page]]
 
@@ -594,7 +670,7 @@ Streaming with Apache Spark.
 
 -  [[docker][Docker IO Project Page]]
 
--  [[storm-kafka-extern-github][Storm-Kafka Source]]
+-  [[storm-kafka-spout-github][Storm-Kafka Source]]
 
 -  [[storm-sample-project][Full Source of Test Project]]
 

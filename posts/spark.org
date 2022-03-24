@@ -23,18 +23,18 @@
 #+LINK: spark-faq http://spark.apache.org/faq.html
 #+LINK: S3 http://aws.amazon.com/s3/
 #+LINK: NFS http://en.wikipedia.org/wiki/Network_File_System
-#+LINK: HDFS
+#+LINK: HDFS https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/HdfsUserGuide.html
 #+LINK: spark-standalone http://spark.apache.org/docs/latest/spark-standalone.html
 #+LINK: YARN http://hadoop.apache.org/docs/current/hadoop-yarn/hadoop-yarn-site/YARN.html
 #+LINK: spark-running-yarn http://spark.apache.org/docs/latest/running-on-yarn.html
-#+LINK: Mesos http://mesos.apache.org
+#+LINK: mesos http://mesos.apache.org
 #+LINK: spark-running-mesos http://spark.apache.org/docs/latest/running-on-mesos.html
 #+LINK: EC2 http://aws.amazon.com/ec2/
 #+LINK: spark-running-ec2 http://spark.apache.org/docs/latest/ec2-scripts.html
 #+LINK: Scala http://www.scala-lang.org/
 #+LINK: Java https://en.wikipedia.org/wiki/Java_%28programming_language%29
 #+LINK: Python https://www.python.org/
-#+LINK: monad-progrmaming http://en.wikipedia.org/wiki/Monad_(functional_programming)
+#+LINK: monad-programming http://en.wikipedia.org/wiki/Monad_(functional_programming)
 #+LINK: maven-dependency-hell http://cupofjava.de/blog/2013/02/01/fight-dependency-hell-in-maven/
 #+LINK: spark-939 https://issues.apache.org/jira/browse/SPARK-939
 #+LINK: storm-sample-project https://github.com/zdata-inc/StormSampleProject
@@ -58,6 +58,9 @@ real-time processing engine.
 #+END_PREVIEW
 
 ** About Spark
+:PROPERTIES:
+:ID:       03647905-6778-4ad2-919d-8878417ad092
+:END:
 
 [[spark][Apache Spark]] is a general purpose, large-scale processing engine,
 recently fully inducted as an Apache project and is currently under very active
@@ -76,6 +79,9 @@ Apache Kafka into Spark Streaming is trivial.  Further, the Spark Streaming
 project provides the ability to continuously compute transformations on data.
 
 *** Resilient Distributed Datasets
+:PROPERTIES:
+:ID:       b4f8ad97-133e-4ed8-bd7d-eb56c535d0cf
+:END:
 
 Apache Spark's primitive type is the Resilient Distributed Dataset (RDD).  All
 transformations, ~map~, ~join~, ~reduce~, etc., in Spark revolve around this
@@ -152,6 +158,9 @@ graphs of the transformations (to be) applied and they
 among the participating machines.
 
 *** Discretized Streams
+:PROPERTIES:
+:ID:       a9efe32f-69b7-414c-923a-85df12cf4575
+:END:
 
 Moving to Spark Streaming, the primitive is still RDD's.  However, there is
 another type for encapsulating a continuous stream of data: Discretized Streams
@@ -208,6 +217,9 @@ current frame when aggregating over a sliding window.
 #+END_QUOTE
 
 *** Hadoop Requirements
+:PROPERTIES:
+:ID:       70cb8acc-201e-4f63-a594-9c39987083d0
+:END:
 
 Technically speaking, Apache Spark does [[spark-faq][/not/]] require Hadoop to
 be fully functional.  In a cluster setting, however, a means of sharing files
@@ -215,22 +227,31 @@ between tasks will need to be facilitated.  This could be accomplished through
 [[S3][S3]], [[NFS][NFS]], or, more typically, [[HDFS][HDFS]].
 
 *** Running Spark Applications
+:PROPERTIES:
+:ID:       bb6278e4-1d64-4902-84a3-fe4f09d4ba89
+:END:
 
 Apache Spark applications can run in [[spark-standalone][standalone mode]] or
 be managed by [[YARN][YARN]]([[spark-running-yarn][Running Spark on YARN]]),
-[[Mesos][Mesos]]([[spark-running-mesos][Running Spark on Mesos]]), and even
+[[mesos][Mesos]]([[spark-running-mesos][Running Spark on Mesos]]), and even
 [[EC2][EC2]]([[spark-running-ec2][Running Spark on EC2]]).  Furthermore, if
 running under YARN or Mesos, Spark does not need to be installed to work.  That
 is, Spark code can execute on YARN and Mesos clusters without change to the
 cluster.
 
 *** Language Support
+:PROPERTIES:
+:ID:       b42be48e-158e-4de0-91a7-e246c394b75d
+:END:
 
 Currently, Apache Spark supports the [[Scala][Scala]], [[Java][Java]], and
 [[Python][Python]] programming languages.  Though, this post will only be
 discussing examples in [[Java][Java]].
 
 *** Initial Thoughts
+:PROPERTIES:
+:ID:       2c81e2c8-97f8-4c5a-9838-d549c2e9bce2
+:END:
 
 Getting away from the idea of directed acyclic graphs (DAG's) is -- may be --
 both a bit of a leap and a benefit.  Although it is perfectly acceptable to
@@ -262,6 +283,9 @@ configuration option]] to help alleviate this problem, however, for me, it
 caused more problems than solved.
 
 ** Test Project: Twitter Stream Sentiment Analysis
+:PROPERTIES:
+:ID:       61da885f-122b-4537-8fd5-3fd2aea3634e
+:END:
 
 To really test Spark (Streaming), a Twitter Sentiment Analysis project was
 developed.  It's almost a direct port of the [[storm-sample-project][Storm
@@ -275,6 +299,7 @@ to a simple NodeJS application.
 *** Setup
     :PROPERTIES:
     :CUSTOM_ID: setup
+    :ID:       ade07b91-1029-4193-96fe-e13b78d1c94d
     :END:
 
 The setup is the same as
@@ -287,6 +312,9 @@ also running a [[http://www.docker.io/][Docker]] container with a NodeJS
 application for reporting purposes.
 
 *** Application Overview
+:PROPERTIES:
+:ID:       b6918587-24dc-422e-844f-2a63e8c42c77
+:END:
 
 This project follows a very similar process structure as the Storm Topology
 from last time.
@@ -303,6 +331,7 @@ system.
 **** Kafka Receiver Stream
      :PROPERTIES:
      :CUSTOM_ID: kafka-receiver-stream
+     :ID:       07fcc612-127d-400a-9f9e-f4eb63981a56
      :END:
 
 The data processed is received from a Kafka Stream and is implemented
@@ -314,6 +343,7 @@ broker(s), consuming messages from the given set of topics.
 ***** Stripping Kafka Message IDs
       :PROPERTIES:
       :CUSTOM_ID: stripping-kafka-message-ids
+      :ID:       f31e4590-46a7-44cc-852f-b722a24286ff
       :END:
 
 It turns out the messages from Kafka are retuned as tuples, more
@@ -324,6 +354,7 @@ passed down the pipeline.
 **** Twitter Data JSON Parsing
      :PROPERTIES:
      :CUSTOM_ID: twitter-data-json-parsing
+     :ID:       72c2e328-c683-4318-ac30-865c55cc697d
      :END:
 
 As was the case last time, the important parts (tweet ID, tweet text,
@@ -334,6 +365,7 @@ at this stage.
 **** Filtering and Stemming
      :PROPERTIES:
      :CUSTOM_ID: filtering-and-stemming
+     :ID:       b9859559-a38d-4804-b401-671f9f442085
      :END:
 
 Many tweets contain messy or otherwise unnecessary characters and
@@ -345,6 +377,7 @@ filtered.
 **** Classifiers
      :PROPERTIES:
      :CUSTOM_ID: classifiers
+     :ID:       cf8c297f-47c0-43e8-a7a9-87ed89abf51a
      :END:
 
 Both the Positive classifier and the Negative classifier are in separate
@@ -354,6 +387,7 @@ Both the Positive classifier and the Negative classifier are in separate
 **** Joining and Scoring
      :PROPERTIES:
      :CUSTOM_ID: joining-and-scoring
+     :ID:       cf331690-0ff6-47f4-8799-bd050fb179e0
      :END:
 
 Because the classifiers are done separately and a join is contrived, the
@@ -363,6 +397,7 @@ a winner.  It turns out this is quite trivial to do in Spark.
 **** Reporting: HDFS and HTTP POST
      :PROPERTIES:
      :CUSTOM_ID: reporting-hdfs-and-http-post
+     :ID:       baad2be3-c3f6-47e4-88e6-b1711d9a6158
      :END:
 
 Finally, once the tweets are joined and scored, the scores need to be
@@ -374,17 +409,26 @@ The ~foreachRDD~ function of DStreams is a natural way to do side-effect
 inducing operations that don't necessarily transform the data.
 
 *** Implementing the Kafka Producer
+:PROPERTIES:
+:ID:       9ae134c1-87b9-480e-a10c-b1f156cb1cba
+:END:
 
 See the [[storm-kafka-streaming][post]] from last time for the details of the
 Kafka producer; this has not changed.
 
 *** Implementing the Spark Streaming Application
+:PROPERTIES:
+:ID:       af85b05f-05ab-48e9-96fa-803af482692c
+:END:
 
 Diving into the code, here are some of the primary aspects of this project.
 The full source of this test application can be found on
 [[spark-sample-project][Github]].
 
 **** Creating Spark Context, Wiring Transformation Chain
+:PROPERTIES:
+:ID:       f177b8ef-777b-4646-bd3b-1cef8f120ff2
+:END:
 
 The Spark context, the data source, and the transformations need to be defined.
 Proceeding, the context needs to be started.  This is all accomplished with the
@@ -476,6 +520,9 @@ Some of the more trivial transforms are defined in-line.  The others are
 defined in their respective files.
 
 **** Twitter Data Filter / Parser
+:PROPERTIES:
+:ID:       31adb1aa-8b4c-402d-8004-5523a097b582
+:END:
 
 Parsing Twitter JSON data is one of the first transformations and is
 accomplished with help of the [[jackson-databind][JacksonXML Databind]]
@@ -519,6 +566,9 @@ filtered out.  Thankfully, Spark provides a simple way to accomplish this:
 #+END_SRC
 
 **** Text Filtering
+:PROPERTIES:
+:ID:       22771161-f84d-4383-a980-8100ab101495
+:END:
 
 As mentioned before, punctuation and other symbols are simply discarded as they
 provide little to no benefit to the classifiers:
@@ -542,6 +592,9 @@ Similarly, common words should be discarded as well:
 #+END_SRC
 
 **** Positive and Negative Scoring
+:PROPERTIES:
+:ID:       15e88c7c-d227-4a25-acbd-5b400509cf4f
+:END:
 
 Each classifier is defined in its own class.  Both classifiers are /very/
 similar in definition.
@@ -589,6 +642,9 @@ However, this could /easily/ be defined differently such that one classifier is
 computed, then the next, without ever needing to join the two together.
 
 **** Joining
+:PROPERTIES:
+:ID:       67afc127-068d-4493-a682-99f257366e42
+:END:
 
 It turns out, joining in Spark is very easy to accomplish.  So easy in fact, it
 can be handled without virtually /any/ code:
@@ -614,6 +670,9 @@ to a 4 element tuple:
 #+END_SRC
 
 **** Scoring: Declaring Winning Class
+:PROPERTIES:
+:ID:       5e3dc2a2-7dda-4816-a3e3-e2901d4f25a2
+:END:
 
 Declaring the winning class is a matter of a simple map, comparing each class's
 score and take the greatest:
@@ -636,6 +695,9 @@ This declarer is more optimistic about the neutral case but is otherwise
 very straightforward.
 
 **** Reporting the Results
+:PROPERTIES:
+:ID:       2b6f0270-795c-4b0e-8a4c-eb0db801f4b1
+:END:
 
 Finally, the pipeline completes with writing the results to HDFS:
 
@@ -698,6 +760,9 @@ That said, writing these side-effects this way fits very naturally into
 the Spark programming style.
 
 ** Summary
+:PROPERTIES:
+:ID:       2a7fb8c6-2185-4a8b-9406-d6c828885d5b
+:END:
 
 Apache Spark, in combination with Apache Kafka, has some amazing potential.
 And not only in the Streaming context, but as a drop-in replacement for
@@ -708,6 +773,9 @@ Stay tuned, as the next post will be a more in-depth comparison between Apache
 Spark and Apache Storm.
 
 ** Related Links / References
+:PROPERTIES:
+:ID:       c7ca743a-8366-4870-91c3-7c90f13160f2
+:END:
 
 -  [[spark][Apache Spark]]
 
@@ -750,7 +818,7 @@ Spark and Apache Storm.
 
 -  [[spark-running-mesos][Running on Mesos]]
 
--  [[mave-dependency-hell][Fight Dependency Hell in Maven]]
+-  [[maven-dependency-hell][Fight Dependency Hell in Maven]]
 
 -  [[kafka-producer][Simple Kafka Producer]]
 
@@ -762,7 +830,7 @@ Spark and Apache Storm.
 
 -  [[jackson-databind][Jackson XML Databind Project]]
 
--  [[sparking-programming-guide][Spark Programming Guide]]
+-  [[spark-programming-guide][Spark Programming Guide]]
 
 -  [[EC2][Amazon EC2]]
 
@@ -772,7 +840,7 @@ Spark and Apache Storm.
 
 -  [[spark-sql-future][Future of Shark]]
 
--  [[nids12][Resilient Distributed Datasets: A Fault-Tolerant Abstraction for
+-  [[nsdi-12][Resilient Distributed Datasets: A Fault-Tolerant Abstraction for
   In-Memory Cluster Computing (PDF)]]
 
 -  [[hotcloud12][Discretized Streams: An Efficient and Fault-Tolerant Model for

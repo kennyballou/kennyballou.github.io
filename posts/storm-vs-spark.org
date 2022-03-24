@@ -48,7 +48,7 @@
 #+LINK: github https://github.com/
 #+LINK: spark-commit-activity https://github.com/apache/spark/graphs/commit-activity
 #+LINK: storm-commit-activity https://github.com/apache/incubator-storm/graphs/commit-activity
-#+LINK: storm-github-contributors https://github.com/apache/incubator-storm/graphs/contributors
+#+LINK: github-storm-contributors https://github.com/apache/incubator-storm/graphs/contributors
 #+LINK: spark-github https://github.com/apache/spark
 
 #+BEGIN_PREVIEW
@@ -66,6 +66,9 @@ not, are mistakes in exposition and/or organization and are not actual
 endorsements of either project.
 
 ** Apache Storm
+:PROPERTIES:
+:ID:       aed72b1a-938b-40fd-8775-aca54e8aebe0
+:END:
 
 "Storm is a distributed real-time computation system" [[storm][Storm]].  Apache
 Storm is a [[wiki-task-parallelism][task parallel]] continuous computational
@@ -80,22 +83,25 @@ semantics.  That said, both [[storm-yarn][Yahoo!]] and
 [[horton-storm-yarn][Hortonworks]] are working on providing libraries for
 running Storm topologies on top of Hadoop 2.x YARN clusters.  Furthermore,
 Storm can run on top of the [[mesos][Mesos]] scheduler as well,
-[[mesos-storm-yarn][natively]] and with help from the [[marathon][Marathon]]
+[[mesos-run-storm][natively]] and with help from the [[marathon][Marathon]]
 framework.
 
 Regardless though, Storm can certainly still consume files from HDFS and/or
 write files to HDFS.
 
 ** Apache Spark (Streaming)
+:PROPERTIES:
+:ID:       51edc096-65ff-4b69-b98b-7846b2ea540c
+:END:
 
 "Apache Spark is a fast and general purpose engine for large-scale data
 processing" [[spark][Spark]].  [[spark][Apache Spark]] is a
-[[wiki-data-parallel][data parallel]] general purpose batch processing engine.
-Workflows are defined in a similar and reminiscent style of MapReduce, however,
-is much more capable than traditional Hadoop MapReduce.  Apache Spark has its
-Streaming API project that allows for continuous processing via short interval
-batches.  Similar to Storm, Spark Streaming jobs run until shutdown by the user
-or encounter an unrecoverable failure.
+[[wiki-data-parallelism][data parallel]] general purpose batch processing
+engine.  Workflows are defined in a similar and reminiscent style of MapReduce,
+however, is much more capable than traditional Hadoop MapReduce.  Apache Spark
+has its Streaming API project that allows for continuous processing via short
+interval batches.  Similar to Storm, Spark Streaming jobs run until shutdown by
+the user or encounter an unrecoverable failure.
 
 Apache Spark does not itself require Hadoop to operate.  However, its data
 parallel paradigm requires a shared filesystem for optimal use of stable data.
@@ -108,6 +114,9 @@ applications using YARN containers.  Furthermore, Spark can also run on Mesos
 clusters.
 
 ** Development
+:PROPERTIES:
+:ID:       4a6e00ea-274d-4033-a500-71b54685fe39
+:END:
 
 As of this writing, Apache Spark is a full, top level Apache project.  Whereas
 Apache Storm is currently undergoing incubation.  Moreover, the latest stable
@@ -125,6 +134,9 @@ no guaranteed stability in its API, however, it is [[storm-powered-by][running
 in production for many different companies]].
 
 *** Implementation Language
+:PROPERTIES:
+:ID:       72dd2af0-ba58-491c-bb90-921c19cbc403
+:END:
 
 Both [[spark][Apache Spark]] and [[storm][Apache Storm]] are implemented in JVM
 based languages: [[scala][Scala]] and [[clojure][Clojure]], respectively.
@@ -142,6 +154,9 @@ memory model, aiding in making multi-threaded based applications consistent and
 safe.
 
 **** Message Passing Layer
+:PROPERTIES:
+:ID:       7b5913d9-2e1e-4749-9744-dd9741734863
+:END:
 
 Until version =0.9.x=, Storm was using the Java library [[jzmq][JZMQ]] for
 [[zeromq][ZeroMQ]] messages.  However, Storm has since moved the default
@@ -154,6 +169,9 @@ Spark, on the other hand, uses a combination of [[netty][Netty]] and
 [[akka][Akka]] for distributing messages throughout the executors.
 
 *** Commit Velocity
+:PROPERTIES:
+:ID:       8a375dcc-c663-4ce2-83dc-1c4e367d11b0
+:END:
 
 As a reminder, these data are included not to cast judgment on one project or
 the other, but rather to exposit the fluidness of each project.  The continuum
@@ -165,18 +183,27 @@ Source of the following statistics were taken from the graphs at
 [[github][GitHub]] and computed from [[git-stat-gist][this script]].
 
 **** Spark Commit Velocity
+:PROPERTIES:
+:ID:       cd67cad7-2fa7-4c2f-8860-c3497701d2a6
+:END:
 
 Examining the graphs from [[spark-commit-activity][GitHub]], over the last
 month (as of this writing), there have been over 330 commits.  The previous
 month had about 340.
 
 **** Storm Commit Velocity
+:PROPERTIES:
+:ID:       a4318c71-4c78-4997-8b0f-4a2f5906e9f3
+:END:
 
 Again examining the commit graphs from [[storm-commit-activity][GitHub]], over
 the last month (as of this writing), there have been over 70 commits.  The
 month prior had over 130.
 
 *** Issue Velocity
+:PROPERTIES:
+:ID:       7bfb9ac0-1cdb-4499-860b-2be6beb30f43
+:END:
 
 Sourcing the summary charts from JIRA, we can see that clearly Spark has a huge
 volume of issues reported and closed in the last 30 days.  Storm, roughly, an
@@ -199,8 +226,14 @@ Storm Open and Closed JIRA Issues (last 30 days):
 #+END_figure
 
 *** Contributor/ Community Size
+:PROPERTIES:
+:ID:       ed5f3573-8ade-4d6a-b9f1-38c045ed40d7
+:END:
 
 **** Storm Contributor Size
+:PROPERTIES:
+:ID:       768d2f75-4521-472c-b07d-6ddcf68a39ec
+:END:
 
 Sourcing the reports from [[github-storm-contributors][GitHub]], Storm has over
 a 100 contributors.  This number, though, is just the unique number of people
@@ -210,6 +243,9 @@ Over the last 60 days, Storm has seen 34 unique contributors and 16 over the
 last 30.
 
 **** Spark Contributor Size
+:PROPERTIES:
+:ID:       381c7658-6c09-42ed-8eec-9b7ab13d9171
+:END:
 
 Similarly sourcing the reports from [[spark-github][GitHub]], Spark has roughly
 280 contributors.  A similar note as before must be made about this number:
@@ -219,8 +255,14 @@ Apache Spark has had over 140 contributors over the last 60 days and 94 over
 the last 30 days.
 
 ** Development Friendliness
+:PROPERTIES:
+:ID:       08715824-3f84-4f8d-894c-c84d1854a262
+:END:
 
 *** Developing for Storm
+:PROPERTIES:
+:ID:       fcfe88f0-6e2e-4380-a7af-11ac7bae7098
+:END:
 
 - Describing the process structure with DAG's feels natural to the
   [[wiki-task-parallelism][processing model]].  Each node in the graph will
@@ -231,6 +273,9 @@ the last 30 days.
   interface.  However, this comes at a cost to compile-time type safety.
 
 *** Developing for Spark
+:PROPERTIES:
+:ID:       ea9e5ffc-ab08-4294-af05-bd1306f7eca4
+:END:
 
 - Spark's monadic expression of transformations over the data similarly feels
   natural in this [[wiki-data-parallelism][processing model]]; this falls in
@@ -246,6 +291,9 @@ the last 30 days.
    - This is probably a non-issue if using Scala.
 
 ** Installation / Administration
+:PROPERTIES:
+:ID:       1308992a-a469-4706-9d5d-5a40aba41cda
+:END:
 
 Installation of both Apache Spark and Apache Storm are relatively straight
 forward.  Spark may be simpler in some regards, however, since it technically
@@ -263,6 +311,9 @@ With respect to installation, supporting projects like Apache Kafka are out of
 scope and have no impact on the installation of either Storm or Spark.
 
 ** Processing Models
+:PROPERTIES:
+:ID:       4ce1b323-ade1-4ae7-81b9-7ff304359f0d
+:END:
 
 Comparing Apache Storm and Apache Spark's Streaming, turns out to be a bit
 challenging.  One is a true stream processing engine that can do
@@ -272,6 +323,9 @@ between streaming and batching isn't exactly a subtle difference, these are
 fundamentally different computing ideas.
 
 *** Batch Processing
+:PROPERTIES:
+:ID:       ace7c720-95c5-46df-a383-29ae914ba66a
+:END:
 
 [[wiki-batch-processing][Batch processing]] is the familiar concept of
 processing data en masse.  The batch size could be small or very large.  This
@@ -282,6 +336,9 @@ However, it generally incurs a high-latency and is completely unsuitable for
 incoming data.
 
 *** Event-Stream Processing
+:PROPERTIES:
+:ID:       2bd17746-7f94-4091-b017-1adf9d331b76
+:END:
 
 [[wiki-event-processing][Stream processing]] is a /one-at-a-time/ processing
 model; a datum is processed as it arrives.  The core Storm library follows this
@@ -292,10 +349,13 @@ sub-second latencies.  However, with stream processing, it is incredibly
 difficult to process stable data efficiently.
 
 *** Micro-Batching
+:PROPERTIES:
+:ID:       0d77d533-83f6-49cd-8444-f4c70ccf742b
+:END:
 
 Micro-batching is a special case of batch processing where the batch size is
 orders smaller.  Spark Streaming operates in this manner as does the Storm
-[[storm-triden-overview][Trident API]].
+[[storm-trident-overview][Trident API]].
 
 Micro-batching seems to be a nice mix between batching and streaming.  However,
 micro-batching incurs a cost of latency.  If sub-second latency is paramount,
@@ -304,11 +364,17 @@ trivially gives stateful computation, making
 [[wiki-sql-window-function][windowing]] an easy task.
 
 ** Fault-Tolerance / Message Guarantees
+:PROPERTIES:
+:ID:       1615649c-d53b-4aab-a626-36cdfd15c8a7
+:END:
 
 As a result of each project's fundamentally different processing models, the
 fault-tolerance and message guarantees are handled differently.
 
 *** Delivery Semantics
+:PROPERTIES:
+:ID:       f1547ad9-ce75-4724-97a1-d6e5c3eb49e8
+:END:
 
 Before diving into each project's fault-tolerance and message guarantees, here
 are the common delivery semantics:
@@ -321,6 +387,9 @@ are the common delivery semantics:
   delivery.
 
 *** Apache Storm
+:PROPERTIES:
+:ID:       e360b349-6f03-45ca-8f08-f0cc13099d2c
+:END:
 
 To provide fault-tolerant messaging, Storm has to keep track of each and every
 record.  By default, this is done with at least once delivery semantics.  Storm
@@ -329,6 +398,9 @@ semantics offered by Storm can incur latency costs; if data loss in the stream
 is acceptable, at most once delivery will improve performance.
 
 *** Apache Spark Streaming
+:PROPERTIES:
+:ID:       39ff23b5-d9e3-4ebe-98b9-259f518bc50e
+:END:
 
 The resiliency built into Spark RDD's and the micro-batching yields a trivial
 mechanism for providing fault-tolerance and message delivery guarantees.  That
@@ -338,8 +410,14 @@ available to Spark.  However some failure scenarios of Spark Streaming degrade
 to at least once delivery.
 
 ** Applicability
+:PROPERTIES:
+:ID:       de3b5cc1-4f26-4c32-b268-44f60bcaeaa1
+:END:
 
 *** Apache Storm
+:PROPERTIES:
+:ID:       e702bc5f-35f4-453e-b464-0fa22d47ff01
+:END:
 
 Some areas where Storm excels include: near real-time analytics, natural
 language processing, data normalization and [[wiki-etl][ETL]] transformations.
@@ -348,12 +426,18 @@ technologies yielding fine-grained transformations allowing very flexible
 processing topologies.
 
 *** Apache Spark Streaming
+:PROPERTIES:
+:ID:       4e9f064f-30b1-4e96-9d17-c6cefb23942b
+:END:
 
 Spark has an excellent model for performing iterative machine learning and
 interactive analytics.  But Spark also excels in some similar areas of Storm
 including near real-time analytics, ingestion.
 
 ** Final Thoughts
+:PROPERTIES:
+:ID:       138afe07-ca54-4071-8970-a6a295867e4c
+:END:
 
 Generally, the requirements will dictate the choice.  However, here are some
 major points to consider when choosing the right tool:
@@ -396,6 +480,9 @@ choice for part of an analytics stack.  Choosing the right one is simply a
 matter of answering the above questions.
 
 ** References
+:PROPERTIES:
+:ID:       3819ddaf-8bb9-488d-a7dc-3cf4b02e6e44
+:END:
 
 -  [[storm][Apache Storm Home Page]]
 

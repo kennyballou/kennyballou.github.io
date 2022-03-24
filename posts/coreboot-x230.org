@@ -53,6 +53,9 @@ improperly or even properly!/  You have been warned.
 #+END_PREVIEW
 
 ** Coreboot
+:PROPERTIES:
+:ID:       b461135c-68bd-44b4-b60e-951f484acb6d
+:END:
 
 #+BEGIN_QUOTE
   coreboot is an extended firmware platform that delivers a lightning fast and
@@ -68,9 +71,12 @@ with a number of payloads, e.g., [[seabios][SeaBIOS]] or
 e.g., [[memtest][memtest86+]].
 
 ** Motivation
+:PROPERTIES:
+:ID:       f3d7d6dd-5cda-4af2-8928-ffa107b636bc
+:END:
 
 Why replace the default BIOS image in the first place? There are several
-motivations for doing this.  For one, it's [[ddg-whitelist-biso][well
+motivations for doing this.  For one, it's [[ddg-whitelist-bios][well
 documented]] that Lenovo installs a device whitelist onto its systems,
 disabling the computer if a third-party peripheral is installed, which can
 include WiFi cards and SSD's.  If you're more adventurous and want to replace
@@ -83,6 +89,9 @@ disastrous [[wiki-intel-amt][Intel ME]] platform.  This is, unfortunately,
 will make the laptop effectively unusable.
 
 ** Necessary Equipment
+:PROPERTIES:
+:ID:       307b7a44-b47f-4c6f-a841-46c65256f08f
+:END:
 
 Before we go into the actual steps, let's take a moment to gather all the
 necessary equipment.  Disassembly is necessary because the BIOS chip is locked
@@ -121,6 +130,9 @@ However, desoldering will not be necessary.
   magnifying lens will be helpful in determining the exact version.
 
 ** Disassembly and BIOS Access
+:PROPERTIES:
+:ID:       b675bf52-308c-4dbc-8f4a-4ca5ac2b69c1
+:END:
 
 [[myfixguide-lenovo-x230][Steps]] and [[ifixit-x230][manuals]] for
 disassembling the laptop can be found with a simple search.  However, it's only
@@ -149,6 +161,9 @@ If you are unable to read the version of the chip, there are steps we can take
 to proceed, but it will be far more tedious and less comfortable.
 
 *** Connecting the Raspberry Pi to the SOIC Clip
+:PROPERTIES:
+:ID:       d2281163-b8b1-490e-88dd-f969c454729a
+:END:
 
 Next, we will be connecting the Raspberry Pi with the cables and clips to the
 BIOS chip.
@@ -188,6 +203,9 @@ for starting):
 -  8: GPIO 25
 
 *** Using the Raspberry Pi
+:PROPERTIES:
+:ID:       87d2573e-956a-4a26-90f1-8afbc2c78a9a
+:END:
 
 #+ATTR_HTML: :align center
 #+HTML: <figure>
@@ -288,6 +306,9 @@ attempt recovery.
 #+END_QUOTE
 
 ** Configuration and Compilation
+:PROPERTIES:
+:ID:       86a3c4af-c19f-442a-ade1-2cd1445e423b
+:END:
 
 Half the battle to getting Coreboot onto your system is properly putting
 together the build-tools and compiling the coreboot image.  There already
@@ -329,6 +350,9 @@ Now, we can move onto configuring the tool-chain, building the tool-chain, and
 finally building the coreboot image itself.
 
 *** Configuration
+:PROPERTIES:
+:ID:       373752d9-60dc-48d3-863e-ff81dd0f4d99
+:END:
 
 #+BEGIN_EXAMPLE
     % cd coreboot
@@ -381,6 +405,9 @@ These configuration options were borrowed from
 [[ericholzbach-x230-coreboot][Unix Blather]].
 
 *** Compilation
+:PROPERTIES:
+:ID:       96cbceff-bc36-4aff-8893-c0f7b781d951
+:END:
 
 #+BEGIN_QUOTE
   If you were thinking of compiling the ROM on the Pi, I recommend you
@@ -423,6 +450,9 @@ This will create a 4MB file in ~/tmp/~ named ~x230.rom~.  Finally, copy the new
 image to the Raspberry Pi.
 
 ** Flashing the New Image
+:PROPERTIES:
+:ID:       8879cf7b-f823-4ac8-89d2-0f3cd2e9324f
+:END:
 
 After the image is copied to the Pi, we can use flashrom to write the new
 image:
@@ -482,6 +512,9 @@ All that's next is to disconnect the chip, reassemble the laptop and hope it
 works!
 
 ** Common Problems
+:PROPERTIES:
+:ID:       229348bf-2725-4b85-bb58-2974ae7102b1
+:END:
 
 If you're having issues flashing or reading your BIOS, check the following:
 
@@ -495,6 +528,9 @@ For some more information, check Flashrom's [[flashrom-spi][in system
 programming]].
 
 ** Summary and Auxiliary Advice
+:PROPERTIES:
+:ID:       c0950f38-f89f-4494-93d7-1a9558a8b55b
+:END:
 
 Hopefully, you're now booting into your x230 with Coreboot.  Enjoy your new
 BIOS, whitelist free and awesome!
@@ -504,6 +540,9 @@ POWER OFF THE CHIP!/ Get help from the [[coreboot-irc][#coreboot]] IRC channel
 on [[freenode][freenode]] or [[coreboot-mailinglist][email the mailing list]].
 
 ** References
+:PROPERTIES:
+:ID:       286cfd79-8d9a-4e82-bb87-1f7b8b012a8d
+:END:
 
 - [[coreboot][coreboot homepage]]
 

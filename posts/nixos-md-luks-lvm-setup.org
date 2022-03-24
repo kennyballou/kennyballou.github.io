@@ -46,7 +46,9 @@
 #+LINK: wiki-serpent https://en.wikipedia.org/wiki/Serpent_(cipher)
 #+LINK: wiki-twofish https://en.wikipedia.org/wiki/Twofish
 #+LINK: wiki-xfs https://en.wikipedia.org/wiki/XFS
-
+#+LINK: wiki-cow https://en.wikipedia.org/wiki/Copy-on-write
+#+LINK: wiki-uefi https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface
+#+LINK: grub https://www.gnu.org/software/grub/
 
 #+BEGIN_PREVIEW
 A brief overview (read instructions) on setting up a new [[nixos][NixOS]]
@@ -57,17 +59,22 @@ configuration.
 #+END_PREVIEW
 
 ** NixOS
+:PROPERTIES:
+:ID:       6711f5a3-0eba-4d89-a292-29002d9a428c
+:END:
 
 [[nixos-post][Previously]], we introduced the concepts and ideas behind
 [[nixos][NixOS]] and by extension [[nix][nix]], the package manager.  We,
 therefore, will not be reiterating the discussion here.
 
 ** System Installation and Configuration
+:PROPERTIES:
+:ID:       a7328df8-359d-4f43-af94-8716722058ca
+:END:
 
 Installing [[nixos][NixOS]] is fairly straight forward.  However, that is a
 relative term.  My experience is with [[arch-linux][Arch Linux]] and more
-recently [[gentoo-linux][Gentoo]], both not known for having forgiving
-installations.
+recently [[gentoo][Gentoo]], both not known for having forgiving installations.
 
 #+begin_quote
 I don't want to replace the [[nixos-manual][manual]], I only want to really
@@ -84,17 +91,21 @@ Since we are doing two setups, we will also have a chance to do both
 [[bios][BIOS]] and [[uefi][UEFI]] partitioning schemes.
 
 #+begin_quote
-I am assuming the use of the [[nixos][NixOS]] [[nixos-live][live installation]]
-medium.
+I am assuming the use of the [[nixos][NixOS]] live-installation medium.
 #+end_quote
 
 *** Laptop
+:PROPERTIES:
+:ID:       2be64326-cc2d-4392-b63e-c37ce5e1ff02
+:END:
 
 **** Disk Preparation
+:PROPERTIES:
+:ID:       5444b570-0867-40ee-bc7e-ba71f4e9bd6a
+:END:
 
 #+begin_quote
-I am assuming the use of the [[nixos][NixOS]] [[nixos-live][live installation]]
-medium.
+I am assuming the use of the [[nixos][NixOS]] live installation medium.
 #+end_quote
 
 Since this will be an encrypted everything (sans ~/boot~), we will need to
@@ -258,6 +269,9 @@ installation, creating the folder trees as necessary to mount:
 #+end_example
 
 *** Desktop
+:PROPERTIES:
+:ID:       6a12e718-4c78-4070-b084-508dee37644a
+:END:
 
 The desktop preparation and configuration are very similar to the laptop.
 However, as noted above, the complication comes from the fact that instead of a
@@ -265,6 +279,9 @@ single pair of drives, we will have 3 pairs of drives.  Everything else is
 essentially the same.
 
 **** Disk Preparation
+:PROPERTIES:
+:ID:       7655a364-79cc-4fd3-b866-b58a93b16a15
+:END:
 
 We first start by securely erasing all the devices:
 
@@ -439,6 +456,9 @@ desired path:
 #+end_example
 
 *** NixOS Configuration and Installation
+:PROPERTIES:
+:ID:       33ac70a7-24ba-49bf-8f13-f957ca9e9179
+:END:
 
 Once the disk preparation is complete, we can follow the steps from the
 [[nixos-manual][NixOS Manual]] to create the initial configuration:
@@ -483,6 +503,9 @@ machine, remove the installation/live media, use the freshly installed machine
 as if it was always there.
 
 **** UEFI Notes
+:PROPERTIES:
+:ID:       c71414c6-6ccd-45c6-809d-f0c53d06aed7
+:END:
 
 Aside from learning about the ~mdadm~ metadata placement being an issue for
 [[wiki-uefi][UEFI]] systems to boot, I also had played around with the various
@@ -531,7 +554,7 @@ Of particular importance are the following variables:
 Ideally, ~boot.loader.grub.efiSupport~ would be sufficient to tell
 [[grub][GRUB]] to install the [[wiki-uefi][UEFI]] payload instead.  However, as
 it turns out, there is a few more settings required to ensure proper booting in
-[[wiki-uefi][UEFI]] environments, particularly when using [[raid][RAID]].
+[[wiki-uefi][UEFI]] environments, particularly when using [[wiki-raid][RAID]].
 
 According to the manual, it's required to set ~boot.loader.systemd-boot.enable~
 to ~true~.  Setting ~boot.loader.grub.device~ or ~boot.loader.grub.devices~ to
@@ -546,6 +569,9 @@ simply places the [[grub][GRUB]] [[wiki-uefi][UEFI]] payload in the "default"
 search location for the motherboard, consulted before the NVRAM settings.
 
 **** Docker, ~nftables~, and NixOS Notes
+:PROPERTIES:
+:ID:       46f99075-4013-4f5d-a991-9b07d3e7e564
+:END:
 
 In developing the system configuration, I came across some issues with respect
 to [[docker][Docker]] and [[nftables][~nftables~]].  The

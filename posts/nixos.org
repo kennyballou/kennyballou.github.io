@@ -40,6 +40,9 @@ revolution of how we think about operating systems and software development.
 #+END_PREVIEW
 
 ** NixOS
+:PROPERTIES:
+:ID:       09a7cc51-527a-4c65-8eb8-dedcdff2004d
+:END:
 
 [[nixos][NixOS]] is a "functional" [[gnu][GNU]]/[[linux][Linux]] distribution
 extending the ideas of functional programming languages to operating systems.
@@ -88,6 +91,9 @@ To understand better the concepts behind [[nixos][NixOS]], we will take a brief
 detour through [[nix][Nix]], the package manager.
 
 *** Nix (the package manager)
+:PROPERTIES:
+:ID:       24f226f1-5bdc-4253-8e67-4b6853e740b8
+:END:
 
 Beyond the comparisons of language paradigms, there are some other _really_
 neat ideas that come from the [[nix][Nix]] family.  Specifically, I want to
@@ -124,6 +130,9 @@ Therefore, given our above example of package management mishaps, when package
 by ~A~ is left untouched and package ~A~ works just the same as before.
 
 *** Nix Store
+:PROPERTIES:
+:ID:       44725a66-ef15-47cf-8050-ec4d76d9290a
+:END:
 
 After examining the above example, how does [[nix][Nix]] accomplish this?
 
@@ -206,6 +215,9 @@ are comprised of the outputs of the package and associated symbolic links to
 the package's inputs.
 
 *** Nix Profiles
+:PROPERTIES:
+:ID:       1a539227-a134-47c3-98c4-7218cb43f9cd
+:END:
 
 Packages in [[nix][Nix]] are directory trees found in the [[nix][Nix]] store,
 what are profiles?  Perhaps, more appropriately, what are user environments?
@@ -314,6 +326,9 @@ atomic.  If the any of the previous steps fail, the user profile is not
 adversely affected.
 
 *** System Profiles
+:PROPERTIES:
+:ID:       32b83c94-6bfc-4ef0-90d9-5f01db970330
+:END:
 
 After user profiles, we are left with system profiles.  What exactly is
 [[nixos][NixOS]]?  If any of the above provides any foreshadowing, the answer
@@ -413,6 +428,9 @@ system, this isolation is certainly not perfect.  Particularly so with the
 interaction of services and their underlying configuration.
 
 ** Alternatives
+:PROPERTIES:
+:ID:       a9f063d9-2e50-462b-b7c7-1e06e8dcdbc6
+:END:
 
 Aside from [[nixos][NixOS]], there is also [[guix][Guix]], a [[gnu][GNU]]
 alternative to [[nix][Nix]] and [[nixos][NixOS]].  Many of the ideas of
@@ -432,7 +450,7 @@ the package manager will not be supported on other operating systems such as
 Apple MacOS and Microsoft Windows.
 
 Another alternative is using any number of
-[[configuraiton-management-wiki][Configuration Management]] solutions on a
+[[configuration-management-wiki][Configuration Management]] solutions on a
 typical [[gnu][GNU]]/[[linux][Linux]] distribution.  However, solutions such as
 [[ansible][Ansible]], [[puppet][Puppet]], and [[salt-stack][Salt]] fail in a
 very similar way that tradition distrubtions fail: they are dependent on
@@ -440,9 +458,12 @@ ordering and distrubtion managers and software maintainers to create
 appropriate software dependency graphs.  Failure in dependency management
 yields failures in the system.  Furthermore, once a package is no longer
 available in the official repositories, it is no longer trivially available to
-be installed via the software configuraiton tools.
+be installed via the software configuration tools.
 
 ** Impressions and Thoughts
+:PROPERTIES:
+:ID:       845c7afd-defe-4838-8fbc-814cf7e42b78
+:END:
 
 [[nix][Nix]] and by extension [[nixos][NixOS]] (hopefully) solve some really
 annoying problems I tend to keep running into when developing software and

@@ -62,29 +62,32 @@ and Erlang/Elixir stack on the production system is slightly unnerving for it's
 own set of reasons.
 
 ** Problem
+:PROPERTIES:
+:ID:       a5bb175a-373c-45ee-b686-1a6fd9254859
+:END:
 
 Here are some selected quotes; I'm not trying to pick on anyone in particular
 or the community at large, but I'm trying to show a representation of why this
 very topic is an issue in the first place.
 
 #+BEGIN_QUOTE
-  We need to be sure that the architectures for both our build and hosting
-  environments are the same, e.g. 64-bit Linux -> 64-bit Linux.  If the
-  architectures don't match, our application might not run when deployed.
-  Using a virtual machine that mirrors our hosting environment as our build
-  environment is an easy way to avoid that problem.
-  [[phoenix-docs-releases][Phoenix Exrm Releases]].
+We need to be sure that the architectures for both our build and hosting
+environments are the same, e.g. 64-bit Linux -> 64-bit Linux.  If the
+architectures don't match, our application might not run when deployed.
+Using a virtual machine that mirrors our hosting environment as our build
+environment is an easy way to avoid that problem.
+[[phoenix-docs-releases][Phoenix Exrm Releases]].
 #+END_QUOTE
 
 And another, similar quote:
 
 #+BEGIN_QUOTE
-  One important thing to note, however: /you must use the same architecture for
-  building your release that the release is getting deployed to./ If your
-  development machine is OS X and you're deploying to a Linux server, you need
-  a Linux machine to build your exrm release or it isn't going to work, or you
-  can just build on the same server you're going to be running everything on.
-  [[erlang-solutions-homepag][Brandon Richey]].
+One important thing to note, however: /you must use the same architecture for
+building your release that the release is getting deployed to./ If your
+development machine is OS X and you're deploying to a Linux server, you need
+a Linux machine to build your exrm release or it isn't going to work, or you
+can just build on the same server you're going to be running everything on.
+[[erlang-solutions-homepage][Brandon Richey]].
 #+END_QUOTE
 
 Unfortunately, these miss a lot of the more subtle issues, dependency hell is
@@ -99,6 +102,9 @@ machines are running the ~AMD64~ instruction sets, the architectures are the
 /same/.
 
 *** Shared Objects
+:PROPERTIES:
+:ID:       93561071-f3ac-4bbc-a24d-4977bd78a317
+:END:
 
 Let's start with the most simplistic issue, different versions of shared
 objects.
@@ -120,6 +126,9 @@ shared objects Erlang needs to run, depending on what was enabled when Erlang
 was built or what features the deployed application needs.
 
 *** Erlang Libraries
+:PROPERTIES:
+:ID:       46a3fda1-6ecd-428d-9354-97561f9a0dbb
+:END:
 
 We may try to resolve this issue by adding a particular ~rel/relx.config~ file
 to our Elixir project.  Specifically, we will /not/ bundle ERTS, opting to use
@@ -157,6 +166,9 @@ include the standard libraries of the build system's ERTS could run into the
 We are left to attempt more solutions.
 
 *** Docker or Virtualization
+:PROPERTIES:
+:ID:       12db9648-3a15-4deb-b367-8f276f2bf1f6
+:END:
 
 Next, since we do want to ultimately get our build running in a CI/CD
 environment, we may look toward virutalization/containerization.  Being
@@ -184,6 +196,9 @@ in the first place.
 That's not going to work.
 
 *** OTP as Project Dependency
+:PROPERTIES:
+:ID:       5a4802cf-76c3-4794-8616-b6a897386daf
+:END:
 
 Another option we might try is make Erlang a build dependency of our Elixir
 application, this /could/ be achieved via the following structure:
@@ -211,8 +226,8 @@ Then using ~rel/relx.config~ with:
 the same shared objects for OpenSSL and others that may be enabled by default.
 
 #+BEGIN_QUOTE
-  However, I didn't follow this idea all the way to the end as I wasn't
-  entirely happy with it, and it would fall to some later issues.
+However, I didn't follow this idea all the way to the end as I wasn't
+entirely happy with it, and it would fall to some later issues.
 #+END_QUOTE
 
 Notably, though, this will inflate the production builds drastically since our
@@ -234,6 +249,9 @@ implementation, i.e., ~musl~ vs ~glibc~, the dependency will likely complain
 about it as well.
 
 ** Non-Solution Solutions
+:PROPERTIES:
+:ID:       36bda176-eb6a-412b-b7a8-2102e4cbcd36
+:END:
 
 Of course, all of these above issues can be solved by "just building on the
 target machine" or by simply using ~mix run~ on the target instead.  However, I
@@ -251,6 +269,9 @@ load for building the project and its dependencies before any real, actual
 upgrading can continue.
 
 ** Solutions(?)
+:PROPERTIES:
+:ID:       d1fa6111-c61b-4dea-890d-6736dbe20fb7
+:END:
 
 What are we to do? How are we to build Erlang/Elixir/OTP applications as part
 of our CI/CD pipeline? Particularly, how are we to build our applications on a
@@ -268,9 +289,9 @@ versioning completely within reach.  Moreover, since the build host and the
 target host are nearly identical, bundling ERTS should be a non-issue.
 
 #+BEGIN_QUOTE
-  This is the observed result of using
-  [[kb-docker-elixir-centos][docker-elixir-centos]] for a base image for CI
-  builds.
+This is the observed result of using
+[[kb-docker-elixir-centos][docker-elixir-centos]] for a base image for CI
+builds.
 #+END_QUOTE
 
 Another possible solution is to ship Docker containers as the artifact of the
@@ -278,7 +299,7 @@ build.  However, this, to do well, requires a decent Docker capable
 infrastructure and deployment process.  Furthermore, going this route, it's
 unlikely that ~exrm~ is even necessary at all.  It is likely more appropriate
 to simply use ~mix run~ or whatever the project's equivalent is.  Another thing
-lost here, is [[erlang-docs-rel][relups]], which is essentially the whole
+lost here, is [[erlang-docs-reltool][relups]], which is essentially the whole
 reason of wanting to use ~exrm~ in the first place.
 
 As such, if using ~exrm~ is desired, setting up a build server will be
@@ -287,6 +308,9 @@ from a solid build foundation will be much easier than building and "deploying"
 on the production farm itself.
 
 ** Moving Forward
+:PROPERTIES:
+:ID:       c863c3c8-9535-4309-9961-b87d44213b98
+:END:
 
 Releasing software isn't in a particularly hard class of problems, but it does
 have its challenges.  Some languages attempt to solve this challenge in its

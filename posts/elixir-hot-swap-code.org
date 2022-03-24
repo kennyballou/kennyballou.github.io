@@ -58,6 +58,9 @@ This post will be a small tour through how Elixir and Erlang can perform code
 hot swapping, and how this can be useful for deployments.
 
 ** Hot Code Swapping: Basics
+:PROPERTIES:
+:ID:       f8a908a1-55e1-4dbf-930e-6757e55dfbdd
+:END:
 
 There are several functions defined in the [[erlang-doc-sys][~:sys~]] and
 [[erlang-doc-code][~:code~]] modules that are required for this first example.
@@ -82,6 +85,9 @@ parameter for each process, it's the same ~extra~ that will be passed to
 the restarted process's ~code_change/3~ function.
 
 *** Example
+:PROPERTIES:
+:ID:       eac2bc44-e0ba-436c-b79f-25f89556409d
+:END:
 
 Let's assume we have a particularly simple module, say ~KV~, similar to
 the following:
@@ -217,6 +223,9 @@ But the above is merely an example of manually invoking the code
 reloading API, there are better ways to achieve the same result.
 
 *** Example: ~iex~
+:PROPERTIES:
+:ID:       4f411482-163e-4665-9a28-33552d7998e5
+:END:
 
 There are several functions available to us when using ~iex~ that
 essentially perform the above actions for us:
@@ -256,6 +265,9 @@ application?
 #+END_QUOTE
 
 ** Relups
+:PROPERTIES:
+:ID:       5e4bd930-de65-4419-a94c-881dc960869e
+:END:
 
 Fortunately, there is another set of tooling that allows us to more
 easily deploy releases, and more pointedly, perform upgrades: Relups.
@@ -263,6 +275,9 @@ Before we dive straight into relups, let's discuss a few other related
 concepts.
 
 *** Erlang Applications
+:PROPERTIES:
+:ID:       fa58adb4-bc8c-4d55-ae3f-d29094628c07
+:END:
 
 As part of Erlang "Applications", there is a related file, the
 [[erlang-doc-app][~.app~]] file.  This resource file describes the application:
@@ -296,6 +311,9 @@ the ~modules~ that make up the application, and the other OTP applications this
 application requires to run.
 
 *** Erlang Releases
+:PROPERTIES:
+:ID:       ddd6acc5-6d88-44a8-8b72-518173f02d04
+:END:
 
 An Erlang "release", similar to Erlang application, is an entire system: the
 Erlang VM, the dependent set of applications, and arguments for the Erlang VM.
@@ -324,6 +342,9 @@ list of applications (and their versions) provided in the last element of the
 tuple.
 
 *** Appups and Relups
+:PROPERTIES:
+:ID:       668fa2fe-193d-437e-9549-95523ed52b1e
+:END:
 
 As the naming might suggest, "appups" and "relups" are the "upgrade"
 versions of applications and releases, respectively.  Appups describe how
@@ -441,6 +462,7 @@ essentially the same.
 *** Generating Releases and Upgrades with Elixir
     :PROPERTIES:
     :CUSTOM_ID: generating-releases-and-upgrades-with-elixir
+    :ID:       a53b1cd0-627c-46f7-b527-aa9d9509007b
     :END:
 
 Now that we have some basic understanding of releases and upgrades, let's see
@@ -455,7 +477,7 @@ the soon to be deprecated [[github-exrm][exrm]] project.
   necessary.
 #+END_QUOTE
 
-Add the [[distrillery][distillery]] application to your ~deps~ list:
+Add the [[distillery][distillery]] application to your ~deps~ list:
 
 #+BEGIN_EXAMPLE elixir
     {:distillery, "~> 0.10"}
@@ -592,6 +614,9 @@ necessary since the upgrade process may require more than simply jumping to the
 "latest" version.
 
 ** Summary
+:PROPERTIES:
+:ID:       1689a26c-c787-43fd-8e5b-70b78013df7a
+:END:
 
 Release management is a complex topic, upgrading without restarting seemingly
 even more so.  However, the process /can/ be understood, and knowing how the
