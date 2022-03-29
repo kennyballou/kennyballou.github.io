@@ -27,6 +27,7 @@ resolve, especially so once the necessary tools are known.
 ** Git Reflog
    :PROPERTIES:
    :CUSTOM_ID: git-reflog
+   :ID:       ec1715fd-6de5-4a13-99bd-ce638b7e6ff8
    :END:
 
 #+BEGIN_QUOTE
@@ -93,6 +94,7 @@ changes.
 ** Git Fsck
    :PROPERTIES:
    :CUSTOM_ID: git-fsck
+   :ID:       e6339a29-fb8c-4881-99d4-489999c87fcb
    :END:
 
 [[man-git-reflog][~git-reflog(1)~]] is a very useful tool, but, another way
@@ -186,6 +188,7 @@ resurrecting or even are in fact the objects we want to resurrect.
 ** Resurrection Example
    :PROPERTIES:
    :CUSTOM_ID: resurrection-example
+   :ID:       758cdfb2-3623-48f6-b0de-bac2d9446207
    :END:
 
 Now that we have some tools, let's examine a situation where a change to the
@@ -260,6 +263,7 @@ examination.  However, we likely lost the commit hash of the branch.
 *** Solution
     :PROPERTIES:
     :CUSTOM_ID: solution
+    :ID:       da233182-efc0-4e88-a104-99016cf69880
     :END:
 
 If we take a quick look at our ~git-fsck~ output, we might see something that
@@ -313,6 +317,7 @@ or recreate the reference for later inspection.
 ** Another Resurrection Example
    :PROPERTIES:
    :CUSTOM_ID: another-resurrection-example
+   :ID:       a24032fc-0ed8-4906-a7da-b2d33b42f121
    :END:
 
 For another example, let's examine when we create a branch and change the
@@ -452,6 +457,7 @@ simply rebase one way and return, the commits are too intermingled.
 *** Solutions
     :PROPERTIES:
     :CUSTOM_ID: solutions
+    :ID:       1013e680-6863-4823-8d4f-44da715069e5
     :END:
 
 One way we can fix this is to simply not care.  But that's not what we are
@@ -574,6 +580,7 @@ Afterwards, our repository will look like the following figure:
 ** Summary
    :PROPERTIES:
    :CUSTOM_ID: summary
+   :ID:       89a74054-7783-4fa6-beb9-db9b97439196
    :END:
 
 The best way to fix Git repository history is not to make mistakes in the first
@@ -586,6 +593,9 @@ This way, we can avoid keeping around a ~git.txt~ file ([[xkcd-git][xkcd]])
 when our repository eventually melts down.
 
 ** References
+:PROPERTIES:
+:ID:       b95dc6ac-6a3e-4f60-83fd-c6b598041bb4
+:END:
 
 - [[man-git-reflog][~git-reflog(1)~]]
 

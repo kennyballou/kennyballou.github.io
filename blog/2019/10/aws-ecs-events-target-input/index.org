@@ -40,6 +40,9 @@ source.
 What to do when there isn't source (code) available?
 
 ** Problem
+:PROPERTIES:
+:ID:       613963b0-e19f-4d55-bc8c-59a0b3c59810
+:END:
 
 While attempting to make some infrastucture changes, I wanted to create a
 scheduled [[aws-cloudwatch-events][event]] to target a specific
@@ -91,6 +94,9 @@ This is particularly vague.  I suppose we can insert some "text" and see what
 happens.
 
 ** Exploring the Problem
+:PROPERTIES:
+:ID:       27fa298b-81a4-42c3-bae6-fc23c6fa5e5f
+:END:
 
 #+begin_quote
 Otherwising shooting in the dark...
@@ -148,6 +154,9 @@ hand.
 #+end_src
 
 ** Solution
+:PROPERTIES:
+:ID:       1e9dd703-e4f1-4c58-931a-f1104ebb0da3
+:END:
 
 However, the "Input" key is a string encoded JSON structure, so the full
 solution is the following snippet:
@@ -180,6 +189,9 @@ This structure may seem familiar.  This structure is documented in the
 [[aws-ecs-run-task-api][ECS RunTask API]] documentation.
 
 ** Conclusion
+:PROPERTIES:
+:ID:       0f66626c-a07c-4909-9057-48f9b08728b6
+:END:
 
 The connection between "Input" is a JSON encoded string and pass the
 "containerOverrides" structure is missing or not obvious at best.  Hopefully,

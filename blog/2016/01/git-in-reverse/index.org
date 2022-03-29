@@ -31,8 +31,8 @@
 #+LINK: so-git-pull-considered-harmful https://stackoverflow.com/questions/15316601/in-what-cases-could-git-pull-be-harmful#15316602
 
 #+BEGIN_QUOTE
-  The content of this post is drafted from contents of a
-  [[git-in-reverse-pdf][similarly titled presentation]].
+The content of this post is drafted from contents of a
+[[git-in-reverse-pdf][similarly titled presentation]].
 #+END_QUOTE
 
 #+BEGIN_PREVIEW
@@ -46,6 +46,9 @@ We will start by touring the plumbing commands and walk all the way through
 branching.
 
 ** What is Git±
+:PROPERTIES:
+:ID:       5667db69-0fd9-496d-a1a8-4147d2ffae02
+:END:
 
 #+ATTR_HTML: :align center
 #+HTML: <a href="https://xkcd.com/1597"><figure>
@@ -67,11 +70,17 @@ filesystem.  Git only knows how to store "objects".  There is really no other
 /real/ thing that Git is storing.
 
 ** Plumbing
+:PROPERTIES:
+:ID:       710d7891-5b96-4a5d-bac0-7928ef39de0e
+:END:
 
 We will start by learning a few of the most basic plumbing commands of Git,
 beginning with the [[man-git-hash-object][~git-hash-object(1)~]] command:
 
 *** Git Objects
+:PROPERTIES:
+:ID:       7fc611b9-7119-490a-bb54-3b71baab0eb2
+:END:
 
 Git objects are a [[wiki-zlib][zlib]] compressed binary file stored under the
 ~.git/objects~ folder of any Git repository.  They are typically created with
@@ -89,9 +98,9 @@ temporary repository:
 #+END_EXAMPLE
 
 #+BEGIN_QUOTE
-  The [[man-git-init][~git-init(1)~]] command creates a new local Git
-  repository in the current directory or creates a new directory with a newly
-  initialized Git repository.
+The [[man-git-init][~git-init(1)~]] command creates a new local Git
+repository in the current directory or creates a new directory with a newly
+initialized Git repository.
 #+END_QUOTE
 
 After creating a new Git repository, let's examine its current contents:
@@ -131,6 +140,9 @@ hash.
 With all this out of the way, we can now start creating objects.
 
 **** [[man-git-hash-object][~git-hash-object(1)~]]
+:PROPERTIES:
+:ID:       f72c1a87-6a58-4117-9175-ee4ea11687ce
+:END:
 
 We can start out by providing some content for
 [[man-git-hash-object][~git-hash-object(1)~]]:
@@ -199,6 +211,9 @@ than any form of development.  Furthermore, we don't have a way to store
 filenames yet.  Thus, we will need a new type of object, trees.
 
 *** Git Trees
+:PROPERTIES:
+:ID:       8343f731-baa4-4dec-a490-b984a3f8f3b8
+:END:
 
 Trees are objects.
 
@@ -226,7 +241,7 @@ Visually, this may look like something similar to the following image:
 #+ATTR_HTML: :align center
 #+HTML: <figure>
 #+NAME: fig: Git Tree
-[[file:/media/git-tree-1.png]]
+[[file:../../../../media/git-tree-1.png]]
 #+HTML: </figure>
 
 If we inspect the ~.git/objects~ directory, we should see a new object:
@@ -260,7 +275,7 @@ A more complicated example of a Git tree may look like the following image:
 #+ATTR_HTML: :align center
 #+HTML: <figure>
 #+NAME: fig: Another Git Tree
-[[file:/media/git-tree-2.png]]
+[[file:../../../../media/git-tree-2.png]]
 #+HTML: </figure>
 
 Now we have file names and the ability to track folders, however, we are still
@@ -269,6 +284,9 @@ reference to who, when, why, or from where changes are being made.  We need
 another object to store this information.
 
 *** Git Commits
+:PROPERTIES:
+:ID:       f70cbb44-2c36-4fa2-bf76-706e923dc9c0
+:END:
 
 This will sound familiar: Git commits are ... objects.
 
@@ -291,8 +309,8 @@ We have just created a tree, let's see what committing that tree looks like:
 #+END_EXAMPLE
 
 #+BEGIN_QUOTE
-  Notice, the hash returned here /will/ be different.  This hash is dependent
-  on time and the author.
+Notice, the hash returned here /will/ be different.  This hash is dependent
+on time and the author.
 #+END_QUOTE
 
 Inspecting our ~.git/objects~ store, we will see our new object:
@@ -330,7 +348,7 @@ single line.
 #+ATTR_HTML: :align center
 #+HTML: <figure>
 #+NAME: fig: Git Commit
-[[file:/media/git-commit-1.png]]
+[[file:../../../../media/git-commit-1.png]]
 #+HTML: </figure>
 
 To inform Git that we have created a commit, we need to add some information to
@@ -493,6 +511,9 @@ computing text differences is relatively cheap compared to attempting to manage
 code patches as a means of versioning.
 
 ** Porcelain
+:PROPERTIES:
+:ID:       a1386739-658b-44f9-b61c-428557a8ca94
+:END:
 
 Now that we have gone through our tour of the plumbing commands and Git
 internals, we can start /actually/ use Git.  It will be very rare that the
@@ -541,6 +562,9 @@ basis: [[man-git-clone][~git-clone(1)~]], [[man-git-status][~git-status(1)~]],
 [[man-git-push][~git-push(1)~]], and [[man-git-remote][~git-remote(1)~]].
 
 *** [[man-git-clone][~git-clone(1)~]]
+:PROPERTIES:
+:ID:       26a88bb3-57c5-4931-93e4-a2a7590c7768
+:END:
 
 Before you can contribute to a project, you need your own copy of the
 repository, this is where we would use [[man-git-clone][~git-clone(1)~]].  As
@@ -583,6 +607,9 @@ listed here in order of preference:
 - ~File~
 
 *** [[man-git-status][~git-status(1)~]]
+:PROPERTIES:
+:ID:       a030ac63-b1c0-4207-a62a-f3acadc8f3fe
+:END:
 
 Often, you will need to know the state of the current repository, and the go-to
 command to view the current state of the repository is the
@@ -592,6 +619,9 @@ you're one, if the branch is tracked upstream, it will let you know if you have
 something to push, etc.
 
 *** [[man-git-log][~git-log(1)~]]
+:PROPERTIES:
+:ID:       7506481c-d658-4a7f-87d2-7d475d4b13c2
+:END:
 
 [[man-git-log][~git-log(1)~]] is used to check the history of the repository.
 Using [[man-git-log][~git-log(1)~]] with a few arguments, you can get a pretty
@@ -606,6 +636,9 @@ Some commonly used options you might use might be:
 - ~--summary~: Show condensed summary of header information
 
 *** [[man-git-pull][~git-pull(1)~]] and [[man-git-fetch][~git-fetch(1)~]]
+:PROPERTIES:
+:ID:       b710abe8-2c49-4f58-a207-40847727f3c2
+:END:
 
 [[man-git-pull][~git-pull(1)~]] is used to pull remote changes into your
 current working copy.  I prefer not use [[man-git-pull][~git-pull(1)~]] because
@@ -618,12 +651,18 @@ remote changes, but does not attempt to automatically merge them into the local
 branch.
 
 *** [[man-git-push][~git-push(1)~]]
+:PROPERTIES:
+:ID:       067f449a-5795-444f-893f-8a9944975321
+:END:
 
 [[man-git-push][~git-push(1)~]] will send your changes to the remote location.
 By default, this command will not attempt to overwrite the remote if the
 changes cannot be applied with a "fast-forward" merge operation.
 
 *** [[man-git-remote][~git-remote(1)~]]
+:PROPERTIES:
+:ID:       26140451-6785-403b-9ace-7605ee7c4150
+:END:
 
 [[man-git-remote][~git-remote(1)~]] is an overall "remote" management command.
 It allows you to add remotes, rename remotes, and even fetch information about
@@ -668,6 +707,9 @@ For more advanced usage of Git, we can continue to learn about code branching,
 git branches, and merging techniques.
 
 ** Branches
+:PROPERTIES:
+:ID:       2421f2df-ac9d-4dab-8351-a093bcf01f1f
+:END:
 
 Git branches are actually a very simplistic concept in both implementation and
 intuition.  Code and applications versioned by any version control tool have
@@ -679,7 +721,7 @@ isn't much different.
 #+ATTR_HTML: :align center
 #+HTML: <figure>
 #+NAME: fig: Code Branching
-[[file:/media/code-branching.png]]
+[[file:../../../../media/code-branching.png]]
 #+HTML: </figure>
 
 The structure of Git makes branching trivial, in fact, all that's required is
@@ -691,7 +733,7 @@ branches.
 #+ATTR_HTML: :align center
 #+HTML: <figure>
 #+NAME: fig: Git Code Branching
-[[file:/media/git-branching-1.png]]
+[[file:../../../../media/git-branching-1.png]]
 #+HTML: </figure>
 
 Branching in Git is accomplished with [[man-git-branch][~git-branch(1)~]] and
@@ -722,6 +764,9 @@ these two steps in one:
 #+END_EXAMPLE
 
 ** Merging
+:PROPERTIES:
+:ID:       cf2d9146-1e73-4bcd-9aaf-e66001cd91b2
+:END:
 
 Once you're ready to merge your changes from one branch into another branch,
 you can use the [[man-git-merge][~git-merge(1)~]] command to accomplish that.
@@ -734,13 +779,13 @@ history point forward.
 #+ATTR_HTML: :align center
 #+HTML: <figure>
 #+NAME: fig: Git Fast Forward Merge 1
-[[file:/media/git-ff-merge-1.png]]
+[[file:../../../../media/git-ff-merge-1.png]]
 #+HTML: </figure>
 
 #+ATTR_HTML: :align center
 #+HTML: <figure>
 #+NAME: fig: Git Fast Forward Merge 2
-[[file:/media/git-ff-merge-2.png]]
+[[file:../../../../media/git-ff-merge-2.png]]
 #+HTML: </figure>
 
 However, this can only be accomplished if the target branch doesn't have any
@@ -756,10 +801,13 @@ commit.  For more information on merging, see the
 #+ATTR_HTML: :align center
 #+HTML: <figure>
 #+NAME: fig: Git parent merge
-[[file:/media/git-resolve-merge.png]]
+[[file:../../../../media/git-resolve-merge.png]]
 #+HTML: </figure>
 
 ** Summary
+:PROPERTIES:
+:ID:       95cf9c09-6bec-45d8-9adc-5c58fc3727f0
+:END:
 
 Git is not the most complicated version control system out there, and I hope
 peering into the internals of Git demonstrates that fact. If anything, it may
@@ -777,6 +825,9 @@ also isn't always amazing at compressing binary files either.
 Beyond these problems, Git is a very powerful and capable source control tool.
 
 *** References
+:PROPERTIES:
+:ID:       21f0c08f-8b8e-4e0a-9c37-3696c458a1ac
+:END:
 
 - [[git-scm][Git SCM Site]]
 

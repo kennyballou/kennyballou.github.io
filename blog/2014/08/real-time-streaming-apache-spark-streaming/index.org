@@ -92,8 +92,8 @@ or transformations on existing RDD's.
 In Java, parallelizing may look like:
 
 #+BEGIN_SRC java
-    List<Integer> data = Arrays.asList(1, 2, 3, 4, 5);
-    JavaRDD<Integer> distData = sc.parallelize(data);
+List<Integer> data = Arrays.asList(1, 2, 3, 4, 5);
+JavaRDD<Integer> distData = sc.parallelize(data);
 #+END_SRC
 
 Where ~sc~ defines the Spark context.
@@ -101,7 +101,7 @@ Where ~sc~ defines the Spark context.
 Similarly, reading a file from HDFS may look like:
 
 #+BEGIN_SRC java
-    JavaRDD<String> distFile = sc.textFile("hdfs:///data.txt");
+JavaRDD<String> distFile = sc.textFile("hdfs:///data.txt");
 #+END_SRC
 
 The resiliency of RDD's comes from their [[lazy-evaluation][lazy]]
@@ -121,27 +121,27 @@ immutability can be illustrated with [[spark-programming-guide][Spark's]] Word
 Count example:
 
 #+BEGIN_SRC java
-    JavaRDD<String> file = sc.textFile("hdfs:///data.txt");
-    JavaRDD<String> words = file.flatMap(
-        new FlatMapFunction<String, String>() {
-            public Iterable<String> call(String line) {
-                return Arrays.asList(line.split(" "));
-            }
-        }
-    );
-    JavaPairRDD<String, Integer> pairs = words.map(
-        new PairFunction<String, String, Integer>() {
-            public Tuple2<String, Integer> call(String word) {
-                return new Tuple2<String, Integer>(word, 1);
-            }
-        }
-    );
-    JavaPairRDD<String, Integer> counts = pairs.reduceByKey(
-        new Function2<Integer, Integer>() {
-            public Integer call(Integer a, Integer b) { return a + b; }
-        }
-    );
-    counts.saveAsTextFile("hdfs:///data_counted.txt");
+JavaRDD<String> file = sc.textFile("hdfs:///data.txt");
+JavaRDD<String> words = file.flatMap(
+                                     new FlatMapFunction<String, String>() {
+                                         public Iterable<String> call(String line) {
+                                             return Arrays.asList(line.split(" "));
+                                         }
+                                     }
+                                     );
+JavaPairRDD<String, Integer> pairs = words.map(
+                                               new PairFunction<String, String, Integer>() {
+                                                   public Tuple2<String, Integer> call(String word) {
+                                                       return new Tuple2<String, Integer>(word, 1);
+                                                   }
+                                               }
+                                               );
+JavaPairRDD<String, Integer> counts = pairs.reduceByKey(
+                                                        new Function2<Integer, Integer>() {
+                                                            public Integer call(Integer a, Integer b) { return a + b; }
+                                                        }
+                                                        );
+counts.saveAsTextFile("hdfs:///data_counted.txt");
 #+END_SRC
 
 This is the canonical word count example, but here is a brief explanation: load
@@ -173,27 +173,27 @@ against RDD's.  The same word count code can be slightly modified to create a
 streaming word counter:
 
 #+BEGIN_SRC java
-    JavaReceiverInputDStream<String> lines = ssc.socketTextStream("localhost", 9999);
-    JavaDStream<String> words = lines.flatMap(
-        new FlatMapFunction<String, String>() {
-            public Iterable<String> call(String line) {
-                return Arrays.asList(line.split(" "));
-            }
-        }
-    );
-    JavaPairDStream<String, Integer> pairs = words.map(
-        new PairFunction<String, String, Integer>() {
-            public Tuple2<String, Integer> call(String word) {
-                return new Tuple2<String, Integer>(word, 1);
-            }
-        }
-    );
-    JavaPairDStream<String, Integer> counts = pairs.reduceByKey(
-        new Function2<Integer, Integer>() {
-            public Integer call(Integer a, Integer b) { return a + b; }
-        }
-    );
-    counts.print();
+JavaReceiverInputDStream<String> lines = ssc.socketTextStream("localhost", 9999);
+JavaDStream<String> words = lines.flatMap(
+                                          new FlatMapFunction<String, String>() {
+                                              public Iterable<String> call(String line) {
+                                                  return Arrays.asList(line.split(" "));
+                                              }
+                                          }
+                                          );
+JavaPairDStream<String, Integer> pairs = words.map(
+                                                   new PairFunction<String, String, Integer>() {
+                                                       public Tuple2<String, Integer> call(String word) {
+                                                           return new Tuple2<String, Integer>(word, 1);
+                                                       }
+                                                   }
+                                                   );
+JavaPairDStream<String, Integer> counts = pairs.reduceByKey(
+                                                            new Function2<Integer, Integer>() {
+                                                                public Integer call(Integer a, Integer b) { return a + b; }
+                                                            }
+                                                            );
+counts.print();
 #+END_SRC
 
 Notice, really the only change between first example's code is the return
@@ -207,13 +207,13 @@ These include sharing state between batches/ intervals and modifying the
 current frame when aggregating over a sliding window.
 
 #+BEGIN_QUOTE
-  The key idea is to treat streaming as a series of short batch jobs,
-  and bring down the latency of these jobs as much as possible.  This
-  brings many of the benefits of batch processing models to stream
-  processing, including clear consistency semantics and a new parallel
-  recovery technique...
-  [[[https://www.usenix.org/system/files/conference/hotcloud12/hotcloud12-final28.pdf][Zaharia
-  et al.]]]
+The key idea is to treat streaming as a series of short batch jobs,
+and bring down the latency of these jobs as much as possible.  This
+brings many of the benefits of batch processing models to stream
+processing, including clear consistency semantics and a new parallel
+recovery technique...
+[[[https://www.usenix.org/system/files/conference/hotcloud12/hotcloud12-final28.pdf][Zaharia
+et al.]]]
 #+END_QUOTE
 
 *** Hadoop Requirements
@@ -297,10 +297,10 @@ When the processing is finished, the data are written to HDFS and posted
 to a simple NodeJS application.
 
 *** Setup
-    :PROPERTIES:
-    :CUSTOM_ID: setup
-    :ID:       ade07b91-1029-4193-96fe-e13b78d1c94d
-    :END:
+:PROPERTIES:
+:CUSTOM_ID: setup
+:ID:       ade07b91-1029-4193-96fe-e13b78d1c94d
+:END:
 
 The setup is the same as
 [[https://kennyballou.com/blog/2014/07/real-time-streaming-storm-and-kafka][last
@@ -319,7 +319,7 @@ application for reporting purposes.
 This project follows a very similar process structure as the Storm Topology
 from last time.
 
-[[file:/media/SentimentAnalysisTopology.png]]
+[[file:../../../../media/SentimentAnalysisTopology.png]]
 
 However, each node in the above graph is actually a transformation on the
 current DStream and not an individual process (or group of processes).
@@ -329,10 +329,10 @@ producer]] developed.  This Kafka producer will be how data are ingested by the
 system.
 
 **** Kafka Receiver Stream
-     :PROPERTIES:
-     :CUSTOM_ID: kafka-receiver-stream
-     :ID:       07fcc612-127d-400a-9f9e-f4eb63981a56
-     :END:
+:PROPERTIES:
+:CUSTOM_ID: kafka-receiver-stream
+:ID:       07fcc612-127d-400a-9f9e-f4eb63981a56
+:END:
 
 The data processed is received from a Kafka Stream and is implemented
 via the
@@ -341,10 +341,10 @@ Kafka]] library.  This process simply creates a connection to the Kafka
 broker(s), consuming messages from the given set of topics.
 
 ***** Stripping Kafka Message IDs
-      :PROPERTIES:
-      :CUSTOM_ID: stripping-kafka-message-ids
-      :ID:       f31e4590-46a7-44cc-852f-b722a24286ff
-      :END:
+:PROPERTIES:
+:CUSTOM_ID: stripping-kafka-message-ids
+:ID:       f31e4590-46a7-44cc-852f-b722a24286ff
+:END:
 
 It turns out the messages from Kafka are retuned as tuples, more
 specifically pairs, with the message ID and the message content.  Before
@@ -352,10 +352,10 @@ continuing, the message ID is stripped and the Twitter JSON data is
 passed down the pipeline.
 
 **** Twitter Data JSON Parsing
-     :PROPERTIES:
-     :CUSTOM_ID: twitter-data-json-parsing
-     :ID:       72c2e328-c683-4318-ac30-865c55cc697d
-     :END:
+:PROPERTIES:
+:CUSTOM_ID: twitter-data-json-parsing
+:ID:       72c2e328-c683-4318-ac30-865c55cc697d
+:END:
 
 As was the case last time, the important parts (tweet ID, tweet text,
 and language code) need to be extracted from the JSON.  Furthermore, this
@@ -363,10 +363,10 @@ project only parses English tweets.  Non-English tweets are filtered out
 at this stage.
 
 **** Filtering and Stemming
-     :PROPERTIES:
-     :CUSTOM_ID: filtering-and-stemming
-     :ID:       b9859559-a38d-4804-b401-671f9f442085
-     :END:
+:PROPERTIES:
+:CUSTOM_ID: filtering-and-stemming
+:ID:       b9859559-a38d-4804-b401-671f9f442085
+:END:
 
 Many tweets contain messy or otherwise unnecessary characters and
 punctuation that can be safely ignored.  Moreover, there may also be many
@@ -375,30 +375,30 @@ negatively.  At this stage, these symbols and /stop words/ should be
 filtered.
 
 **** Classifiers
-     :PROPERTIES:
-     :CUSTOM_ID: classifiers
-     :ID:       cf8c297f-47c0-43e8-a7a9-87ed89abf51a
-     :END:
+:PROPERTIES:
+:CUSTOM_ID: classifiers
+:ID:       cf8c297f-47c0-43e8-a7a9-87ed89abf51a
+:END:
 
 Both the Positive classifier and the Negative classifier are in separate
 ~map~ transformations.  The implementation of both follows the
 [[http://en.wikipedia.org/wiki/Bag-of-words_model][Bag-of-words]] model.
 
 **** Joining and Scoring
-     :PROPERTIES:
-     :CUSTOM_ID: joining-and-scoring
-     :ID:       cf331690-0ff6-47f4-8799-bd050fb179e0
-     :END:
+:PROPERTIES:
+:CUSTOM_ID: joining-and-scoring
+:ID:       cf331690-0ff6-47f4-8799-bd050fb179e0
+:END:
 
 Because the classifiers are done separately and a join is contrived, the
 next step is to join the classifier scores together and actually declare
 a winner.  It turns out this is quite trivial to do in Spark.
 
 **** Reporting: HDFS and HTTP POST
-     :PROPERTIES:
-     :CUSTOM_ID: reporting-hdfs-and-http-post
-     :ID:       baad2be3-c3f6-47e4-88e6-b1711d9a6158
-     :END:
+:PROPERTIES:
+:CUSTOM_ID: reporting-hdfs-and-http-post
+:ID:       baad2be3-c3f6-47e4-88e6-b1711d9a6158
+:END:
 
 Finally, once the tweets are joined and scored, the scores need to be
 reported.  This is accomplished by writing the final tuples to HDFS and
@@ -435,85 +435,85 @@ Proceeding, the context needs to be started.  This is all accomplished with the
 following code:
 
 #+BEGIN_SRC java
-    SparkConf conf = new SparkConf()
-                     .setAppName("Twitter Sentiment Analysis");
+SparkConf conf = new SparkConf()
+    .setAppName("Twitter Sentiment Analysis");
 
-    if (args.length > 0)
-        conf.setMaster(args[0]);
-    else
-        conf.setMaster("local[2]");
+if (args.length > 0)
+    conf.setMaster(args[0]);
+else
+    conf.setMaster("local[2]");
 
-    JavaStreamingContext ssc = new JavaStreamingContext(
-        conf,
-        new Duration(2000));
+JavaStreamingContext ssc = new JavaStreamingContext(
+                                                    conf,
+                                                    new Duration(2000));
 
-    Map<String, Integer> topicMap = new HashMap<String, Integer>();
-    topicMap.put(KAFKA_TOPIC, KAFKA_PARALLELIZATION);
+Map<String, Integer> topicMap = new HashMap<String, Integer>();
+topicMap.put(KAFKA_TOPIC, KAFKA_PARALLELIZATION);
 
-    JavaPairReceiverInputDStream<String, String> messages =
-        KafkaUtils.createStream(
-            ssc,
-            Properties.getString("rts.spark.zkhosts"),
-            "twitter.sentimentanalysis.kafka",
-            topicMap);
+JavaPairReceiverInputDStream<String, String> messages =
+    KafkaUtils.createStream(
+                            ssc,
+                            Properties.getString("rts.spark.zkhosts"),
+                            "twitter.sentimentanalysis.kafka",
+                            topicMap);
 
-    JavaDStream<String> json = messages.map(
-        new Function<Tuple2<String, String>, String>() {
-            public String call(Tuple2<String, String> message) {
-                return message._2();
+JavaDStream<String> json = messages.map(
+                                        new Function<Tuple2<String, String>, String>() {
+                                            public String call(Tuple2<String, String> message) {
+                                                return message._2();
+                                            }
+                                        }
+                                        );
+
+JavaPairDStream<Long, String> tweets = json.mapToPair(
+                                                      new TwitterFilterFunction());
+
+JavaPairDStream<Long, String> filtered = tweets.filter(
+                                                       new Function<Tuple2<Long, String>, Boolean>() {
+                                                           public Boolean call(Tuple2<Long, String> tweet) {
+                                                               return tweet != null;
+                                                           }
+                                                       }
+                                                       );
+
+JavaDStream<Tuple2<Long, String>> tweetsFiltered = filtered.map(
+                                                                new TextFilterFunction());
+
+tweetsFiltered = tweetsFiltered.map(
+                                    new StemmingFunction());
+
+JavaPairDStream<Tuple2<Long, String>, Float> positiveTweets =
+    tweetsFiltered.mapToPair(new PositiveScoreFunction());
+
+JavaPairDStream<Tuple2<Long, String>, Float> negativeTweets =
+    tweetsFiltered.mapToPair(new NegativeScoreFunction());
+
+JavaPairDStream<Tuple2<Long, String>, Tuple2<Float, Float>> joined =
+    positiveTweets.join(negativeTweets);
+
+JavaDStream<Tuple4<Long, String, Float, Float>> scoredTweets =
+    joined.map(new Function<Tuple2<Tuple2<Long, String>,
+               Tuple2<Float, Float>>,
+               Tuple4<Long, String, Float, Float>>() {
+            public Tuple4<Long, String, Float, Float> call(
+                                                           Tuple2<Tuple2<Long, String>, Tuple2<Float, Float>> tweet)
+            {
+                return new Tuple4<Long, String, Float, Float>(
+                                                              tweet._1()._1(),
+                                                              tweet._1()._2(),
+                                                              tweet._2()._1(),
+                                                              tweet._2()._2());
             }
-        }
-    );
+        });
 
-    JavaPairDStream<Long, String> tweets = json.mapToPair(
-        new TwitterFilterFunction());
+JavaDStream<Tuple5<Long, String, Float, Float, String>> result =
+    scoredTweets.map(new ScoreTweetsFunction());
 
-    JavaPairDStream<Long, String> filtered = tweets.filter(
-        new Function<Tuple2<Long, String>, Boolean>() {
-            public Boolean call(Tuple2<Long, String> tweet) {
-                return tweet != null;
-            }
-        }
-    );
+result.foreachRDD(new FileWriter());
+result.foreachRDD(new HTTPNotifierFunction());
 
-    JavaDStream<Tuple2<Long, String>> tweetsFiltered = filtered.map(
-        new TextFilterFunction());
-
-    tweetsFiltered = tweetsFiltered.map(
-        new StemmingFunction());
-
-    JavaPairDStream<Tuple2<Long, String>, Float> positiveTweets =
-        tweetsFiltered.mapToPair(new PositiveScoreFunction());
-
-    JavaPairDStream<Tuple2<Long, String>, Float> negativeTweets =
-        tweetsFiltered.mapToPair(new NegativeScoreFunction());
-
-    JavaPairDStream<Tuple2<Long, String>, Tuple2<Float, Float>> joined =
-        positiveTweets.join(negativeTweets);
-
-    JavaDStream<Tuple4<Long, String, Float, Float>> scoredTweets =
-        joined.map(new Function<Tuple2<Tuple2<Long, String>,
-                                       Tuple2<Float, Float>>,
-                                Tuple4<Long, String, Float, Float>>() {
-        public Tuple4<Long, String, Float, Float> call(
-            Tuple2<Tuple2<Long, String>, Tuple2<Float, Float>> tweet)
-        {
-            return new Tuple4<Long, String, Float, Float>(
-                tweet._1()._1(),
-                tweet._1()._2(),
-                tweet._2()._1(),
-                tweet._2()._2());
-        }
-    });
-
-    JavaDStream<Tuple5<Long, String, Float, Float, String>> result =
-        scoredTweets.map(new ScoreTweetsFunction());
-
-    result.foreachRDD(new FileWriter());
-    result.foreachRDD(new HTTPNotifierFunction());
-
-    ssc.start();
-    ssc.awaitTermination();
+ssc.start();
+ssc.awaitTermination();
 #+END_SRC
 
 Some of the more trivial transforms are defined in-line.  The others are
@@ -529,21 +529,21 @@ accomplished with help of the [[jackson-databind][JacksonXML Databind]]
 library.
 
 #+BEGIN_SRC java
-    JsonNode root = mapper.readValue(tweet, JsonNode.class);
-    long id;
-    String text;
-    if (root.get("lang") != null &&
-        "en".equals(root.get("lang").textValue()))
+JsonNode root = mapper.readValue(tweet, JsonNode.class);
+long id;
+String text;
+if (root.get("lang") != null &&
+    "en".equals(root.get("lang").textValue()))
     {
         if (root.get("id") != null && root.get("text") != null)
-        {
-            id = root.get("id").longValue();
-            text = root.get("text").textValue();
-            return new Tuple2<Long, String>(id, text);
-        }
+            {
+                id = root.get("id").longValue();
+                text = root.get("text").textValue();
+                return new Tuple2<Long, String>(id, text);
+            }
         return null;
     }
-    return null;
+return null;
 #+END_SRC
 
 The ~mapper~ (~ObjectMapper~) object is defined at the class level so it is not
@@ -556,13 +556,13 @@ non-English tweet, malformed tweet) return null, the nulls will need to be
 filtered out.  Thankfully, Spark provides a simple way to accomplish this:
 
 #+BEGIN_SRC java
-    JavaPairDStream<Long, String> filtered = tweets.filter(
-        new Function<Tuple2<Long, String>, Boolean>() {
-            public Boolean call(Tuple2<Long, String> tweet) {
-                return tweet != null;
-            }
-        }
-    );
+JavaPairDStream<Long, String> filtered = tweets.filter(
+                                                       new Function<Tuple2<Long, String>, Boolean>() {
+                                                           public Boolean call(Tuple2<Long, String> tweet) {
+                                                               return tweet != null;
+                                                           }
+                                                       }
+                                                       );
 #+END_SRC
 
 **** Text Filtering
@@ -574,21 +574,21 @@ As mentioned before, punctuation and other symbols are simply discarded as they
 provide little to no benefit to the classifiers:
 
 #+BEGIN_SRC java
-    String text = tweet._2();
-    text = text.replaceAll("[^a-zA-Z\\s]", "").trim().toLowerCase();
-    return new Tuple2<Long, String>(tweet._1(), text);
+String text = tweet._2();
+text = text.replaceAll("[^a-zA-Z\\s]", "").trim().toLowerCase();
+return new Tuple2<Long, String>(tweet._1(), text);
 #+END_SRC
 
 Similarly, common words should be discarded as well:
 
 #+BEGIN_SRC java
-    String text = tweet._2();
-    List<String> stopWords = StopWords.getWords();
-    for (String word : stopWords)
+String text = tweet._2();
+List<String> stopWords = StopWords.getWords();
+for (String word : stopWords)
     {
         text = text.replaceAll("\\b" + word + "\\b", "");
     }
-    return new Tuple2<Long, String>(tweet._1(), text);
+return new Tuple2<Long, String>(tweet._1(), text);
 #+END_SRC
 
 **** Positive and Negative Scoring
@@ -602,39 +602,39 @@ similar in definition.
 The positive classifier is primarily defined by:
 
 #+BEGIN_SRC java
-    String text = tweet._2();
-    Set<String> posWords = PositiveWords.getWords();
-    String[] words = text.split(" ");
-    int numWords = words.length;
-    int numPosWords = 0;
-    for (String word : words)
+String text = tweet._2();
+Set<String> posWords = PositiveWords.getWords();
+String[] words = text.split(" ");
+int numWords = words.length;
+int numPosWords = 0;
+for (String word : words)
     {
         if (posWords.contains(word))
             numPosWords++;
     }
-    return new Tuple2<Tuple2<Long, String>, Float>(
-        new Tuple2<Long, String>(tweet._1(), tweet._2()),
-        (float) numPosWords / numWords
-    );
+return new Tuple2<Tuple2<Long, String>, Float>(
+                                               new Tuple2<Long, String>(tweet._1(), tweet._2()),
+                                               (float) numPosWords / numWords
+                                               );
 #+END_SRC
 
 And the negative classifier:
 
 #+BEGIN_SRC java
-    String text = tweet._2();
-    Set<String> negWords = NegativeWords.getWords();
-    String[] words = text.split(" ");
-    int numWords = words.length;
-    int numPosWords = 0;
-    for (String word : words)
+String text = tweet._2();
+Set<String> negWords = NegativeWords.getWords();
+String[] words = text.split(" ");
+int numWords = words.length;
+int numPosWords = 0;
+for (String word : words)
     {
         if (negWords.contains(word))
             numPosWords++;
     }
-    return new Tuple2<Tuple2<Long, String>, Float>(
-        new Tuple2<Long, String>(tweet._1(), tweet._2()),
-        (float) numPosWords / numWords
-    );
+return new Tuple2<Tuple2<Long, String>, Float>(
+                                               new Tuple2<Long, String>(tweet._1(), tweet._2()),
+                                               (float) numPosWords / numWords
+                                               );
 #+END_SRC
 
 Because both are implementing a ~PairFunction~, a join situation is contrived.
@@ -650,23 +650,23 @@ It turns out, joining in Spark is very easy to accomplish.  So easy in fact, it
 can be handled without virtually /any/ code:
 
 #+BEGIN_SRC java
-    JavaPairDStream<Tuple2<Long, String>, Tuple2<Float, Float>> joined =
-        positiveTweets.join(negativeTweets);
+JavaPairDStream<Tuple2<Long, String>, Tuple2<Float, Float>> joined =
+    positiveTweets.join(negativeTweets);
 #+END_SRC
 
 But because working with a Tuple of nested tuples seems unwieldy, transform it
 to a 4 element tuple:
 
 #+BEGIN_SRC java
-    public Tuple4<Long, String, Float, Float> call(
-        Tuple2<Tuple2<Long, String>, Tuple2<Float, Float>> tweet)
-    {
-        return new Tuple4<Long, String, Float, Float>(
-            tweet._1()._1(),
-            tweet._1()._2(),
-            tweet._2()._1(),
-            tweet._2()._2());
-    }
+public Tuple4<Long, String, Float, Float> call(
+                                               Tuple2<Tuple2<Long, String>, Tuple2<Float, Float>> tweet)
+{
+    return new Tuple4<Long, String, Float, Float>(
+                                                  tweet._1()._1(),
+                                                  tweet._1()._2(),
+                                                  tweet._2()._1(),
+                                                  tweet._2()._2());
+}
 #+END_SRC
 
 **** Scoring: Declaring Winning Class
@@ -678,17 +678,17 @@ Declaring the winning class is a matter of a simple map, comparing each class's
 score and take the greatest:
 
 #+BEGIN_SRC java
-    String score;
-    if (tweet._3() >= tweet._4())
-        score = "positive";
-    else
-        score = "negative";
-    return new Tuple5<Long, String, Float, Float, String>(
-        tweet._1(),
-        tweet._2(),
-        tweet._3(),
-        tweet._4(),
-        score);
+String score;
+if (tweet._3() >= tweet._4())
+    score = "positive";
+else
+    score = "negative";
+return new Tuple5<Long, String, Float, Float, String>(
+                                                      tweet._1(),
+                                                      tweet._2(),
+                                                      tweet._3(),
+                                                      tweet._4(),
+                                                      score);
 #+END_SRC
 
 This declarer is more optimistic about the neutral case but is otherwise
@@ -702,44 +702,44 @@ very straightforward.
 Finally, the pipeline completes with writing the results to HDFS:
 
 #+BEGIN_SRC java
-    if (rdd.count() <= 0) return null;
-    String path = Properties.getString("rts.spark.hdfs_output_file") +
-                  "_" +
-                  time.milliseconds();
-    rdd.saveAsTextFile(path);
+if (rdd.count() <= 0) return null;
+String path = Properties.getString("rts.spark.hdfs_output_file") +
+    "_" +
+    time.milliseconds();
+rdd.saveAsTextFile(path);
 #+END_SRC
 
 And sending POST request to a NodeJS application:
 
 #+BEGIN_SRC java
-    rdd.foreach(new SendPostFunction());
+rdd.foreach(new SendPostFunction());
 #+END_SRC
 
 Where ~SendPostFunction~ is primarily given by:
 
 #+BEGIN_SRC java
-    String webserver = Properties.getString("rts.spark.webserv");
-    HttpClient client = new DefaultHttpClient();
-    HttpPost post = new HttpPost(webserver);
-    String content = String.format(
-        "{\"id\": \"%d\", "     +
-        "\"text\": \"%s\", "    +
-        "\"pos\": \"%f\", "     +
-        "\"neg\": \"%f\", "     +
-        "\"score\": \"%s\" }",
-        tweet._1(),
-        tweet._2(),
-        tweet._3(),
-        tweet._4(),
-        tweet._5());
+String webserver = Properties.getString("rts.spark.webserv");
+HttpClient client = new DefaultHttpClient();
+HttpPost post = new HttpPost(webserver);
+String content = String.format(
+                               "{\"id\": \"%d\", "     +
+                               "\"text\": \"%s\", "    +
+                               "\"pos\": \"%f\", "     +
+                               "\"neg\": \"%f\", "     +
+                               "\"score\": \"%s\" }",
+                               tweet._1(),
+                               tweet._2(),
+                               tweet._3(),
+                               tweet._4(),
+                               tweet._5());
 
-    try
+try
     {
         post.setEntity(new StringEntity(content));
         HttpResponse response = client.execute(post);
         org.apache.http.util.EntityUtils.consume(response.getEntity());
     }
-    catch (Exception ex)
+catch (Exception ex)
     {
         Logger LOG = Logger.getLogger(this.getClass());
         LOG.error("exception thrown while attempting to post", ex);
