@@ -23,6 +23,13 @@
 #+LINK: erlang-doc-release-guide http://erlang.org/doc/design_principles/release_structure.html
 #+LINK: erlang-doc-system-principles http://erlang.org/doc/system_principles/create_target.html
 
+#+BEGIN_PREVIEW
+One of the untold benefits of having a runtime is the ability for that runtime
+to enable loading and unloading code while the runtime is active.  Since the
+runtime is itself, essentially, a virtual machine with its own operating system
+and process scheduling, it has the ability to start and stop, load and unload
+processes and code similar to how "real" operating systems do.
+#+END_PREVIEW
 
 #+HTML: <div class="embed-video">
 #+HTML: <iframe width="560" height="315"
@@ -33,14 +40,6 @@
 #+BEGIN_QUOTE
   Warning, there be black magic here.
 #+END_QUOTE
-
-#+BEGIN_PREVIEW
-One of the untold benefits of having a runtime is the ability for that runtime
-to enable loading and unloading code while the runtime is active.  Since the
-runtime is itself, essentially, a virtual machine with its own operating system
-and process scheduling, it has the ability to start and stop, load and unload
-processes and code similar to how "real" operating systems do.
-#+END_PREVIEW
 
 This enables some spectacular power in terms of creating deployments and
 rolling out those deployments.  That is, if we can provide a particular
