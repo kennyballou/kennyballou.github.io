@@ -1,9 +1,0 @@
-{{ partial "header.html" . }}
-<body>
-{{ partial "subheader.html" . }}
-{{ range .Data.Pages }}
-    {{ if eq .Section "blog" }}
-        {{ .Render "summary" }}
-    {{ end }}
-{{ end }}
-{{ partial "footer.html" . }}
