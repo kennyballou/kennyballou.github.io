@@ -8,6 +8,7 @@
   (package-refresh-contents))
 
 (package-install 'htmlize)
+(add-to-list 'load-path "./lisp")
 
 (require 'ox-publish)
 (require 'ox-html)
