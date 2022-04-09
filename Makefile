@@ -1,3 +1,5 @@
+BUILD_DIR:=public
+
 .PHONY: all
 all: org-publish
 

@@ -40,7 +40,7 @@
        (list "blog"
              :recursive t
              :base-directory "./blog"
-             :publishing-directory "./build/blog/"
+             :publishing-directory "./public/blog/"
              :htmlized-source t
              :with-author t
              :with-creator nil
@@ -64,7 +64,7 @@
        (list "blog-rss"
              :recursive t
              :base-directory "./blog"
-             :publishing-directory "./build/"
+             :publishing-directory "./public/"
              :exclude "*.org"
              :include (list "index.org")
              :publishing-function #'org-rss-publish-to-rss
@@ -74,7 +74,7 @@
        (list "pages"
              :recursive t
              :base-directory "./pages"
-             :publishing-directory "./build/"
+             :publishing-directory "./public/"
              :htmlized-source t
              :with-author t
              :with-creator t
@@ -98,7 +98,7 @@
        (list "talks"
              :recursive t
              :base-directory "./talks"
-             :publishing-directory "./build/talks"
+             :publishing-directory "./public/talks"
              :htmlized-source t
              :with-author t
              :with-creator nil
@@ -121,7 +121,7 @@
              :recursive t
              :base-directory "./static"
              :base-extension ".*"
-             :publishing-directory "./build/"
+             :publishing-directory "./public/"
              :publishing-function #'org-publish-attachment)))
 
 (org-publish-all t)
