@@ -1,0 +1,877 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-04-09 Sat 18:52 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hosting with AWS S3 and CloudFront</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="kb" />
+<meta name="description" content="Static Site Hosting with Amazon"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<meta charset="utf-8">
+
+<meta name="author" content="Kenny Ballou">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<title>~kb</title>
+
+<link rel="canonical" href="/" />
+<link href="/index.xml" rel="alternate" type="application/rss+xml"
+      title="~kb/blog" />
+
+<link rel="stylesheet" href="/css/simple.css" />
+<link rel="stylesheet" href="/css/simple.add.css" />
+<link rel="stylesheet" href="/css/katex.css" />
+<link rel="stylesheet" href="/css/fa-all.css" />
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<script defer type="text/javascript" src="/js/katex.js"></script>
+<script defer type="text/javascript" src="/js/katex-render.js"></script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://kennyballou.com/blog"> UP </a>
+ |
+ <a accesskey="H" href="https://kennyballou.com/"> HOME </a>
+</div><header id="" class="status">
+<nav>
+  <a href="/about.html">
+    <i class="fade fas fa-user-circle"></i>
+  </a>
+  <a href="https://git.devnulllabs.io"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-code-branch fa-1x"></i>
+  </a>
+  <a href="https://github.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-github fa-1x"></i>
+  </a>
+  <a href="https://bitbucket.org/kballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-bitbucket fa-1x"></i>
+  </a>
+  <a href="https://twitter.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-twitter fa-1x"></i>
+  </a>
+  <a href="https://www.buymeacoffee.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-mug-hot fa-1x"></i>
+  </a>
+  <a href="/resume.pdf"
+     target="_blank">
+    <i class="fade far fa-file-pdf"></i>
+  </a>
+  <a href="/932F3E8E1C0F4A9895D7B8B8B0CAA28A02958308.txt"
+     target="_blank">
+    <i class="fade fas fa-key"></i>
+  </a>
+  <a href="/index.xml" rel="alternate"
+     type="application/rss+xml">
+    <i class="fade fas fa-rss fa-1x"></i>
+  </a>
+</nav>
+</header>
+<div id="main">
+<h1 class="title">Hosting with AWS S3 and CloudFront</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org22ae771">Introduction</a></li>
+<li><a href="#org5ea137b">Overview</a></li>
+<li><a href="#org0baf162">CloudFormation</a>
+<ul>
+<li><a href="#orga3a6ee0">S3 Bucket</a></li>
+<li><a href="#org84f5e44">ACM</a></li>
+<li><a href="#orgb4b6614">Route53</a></li>
+<li><a href="#org4250279">Lambda@Edge</a></li>
+<li><a href="#orgf823946">CloudFront</a></li>
+</ul>
+</li>
+<li><a href="#orga793a61">Future Work</a></li>
+<li><a href="#org158ea3c">Cost Considerations</a></li>
+<li><a href="#org4178b47">Summary</a></li>
+</ul>
+</div>
+</div>
+<div class="PREVIEW">
+<p>
+There are many posts already out about how to host static sites in <a href="https://aws.amazon.com/s3/">S3</a> and
+<a href="https://aws.amazon.com/cloudfront/">CloudFront</a>.  However, I would like to add to the discussion a small
+contribution of how to do this by creating the resources in <a href="https://aws.amazon.com/cloudformation/">CloudFormation</a>, and
+specifically, how to ensure all content is served <span class="underline">via</span> <a href="https://aws.amazon.com/cloudfront/">CloudFront</a> and is
+strictly not available via <a href="https://aws.amazon.com/s3/">S3</a>.
+</p>
+
+</div>
+
+<div id="outline-container-org22ae771" class="outline-2">
+<h2 id="org22ae771"><a id="ID-c5040a15-f7b4-422f-9b38-fc4bee3f10cc"></a>Introduction</h2>
+<div class="outline-text-2" id="text-org22ae771">
+<p>
+There are <a href="https://vickylai.com/verbose/hosting-your-static-site-with-aws-s3-route-53-and-cloudfront/">many</a>,
+<a href="https://www.davidbaumgold.com/tutorials/host-static-site-aws-s3-cloudfront/">many</a>
+<a href="https://fourteenislands.io/2018/03/static-website-hosting-on-aws-with-s3-cloudfront-lambda-edge/">posts</a> on hosting static sites via
+<a href="https://aws.amazon.com/s3/">S3</a> and <a href="https://aws.amazon.com/cloudfront/">CloudFront</a>.  There are even existing
+<a href="https://aws.amazon.com/cloudformation/">CloudFormation templates</a>
+<a href="https://rgfindl.github.io/2017/08/07/static-website-cloudformation-template/">available</a> that can be used to make this process
+repeatable and consistent.
+</p>
+
+<p>
+This post will simply add to this knowledge and I will attempt to capture any
+notes or changes that have occurred since I ventured to migrate from managing a
+virtual machine that hosts the content of this blog into <a href="https://aws.amazon.com/s3/">S3</a> served
+via <a href="https://aws.amazon.com/cloudfront/">CloudFront</a>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5ea137b" class="outline-2">
+<h2 id="org5ea137b"><a id="ID-43ac2a36-a5df-4fe9-847b-3c60c2165cf6"></a>Overview</h2>
+<div class="outline-text-2" id="text-org5ea137b">
+<p>
+There has been a particular evolution to hosting static sites via <a href="https://aws.amazon.com/">AWS</a>
+since the company and its offerings have changed themselves.  For example, a
+few years ago, the only solution was to use <a href="https://aws.amazon.com/s3/">S3</a> directly, which
+meant the <a href="https://aws.amazon.com/s3/">S3</a> bucket needed to be public and the traffic could not
+be encrypted.  Then, with the introduction of <a href="https://aws.amazon.com/cloudfront/">CloudFront</a>,
+it became possible to leverage Amazon's infrastructure to more readily
+distribute content without making huge investments in private
+<a href="https://en.wikipedia.org/wiki/Content_delivery_network">content delivery networks (CDNs)</a>, furthermore, it soon became
+possible to encrypt the traffic as well.  Finally, one of the more recent
+developments is the ability to have <a href="https://aws.amazon.com/lambda/">Lambda</a> functions
+distributed globally with <a href="https://aws.amazon.com/cloudfront/">CloudFront</a>, making it possible to
+customize or more appropriate serve the desired content.  This blog uses these
+<a href="https://aws.amazon.com/lambda/edge/">Lambda@Edge</a> functions to help serve content via
+<a href="https://aws.amazon.com/cloudfront/">CloudFront</a> with the files residing in <a href="https://aws.amazon.com/s3/">S3</a>.
+</p>
+
+<p>
+The necessity of the <a href="https://aws.amazon.com/lambda/edge/">Lambda@Edge</a> functionallity is
+properly motivated by <a href="https://aws.amazon.com/s3/">S3</a>'s inability to set default documents for
+each directory.  For example, if we want to serve a post like
+<code>https://example.com/blog/year/month/post-slug/</code>, we are unable to since there
+is no object in <a href="https://aws.amazon.com/s3/">S3</a> by that "key".  Therefore, we can use the
+<a href="https://aws.amazon.com/lambda/edge/">Lambda</a> function to rewrite the URL from
+<a href="https://aws.amazon.com/cloudfront/">CloudFront</a> between <a href="https://aws.amazon.com/s3/">S3</a> to retreive the
+<code>index.html</code> or <code>/index.html</code> object of the folder correctly.
+</p>
+
+<p>
+Another change from other posts is that this set of configuration will force
+the content to be served from <a href="https://aws.amazon.com/cloudfront/">CloudFront</a>.  It will not be,
+or at least should not be, possible to access the content from the
+<a href="https://aws.amazon.com/s3/">S3</a> bucket directly.  This serves a few purposes, the bucket does
+not have to be public in any way, therefore, accidental write access is not
+possible by acciendental misconfiguration.  Furthermore, all content can be
+served quickly and securely because of the configuration of
+<a href="https://aws.amazon.com/cloudfront/">CloudFront</a>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0baf162" class="outline-2">
+<h2 id="org0baf162"><a id="ID-2c943547-cc9e-4c40-afad-bd59e19fb043"></a>CloudFormation</h2>
+<div class="outline-text-2" id="text-org0baf162">
+<p>
+We'll briefly go through the various resources needed for hosting a static site
+via <a href="https://aws.amazon.com/s3/">S3</a> and <a href="https://aws.amazon.com/cloudfront/">CloudFront</a>.
+</p>
+</div>
+
+<div id="outline-container-orga3a6ee0" class="outline-3">
+<h3 id="orga3a6ee0"><a id="ID-ebaf5cd3-43ff-4b04-93ce-423928bae5e2"></a>S3 Bucket</h3>
+<div class="outline-text-3" id="text-orga3a6ee0">
+<p>
+Obviously, we will need a bucket to house the content.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-json">"BlogContentBucket": {
+    "Type": "AWS::S3::Bucket",
+    "Properties": {
+        "AccessControl": "Private",
+        "BucketName": {"Ref": "BlogBucketName"},
+        "LifecycleConfiguration": {
+            "Rules": [
+                {
+                    "NoncurrentVersionExpirationInDays": 90,
+                    "Status": "Enabled"
+                }
+            ]
+        },
+        "VersioningConfiguration": {
+            "Status": "Enabled"
+        },
+        "WebsiteConfiguration": {
+            "IndexDocument": "index.html",
+            "ErrorDocument": "404.html"
+        }
+    }
+}
+</pre>
+</div>
+
+<blockquote>
+<p>
+I have added a lifecycle policy to automatically remove older versions after 90
+days.  Feel free to remove or change this as desired.
+</p>
+</blockquote>
+
+<p>
+We also want to make sure that the <a href="https://aws.amazon.com/cloudfront/">CloudFront</a> distribution
+will be the only resource (other than ourselves) that can access objects from
+the bucket.  Therefore, we need to setup a bucket policy and an Origin Access
+ID.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-json">"OriginAccessId": {
+    "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
+    "Properties": {
+        "CloudFrontOriginAccessIdentityConfig": {
+            "Comment": "S3 Bucket Access"
+        }
+    }
+},
+"BlogContentBucketPolicy": {
+    "Type": "AWS::S3::BucketPolicy",
+    "Properties": {
+        "Bucket": {"Ref": "BlogContentBucket"},
+        "PolicyDocument": {
+            "Statement": [
+                {
+                    "Action": ["s3:GetObject"],
+                    "Effect": "Allow",
+                    "Resource": [
+                        {"Fn::Join": ["/", [
+                            {"Fn::GetAtt": [
+                                "BlogContentBucket", "Arn"]},
+                            "*"
+                        ]]}
+                    ],
+                    "Principal": {
+                        "CanonicalUser": {"Fn::GetAtt": [
+                            "OriginAccessId",
+                            "S3CanonicalUserId"]}
+                    }
+                }
+            ]
+        }
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org84f5e44" class="outline-3">
+<h3 id="org84f5e44"><a id="ID-1d215d6c-acce-49cb-b5ca-058cb3483eca"></a>ACM</h3>
+<div class="outline-text-3" id="text-org84f5e44">
+<p>
+<a href="https://aws.amazon.com/acm/">AWS Certificate Manager</a> offers free certificates and these can be
+used with <a href="https://aws.amazon.com/cloudfront/">CloudFront</a> pretty trivially, so we will set up
+this resource as well.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-json">"SSLCertificate": {
+    "Type": "AWS::CertificateManager::Certificate",
+    "Properties": {
+        "DomainName": {"Ref": "DomainName"}
+    }
+}
+</pre>
+</div>
+
+<p>
+Ideally the validation could be done via DNS validation, however, this can be
+tricky when done via <a href="https://aws.amazon.com/cloudformation/">CloudFormation</a>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb4b6614" class="outline-3">
+<h3 id="orgb4b6614"><a id="ID-0c853a1a-915f-41fe-93e3-51207dfa0afe"></a>Route53</h3>
+<div class="outline-text-3" id="text-orgb4b6614">
+<p>
+Since this blog is hosted under the "naked" domain, it's best to use
+<a href="https://aws.amazon.com/route53/">Route53</a> for mapping the alias of
+<a href="https://aws.amazon.com/cloudfront/">CloudFront</a> to the <a href="https://en.wikipedia.org/wiki/List_of_DNS_record_types"><code>A</code></a> record of the
+domain.  Therefore, we will create the hosted zone and then an alias record set
+in the freshly created hosted zone.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-json">"HostedZone": {
+    "Type": "AWS::Route53::HostedZone",
+    "Properties": {
+        "Name": {"Ref": "DomainName"}
+    }
+}
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-json">"BlogAliasRecord": {
+    "Type": "AWS::Route53::RecordSet",
+    "Properties": {
+        "AliasTarget": {
+            "DNSName": {"Fn::GetAtt": ["CFDistribution", "DomainName"]},
+            "HostedZoneId": {"Ref": "CloudFrontHostedZone"}
+        },
+        "HostedZoneId": {"Ref": "HostedZone"},
+        "Name": {"Ref": "DomainName"},
+        "Type": "A"
+    }
+}
+</pre>
+</div>
+
+<p>
+If using a non-naked domain, such as <code>www</code>, this could defined to be a
+<a href="https://en.wikipedia.org/wiki/CNAME_record"><code>CNAME</code></a> record to the <a href="https://aws.amazon.com/cloudfront/">CloudFront</a>
+distribution.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4250279" class="outline-3">
+<h3 id="org4250279"><a id="ID-88bef35c-ad18-4b01-91c8-33fa579f696f"></a>Lambda@Edge</h3>
+<div class="outline-text-3" id="text-org4250279">
+<p>
+Of all the resources, this will actually be the most complicated.
+</p>
+
+<p>
+First, we need to create a role and policy for the function's permissions.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-json">"URIRewriteLambdaRole": {
+    "Type": "AWS::IAM::Role",
+    "Properties": {
+        "AssumeRolePolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Action": "sts:AssumeRole",
+                    "Principal": {
+                        "Service": [
+                            "edgelambda.amazonaws.com",
+                            "lambda.amazonaws.com"
+                        ]
+                    }
+                }
+            ]
+        },
+        "Policies": [
+            {
+                "PolicyName": "GrantCloudwatchLogAccess",
+                "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "logs:CreateLogGroup",
+                                "logs:CreateLogStream",
+                                "logs:PutLogEvents"
+                            ],
+                            "Resource": [
+                                "*"
+                            ]
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}
+</pre>
+</div>
+
+<blockquote>
+<p>
+Restricting the permissions is possible, but requires that the role is first
+created with more open permissions since it is not possible to directly tell a
+<a href="https://aws.amazon.com/lambda/">Lambda</a> function to use a specific <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/WhatIsCloudWatchLogs.html">LogGroup</a>.
+See this <a href="https://git.devnulllabs.io/kennyballou.com.git/commit/?id=787ab0b4b18003875346c7f9e98f1b2264fded46">commit</a> for more information.
+</p>
+</blockquote>
+
+<p>
+Next, we can create the <a href="https://aws.amazon.com/lambda/">Lambda</a> function resource.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-json">"URIRewriteLambdaFunction": {
+    "Type": "AWS::Lambda::Function",
+    "Properties": {
+        "Description": "Lambda Function performing URI rewriting",
+        "Code": {
+            "ZipFile": {"Fn::Join": ["\n", [
+                "def handler(event, _context):",
+                "    whitelist = [",
+                "        'asc',",
+                "        'css',",
+                "        'gif',",
+                "        'html',",
+                "        'ico',",
+                "        'jpeg',",
+                "        'jpg',",
+                "        'js',",
+                "        'json',",
+                "        'map',",
+                "        'md',",
+                "        'ogg',",
+                "        'pdf',",
+                "        'png',",
+                "        'pug',",
+                "        'sass',",
+                "        'scss',",
+                "        'svg',",
+                "        'txt',",
+                "        'xml',",
+                "    ]",
+                "    request = event['Records'][0]['cf']['request']",
+                "    extension = request['uri'].split('.')[-1]",
+                "    if extension is None or extension not in whitelist:",
+                "        if request['uri'][-1] == '/':",
+                "            request['uri'] += 'index.html'",
+                "        else:",
+                "            request['uri'] += '/index.html'",
+                "    return request"
+            ]]}
+
+        },
+        "Handler": "index.handler",
+        "MemorySize": 128,
+        "Role": {"Fn::GetAtt": ["URIRewriteLambdaRole", "Arn"]},
+        "Runtime": "python3.7",
+        "Tags": [
+            {"Key": "Domain", "Value": {"Ref": "DomainName"}}
+        ]
+    }
+}
+</pre>
+</div>
+
+<p>
+Fairly <a href="https://aws.amazon.com/about-aws/whats-new/2019/08/lambdaedge-adds-support-for-python-37/">recently</a>, <a href="https://www.python.org/">Python</a> 3.7 became
+available for <a href="https://aws.amazon.com/lambda/edge/">Lambda@Edge</a>.
+</p>
+
+<p>
+A benefit of using <a href="https://www.python.org/">Python</a> <a href="https://aws.amazon.com/lambda/">Lambda</a> runtime is that it
+still supports directly uploading code to the function via the "ZipFile" key.
+</p>
+
+<blockquote>
+<p>
+Notice, this function is easy enough that directly wrapping it into JSON isn't
+too bad.  However, a better approach under development is a simple utility that
+can perform the encoding at build time.  A future post, perhaps.
+</p>
+</blockquote>
+
+<p>
+Finally, to associate the function with <a href="https://aws.amazon.com/cloudfront/">CloudFront</a>, we need
+to create a "version" alias of the function.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-json">"URIRewriteLambdaVersion": {
+    "Type": "AWS::Lambda::Version",
+    "Properties": {
+        "FunctionName": {"Fn::GetAtt": [
+            "URIRewriteLambdaFunction", "Arn"]},
+        "Description": "Lambda Function performing URI rewriting"
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf823946" class="outline-3">
+<h3 id="orgf823946"><a id="ID-f0296b7b-c42b-4c29-94ef-a9d8d0961838"></a>CloudFront</h3>
+<div class="outline-text-3" id="text-orgf823946">
+<p>
+Finally, we can put everything together into the <a href="https://aws.amazon.com/cloudfront/">CloudFront</a>
+Distribution.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-json">"CFDistribution": {
+    "Type": "AWS::CloudFront::Distribution",
+    "Properties": {
+        "DistributionConfig": {
+            "Aliases": [
+                {"Ref": "DomainName"}
+            ],
+            "DefaultRootObject": "index.html",
+            "Enabled": true,
+            "IPV6Enabled": true,
+            "HttpVersion": "http2",
+            "DefaultCacheBehavior": {
+                "TargetOriginId": {"Fn::Join": [".", [
+                    "s3",
+                    {"Ref": "BlogBucketName"}]]},
+                "ViewerProtocolPolicy": "redirect-to-https",
+                "MinTTL": 0,
+                "DefaultTTL": 3600,
+                "AllowedMethods": ["HEAD", "GET"],
+                "CachedMethods": ["HEAD", "GET"],
+                "ForwardedValues": {
+                    "QueryString": true,
+                    "Cookies": {
+                        "Forward": "none"
+                    }
+                },
+                "LambdaFunctionAssociations": [
+                    {
+                        "EventType": "origin-request",
+                        "LambdaFunctionARN": {
+                            "Ref": "URIRewriteLambdaVersion"
+                        }
+                    }
+                ]
+            },
+            "Origins": [
+                {
+                    "S3OriginConfig": {
+                        "OriginAccessIdentity": {"Fn::Join": ["/", [
+                            "origin-access-identity/cloudfront",
+                            {"Ref": "OriginAccessId"}
+                        ]]}
+                    },
+                    "DomainName": {"Fn::Join": [".", [
+                        {"Ref": "BlogBucketName"},
+                        "s3.amazonaws.com"]]},
+                    "Id": {"Fn::Join": [".", [
+                        "s3",
+                        {"Ref": "BlogBucketName"}]]}
+                }
+            ],
+            "PriceClass": "PriceClass_100",
+            "Restrictions": {
+                "GeoRestriction": {
+                    "RestrictionType": "none",
+                    "Locations": []
+                }
+            },
+            "ViewerCertificate": {
+                "SslSupportMethod": "sni-only",
+                "MinimumProtocolVersion": "TLSv1.2_2018",
+                "AcmCertificateArn": {"Ref": "SSLCertificate"}
+            }
+        }
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga793a61" class="outline-2">
+<h2 id="orga793a61"><a id="ID-1e2a2710-27c9-4279-87f5-a1fdd4ae6e86"></a>Future Work</h2>
+<div class="outline-text-2" id="text-orga793a61">
+<p>
+The <a href="https://aws.amazon.com/cloudformation/">CloudFormation</a> template is not perfect.  For
+example, I personally would like to have the ability to create
+<a href="https://aws.amazon.com/acm/">Certificates</a> with Domain Validation via
+<a href="https://aws.amazon.com/cloudformation/">CloudFormation</a>, however, this does not, last I have
+checked, appear to be possible because of timing issues.
+</p>
+
+<p>
+Another future feature could be to setup automatic build and deployments of the
+content to the bucket using more <a href="https://aws.amazon.com/">AWS</a> services.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org158ea3c" class="outline-2">
+<h2 id="org158ea3c"><a id="ID-94a139d8-42c5-4f1b-a736-c15e790d7ef0"></a>Cost Considerations</h2>
+<div class="outline-text-2" id="text-org158ea3c">
+<p>
+<a href="https://aws.amazon.com/">AWS</a> is not known to be inexpensive.  Arguably, their entire business
+is built around the very fact that just about every service within <a href="https://aws.amazon.com/">AWS</a>
+has a level of accounting unheard of elsewhere.  That said, this blog has
+relatively low traffic.  Therefore, the most expensive aspect of hosting it
+right now is the hosted zone charge.  The <a href="https://aws.amazon.com/lambda/">Lambda</a> and
+<a href="https://aws.amazon.com/cloudfront/">CloudFront</a> accounts for measly 9% of the charges.
+</p>
+
+<p>
+However, if the content is very exciting or gathers a larger following, this
+can and <span class="underline">will</span> go up.  For example, hosting a few hundred sites in a different
+<a href="https://aws.amazon.com/">AWS</a> via <a href="https://aws.amazon.com/cloudfront/">CloudFront</a> (not as described here), the
+cost is measured in hundreds of dollars.
+</p>
+
+<p>
+Overall, it made the most cost sense for this blog's application.  It may not
+for others.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4178b47" class="outline-2">
+<h2 id="org4178b47"><a id="ID-eb3dc199-e208-42cf-a460-90fccda928a6"></a>Summary</h2>
+<div class="outline-text-2" id="text-org4178b47">
+<p>
+It is the goal of this post to further describe how to host a static site in
+<a href="https://aws.amazon.com/">AWS</a> using a few services that can make for <span class="underline">really</span> inexpensive
+hosting.
+</p>
+
+<p>
+The code/template discussed for this blog is available
+<a href="https://git.devnulllabs.io/kennyballou.com.git/">online</a>.  I hope it can be useful to others and I encourage
+its usage or replication.  Of course, if there are any issues with it, please
+let me know.
+</p>
+</div>
+</div>
+</div>
+<footer id="" class="status">
+<footer>
+  <p>&copy; 2014-2022 Kenny Ballou.
+    <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Some rights
+      reserved.</a></p>
+  <p>Powered by <a href="https://gnu.org">GNU/Linux</a></p>
+</footer>
+</footer>
+</body>
+</html>

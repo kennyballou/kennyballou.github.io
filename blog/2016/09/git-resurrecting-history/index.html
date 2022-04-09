@@ -1,0 +1,1057 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-04-09 Sat 18:52 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Git Resurrecting History</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="kb" />
+<meta name="description" content="Resurrect Lost History from the Information Manager from Hell"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<meta charset="utf-8">
+
+<meta name="author" content="Kenny Ballou">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<title>~kb</title>
+
+<link rel="canonical" href="/" />
+<link href="/index.xml" rel="alternate" type="application/rss+xml"
+      title="~kb/blog" />
+
+<link rel="stylesheet" href="/css/simple.css" />
+<link rel="stylesheet" href="/css/simple.add.css" />
+<link rel="stylesheet" href="/css/katex.css" />
+<link rel="stylesheet" href="/css/fa-all.css" />
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<script defer type="text/javascript" src="/js/katex.js"></script>
+<script defer type="text/javascript" src="/js/katex-render.js"></script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://kennyballou.com/blog"> UP </a>
+ |
+ <a accesskey="H" href="https://kennyballou.com/"> HOME </a>
+</div><header id="" class="status">
+<nav>
+  <a href="/about.html">
+    <i class="fade fas fa-user-circle"></i>
+  </a>
+  <a href="https://git.devnulllabs.io"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-code-branch fa-1x"></i>
+  </a>
+  <a href="https://github.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-github fa-1x"></i>
+  </a>
+  <a href="https://bitbucket.org/kballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-bitbucket fa-1x"></i>
+  </a>
+  <a href="https://twitter.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-twitter fa-1x"></i>
+  </a>
+  <a href="https://www.buymeacoffee.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-mug-hot fa-1x"></i>
+  </a>
+  <a href="/resume.pdf"
+     target="_blank">
+    <i class="fade far fa-file-pdf"></i>
+  </a>
+  <a href="/932F3E8E1C0F4A9895D7B8B8B0CAA28A02958308.txt"
+     target="_blank">
+    <i class="fade fas fa-key"></i>
+  </a>
+  <a href="/index.xml" rel="alternate"
+     type="application/rss+xml">
+    <i class="fade fas fa-rss fa-1x"></i>
+  </a>
+</nav>
+</header>
+<div id="main">
+<h1 class="title">Git Resurrecting History</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#git-reflog">Git Reflog</a></li>
+<li><a href="#git-fsck">Git Fsck</a></li>
+<li><a href="#resurrection-example">Resurrection Example</a>
+<ul>
+<li><a href="#solution">Solution</a></li>
+</ul>
+</li>
+<li><a href="#another-resurrection-example">Another Resurrection Example</a>
+<ul>
+<li><a href="#solutions">Solutions</a></li>
+</ul>
+</li>
+<li><a href="#summary">Summary</a></li>
+<li><a href="#orgc4c5eb1">References</a></li>
+</ul>
+</div>
+</div>
+<div class="PREVIEW">
+<p>
+We all make mistakes.  They are inevitable.  We must accept that we make them
+and move on.  But making mistakes in Git seems to be overly complex to resolve
+and most will simply result to cloning anew and copying the working tree (or
+some subset) and moving on.  This, to me, however, seems like a waste of
+bandwidth as most issues resulting in broken history are in fact quite easy to
+resolve, especially so once the necessary tools are known.
+</p>
+
+</div>
+
+<div id="outline-container-orge343565" class="outline-2">
+<h2 id="git-reflog"><a id="orge343565"></a><a id="ID-ec1715fd-6de5-4a13-99bd-ce638b7e6ff8"></a>Git Reflog</h2>
+<div class="outline-text-2" id="text-git-reflog">
+<blockquote>
+<p>
+Reference logs or "reflogs", record when the tips of branches and other
+references were updated in the local repository.
+--<a href="https://www.kernel.org/pub/software/scm/git/docs/git-reflog.html"><code>git-reflog(1)</code></a>
+</p>
+</blockquote>
+
+<p>
+That is, the reference log is the (meta)log of the actions against branches
+(tips) and other <a href="https://git-scm.com/book/en/v2/Git-Internals-Git-References">references</a>.  Every time we commit,
+merge, change branches, or perform <i>any</i> action that might alter the commit a
+reference points to, this change is stored in the reflog of the current
+repository.  For a freshly cloned repository, the reflog will be quite boring,
+e.g., a single entry for the initial clone.
+</p>
+
+<p>
+However, after working on a project for a while, the reflog will have quite the
+history of actions performed.
+</p>
+
+<p>
+For example, here is the first 24 lines of the reflog for this blog's
+repository:
+</p>
+
+<pre class="example">
+a1bbd00 HEAD@{0}: checkout: moving from master to git_resurrection
+a1bbd00 HEAD@{1}: commit: Update paths of SSL certificate and key
+d7fd8f8 HEAD@{2}: commit: Add all targets to phony
+f639cbe HEAD@{3}: commit: Add phony target list
+8f3bba4 HEAD@{4}: commit: Add build to deploy dependency
+5331695 HEAD@{5}: merge elixir_releases: Fast-forward
+1a27df5 HEAD@{6}: checkout: moving from elixir_functional_fib to master
+61f755b HEAD@{7}: checkout: moving from master to elixir_functional_fib
+1a27df5 HEAD@{8}: checkout: moving from elixir_releases to master
+5331695 HEAD@{9}: rebase -i (finish): returning to refs/heads/elixir_releases
+5331695 HEAD@{10}: rebase -i (squash): Add Elixir OTP Releases Post
+07f3995 HEAD@{11}: rebase -i (squash): # This is a combination of 4 commits.
+9b7bc7b HEAD@{12}: rebase -i (squash): # This is a combination of 3 commits.
+06414a7 HEAD@{13}: rebase -i (squash): # This is a combination of 2 commits.
+cb59962 HEAD@{14}: rebase -i (start): checkout HEAD~5
+bf8836f HEAD@{15}: commit: WIP: elixir otp releases
+34bc98a HEAD@{16}: commit: WIP: update ends
+00fc016 HEAD@{17}: commit: WIP: elixir otp releases
+e859353 HEAD@{18}: commit: WIP: elixir otp release post
+cb59962 HEAD@{19}: commit: WIP: elixir otp releases post
+1a27df5 HEAD@{20}: checkout: moving from master to elixir_releases
+1a27df5 HEAD@{21}: checkout: moving from elixir_functional_fib to master
+61f755b HEAD@{22}: commit: WIP: some post about fib
+4137e6e HEAD@{23}: checkout: moving from master to elixir_functional_fib
+</pre>
+
+<p>
+The first column is the commit SHA-1 that is the <i>result</i> of the action, the
+second column provides a shortcut reference that can be used anywhere a regular
+reference can be, the 3rd column is the action, e.g., <code>checkout</code>, <code>commit</code>,
+<code>merge</code>, etc., and a short description of the action.  In the case of commits,
+the description text will be the summary line of the commit message.
+</p>
+
+<p>
+From the reflog, we can see I've recently made a branch for this post, before
+that, I made several commits against the <code>master</code> branch, and before that, I
+performed a fast-forward merge of the local <code>elixir_releases</code> branch into the
+<code>master</code> branch.  Etc.
+</p>
+
+<p>
+This is some pretty powerful information for digging into the history of the
+repository.  The reflog is indispensable for working out how to recover lost
+changes.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5729602" class="outline-2">
+<h2 id="git-fsck"><a id="org5729602"></a><a id="ID-e6339a29-fb8c-4881-99d4-489999c87fcb"></a>Git Fsck</h2>
+<div class="outline-text-2" id="text-git-fsck">
+<p>
+<a href="https://www.kernel.org/pub/software/scm/git/docs/git-reflog.html"><code>git-reflog(1)</code></a> is a very useful tool, but, another way
+history can be lost is by becoming "unreachable".
+</p>
+
+<p>
+This is where <a href="https://www.kernel.org/pub/software/scm/git/docs/git-fsck.html"><code>git-fsck(1)</code></a> can help!
+<a href="https://www.kernel.org/pub/software/scm/git/docs/git-fsck.html"><code>git-fsck(1)</code></a> searches the Git object store, and will report
+objects that are dangling or unreachable from a named reference.  This way, we
+can find commits, or even blobs, that have been lost to us because they do not
+exist in the directed acyclic graph (DAG) of Git, but <i>do</i> exist in the object
+store itself.
+</p>
+
+<p>
+For example, running <code>git fsck</code> on this repository yields the following output:
+</p>
+
+<pre class="example">
+± git fsck
+Checking object directories: 100% (256/256), done.
+Checking objects: 100% (150/150), done.
+dangling commit 16f6063abde9dcd8279fb2a7ddd4998aaf44acc7
+</pre>
+
+<p>
+Now, if we add another option, namely, <code>--unreachable</code>, we get the following:
+</p>
+
+<pre class="example">
+± git fsck --unreachable
+unreachable blob 20c1e21948ab5d9553c11fa8a7230d73055c207e
+unreachable commit 16f6063abde9dcd8279fb2a7ddd4998aaf44acc7
+unreachable commit 41a324739bc3f1d265ecc474c58256e3a4ad4982
+unreachable blob c4131dc6d091b1c16943554fa2396f5d405e8537
+</pre>
+
+<p>
+Furthermore, objects listed in the reflog are considered "reachable", but may
+be still eluding our search.  Adding <code>--no-reflogs</code> to
+<a href="https://www.kernel.org/pub/software/scm/git/docs/git-fsck.html"><code>git-fsck(1)</code></a> can help make these objects more visible:
+</p>
+
+<pre class="example">
+± git fsck --unreachable --no-reflogs
+unreachable commit 00fc0164a78fe6b46e56781d434fdbb893f11534
+unreachable blob 18a484273f75e4a3dcac75cb5229a614f6090be0
+unreachable commit 1cdc30ebd6ebbaba4a8c28fb35457a8d5cb4326f
+unreachable blob 27c4af632030e3d794181024fba120c6db44eef5
+unreachable commit 31a0e98166bc48bf1f725a657e27632c99568da0
+unreachable commit 34bc98ae27f3db69df82b186cf2ef8a86b42ea12
+unreachable commit 8f08be163f185dd130a86d67daf61639632c4e20
+unreachable commit bf8836f2e435ee241ebe53f0eae4ee98bd887082
+unreachable commit 06414a75d58cee81fb2035b8af45a543c6bb09ef
+unreachable blob 1f853af2881919bc62321b536bfc0de6e9602db6
+unreachable blob 20c1e21948ab5d9553c11fa8a7230d73055c207e
+unreachable commit 54cd8b9b5c58409ce3f509e74d5a7a7ac4a73309
+unreachable commit a9693871e765355b6d9a57a612a76f454b177da0
+unreachable commit ad45856329ff97bd35ac17325952c21e53d51b28
+unreachable blob b8154e42d08b74ae6b9817e12b7764d55760c86e
+unreachable commit cb599620e2d364e2ab44ada45f16df05c5fe3f51
+unreachable commit e859353ddc681177141d84a0053b9b8ecad1151e
+unreachable blob fed50bb1d7c749767de7589cc8ef0acf8caf8226
+unreachable blob 056a7e48130d8d22227367ae9753cb5c9afe2d39
+unreachable commit 16f6063abde9dcd8279fb2a7ddd4998aaf44acc7
+unreachable commit 54def8ee3ea0c7043767185e5900480d24ddb351
+unreachable commit 65d2a1553e3c1dd745afa318135a5957e50dd6ef
+unreachable commit 741afdc2f13e76bd0c48e1df7419b37e57733de3
+unreachable commit 7bb6b449ced0493f2d3cc975157aefa84b082e04
+unreachable commit 7e067ad694538a410f98732ce3052546aadc0240
+unreachable commit 809e9d1f131f54701325357199643505773f5d25
+unreachable blob 8802d6dcac8b14399ca4082987a76be4b179333c
+unreachable blob 8b82ffa1eb05ef3306ab62e1120f77a80a887d94
+unreachable commit 9af67536e6852fe928934ba0950809597d73a173
+unreachable blob b23eefdac6b2056e25c748679958179bdbd8f81f
+unreachable blob b66ef50f82242ec929141cf3246278c6160e230a
+unreachable blob c2fa5a98fe1010a1255f032ba34a612e404c7062
+unreachable blob dd42939b3f6cf542064eb011b74749195c951957
+unreachable commit 07f39952cd161438ff4b208b6cb10b287881db85
+unreachable blob 1c0327c6a73923e932eb4f4bf877f660bd13a7b0
+unreachable commit 41a324739bc3f1d265ecc474c58256e3a4ad4982
+unreachable commit 74671b411e2cf1209bc681f0349e24ef7fe00f19
+unreachable commit 9437cbb0500b22a57a62e2cf0a512b1b56ce6a96
+unreachable commit 9a0f5f8c63c184cd5082f27dbe513b3e683bc1ad
+unreachable commit 9b7bc7bf0f01a84621e23bfa02e0a09f63da1747
+unreachable commit bce7c8dbcc56e6935015a5fb2c74224bb8d9f768
+unreachable blob c4131dc6d091b1c16943554fa2396f5d405e8537
+unreachable blob c69782e19aee6d89de4f6bcf9ed14813f72c8c10
+unreachable blob d79fb0b95796290c33d6f3dee004235dad7d8893
+unreachable commit dabb01b3df1371602f3f0689d25359597db54423
+unreachable blob ec2ba85be58685070a44727bc2591b9a32eb6457
+</pre>
+
+<p>
+Using these hashes, one could inspect them using other
+<a href="https://kennyballou.com/blog/2016/01/git-in-reverse/">familiar tools</a>, namely, <a href="https://www.kernel.org/pub/software/scm/git/docs/git-show.html"><code>git-show(1)</code></a>
+and <a href="https://www.kernel.org/pub/software/scm/git/docs/git-cat-file.html"><code>git-cat-file(1)</code></a> to figure out if these are worth
+resurrecting or even are in fact the objects we want to resurrect.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org186bd51" class="outline-2">
+<h2 id="resurrection-example"><a id="org186bd51"></a><a id="ID-758cdfb2-3623-48f6-b0de-bac2d9446207"></a>Resurrection Example</h2>
+<div class="outline-text-2" id="text-resurrection-example">
+<p>
+Now that we have some tools, let's examine a situation where a change to the
+history was made that needs to be corrected: deleting branch references.
+</p>
+
+<p>
+Let's assume we are working on a topic branch for some new awesome feature.
+However, after some developing, we discover this solution might not be worth
+pursuing anymore.  In a fit of rage of our wasted effort, we dump the branch.
+</p>
+
+<p>
+Perhaps several days go by, and we discover we want to look back at something
+we did in that previous branch for some reason or another, but we certainly
+don't remember the commit hash of that branch.
+</p>
+
+<p>
+For concreteness, let's create a repository that will demonstrate this problem:
+</p>
+
+<pre class="example">
+$ cd $(mktemp -d)
+$ git init foobar
+$ cd foobar
+± touch foo
+± git add foo
+± git commit -m 'initial commit'
+± touch bar
+± git add bar
+± git commit -m 'add bar'
+± git log --oneline
+1cf706a add bar
+11d3501 initial commit
+</pre>
+
+<blockquote>
+<p>
+I created this example repository in a temporary directory because it's not
+likely to be useful after the demonstration of this problem.  Feel free to
+create the repository wherever you please, provided you are following along.
+</p>
+</blockquote>
+
+<p>
+From here, we may decide to branch and start working on our epic topic branch:
+</p>
+
+<pre class="example">
+± git checkout -b topic/epic_feature
+± echo 1 &gt;&gt; foo
+± git commit -am 'update foo: add 1'
+± echo 2 &gt;&gt; bar
+± git commit -am 'update bar: add 2'
+± touch foobar
+± git add foobar
+± git commit -m 'add foobar'
+± git log --oneline
+2e0bcc6 add foobar
+f2239ca update bar: add 2
+32d8e6d update foo: add 1
+1cf706a add bar
+11d3501 initial commit
+</pre>
+
+<p>
+From here, we decide that the <code>topic/epic_feature</code> branch is going anywhere but
+the <code>master</code> branch.  Therefore, we, swiftly, dump it into the ether:
+</p>
+
+<pre class="example">
+± git checkout master
+Switch to branch 'master'
+± git branch -D topic/epic_foobar
+Deleted branch topic/epic_feature (was 2e0bcc6).
+</pre>
+
+<p>
+Several days pass, we perform other commits on other branches, merge them into
+<code>master</code>, decide on some other things to work on.  But eventually, we are
+reminded that our old <code>topic/epic_feature</code> branch had something similar to what
+we are doing now.  It would be nice to recover it and its changes for
+examination.  However, we likely lost the commit hash of the branch.
+</p>
+</div>
+
+<div id="outline-container-orgb5cd651" class="outline-3">
+<h3 id="solution"><a id="orgb5cd651"></a><a id="ID-da233182-efc0-4e88-a104-99016cf69880"></a>Solution</h3>
+<div class="outline-text-3" id="text-solution">
+<p>
+If we take a quick look at our <code>git-fsck</code> output, we might see something that
+may lead us to our commit hash:
+</p>
+
+<pre class="example">
+± git fsck
+Checking object directories: 100% (256/256), done.
+</pre>
+
+<p>
+Well, that was less than helpful.  What happened? Turns out, as mentioned
+above, <code>git-fsck</code> considers objects "reachable" if they are pointed to by a
+reference <i>or</i> are in the reflog.  Let's add the <code>--no-reflogs</code> flag:
+</p>
+
+<pre class="example">
+± git fsck --no-reflogs
+Checking object directories: 100% (256/256), done.
+dangling commit 2e0bcc62122f2d7bf895958ac8fed1ec05d4d904
+</pre>
+
+<p>
+This looks more promising! Let's checkout this hash and inspect it:
+</p>
+
+<pre class="example">
+± git checkout 2e0bcc62122f2d7bf895958ac8fed1ec05d4d904
+
+Note: checking out '2e0bcc62122f2d7bf895958ac8fed1ec05d4d904'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by performing another checkout.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -b with the checkout command again. Example:
+
+  git checkout -b &lt;new-branch-name&gt;
+
+HEAD is now at 2e0bcc6... add foobar
+± git log --oneline
+2e0bcc6 add foobar
+f2239ca update bar: add 2
+32d8e6d update foo: add 1
+1cf706a add bar
+11d3501 initial commit
+</pre>
+
+<p>
+This indeed looks like the branch we created (several days) before.  Git's
+interface, as a helpful reminder, explains to us how to (re)create this point
+as a reference (branch).  It is, thus, our choice to examine the branch as-is,
+or recreate the reference for later inspection.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6efeb23" class="outline-2">
+<h2 id="another-resurrection-example"><a id="org6efeb23"></a><a id="ID-a24032fc-0ed8-4906-a7da-b2d33b42f121"></a>Another Resurrection Example</h2>
+<div class="outline-text-2" id="text-another-resurrection-example">
+<p>
+For another example, let's examine when we create a branch and change the
+parent commit of the branch point.
+</p>
+
+<p>
+We will start with some commands that create and initialize the repository into
+an initial state, that is, before any mistakes are made:
+</p>
+
+<pre class="example">
+$ cd $(mktemp -d)
+$ git init foobar
+$ cd foobar
+± touch foo
+± git add foo
+± git commit -m 'initial commit'
+± touch bar
+± git add bar
+± git commit -m 'add bar'
+± echo 1 &gt;&gt; foo
+± git commit -am 'update foo: add 1'
+± git checkout -b topic/foobar
+± echo 1 &gt;&gt; bar
+± git commit -am 'update bar: add 1'
+</pre>
+
+<blockquote>
+<p>
+Notice, again, I've created this repository in a temporary directory for my
+own system's tidyness.  Futhermore, note <code>mktemp -d</code> will create a
+<i>different</i> temporary directory.  As such, the <code>foobar</code> project from this
+example and the previous example <i>will</i> be different.
+</p>
+</blockquote>
+
+<p>
+From here, our one line log should look similar to the following:
+</p>
+
+<pre class="example">
+± git log --oneline
+3de2659 update bar: add 1
+5e6dd5f update foo: add 1
+9640abb add bar
+31d2347 initial commit
+</pre>
+
+<p>
+Furthermore, here is an image that describes the state of the repository.
+</p>
+
+<figure>
+
+<div id="orgded056c" class="figure">
+<p><object type="image/svg+xml" data="file:///media/git-repo-state-1.svg" class="org-svg">
+Sorry, your browser does not support SVG.</object>
+</p>
+</div>
+</figure>
+
+<p>
+Next, we will create a few more commits, but instead of doing things properly,
+we are going to (intentionally) make a mistake.  We will merge our
+<code>topic/foobar</code> branch into <code>master</code>, create a new file, <code>foobar</code>, and create a
+branch, <code>topic/bad</code>, from <code>topic/foobar</code>.  In the <code>topic/bad</code> branch, we will
+create some new commits, but then we will squash the <i>two previous</i> commits.
+</p>
+
+<p>
+Let's begin issuing commands against our repository:
+</p>
+
+<pre class="example">
+± git checkout master
+± git merge --ff-only topic/foobar
+± touch foobar
+± git add foobar
+± git commit -m 'add foobar'
+± git checkout -b topic/bad topic/foobar
+± echo 2 &gt;&gt; foo
+± git commit -am 'update foo: add 2'
+± echo 2 &gt;&gt; bar
+± git commit -am 'update bar: add 2'
+</pre>
+
+<p>
+Thusly, our repository should look similar to the following image:
+</p>
+
+<figure>
+
+<div id="orgbc1ec0c" class="figure">
+<p><object type="image/svg+xml" data="file:///media/git-repo-state-2.svg" class="org-svg">
+Sorry, your browser does not support SVG.</object>
+</p>
+</div>
+</figure>
+
+<p>
+Now, for the mistake:
+</p>
+
+<pre class="example">
+± git rebase -i HEAD~3
+(squash the previous commits)
+pick 3de26
+squash 4babf
+squash 7647f
+</pre>
+
+<p>
+This should result in a repository that looks like the following:
+</p>
+
+<figure>
+
+<div id="org6b49667" class="figure">
+<p><object type="image/svg+xml" data="file:///media/git-repo-state-3.svg" class="org-svg">
+Sorry, your browser does not support SVG.</object>
+</p>
+</div>
+</figure>
+
+<p>
+Assuming we didn't recognize the mistake, we might attempt to merge the branch:
+</p>
+
+<pre class="example">
+± git checkout master
+± git merge --ff-only topic/bad
+fatal: Not possible to fast-forward, aborting.
+</pre>
+
+<p>
+Well, of course, the <code>master</code> branch is ahead by one commit, and the
+<code>topic/bad</code> branch is "behind" by two.
+</p>
+
+<p>
+We can see this be viewing the logs when going from <code>master</code> to <code>topic/bad</code> and
+then vice-versa:
+</p>
+
+<pre class="example">
+± git log --oneline master..topic/bad
+3b71666 update bar: add 1
+± git log --oneline topic/bad..master
+7387d60 add foobar
+3de2659 update bar: add 1
+</pre>
+
+<p>
+But another issue emerges from viewing these log outputs from our mistake
+ignorant brains: two of the commits look the same, e.g., have the same commit
+message.
+</p>
+
+<p>
+Not only have we combined two of our changes from <code>topic/bad</code> but we combined
+them with a commit that was <i>already</i> merged into the <code>master</code> branch.
+Assuming <code>master</code> is a stable and "branchable" branch, we will not be able to
+simply rebase one way and return, the commits are too intermingled.
+</p>
+
+<blockquote>
+<p>
+Branchable, in this context, means the branch is safe to base work, no one on
+our team (or ourselves, if we practice proper discipline) will come behind us
+and change the history of this branch.  This is an important assumption in
+<i>any</i> distributed workflow.  Every project should have (at least) one
+"branchable" reference, many choose this to be the <code>master</code> branch.
+</p>
+</blockquote>
+</div>
+
+<div id="outline-container-org461e1c2" class="outline-3">
+<h3 id="solutions"><a id="org461e1c2"></a><a id="ID-1013e680-6863-4823-8d4f-44da715069e5"></a>Solutions</h3>
+<div class="outline-text-3" id="text-solutions">
+<p>
+One way we can fix this is to simply not care.  But that's not what we are
+about: we like clean history, this situation and such a solution is clearly not
+clean!
+</p>
+
+<p>
+Therefore, we will have to return the <code>topic/bad</code> branch to a clean state
+before continuing with merging the work done in the branch.
+</p>
+
+<p>
+Let's start with examining the reflog:
+</p>
+
+<pre class="example">
+± git reflog
+7387d60 HEAD@{0}: checkout: moving from topic/bad to master
+3b71666 HEAD@{1}: rebase -i (finish): returning to refs/heads/topic/bad
+3b71666 HEAD@{2}: rebase -i (fixup): update bar: add 1
+4cc10e9 HEAD@{3}: rebase -i (fixup): # This is a combination of 2 commits.
+3de2659 HEAD@{4}: rebase -i (start): checkout HEAD~3
+7647f9c HEAD@{5}: commit: update bar: add 2
+4babfe7 HEAD@{5}: commit: update foo: add 2
+3de2659 HEAD@{6}: checkout: moving from master to topic/bad
+7387d60 HEAD@{7}: commit: add foobar
+3de2659 HEAD@{8}: checkout: moving from topic/bad to master
+3de2659 HEAD@{9}: checkout: moving from master to topic/bad
+3de2659 HEAD@{10}: merge topic/foobar: Fast-forward
+5e6dd5f HEAD@{11}: checkout: moving from topic/foobar to master
+3de2659 HEAD@{12}: commit: update bar: add 1
+5e6dd5f HEAD@{13}: checkout: moving from master to topic/foobar
+5e6dd5f HEAD@{14}: commit: update foo: add 1
+9640abb HEAD@{15}: commit: add bar
+31d2347 HEAD@{16}: commit (initial): initial commit
+</pre>
+
+<p>
+Examining <code>HEAD@{5}</code> we will see the commit of <code>topic/bad</code> <i>before</i> we
+attempted to rebase the three commits.  If we start there, we may be able to
+salvage the history.
+</p>
+
+<pre class="example">
+± git checkout topic/bad
+± git reset --hard 7647f9c
+± git log --oneline
+7647f9c update bar: add 2
+4babfe7 update foo: add 2
+3de2659 update bar: add 1
+5e6dd5f update foo: add 1
+9640abb add bar
+31d2347 initial commit
+</pre>
+
+<blockquote>
+<p>
+Obligatory notice, blindly using <code>git reset --hard</code> can lead to dark, scary
+places.  As with the first example in this post, <code>git reset --hard</code> is an
+even more subtle way to lose commits.  Pause before pressing enter
+<i>every time</i> you type <code>git reset --hard</code>.
+</p>
+</blockquote>
+
+<p>
+Perfect, we are back to the state of the branch as seen in the following image:
+</p>
+
+<figure>
+
+<div id="orgf5dcf97" class="figure">
+<p><object type="image/svg+xml" data="file:///media/git-repo-state-2.svg" class="org-svg">
+Sorry, your browser does not support SVG.</object>
+</p>
+</div>
+</figure>
+
+<p>
+From here, we can merge the two branches however we please: rebase and
+fast-forward or regular old merge commits.
+</p>
+
+<p>
+The first way of merging the two branches may proceed as follows:
+</p>
+
+<pre class="example">
+± git branch
+topic/bad
+± git rebase master
+First, rewinding head to replay your work on top of it...
+Applying: update foo: add 2
+Applying: update bar: add 2
+± git checkout master
+Switched to branch 'master'
+± git merge --ff-only topic/bad
+Updating 7387d60..577aa0b
+Fast-forward
+ bar | 1 +
+ foo | 1 +
+ 2 files changed, 2 insertions(+)
+</pre>
+
+<p>
+Afterwards, our repository will look like the following figure:
+</p>
+
+<figure>
+
+<div id="orgb5c4106" class="figure">
+<p><object type="image/svg+xml" data="file:///media/git-repo-state-4.svg" class="org-svg">
+Sorry, your browser does not support SVG.</object>
+</p>
+</div>
+</figure>
+
+<blockquote>
+<p>
+If we wanted to rebase the two commits from <code>topic/bad</code> together, we could
+have easily done so <i>right</i> before switching to the <code>master</code> branch.
+</p>
+</blockquote>
+
+<p>
+Proceeding with a regular merge commit would proceed similar to the following:
+</p>
+
+<pre class="example">
+± git checkout master
+Switched to branch 'master'
+± git merge --no-ff topic/bad -m 'merge branch "topic/bad"'
+Merge made by the 'recursive' strategy.
+ bar | 1 +
+ foo | 1 +
+ 2 files changed, 2 insertions(+)
+</pre>
+
+<p>
+Afterwards, our repository will look like the following figure:
+</p>
+
+<figure>
+
+<div id="org992ee15" class="figure">
+<p><object type="image/svg+xml" data="file:///media/git-repo-state-5.svg" class="org-svg">
+Sorry, your browser does not support SVG.</object>
+</p>
+</div>
+</figure>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org91ebfed" class="outline-2">
+<h2 id="summary"><a id="org91ebfed"></a><a id="ID-89a74054-7783-4fa6-beb9-db9b97439196"></a>Summary</h2>
+<div class="outline-text-2" id="text-summary">
+<p>
+The best way to fix Git repository history is not to make mistakes in the first
+place.  However, since mistakes are inevitable, we must learn the tools to
+discover, recover, and return to the appropriate state to correct our mistakes.
+More importantly, we must learn the courage to make mistakes, knowing we have
+an escape route.
+</p>
+
+<p>
+This way, we can avoid keeping around a <code>git.txt</code> file (<a href="https://xkcd.com/1597">xkcd</a>)
+when our repository eventually melts down.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc4c5eb1" class="outline-2">
+<h2 id="orgc4c5eb1"><a id="ID-b95dc6ac-6a3e-4f60-83fd-c6b598041bb4"></a>References</h2>
+<div class="outline-text-2" id="text-orgc4c5eb1">
+<ul class="org-ul">
+<li><a href="https://www.kernel.org/pub/software/scm/git/docs/git-reflog.html"><code>git-reflog(1)</code></a></li>
+
+<li><a href="https://git-scm.com/book/en/v2/Git-Internals-Git-References">Git SCM book, Internals Chapter</a></li>
+
+<li><a href="https://www.kernel.org/pub/software/scm/git/docs/git-fsck.html"><code>git-fsck(1)</code></a></li>
+
+<li><a href="https://kennyballou.com/blog/2016/01/git-in-reverse/">Git in Reverse</a></li>
+
+<li><a href="https://www.kernel.org/pub/software/scm/git/docs/git-show.html"><code>git-show(1)</code></a></li>
+
+<li><a href="https://www.kernel.org/pub/software/scm/git/docs/git-cat-file.html"><code>git-cat-file(1)</code></a></li>
+
+<li><a href="https://www.kernel.org/pub/software/scm/git/docs/git-reset.html"><code>git-reset(1)</code></a></li>
+
+<li><a href="https://www.kernel.org/pub/software/scm/git/docs/git-rebase.html"><code>git-rebase(1)</code></a></li>
+
+<li><a href="https://xkcd.com/1597">XKCD: Git</a></li>
+</ul>
+</div>
+</div>
+</div>
+<footer id="" class="status">
+<footer>
+  <p>&copy; 2014-2022 Kenny Ballou.
+    <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Some rights
+      reserved.</a></p>
+  <p>Powered by <a href="https://gnu.org">GNU/Linux</a></p>
+</footer>
+</footer>
+</body>
+</html>

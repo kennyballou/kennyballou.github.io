@@ -1,0 +1,495 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-04-09 Sat 18:52 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Yet Another Page on Readings in Distributed Systems</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="kb" />
+<meta name="description" content="My own list of links, articles, paper, etc. I enjoyed reading about distributed systems"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<meta charset="utf-8">
+
+<meta name="author" content="Kenny Ballou">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<title>~kb</title>
+
+<link rel="canonical" href="/" />
+<link href="/index.xml" rel="alternate" type="application/rss+xml"
+      title="~kb/blog" />
+
+<link rel="stylesheet" href="/css/simple.css" />
+<link rel="stylesheet" href="/css/simple.add.css" />
+<link rel="stylesheet" href="/css/katex.css" />
+<link rel="stylesheet" href="/css/fa-all.css" />
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<script defer type="text/javascript" src="/js/katex.js"></script>
+<script defer type="text/javascript" src="/js/katex-render.js"></script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://kennyballou.com/blog"> UP </a>
+ |
+ <a accesskey="H" href="https://kennyballou.com/"> HOME </a>
+</div><header id="" class="status">
+<nav>
+  <a href="/about.html">
+    <i class="fade fas fa-user-circle"></i>
+  </a>
+  <a href="https://git.devnulllabs.io"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-code-branch fa-1x"></i>
+  </a>
+  <a href="https://github.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-github fa-1x"></i>
+  </a>
+  <a href="https://bitbucket.org/kballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-bitbucket fa-1x"></i>
+  </a>
+  <a href="https://twitter.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-twitter fa-1x"></i>
+  </a>
+  <a href="https://www.buymeacoffee.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-mug-hot fa-1x"></i>
+  </a>
+  <a href="/resume.pdf"
+     target="_blank">
+    <i class="fade far fa-file-pdf"></i>
+  </a>
+  <a href="/932F3E8E1C0F4A9895D7B8B8B0CAA28A02958308.txt"
+     target="_blank">
+    <i class="fade fas fa-key"></i>
+  </a>
+  <a href="/index.xml" rel="alternate"
+     type="application/rss+xml">
+    <i class="fade fas fa-rss fa-1x"></i>
+  </a>
+</nav>
+</header>
+<div id="main">
+<h1 class="title">Yet Another Page on Readings in Distributed Systems</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orge37f512">Recommended Reading</a>
+<ul>
+<li><a href="#orgca010c5">General</a></li>
+<li><a href="#org9092ba4">General Networking</a></li>
+<li><a href="#orgfe1d1f8">Hadoop ecosystem</a></li>
+<li><a href="#orgbcbad19">Databases</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="PREVIEW">
+<p>
+This page is dedicated to general discussion of distributed systems, references
+to general overviews and the like. Distributed systems are difficult and even
+the well established ones aren't
+<a href="http://aphyr.com/posts/288-the-network-is-reliable">bulletproof</a>. How can we make this better? As
+SysAdmins? As Developers? First we can attempt to understand some of the issues
+related to designing and implementing distributed systems. Then we can throw
+all that out and figure out what <i>really</i> happens to distributed systems.
+</p>
+
+</div>
+
+<blockquote>
+<p>
+"Distributed systems are hard." -Everyone.
+</p>
+</blockquote>
+
+<div id="outline-container-orge37f512" class="outline-2">
+<h2 id="orge37f512"><a id="ID-01d80b7b-21b5-4329-a6d7-11a99c437a6c"></a>Recommended Reading</h2>
+<div class="outline-text-2" id="text-orge37f512">
+</div>
+
+<div id="outline-container-orgca010c5" class="outline-3">
+<h3 id="orgca010c5"><a id="ID-f25c009a-c999-4020-ab29-9d04928ae97a"></a>General</h3>
+<div class="outline-text-3" id="text-orgca010c5">
+<ul class="org-ul">
+<li><a href="http://en.wikipedia.org/wiki/Fallacies_of_Distributed_Computing">Fallacies of Distributed
+Computing</a></li>
+
+<li><a href="http://en.wikipedia.org/wiki/CAP_theorem">CAP Theorem</a>
+
+<ul class="org-ul">
+<li><a href="http://learnyousomeerlang.com/distribunomicon#my-other-cap-is-a-theorem">LYSEFGG: Distribunomicon: My other cap is a theorem</a></li>
+
+<li>For a more entertaining introduction to CAP, Hebert's ''Learn You Some
+Erlang for Great Good'' has a really good subsection on the topic that
+includes the zombie apocalypse and some introduction to how a blend between
+AP and CP systems can be achieved.</li>
+
+<li><a href="http://lpd.epfl.ch/sgilbert/pubs/BrewersConjecture-SigAct.pdf">CAP Theorem Proof</a></li>
+
+<li><a href="http://codahale.com/you-cant-sacrifice-partition-tolerance/">You can't sacrifice partition
+tolerance</a></li>
+</ul></li>
+
+<li><a href="http://en.wikipedia.org/wiki/Consistency_model">Consistency Model</a>
+
+<ul class="org-ul">
+<li><a href="http://en.wikipedia.org/wiki/Category:Consistency_models">List of Consistency Models</a></li>
+
+<li><a href="http://en.wikipedia.org/wiki/Linearizability">Linearizability</a></li>
+
+<li><a href="http://www.bailis.org/blog/linearizability-versus-serializability/">Linearizability versus Serializability</a></li>
+
+<li><a href="http://en.wikipedia.org/wiki/Eventual_consistency">Eventual Consistency</a></li>
+</ul></li>
+
+<li><a href="http://en.wikipedia.org/wiki/Paxos_(computer_science)">Paxos</a>
+
+<ul class="org-ul">
+<li><a href="http://distributedthoughts.wordpress.com/2013/09/22/understanding-paxos-part-1/">Understanding Paxos (Part 1)</a></li>
+
+<li><a href="http://blog.willportnoy.com/2012/06/lessons-learned-from-paxos.html">Lessons learned from implementing Paxos
+(2013)</a></li>
+</ul></li>
+
+<li><a href="http://en.wikipedia.org/wiki/Vector_clock">Vector Clock</a></li>
+
+<li><a href="http://en.wikipedia.org/wiki/Split-brain_(computing)">Split-Brain</a></li>
+
+<li><a href="http://en.wikipedia.org/wiki/Network_partitioning">Network Partitions</a></li>
+
+<li><a href="https://speakerdeck.com/cemerick/distributed-systems-and-the-end-of-the-api">Distributed Systems and the End of the API</a></li>
+
+<li><a href="http://engineering.linkedin.com/distributed-systems/log-what-every-software-engineer-should-know-about-real-time-datas-unifying">The Log</a>: What every software engineer should know
+about real time data's unifying abstraction</li>
+</ul>
+
+<p>
+The <a href="http://aphyr.com/tags/jepsen">Jepsen</a> "Call me maybe" articles are really good, well
+written essays on topics and technologies related to distributed systems.
+</p>
+
+<p>
+Introductory post to the "Call me maybe" series:
+</p>
+
+<ul class="org-ul">
+<li><a href="http://aphyr.com/posts/281-call-me-maybe">Call me maybe</a></li>
+</ul>
+
+<p>
+Here are some personal recommendations:
+</p>
+
+<ul class="org-ul">
+<li><a href="http://aphyr.com/posts/288-the-network-is-reliable">The Network is Reliable</a></li>
+
+<li><a href="http://aphyr.com/posts/313-strong-consistency-models">Strong Consistency Models</a></li>
+
+<li><a href="http://aphyr.com/posts/287-asynchronous-replication-with-failover">Asynchronous Replication with Failover</a></li>
+</ul>
+
+<p>
+Really anything from Ferd Herbert is good. Particularly, the first and last
+chapters of <a href="http://www.erlang-in-anger.com/">Erlang In Anger</a> which includes longer essays
+from his blog posts.
+</p>
+
+<ul class="org-ul">
+<li><a href="http://ferd.ca/queues-don-t-fix-overload.html">Queues Don't Fix Overload</a></li>
+
+<li><a href="http://ferd.ca/it-s-about-the-guarantees.html">It's About the Guarantees</a></li>
+
+<li><a href="http://ferd.ca/lessons-learned-while-working-on-large-scale-server-software.html">Lessons Learned while Working on Large-Scale
+Server Software</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org9092ba4" class="outline-3">
+<h3 id="org9092ba4"><a id="ID-57d1391e-87cf-4098-a287-f6f9a7e3fca4"></a>General Networking</h3>
+<div class="outline-text-3" id="text-org9092ba4">
+<ul class="org-ul">
+<li><a href="http://www.snookles.com/slf-blog/2012/01/05/tcp-incast-what-is-it/">TCP incast</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgfe1d1f8" class="outline-3">
+<h3 id="orgfe1d1f8"><a id="ID-6c24d3c8-801d-4363-bd4e-2d55a141a9b7"></a>Hadoop ecosystem</h3>
+<div class="outline-text-3" id="text-orgfe1d1f8">
+<p>
+This link is more specific to HDFS and is a rather limited experiment but
+nonetheless a good read to further understand partition issues that can arise
+in Hadoop systems:
+</p>
+
+<ul class="org-ul">
+<li><a href="https://www.growse.com/2014/07/18/partition-tolerance-and-hadoop-part-1-hdfs/">Partition Tolerance in HDFS</a></li>
+</ul>
+
+<p>
+More links from the <a href="http://aphyr.com/tags/jepsen">Jepsen essays</a>:
+</p>
+
+<ul class="org-ul">
+<li><a href="http://aphyr.com/posts/291-call-me-maybe-zookeeper">Call me maybe: Zookeeper</a></li>
+
+<li><a href="http://aphyr.com/posts/293-call-me-maybe-kafka">Call me maybe: Kafka</a></li>
+
+<li><a href="http://aphyr.com/posts/294-call-me-maybe-cassandra">Call me maybe: Cassandra</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgbcbad19" class="outline-3">
+<h3 id="orgbcbad19"><a id="ID-8e870851-ae94-470b-bdaf-31c101750732"></a>Databases</h3>
+<div class="outline-text-3" id="text-orgbcbad19">
+<ul class="org-ul">
+<li><a href="http://en.wikipedia.org/wiki/ACID">Wikipedia ACID</a></li>
+
+<li><a href="http://aphyr.com/posts/282-call-me-maybe-postgres">Call me maybe: Postgres</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<footer id="" class="status">
+<footer>
+  <p>&copy; 2014-2022 Kenny Ballou.
+    <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Some rights
+      reserved.</a></p>
+  <p>Powered by <a href="https://gnu.org">GNU/Linux</a></p>
+</footer>
+</footer>
+</body>
+</html>

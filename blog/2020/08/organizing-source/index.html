@@ -1,0 +1,669 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-04-09 Sat 18:52 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Organizing Source</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="kb" />
+<meta name="description" content="Organizing Workspace/Source Code"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<meta charset="utf-8">
+
+<meta name="author" content="Kenny Ballou">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<title>~kb</title>
+
+<link rel="canonical" href="/" />
+<link href="/index.xml" rel="alternate" type="application/rss+xml"
+      title="~kb/blog" />
+
+<link rel="stylesheet" href="/css/simple.css" />
+<link rel="stylesheet" href="/css/simple.add.css" />
+<link rel="stylesheet" href="/css/katex.css" />
+<link rel="stylesheet" href="/css/fa-all.css" />
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<script defer type="text/javascript" src="/js/katex.js"></script>
+<script defer type="text/javascript" src="/js/katex-render.js"></script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://kennyballou.com/blog"> UP </a>
+ |
+ <a accesskey="H" href="https://kennyballou.com/"> HOME </a>
+</div><header id="" class="status">
+<nav>
+  <a href="/about.html">
+    <i class="fade fas fa-user-circle"></i>
+  </a>
+  <a href="https://git.devnulllabs.io"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-code-branch fa-1x"></i>
+  </a>
+  <a href="https://github.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-github fa-1x"></i>
+  </a>
+  <a href="https://bitbucket.org/kballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-bitbucket fa-1x"></i>
+  </a>
+  <a href="https://twitter.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-twitter fa-1x"></i>
+  </a>
+  <a href="https://www.buymeacoffee.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-mug-hot fa-1x"></i>
+  </a>
+  <a href="/resume.pdf"
+     target="_blank">
+    <i class="fade far fa-file-pdf"></i>
+  </a>
+  <a href="/932F3E8E1C0F4A9895D7B8B8B0CAA28A02958308.txt"
+     target="_blank">
+    <i class="fade fas fa-key"></i>
+  </a>
+  <a href="/index.xml" rel="alternate"
+     type="application/rss+xml">
+    <i class="fade fas fa-rss fa-1x"></i>
+  </a>
+</nav>
+</header>
+<div id="main">
+<h1 class="title">Organizing Source</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org57b62a2">Why this Discussion</a></li>
+<li><a href="#org4c65bec">Path to Organization</a>
+<ul>
+<li><a href="#org0ccb1ac">Before University</a></li>
+<li><a href="#org2db89ea">Eclipse</a></li>
+<li><a href="#org585b235">Maven</a></li>
+<li><a href="#org1473f64">Golang</a></li>
+<li><a href="#org2f1ff97">Personal Projects, Professional Development, and Contracting</a></li>
+<li><a href="#orgcfd4409">Forges, Platforms, and Working in Public</a></li>
+</ul>
+</li>
+<li><a href="#orge21ac31">Organizing Source</a></li>
+<li><a href="#orge3db995">tl;dr:</a></li>
+<li><a href="#orge3f5022">Parting Thoughts</a></li>
+</ul>
+</div>
+</div>
+<div class="PREVIEW">
+<p>
+Another brief digression into organizing source code and projects.  Described
+here is my current ideal, subject to change, that has evolved over the years of
+being a student, a professional, a contractor, and now a student again.
+</p>
+
+</div>
+
+<div id="outline-container-org57b62a2" class="outline-2">
+<h2 id="org57b62a2"><a id="ID-f9211020-9523-43cd-8bf7-86c1b52e9758"></a>Why this Discussion</h2>
+<div class="outline-text-2" id="text-org57b62a2">
+<p>
+<a href="https://kennyballou.com/blog/2020/08/organizing-research">Previously</a>, we discussed how to organize research papers and related metadata.
+Today, I want to discuss how <i>I</i> personally organize my source code.  I write
+this because I am occasionally asked about this; but even more personally, I
+wish more of these "boring" blog posts were available and easily accessible
+from others so that I could learn what/how others are going about this to see
+if there is anything I could learn or leverage in my own setup.  My first step
+to correcting this is to add my own notes on how and why I organize my
+"workspace" the way I do/have.
+</p>
+
+<p>
+Many developers and many languages will discuss how to structure an individual
+project, or what the best practice are around a specific language or
+technology.  However, I have found very, very few discuss the overall structure
+of many projects, or more pointedly, or to organize <span class="underline">all</span> the different source
+trees.  This discussion may implicitly exist in mono-repository vs
+poly-repository discussions, but repository organization is still too limiting
+to my overall goal of discussing how to organize <span class="underline">every</span> project, regardless of
+ecosystem or project set.  That is, we set out to answer "how do you organize
+all the different projects and ecosystems you're working on or dependent on?"
+</p>
+
+<p>
+Perhaps it's important to note that not all projects in a workspace are active
+projects but may be dependencies that needed to be adjusted to work with the
+current active project set.
+</p>
+
+<p>
+I will introduce and discuss the highlights of the development of my
+organization and how I arrived or was influenced in a particular direction or
+another.  Finally, I will discuss the current organization method.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4c65bec" class="outline-2">
+<h2 id="org4c65bec"><a id="ID-3a18713a-359e-4d6b-a667-9ad90752da91"></a>Path to Organization</h2>
+<div class="outline-text-2" id="text-org4c65bec">
+<p>
+The madness of my organization is derivable through a series of tools and
+stages in my development career.  Certainly, there is some <a href="https://en.wikipedia.org/wiki/Historical_revisionism">revisionism</a> here,
+nothing is ever as clean as we may make it.
+</p>
+</div>
+
+<div id="outline-container-org0ccb1ac" class="outline-3">
+<h3 id="org0ccb1ac"><a id="ID-d9a9b147-89ee-4267-94ba-c7e88d4c6194"></a>Before University</h3>
+<div class="outline-text-3" id="text-org0ccb1ac">
+<p>
+When learning some programming in high-school, there was <b>NO</b> organization.
+Projects were loosely collected under whatever folder made sense in the moment,
+projects captured by "solutions" in <a href="https://visualstudio.microsoft.com/">Visual Studio</a>.
+</p>
+
+<p>
+When I started my first internship, code was collectively organized under
+<code>C:\\dev\</code>.  This was in the initial developer checklists for configuring a new
+machine: something along the lines of "checkout the <a href="https://www.nongnu.org/cvs/">CVS</a> tree to <code>C:\\dev\</code>."
+</p>
+
+<p>
+As monstrous and scary as this may sound, this worked.  But it worked for a few
+reasons that may make it seem untenable today: this was it.  There was no other
+source to deal with.  If it wasn't in our <a href="https://www.nongnu.org/cvs/">CVS</a> tree, there really wasn't any
+concern for it at the time.  Outside dependencies didn't really exist.  Aside
+from the tooling and libraries of Microsoft, there wasn't much in the realm of
+outside dependencies.  Something I find typical of certain enterprise
+structures: there is inherent risk associated with and aversion to anything not
+controlled by the capital of the enterprise itself.
+</p>
+
+<blockquote>
+<p>
+I'm confident things have changed since my time there.  <a href="https://www.mercurial-scm.org/">Mercurial</a> is being used
+instead of <a href="https://www.nongnu.org/cvs/">CVS</a>, for example!
+</p>
+</blockquote>
+
+<p>
+From this, I used the single tree construct as a foundation of organizing
+projects.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2db89ea" class="outline-3">
+<h3 id="org2db89ea"><a id="ID-58b4926d-5392-49c5-89b4-f0592215cd65"></a>Eclipse</h3>
+<div class="outline-text-3" id="text-org2db89ea">
+<p>
+Starting university, our first tool was <a href="https://www.eclipse.org/">Eclipse</a>.  Being relatively spoiled by
+<a href="https://visualstudio.microsoft.com/">Visual Studio</a>, <a href="https://www.eclipse.org/">Eclipse</a> seemed archaic.  But something that stuck out is the
+question it asked every time it started that never occurred to me before:
+"Select the directory as a workspace".  A very initial hint towards an overall
+(meta) structure of projects.
+</p>
+
+<p>
+Since I was using <a href="https://www.eclipse.org/">Eclipse</a> for essentially all of my school projects, I would
+always have a <code>~/workspace</code> directory, as a more natural location to place
+source, I eventually started placing more programming projects under this
+directory structure, even if the projects were not necessarily <a href="https://www.oracle.com/java/">Java</a>/<a href="https://www.eclipse.org/">Eclipse</a>
+projects.
+</p>
+
+<p>
+Here, I began using the <code>~/workspace</code> folder as the foundation for all
+organization after this.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org585b235" class="outline-3">
+<h3 id="org585b235"><a id="ID-b74a2024-ab5f-43ef-b24e-e252176d69e2"></a>Maven</h3>
+<div class="outline-text-3" id="text-org585b235">
+<p>
+As typical for editor envy, the desire to ditch <a href="https://www.eclipse.org/">Eclipse</a> for <a href="https://www.vim.org\">Vim</a> became more and
+more apparent, finding appropriate tooling for managing projects quickly became
+a necessity.
+</p>
+
+<p>
+Since I was mainly developing <a href="https://www.oracle.com/java/">Java</a> projects, <a href="https://maven.apache.org/">Maven</a> was an obvious contender.
+While, at the time I didn't really enjoy the opinionated approach of <a href="https://maven.apache.org/">Maven</a>, the
+"correct" domain name ordering stuck out as an interesting idea for organizing
+packages in <a href="https://www.oracle.com/java/">Java</a>.  That is, <a href="https://maven.apache.org/">Maven</a>, by default, creates a package structure
+similar to the following <code>com.example.projectx</code>, which translates to a folder
+structure of <code>src/main/java/com/example/projectx</code>.
+</p>
+
+<p>
+While I didn't end up using <a href="https://maven.apache.org/">Maven</a> for a little while longer, I did eventually
+borrow a modified version of the domain name folder structure.  For example, I
+would use <code>com.example</code> as a root folder for all <code>example.com</code> projects.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1473f64" class="outline-3">
+<h3 id="org1473f64"><a id="ID-98454288-3c83-4641-a93b-624d76ea277f"></a>Golang</h3>
+<div class="outline-text-3" id="text-org1473f64">
+<p>
+Prior to 1.12 and Go modules, <a href="https://golang.org/">Golang</a> imposed its own project structuring.  I
+have had conflicting thoughts about this.  On one hand, the imposed homogeneity
+of projects and meta-structure was serene since it was always so easy to find
+references and dependencies.  On the other hand, it disrupted my current
+organization methods.  Furthermore, since I had effectively two different
+working trees of source code, I had more mental burden when considering
+ownership issues with respect to client or employer code.  With <a href="https://golang.org/">Golang</a>
+projects, it was no longer possible to ensure all source belonging to a
+particular organization was under a single tree.
+</p>
+
+<p>
+Similarly, related to the homogeneous folder structures was the encoding of the
+source repository in the dependency or code base, e.g., projects from <a href="https://github.com/">GitHub</a> were
+found in the folder path <code>${GOPATH}/src/github.com/</code>.
+</p>
+
+<p>
+Now that <a href="https://blog.golang.org/using-go-modules">Go Modules</a> are the default and the <code>${GOPATH}</code> isn't really used too
+much, I did still borrow some of the naming and organization constructs from
+<a href="https://golang.org/">Golang</a>.  Chiefly, I now used <code>~/workspace/src</code> as the root of all of the projects
+instead of simply <code>~/workspace</code>.  Furthermore, while I'm not particularly
+interested in the platform the source is hosted on (more on this later), I <span class="underline">am</span>
+interested in the owning or overarching organization behind the code.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2f1ff97" class="outline-3">
+<h3 id="org2f1ff97"><a id="ID-f638a40b-7e43-4c8b-a5ee-6bdece7fbc2a"></a>Personal Projects, Professional Development, and Contracting</h3>
+<div class="outline-text-3" id="text-org2f1ff97">
+<p>
+As a developer, hobbyist or professional, there is a need to have a clear
+delineation between projects.  This comes both for personal desires to be
+organized, but also arises because of contractual reasons; I would rather my
+own work not be reassigned to a company just because of being hired (which <span class="underline">is</span>
+what most developer employee contracts argue, though, obligatory "INAL").
+Therefore, I need a clear mechanism for delineating ownership.  Thankfully,
+this can be baked into the folder structure itself with relative ease!
+</p>
+
+<p>
+I mostly stumbled into this since I had started using a personal computer for
+one internship and again later when hired full-time, and later when
+contracting.  I have tried a few different techniques to sort out the issues of
+entangling source from different organizations.
+</p>
+
+<p>
+The first I tried was having a separate user account on the machine for work
+and personal and this worked well enough but was a pain point for most
+everything else.  Namely, my <a href="https://github.com/kennyballou/dotfiles">dotfiles</a> game wasn't where it is today, there was
+a lot of replicated files between the two user accounts.  Furthermore, this
+model does not scale as the number of "engagements" increases.
+</p>
+
+<p>
+Another approach I had considered but never tried was using something like
+<a href="https://www.qubes-os.org/">QubesOS</a> since its virtual machine and isolation would functionally achieve
+separation very easily.  However, I was worried about how I would accomplish
+backups if necessary.  Furthermore, I was really happy with then <a href="https://www.archlinux.org">Arch Linux</a> and
+later <a href="https://gentoo.org">Gentoo</a>.  However, this approach likely would scale better than using
+separate accounts, and in some circumstances may be the only (legally) safe way
+to achieve separation.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgcfd4409" class="outline-3">
+<h3 id="orgcfd4409"><a id="ID-b9a222f2-1e66-48db-8209-df35e4c18aa7"></a>Forges, Platforms, and Working in Public</h3>
+<div class="outline-text-3" id="text-orgcfd4409">
+<blockquote>
+<p>
+Notice, this <span class="underline">is</span> different than the mono-repository vs. poly-repository
+discussion.
+</p>
+</blockquote>
+
+<p>
+As noted, I'm not particularly interested in the hosting platform or forge of a
+code base or project.  The source repository may be moved, or there may even be
+several different "repositories" that host the code; this is made possible and
+evident because <a href="https://git-scm.com">Git's</a> <a href="https://drewdevault.com/2018/07/23/Git-is-already-distributed.html">distributed</a> nature: there typically <i>just</i> happens to be a
+single, "blessed" remote repository that most work is started from, but by
+virtue of distribution, <a href="https://git-scm.com">Git</a> does not necessitate nor require a single "remote".
+Therefore, I prefer to use the owning organization/entity domain name as the
+root of organizing ownership.  This could be the <code>groupId</code> in <a href="https://www.oracle.com/java/">Java</a> projects, this
+could be the parent organization or foundation in the cases of projects under
+<a href="https://www.apache.org/">Apache</a> or <a href="https://www.gnome.org/">GNOME</a>, this could be the personal domain of the maintainer, <i>etc</i>.
+</p>
+
+<p>
+That said, not every project I clone into my workspace seems to require the
+same attention to detail.  Therefore, there might be a settling period where
+<a href="https://github.com/">GitHub</a> projects are cloned into the <code>com/github/${user}/${repo}</code> structure before
+being moved to a more permanent home, if at all.
+</p>
+
+<p>
+<a href="https://git-scm.com">Git</a> itself is better suited and can better handle the tracking of the various
+remote repositories for a project.  The filesystem and organization method, on
+the other hand, are not well suited to the complexities of remote repository
+management (nor should they be).  That is, if I "fork" a project on <a href="https://github.com/">GitHub</a>, I
+can add my own remote repository and the upstream source repository into the
+same cloned version of the project.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge21ac31" class="outline-2">
+<h2 id="orge21ac31"><a id="ID-43d180de-6590-410d-b46f-5c70cf0dd4dc"></a>Organizing Source</h2>
+<div class="outline-text-2" id="text-orge21ac31">
+<p>
+While the historical context may not be complete enough to allow someone to
+perfectly derive my own organization, I do hope it serves as a solid foundation
+for <span class="underline">why</span> the organization is the way it is.
+</p>
+
+<p>
+In my home folder, I have a single directory, <code>workspace</code>.  Under this directory,
+there is <code>src</code>.  Having <code>src</code> further allows for the addition of <code>docs</code> or <code>pkgs</code>, but
+I'm not currently using this.  Finally under <code>src</code> there is the top-level
+domains of all the projects I have, e.g., <code>com</code>, <code>org</code>, <code>io</code>, <code>net</code>, <i>etc</i>.  Under each
+TLD, is the next domain part, e.g., <code>io/devnulllabs</code>, <code>com/github</code>, <code>org/kernel</code>.
+Under each of these parent structures is the actual project folders.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge3db995" class="outline-2">
+<h2 id="orge3db995"><a id="ID-59aadc91-f43d-4dd2-96fc-bc70c82b9b84"></a>tl;dr:</h2>
+<div class="outline-text-2" id="text-orge3db995">
+<div class="org-src-container">
+<pre class="src src-bash">tree -L 3 ~/workspace
+</pre>
+</div>
+
+<pre class="example">
+workspace
+└── src
+    ├── com
+    │   ├── github
+    │   └── kennyballou
+    ├── dev
+    │   └── minilab
+    ├── edu
+    │   ├── bgsu
+    │   └── boisestate
+    ├── fi
+    │   └── liw
+    ├── io
+    │   └── devnulllabs
+    ├── org
+    │   ├── coreboot
+    │   ├── gnu
+    │   ├── kernel
+    │   └── soot-oss
+    └── us
+        └── crashrec
+
+20 directories, 0 files
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orge3f5022" class="outline-2">
+<h2 id="orge3f5022"><a id="ID-be058126-8d00-4112-9c5c-8dcb4142de8f"></a>Parting Thoughts</h2>
+<div class="outline-text-2" id="text-orge3f5022">
+<p>
+Now that it's all written, I'm not sure this discussion truly warranted its own
+post.  I've wanted to read something like this from others before, but in
+seeing what it boils down to, I certainly see why no one talks about it.
+</p>
+
+<p>
+It's fairly easy to describe the current state of things, it's fairly easy to
+demonstrate what it looks like, but it's immensely difficult to distill the
+motivation and influences that over 12 years bring us to today.
+</p>
+</div>
+</div>
+</div>
+<footer id="" class="status">
+<footer>
+  <p>&copy; 2014-2022 Kenny Ballou.
+    <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Some rights
+      reserved.</a></p>
+  <p>Powered by <a href="https://gnu.org">GNU/Linux</a></p>
+</footer>
+</footer>
+</body>
+</html>

@@ -1,0 +1,886 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-04-09 Sat 18:52 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NixOS</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="kb" />
+<meta name="description" content="NixOS"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<meta charset="utf-8">
+
+<meta name="author" content="Kenny Ballou">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<title>~kb</title>
+
+<link rel="canonical" href="/" />
+<link href="/index.xml" rel="alternate" type="application/rss+xml"
+      title="~kb/blog" />
+
+<link rel="stylesheet" href="/css/simple.css" />
+<link rel="stylesheet" href="/css/simple.add.css" />
+<link rel="stylesheet" href="/css/katex.css" />
+<link rel="stylesheet" href="/css/fa-all.css" />
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<script defer type="text/javascript" src="/js/katex.js"></script>
+<script defer type="text/javascript" src="/js/katex-render.js"></script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://kennyballou.com/blog"> UP </a>
+ |
+ <a accesskey="H" href="https://kennyballou.com/"> HOME </a>
+</div><header id="" class="status">
+<nav>
+  <a href="/about.html">
+    <i class="fade fas fa-user-circle"></i>
+  </a>
+  <a href="https://git.devnulllabs.io"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-code-branch fa-1x"></i>
+  </a>
+  <a href="https://github.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-github fa-1x"></i>
+  </a>
+  <a href="https://bitbucket.org/kballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-bitbucket fa-1x"></i>
+  </a>
+  <a href="https://twitter.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-twitter fa-1x"></i>
+  </a>
+  <a href="https://www.buymeacoffee.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-mug-hot fa-1x"></i>
+  </a>
+  <a href="/resume.pdf"
+     target="_blank">
+    <i class="fade far fa-file-pdf"></i>
+  </a>
+  <a href="/932F3E8E1C0F4A9895D7B8B8B0CAA28A02958308.txt"
+     target="_blank">
+    <i class="fade fas fa-key"></i>
+  </a>
+  <a href="/index.xml" rel="alternate"
+     type="application/rss+xml">
+    <i class="fade fas fa-rss fa-1x"></i>
+  </a>
+</nav>
+</header>
+<div id="main">
+<h1 class="title">NixOS</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org81ae9ea">NixOS</a>
+<ul>
+<li><a href="#orgc9cb76c">Nix (the package manager)</a></li>
+<li><a href="#org414e435">Nix Store</a></li>
+<li><a href="#org18b6750">Nix Profiles</a></li>
+<li><a href="#org8135620">System Profiles</a></li>
+</ul>
+</li>
+<li><a href="#org33aa764">Alternatives</a></li>
+<li><a href="#orge223d0b">Impressions and Thoughts</a></li>
+</ul>
+</div>
+</div>
+<div class="PREVIEW">
+<p>
+<a href="https://nixos.org/">NixOS</a> is a new kind of <a href="https://www.gnu.org">GNU</a>/<a href="https://www.kernel.org/">Linux</a> distribution, borrowing the ideas of
+functional programming languages to bring about a revolution of how we think
+about operating systems and software development.
+</p>
+
+</div>
+
+<div id="outline-container-org81ae9ea" class="outline-2">
+<h2 id="org81ae9ea"><a id="ID-09a7cc51-527a-4c65-8eb8-dedcdff2004d"></a>NixOS</h2>
+<div class="outline-text-2" id="text-org81ae9ea">
+<p>
+<a href="https://nixos.org/">NixOS</a> is a "functional" <a href="https://www.gnu.org">GNU</a>/<a href="https://www.kernel.org/">Linux</a> distribution
+extending the ideas of functional programming languages to operating systems.
+</p>
+
+<p>
+To illustrate, most operating systems are more analogous to imperative
+languages where the programmer instructs, via the various incantations of the
+language, the computer to perform some operation.  Many of these instructions
+modify state&#x2013; variables, files, network packets.  Functional programming
+languages can be instructive, but many of them feel more declarative in nature.
+That is, instead of telling what the computer to do, the programmer defines the
+result of the computation.  Side-effects, as they are known, are either
+disallowed completely or require a certain amount of "ceremony" to be
+performed.
+</p>
+
+<p>
+Following this imperfect analogy, <a href="https://www.gnu.org">GNU</a>/<a href="https://www.kernel.org/">Linux</a> distributions
+typically follow the imperative paradigm: the operator issues instructions that
+modify the state of the system.  Installing and configuring some software
+package, for example, requires the operator to run a series of commands that
+first install the package, another series of commands to configure the software
+to the desired state, and finally, the system and the resulting software is
+ready for use.
+</p>
+
+<p>
+In contrast, <a href="https://nixos.org/">NixOS</a> follows the functional paradigm.  The entire
+system, from the boot loader to the available software and its configuration
+can all be traced to a single file: <code>/etc/nixos/configuration.nix</code>.
+</p>
+
+<p>
+In the system configuration file for <a href="https://nixos.org/">NixOS</a>, we declare the various
+end states of the system:
+</p>
+
+<ul class="org-ul">
+<li>system packages</li>
+
+<li>system services</li>
+
+<li>users and groups</li>
+
+<li>kernel modules loaded during boot</li>
+
+<li>boot loader configuration</li>
+
+<li>mount points</li>
+</ul>
+
+<p>
+The vast majority of the system can be codified into this configuration file.
+Currently missing is disk partitioning and allocation and user data.
+</p>
+
+<p>
+To understand better the concepts behind <a href="https://nixos.org/">NixOS</a>, we will take a brief
+detour through <a href="https://nixos.org/nix/">Nix</a>, the package manager.
+</p>
+</div>
+
+<div id="outline-container-orgc9cb76c" class="outline-3">
+<h3 id="orgc9cb76c"><a id="ID-24f226f1-5bdc-4253-8e67-4b6853e740b8"></a>Nix (the package manager)</h3>
+<div class="outline-text-3" id="text-orgc9cb76c">
+<p>
+Beyond the comparisons of language paradigms, there are some other <span class="underline">really</span>
+neat ideas that come from the <a href="https://nixos.org/nix/">Nix</a> family.  Specifically, I want to
+discuss the dependency management of <a href="https://nixos.org/nix/">Nix</a> and, therefore,
+<a href="https://nixos.org/">NixOS</a>.
+</p>
+
+<p>
+Recall the description of the "imperative" operating systems above: many
+software packages have dependencies on various other components and packages.
+Typically the distribution managers resolve the dependencies into a coherent
+tree such that all packages resolve to the correct (read available) version of
+<a href="https://www.gnu.org/software/libc/"><code>glibc</code></a>.  However, maintainers are human and maintainership is
+non-trivial.  Packages slip through, and core breakages happen.  Worse, the
+possible matrix of configurations and various packages is mind-numbingly
+large.
+</p>
+
+<p>
+Concretely, what this may look like can be demonstrated by a simple example.
+Let's say an operator installs package <code>A</code> which depends on package <code>C</code>.
+Later, our example operator installs another package <code>B</code>, which also depends on
+package <code>C</code>.  For now, we will say that package <code>C</code> is the same version.  So
+far, all is good.  Nothing is broken, and the system is stable.  However, some
+time later, package <code>B</code> needs to be updated and causes a resulting update to
+package <code>C</code>.  Now package <code>A</code> may not work.  Its version of package <code>C</code> is now
+replaced by the version pulled in by package <code>B</code>.  This may be fine, but by a
+similar token, it may also be plainly broken.  Worse, it may be only <span class="underline">subtly</span>
+broken, the breakage is not noticed by cursory testing.
+</p>
+
+<p>
+Using <a href="https://nixos.org/nix/">Nix</a>, this situation is impossible.  Package <code>A</code> has its own
+complete dependency graph, including package <code>C</code>'s dependency graph.  The same
+holds for package <code>B</code>, <a href="https://nixos.org/nix/">Nix</a> stores the entire dependency graph of each
+package separate from each other package.
+</p>
+
+<p>
+Therefore, given our above example of package management mishaps, when package
+<code>B</code> updates and pulls in a new version of package <code>C</code>.  The version of <code>C</code> used
+by <code>A</code> is left untouched and package <code>A</code> works just the same as before.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org414e435" class="outline-3">
+<h3 id="org414e435"><a id="ID-44725a66-ef15-47cf-8050-ec4d76d9290a"></a>Nix Store</h3>
+<div class="outline-text-3" id="text-org414e435">
+<p>
+After examining the above example, how does <a href="https://nixos.org/nix/">Nix</a> accomplish this?
+</p>
+
+<p>
+If we think about the <a href="https://refspecs.linuxfoundation.org/fhs.shtml">Filesystem Hierarchy Standard</a>, an executable
+package is installed into some <code>bin</code> directory, its dynamically linked objects
+are in a <code>lib</code> directory, its configuration may be in a <code>etc</code> directory.
+</p>
+
+<p>
+With a <a href="https://nixos.org/nix/">Nix</a> package, the package has all same directories, however,
+they are isolated in the "store".  The <a href="https://nixos.org/nix/">Nix</a> store is typically a
+directory <code>/nix/store/</code> that contains each package in its <code>hash-name-version</code>
+folder.  For example, let's look at <a href="https://www.mozilla.org/en-US/firefox/">Firefox</a>:
+</p>
+
+<pre class="example">
+% ls -al $(which firefox)
+lrwxrwxrwx 1 root root 68 Dec 31  1969 /run/current-system/sw/bin/firefox -&gt; /nix/store/78gl44fjjira5jsgyj8vdwsnw8wdwngs-firefox-68.0/bin/firefox
+% ls -l /nix/store/78gl44fjjira5jsgyj8vdwsnw8wdwngs-firefox-68.0/
+total 0
+dr-xr-xr-x 2 root root 21 Dec 31  1969 bin
+dr-xr-xr-x 3 root root 21 Dec 31  1969 lib
+dr-xr-xr-x 2 root root 42 Dec 31  1969 nix-support
+dr-xr-xr-x 4 root root 39 Dec 31  1969 share
+</pre>
+
+<p>
+There's a few things to notice here.  One, the directories are all read-only;
+two, the modified time is set to <a href="https://en.wikipedia.org/wiki/Unix_time">UNIX Epoch</a>; third, the
+entire folder structure necessary for <a href="https://www.mozilla.org/en-US/firefox/">Firefox</a> to run is in
+this store.
+</p>
+
+<p>
+Let's examine a package that requires dynamic linking to correctly execute, the
+<a href="https://python.org">Python</a> interpreter:
+</p>
+
+<pre class="example">
+% ls -l $(which python)
+lrwxrwxrwx 1 root root 68 Dec 31  1969 /run/current-system/sw/bin/python -&gt; /nix/store/dmh36s38dcpc91grfsh6wqrm65rz5hfh-pythonOverlay/bin/python
+% ls -l /nix/store/dmh36s38dcpc91grfsh6wqrm65rz5hfh-pythonOverlay
+total 4
+dr-xr-xr-x 2 root root 4096 Dec 31  1969 bin
+lrwxrwxrwx 1 root root   65 Dec 31  1969 include -&gt; /nix/store/10rqw9cx8x2knwdaxhlyb4drla8v8zzk-python3-3.7.4/include
+dr-xr-xr-x 3 root root  113 Dec 31  1969 lib
+dr-xr-xr-x 3 root root   17 Dec 31  1969 share
+</pre>
+
+<p>
+Now, let's examine the linked objects:
+</p>
+
+<pre class="example">
+% ldd $(which python)
+linux-vdso.so.1 (0x00007ffd3c3d9000)
+libpython3.7m.so.1.0 =&gt; /nix/store/10rqw9cx8x2knwdaxhlyb4drla8v8zzk-python3-3.7.4/lib/libpython3.7m.so.1.0 (0x00007f6ccf964000)
+libpthread.so.0 =&gt; /nix/store/681354n3k44r8z90m35hm8945vsp95h1-glibc-2.27/lib/libpthread.so.0 (0x00007f6ccf943000)
+libdl.so.2 =&gt; /nix/store/681354n3k44r8z90m35hm8945vsp95h1-glibc-2.27/lib/libdl.so.2 (0x00007f6ccf93e000)
+libcrypt.so.1 =&gt; /nix/store/681354n3k44r8z90m35hm8945vsp95h1-glibc-2.27/lib/libcrypt.so.1 (0x00007f6ccf904000)
+libncursesw.so.6 =&gt; /nix/store/adc71v5apk4dzcxg7cjqgszjg1a6pd0z-ncurses-6.1-20190112/lib/libncursesw.so.6 (0x00007f6ccf892000)
+libutil.so.1 =&gt; /nix/store/681354n3k44r8z90m35hm8945vsp95h1-glibc-2.27/lib/libutil.so.1 (0x00007f6ccf88b000)
+libm.so.6 =&gt; /nix/store/681354n3k44r8z90m35hm8945vsp95h1-glibc-2.27/lib/libm.so.6 (0x00007f6ccf6f5000)
+libgcc_s.so.1 =&gt; /nix/store/681354n3k44r8z90m35hm8945vsp95h1-glibc-2.27/lib/libgcc_s.so.1 (0x00007f6ccf4df000)
+libc.so.6 =&gt; /nix/store/681354n3k44r8z90m35hm8945vsp95h1-glibc-2.27/lib/libc.so.6 (0x00007f6ccf329000)
+/nix/store/681354n3k44r8z90m35hm8945vsp95h1-glibc-2.27/lib/ld-linux-x86-64.so.2 =&gt; /nix/store/681354n3k44r8z90m35hm8945vsp95h1-glibc-2.27/lib64/ld-linux-x86-64.so.2 (0x00007f6ccfccf000)
+</pre>
+
+<p>
+Each of the linked objects, sans the kernel object, are found in the
+<a href="https://nixos.org/nix/">Nix</a> store.
+</p>
+
+<p>
+Furthermore, if we examine the <a href="https://python.org">Python</a> <code>lib</code> folder:
+</p>
+
+<pre class="example">
+% ls -l /nix/store/dmh36s38dcpc91grfsh6wqrm65rz5hfh-pythonOverlay/lib
+total 12
+lrwxrwxrwx 1 root root   78 Dec 31  1969 libpython3.7m.so -&gt; /nix/store/10rqw9cx8x2knwdaxhlyb4drla8v8zzk-python3-3.7.4/lib/libpython3.7m.so
+lrwxrwxrwx 1 root root   82 Dec 31  1969 libpython3.7m.so.1.0 -&gt; /nix/store/10rqw9cx8x2knwdaxhlyb4drla8v8zzk-python3-3.7.4/lib/libpython3.7m.so.1.0
+lrwxrwxrwx 1 root root   75 Dec 31  1969 libpython3.so -&gt; /nix/store/10rqw9cx8x2knwdaxhlyb4drla8v8zzk-python3-3.7.4/lib/libpython3.so
+lrwxrwxrwx 1 root root   71 Dec 31  1969 pkgconfig -&gt; /nix/store/10rqw9cx8x2knwdaxhlyb4drla8v8zzk-python3-3.7.4/lib/pkgconfig
+dr-xr-xr-x 3 root root 8192 Dec 31  1969 python3.7
+</pre>
+
+<p>
+The shared objects and folders are also symbolic links to other packages and
+folders in the <a href="https://nixos.org/nix/">Nix</a> store.
+</p>
+
+<p>
+This leads us to the following observation: packages in the <a href="https://nixos.org/nix/">Nix</a> store
+are comprised of the outputs of the package and associated symbolic links to
+the package's inputs.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org18b6750" class="outline-3">
+<h3 id="org18b6750"><a id="ID-1a539227-a134-47c3-98c4-7218cb43f9cd"></a>Nix Profiles</h3>
+<div class="outline-text-3" id="text-org18b6750">
+<p>
+Packages in <a href="https://nixos.org/nix/">Nix</a> are directory trees found in the <a href="https://nixos.org/nix/">Nix</a> store,
+what are profiles?  Perhaps, more appropriately, what are user environments?
+</p>
+
+<p>
+When setting up <a href="https://nixos.org/nix/">Nix</a> as a package manager either in <a href="https://nixos.org/">NixOS</a> or
+a different <a href="https://www.gnu.org">GNU</a>/<a href="https://www.kernel.org/">Linux</a> distribution, there's typically a
+symbolic link in the user's home directory:
+</p>
+
+<pre class="example">
+% ls -l ~/.nix-profile
+lrwxrwxrwx 1 kb users 41 May 15  2017 /home/kb/.nix-profile -&gt; /nix/var/nix/profiles/per-user/kb/profile
+</pre>
+
+<p>
+However, this link is to another link.  Let's follow the rabbit:
+</p>
+
+<pre class="example">
+% ls -l /nix/var/nix/profiles/per-user/kb/profile
+lrwxrwxrwx 1 kb users 14 Jul 30 15:15 /nix/var/nix/profiles/per-user/kb/profile -&gt; profile-3-link
+</pre>
+
+<p>
+This indirect symbolic link points to a symbolic link in the same directory.
+Let's keep following:
+</p>
+
+<pre class="example">
+% ls -l /nix/var/nix/profiles/per-user/kb/profile-3-link
+lrwxrwxrwx 1 kb users 60 Jul 30 15:15 /nix/var/nix/profiles/per-user/kb/profile-3-link -&gt; /nix/store/d7d6hcv8v2crb98nhh00nrr2bkh034kc-user-environment
+% ls -l /nix/store/d7d6hcv8v2crb98nhh00nrr2bkh034kc-user-environment
+dr-xr-xr-x 2 root root 156 Dec 31  1969 bin
+lrwxrwxrwx 1 root root  63 Dec 31  1969 etc -&gt; /nix/store/k0hyks88khah4hvb19i0d6swsawyzz5a-awscli-1.16.170/etc
+dr-xr-xr-x 2 root root  35 Dec 31  1969 lib
+lrwxrwxrwx 1 root root  60 Dec 31  1969 manifest.nix -&gt; /nix/store/lqc7v4cb77fzgnrqn0miz1fpkzb3dxc2-env-manifest.nix
+lrwxrwxrwx 1 root root  65 Dec 31  1969 share -&gt; /nix/store/k0hyks88khah4hvb19i0d6swsawyzz5a-awscli-1.16.170/share
+</pre>
+
+<p>
+After following three links, we are referred to a directory tree in the
+<a href="https://nixos.org/nix/">Nix</a> store.
+</p>
+
+<p>
+Let's examine the <code>bin</code> directory quickly:
+</p>
+
+<pre class="example">
+% ls -l /nix/store/d7d6hcv8v2crb98nhh00nrr2bkh034kc-user-environment/bin
+total 0
+lrwxrwxrwx 1 root root 67 Dec 31  1969 aws -&gt; /nix/store/k0hyks88khah4hvb19i0d6swsawyzz5a-awscli-1.16.170/bin/aws
+lrwxrwxrwx 1 root root 82 Dec 31  1969 aws_bash_completer -&gt; /nix/store/k0hyks88khah4hvb19i0d6swsawyzz5a-awscli-1.16.170/bin/aws_bash_completer
+lrwxrwxrwx 1 root root 77 Dec 31  1969 aws_completer -&gt; /nix/store/k0hyks88khah4hvb19i0d6swsawyzz5a-awscli-1.16.170/bin/aws_completer
+lrwxrwxrwx 1 root root 89 Dec 31  1969 cargo-generate-nixfile -&gt; /nix/store/s11zqp9r8h4r65iqv272b477igb9a9mw-rust_carnix-0.10.0/bin/cargo-generate-nixfile
+lrwxrwxrwx 1 root root 91 Dec 31  1969 cargo_generate_nixfile.d -&gt; /nix/store/s11zqp9r8h4r65iqv272b477igb9a9mw-rust_carnix-0.10.0/bin/cargo_generate_nixfile.d
+lrwxrwxrwx 1 root root 73 Dec 31  1969 carnix -&gt; /nix/store/s11zqp9r8h4r65iqv272b477igb9a9mw-rust_carnix-0.10.0/bin/carnix
+lrwxrwxrwx 1 root root 75 Dec 31  1969 carnix.d -&gt; /nix/store/s11zqp9r8h4r65iqv272b477igb9a9mw-rust_carnix-0.10.0/bin/carnix.d
+</pre>
+
+<p>
+Currently, this example profile only has two packages installed:
+</p>
+
+<pre class="example">
+% nix-env -q
+awscli-1.16.170
+rust_carnix-0.10.0
+</pre>
+
+<p>
+But from this example so far, we see that user environments are comprised of
+symbolic link "forests" of the packages that make up the current profile.
+</p>
+
+<p>
+Let's follow this example again, however, we going to modify the user
+environment by adding a package:
+</p>
+
+<pre class="example">
+% nix-env -i autogen
+</pre>
+
+<p>
+Starting with second link:
+</p>
+
+<pre class="example">
+% ls -l /nix/var/nix/profiles/per-user/kb/profile
+lrwxrwxrwx 1 kb users 14 Aug 13 05:52 /nix/var/nix/profiles/per-user/kb/profile -&gt; profile-4-link
+</pre>
+
+<p>
+The profile link now points to a different link.  Let's keep going:
+</p>
+
+<pre class="example">
+% ls -l /nix/var/nix/profiles/per-user/kb/profile-4-link
+lrwxrwxrwx 1 kb users 60 Aug 13 05:52 /nix/var/nix/profiles/per-user/kb/profile-4-link -&gt; /nix/store/xslnn9gs5gkgdvzgb0w3b0iggbsszag5-user-environment
+</pre>
+
+<p>
+The user-profile now points to a completely different symlink forest in the
+<a href="https://nixos.org/nix/">Nix</a> store.
+</p>
+
+<p>
+The old profile still exists.  Let's switch (rollback) to it:
+</p>
+
+<pre class="example">
+% nix-env --rollback                                                (1)
+switching from generation 4 to 3
+% ls -l /nix/var/nix/profiles/per-user/kb/profile
+lrwxrwxrwx 1 kb users 14 Aug 13 05:56 /nix/var/nix/profiles/per-user/kb/profile -&gt; profile-3-link
+% ls -l /nix/var/nix/profiles/per-user/kb/profile-3-link
+lrwxrwxrwx 1 kb users 60 Jul 30 15:15 /nix/var/nix/profiles/per-user/kb/profile-3-link -&gt; /nix/store/d7d6hcv8v2crb98nhh00nrr2bkh034kc-user-environment
+</pre>
+
+<p>
+Rolling back to a previous profile was effortless and we went back to <span class="underline">exactly</span>
+the same store path that we had previously.
+</p>
+
+<p>
+Since the <a href="http://man7.org/linux/man-pages/man2/symlink.2.html"><code>symlink(2)</code></a> operation is atomic, changing profile
+generations is atomic.  Adding a package to the profile is atomic: that is,
+once the package is downloaded, built, added to the store, and the set of links
+are compiled into a new profile, the switch to this new profile is entirely
+atomic.  If the any of the previous steps fail, the user profile is not
+adversely affected.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8135620" class="outline-3">
+<h3 id="org8135620"><a id="ID-32b83c94-6bfc-4ef0-90d9-5f01db970330"></a>System Profiles</h3>
+<div class="outline-text-3" id="text-org8135620">
+<p>
+After user profiles, we are left with system profiles.  What exactly is
+<a href="https://nixos.org/">NixOS</a>?  If any of the above provides any foreshadowing, the answer
+may seem obvious: a system profile is a forest of symbolic links to the
+packages, services, and other system configuration that comprise a
+<a href="https://www.gnu.org">GNU</a>/<a href="https://www.kernel.org/">Linux</a> system.
+</p>
+
+<p>
+However, that may not be obvious.
+</p>
+
+<p>
+Let's start by first reiterating that <a href="https://nixos.org/">NixOS</a> is different than
+traditional <a href="https://www.gnu.org">GNU</a>/<a href="https://www.kernel.org/">Linux</a> distributions, very different.  One
+of the most notable differences that is important to this discussion is the
+lack of adherence to the <a href="https://refspecs.linuxfoundation.org/fhs.shtml">Filesystem Hierarchy Standard</a>.  Chiefly, in
+the root of the filesystem of a <a href="https://nixos.org/">NixOS</a> system, there is almost no
+need for <code>/bin</code>, <code>/usr</code>, and <code>/lib</code>.
+</p>
+
+<pre class="example">
+% ls -l /
+total 57
+drwxr-xr-x   2 root root  4096 Aug  2 09:04 bin
+drwxr-xr-x   5 root root  1024 Jun  5 17:01 boot
+drwxr-xr-x  21 root root  4140 Aug 13 05:37 dev
+drwxr-xr-x  26 root root  4096 Aug  2 09:04 etc
+drwxr-xr-x   3 root root    19 May 16 10:54 gnu
+drwxr-xr-x   3 root root    29 May  8 07:24 home
+drwx------   2 root root 16384 Jun  5 16:02 lost+found
+drwxr-xr-x   4 root root    30 May 16 09:49 nix
+drwxr-xr-x   5 root root  4096 Jun  5 20:01 opt
+dr-xr-xr-x 257 root root     0 Aug  2 09:03 proc
+drwx------   6 root root  4096 Aug 12 23:04 root
+drwxr-xr-x  20 root root   640 Aug 14 20:56 run
+dr-xr-xr-x  13 root root     0 Aug  2 09:03 sys
+drwxrwxrwt  55 root root 16384 Aug 14 21:00 tmp
+drwxr-xr-x   3 root root  4096 Jun  5 17:01 usr
+drwxr-xr-x   9 root root  4096 Aug  2 09:04 var
+</pre>
+
+<p>
+In the above output, there <i>is</i> both <code>/bin</code> and <code>/usr</code>, but no <code>/lib</code>.  What is
+in <code>/bin</code> and <code>/usr</code>?  Two things: one, <code>/bin/sh</code> and two, <code>/usr/bin/env</code>.
+These are kept around as ways to resolve issues with porting packages into the
+<a href="https://nixos.org/nix/">Nix</a> environment.
+</p>
+
+<pre class="example">
+% ls -l /bin/
+total 4
+lrwxrwxrwx 1 root root 75 Aug  2 09:04 sh -&gt; /nix/store/93h01q6yg13xdrabvqbddzbk11w6a928-bash-interactive-4.4-p23/bin/sh
+% ls -lR /usr
+/usr:
+total 4
+drwxr-xr-x 2 root root 4096 Aug  2 09:04 bin
+/usr/bin:
+total 4
+lrwxrwxrwx 1 root root 66 Aug  2 09:04 env -&gt; /nix/store/d9s1kq1bnwqgxwcvv4zrc36ysnxg8gv7-coreutils-8.30/bin/env
+</pre>
+
+<p>
+Notice, however, that these files are in fact symbolic links into the
+<a href="https://nixos.org/nix/">Nix</a> store.
+</p>
+
+<p>
+If there is nothing in <code>/bin</code> and nothing in <code>/usr</code>, where does the system find
+all of the install programs?
+</p>
+
+<p>
+The answer: <code>/run/current-system</code>:
+</p>
+
+<pre class="example">
+% ls -l /run/current-system
+lrwxrwxrwx 1 root root 88 Aug  2 09:04 /run/current-system -&gt; /nix/store/9c3k3ky5lg3x937984902v1d7148m7c5-nixos-system-phenex-19.03.173147.77295b0bd26
+% ls -l /nix/store/9c3k3ky5lg3x937984902v1d7148m7c5-nixos-system-phenex-19.03.173147.77295b0bd26
+total 48
+-r-xr-xr-x 1 root root 16455 Dec 31  1969 activate
+lrwxrwxrwx 1 root root    91 Dec 31  1969 append-initrd-secrets -&gt; /nix/store/vynm9pvxlzd8rracmmkhpj2a3g79whbw-append-initrd-secrets/bin/append-initrd-secrets
+dr-xr-xr-x 2 root root    37 Dec 31  1969 bin
+-r--r--r-- 1 root root     0 Dec 31  1969 configuration-name
+lrwxrwxrwx 1 root root    51 Dec 31  1969 etc -&gt; /nix/store/a04f5cdfinc8p4n6x0hw9a0jn5l2mi9i-etc/etc
+-r--r--r-- 1 root root    57 Dec 31  1969 extra-dependencies
+dr-xr-xr-x 2 root root     6 Dec 31  1969 fine-tune
+lrwxrwxrwx 1 root root    65 Dec 31  1969 firmware -&gt; /nix/store/ak22608y0db7m4bzwmps23gi4f0s13dc-firmware/lib/firmware
+-r-xr-xr-x 1 root root  5568 Dec 31  1969 init
+-r--r--r-- 1 root root     9 Dec 31  1969 init-interface-version
+lrwxrwxrwx 1 root root    57 Dec 31  1969 initrd -&gt; /nix/store/n7x32hhg41mflx9xvmmw61piwjdr81m1-initrd/initrd
+lrwxrwxrwx 1 root root    65 Dec 31  1969 kernel -&gt; /nix/store/sgkk7pqh7jqvy6rvgnkk367amrpknw91-linux-4.19.59/bzImage
+lrwxrwxrwx 1 root root    58 Dec 31  1969 kernel-modules -&gt; /nix/store/nrmlrwxyqmp4dbcldrlvibv0h61356bf-kernel-modules
+-r--r--r-- 1 root root    10 Dec 31  1969 kernel-params
+-r--r--r-- 1 root root    24 Dec 31  1969 nixos-version
+lrwxrwxrwx 1 root root    55 Dec 31  1969 sw -&gt; /nix/store/11pfbzzamqvnbfxis4pbnzhrvarn3pj1-system-path
+-r--r--r-- 1 root root    12 Dec 31  1969 system
+lrwxrwxrwx 1 root root    64 Dec 31  1969 systemd -&gt; /nix/store/9zkhhvix7rlqlj8pf8s2kbw8b88rky75-systemd-239.20190219
+</pre>
+
+<p>
+The various files and directories in this derivation are what is necessary for
+the current generation of the system.  Similar to user environments, upgrades
+and rollbacks are atomic.  Installing a package into the system packages, for
+example, will happen in isolation.  Only after the build process is complete
+and successful does the forest of links get changed.
+</p>
+
+<p>
+However, because there is some necessary artifacts of state when running a
+system, this isolation is certainly not perfect.  Particularly so with the
+interaction of services and their underlying configuration.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org33aa764" class="outline-2">
+<h2 id="org33aa764"><a id="ID-a9f063d9-2e50-462b-b7c7-1e06e8dcdbc6"></a>Alternatives</h2>
+<div class="outline-text-2" id="text-org33aa764">
+<p>
+Aside from <a href="https://nixos.org/">NixOS</a>, there is also <a href="https://guix.gnu.org/">Guix</a>, a <a href="https://www.gnu.org">GNU</a>
+alternative to <a href="https://nixos.org/nix/">Nix</a> and <a href="https://nixos.org/">NixOS</a>.  Many of the ideas of
+<a href="https://guix.gnu.org/">Guix</a> are derived from <a href="https://nixos.org/nix/">Nix</a>.  In fact, early on in the life of
+the <a href="https://guix.gnu.org/">Guix</a> project, <a href="https://guix.gnu.org/">Guix</a> interacted with the <a href="https://nixos.org/nix/">Nix</a>
+daemon directly.  This is no longer the case as <a href="https://guix.gnu.org/">Guix</a> has its own
+daemon now, however, the design is very similar.
+</p>
+
+<p>
+The configuration language of <a href="https://guix.gnu.org/">Guix</a> is, in proper <a href="https://www.gnu.org">GNU</a> style,
+<a href="https://www.gnu.org/software/guile/">Guile Scheme</a> instead of a <a href="https://en.wikipedia.org/wiki/Domain-specific_language">DSL</a>&#x2013;
+<a href="https://nixos.wiki/wiki/Nix_Expression_Language">nix</a>.
+</p>
+
+<p>
+<a href="https://guix.gnu.org/">Guix</a>, as a <a href="https://www.gnu.org">GNU</a> project, also takes a hard-line stance on
+software freedom and therefore does not and will not include any non-free code
+in the package repositories.  Furthermore, this also means that <a href="https://guix.gnu.org/">Guix</a>
+the package manager will not be supported on other operating systems such as
+Apple MacOS and Microsoft Windows.
+</p>
+
+<p>
+Another alternative is using any number of
+<a href="https://en.wikipedia.org/wiki/Software_configuration_management">Configuration Management</a> solutions on a
+typical <a href="https://www.gnu.org">GNU</a>/<a href="https://www.kernel.org/">Linux</a> distribution.  However, solutions such as
+<a href="https://www.ansible.com/">Ansible</a>, <a href="https://puppet.com/">Puppet</a>, and <a href="https://www.saltstack.com/">Salt</a> fail in a
+very similar way that tradition distrubtions fail: they are dependent on
+ordering and distrubtion managers and software maintainers to create
+appropriate software dependency graphs.  Failure in dependency management
+yields failures in the system.  Furthermore, once a package is no longer
+available in the official repositories, it is no longer trivially available to
+be installed via the software configuration tools.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge223d0b" class="outline-2">
+<h2 id="orge223d0b"><a id="ID-845c7afd-defe-4838-8fbc-814cf7e42b78"></a>Impressions and Thoughts</h2>
+<div class="outline-text-2" id="text-orge223d0b">
+<p>
+<a href="https://nixos.org/nix/">Nix</a> and by extension <a href="https://nixos.org/">NixOS</a> (hopefully) solve some really
+annoying problems I tend to keep running into when developing software and
+immutable, reproducible infrastructure.  I'm really excited about the
+possibilities <a href="https://nixos.org/nix/">Nix</a> can bring.  However, until I can really sit down and
+<span class="underline">use</span> <a href="https://nixos.org/nix/">Nix</a> for development, I can't say anything with certainty.
+</p>
+
+<p>
+In time, I will provide more detail on my impressions and review <a href="https://nixos.org/nix/">Nix</a>
+and <a href="https://nixos.org/">NixOS</a> in more depth.  However, if nothing else, being able to
+codify systems and environments in a reproducible manner is already a huge win.
+</p>
+
+<p>
+I highly recommend reading <a href="https://nixos.org/~eelco/pubs/nixos-icfp2008-final.pdf">NixOS: A Purely Functional Linux
+Distribution</a> and <a href="https://www.usenix.org/legacy/events/lisa04/tech/full_papers/dolstra/dolstra.pdf">Nix: A Safe and Policy-Free System for Software
+Development</a> by Dolstra <i>et al.</i>.  Both papers are very good explanations and
+breakdowns of the motivation and ideas behind <a href="https://nixos.org/nix/">Nix</a> and
+<a href="https://nixos.org/">NixOS</a>.
+</p>
+</div>
+</div>
+</div>
+<footer id="" class="status">
+<footer>
+  <p>&copy; 2014-2022 Kenny Ballou.
+    <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Some rights
+      reserved.</a></p>
+  <p>Powered by <a href="https://gnu.org">GNU/Linux</a></p>
+</footer>
+</footer>
+</body>
+</html>

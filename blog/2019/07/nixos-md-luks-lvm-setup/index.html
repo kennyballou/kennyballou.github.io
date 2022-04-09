@@ -1,0 +1,1025 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-04-09 Sat 18:52 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NixOS Setup and Configuration</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="kb" />
+<meta name="description" content="NixOS setup with RAID, LUKS, and LVM"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<meta charset="utf-8">
+
+<meta name="author" content="Kenny Ballou">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<title>~kb</title>
+
+<link rel="canonical" href="/" />
+<link href="/index.xml" rel="alternate" type="application/rss+xml"
+      title="~kb/blog" />
+
+<link rel="stylesheet" href="/css/simple.css" />
+<link rel="stylesheet" href="/css/simple.add.css" />
+<link rel="stylesheet" href="/css/katex.css" />
+<link rel="stylesheet" href="/css/fa-all.css" />
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<script defer type="text/javascript" src="/js/katex.js"></script>
+<script defer type="text/javascript" src="/js/katex-render.js"></script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://kennyballou.com/blog"> UP </a>
+ |
+ <a accesskey="H" href="https://kennyballou.com/"> HOME </a>
+</div><header id="" class="status">
+<nav>
+  <a href="/about.html">
+    <i class="fade fas fa-user-circle"></i>
+  </a>
+  <a href="https://git.devnulllabs.io"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-code-branch fa-1x"></i>
+  </a>
+  <a href="https://github.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-github fa-1x"></i>
+  </a>
+  <a href="https://bitbucket.org/kballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-bitbucket fa-1x"></i>
+  </a>
+  <a href="https://twitter.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-twitter fa-1x"></i>
+  </a>
+  <a href="https://www.buymeacoffee.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-mug-hot fa-1x"></i>
+  </a>
+  <a href="/resume.pdf"
+     target="_blank">
+    <i class="fade far fa-file-pdf"></i>
+  </a>
+  <a href="/932F3E8E1C0F4A9895D7B8B8B0CAA28A02958308.txt"
+     target="_blank">
+    <i class="fade fas fa-key"></i>
+  </a>
+  <a href="/index.xml" rel="alternate"
+     type="application/rss+xml">
+    <i class="fade fas fa-rss fa-1x"></i>
+  </a>
+</nav>
+</header>
+<div id="main">
+<h1 class="title">NixOS Setup and Configuration</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org10bc5ce">NixOS</a></li>
+<li><a href="#orga22fc31">System Installation and Configuration</a>
+<ul>
+<li><a href="#org93ff902">Laptop</a>
+<ul>
+<li><a href="#orgaf7b027">Disk Preparation</a></li>
+</ul>
+</li>
+<li><a href="#orgee3dd4c">Desktop</a>
+<ul>
+<li><a href="#org66ba482">Disk Preparation</a></li>
+</ul>
+</li>
+<li><a href="#orgd6e1926">NixOS Configuration and Installation</a>
+<ul>
+<li><a href="#org06b0d49">UEFI Notes</a></li>
+<li><a href="#orge8e8fdc">Docker, <code>nftables</code>, and NixOS Notes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="PREVIEW">
+<p>
+A brief overview (read instructions) on setting up a new <a href="https://nixos.org/">NixOS</a> system with <a href="https://www.sourceware.org/lvm2/">LVM</a>
+on <a href="https://gitlab.com/cryptsetup/cryptsetup/blob/master/README.md">LUKS</a> on <a href="http://neil.brown.name/blog/mdadm">md</a>.  We go through drive preparation, basic <a href="https://nixos.org/">NixOS</a> installation
+instructions, and slight modifications to the instructions for installing a new
+system from configuration.
+</p>
+
+</div>
+
+<div id="outline-container-org10bc5ce" class="outline-2">
+<h2 id="org10bc5ce"><a id="ID-6711f5a3-0eba-4d89-a292-29002d9a428c"></a>NixOS</h2>
+<div class="outline-text-2" id="text-org10bc5ce">
+<p>
+<a href="https://kennyballou.com/blog/2019/07/nixos">Previously</a>, we introduced the concepts and ideas behind
+<a href="https://nixos.org/">NixOS</a> and by extension <a href="https://nixos.org/nix/">nix</a>, the package manager.  We,
+therefore, will not be reiterating the discussion here.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga22fc31" class="outline-2">
+<h2 id="orga22fc31"><a id="ID-a7328df8-359d-4f43-af94-8716722058ca"></a>System Installation and Configuration</h2>
+<div class="outline-text-2" id="text-orga22fc31">
+<p>
+Installing <a href="https://nixos.org/">NixOS</a> is fairly straight forward.  However, that is a
+relative term.  My experience is with <a href="https://www.archlinux.org/">Arch Linux</a> and more
+recently <a href="https://gentoo.org/">Gentoo</a>, both not known for having forgiving installations.
+</p>
+
+<blockquote>
+<p>
+I don't want to replace the <a href="https://nixos.org/nixos/manual/index.html">manual</a>, I only want to really
+supplement it with the steps where I deviated from its path or add information
+for <b>my</b> personal configuration/preferences.
+</p>
+</blockquote>
+
+<p>
+That said, we will focus on disk preparation and partitioning as that is the
+most complicated portion of our installation.
+</p>
+
+<p>
+We will walk through the installation of two machines, first, will be my
+current laptop with two SSD's, second, my main desktop with six hard drives.
+Since we are doing two setups, we will also have a chance to do both
+<a href="https://en.wikipedia.org/wiki/BIOS">BIOS</a> and <a href="https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface">UEFI</a> partitioning schemes.
+</p>
+
+<blockquote>
+<p>
+I am assuming the use of the <a href="https://nixos.org/">NixOS</a> live-installation medium.
+</p>
+</blockquote>
+</div>
+
+<div id="outline-container-org93ff902" class="outline-3">
+<h3 id="org93ff902"><a id="ID-2be64326-cc2d-4392-b63e-c37ce5e1ff02"></a>Laptop</h3>
+<div class="outline-text-3" id="text-org93ff902">
+</div>
+
+<div id="outline-container-orgaf7b027" class="outline-4">
+<h4 id="orgaf7b027"><a id="ID-5444b570-0867-40ee-bc7e-ba71f4e9bd6a"></a>Disk Preparation</h4>
+<div class="outline-text-4" id="text-orgaf7b027">
+<blockquote>
+<p>
+I am assuming the use of the <a href="https://nixos.org/">NixOS</a> live installation medium.
+</p>
+</blockquote>
+
+<p>
+Since this will be an encrypted everything (sans <code>/boot</code>), we will need to
+securely erase all the drives.
+</p>
+
+<p>
+For each drive, <code>${device}</code>, perform the following:
+</p>
+
+<blockquote>
+<p>
+Lines beginning with <code>#</code> are commands to be executed as the <code>root</code> user.
+</p>
+</blockquote>
+
+<pre class="example">
+# cryptsetup open --type plain --key-file=/dev/urandom ${device} wipe-me
+# dd if=/dev/zero of=/dev/mapper/wipe-me status=progress
+# cryptsetup close
+</pre>
+
+<blockquote>
+<p>
+For large hard drives, this step can take a considerable amount of time.  This
+can be done in parallel by using different identifiers than <code>wipe-me</code>.
+</p>
+
+<p>
+This probably <b>cannot</b> be parallelized if using the more paranoid random source
+<code>/dev/random</code> device instead of <code>/dev/urandom</code> as there will likely not be
+enough entropy for more than one device.
+</p>
+</blockquote>
+
+<p>
+Concretely, this may look like:
+</p>
+
+<pre class="example">
+# cryptsetup open --type plain --key-file=/dev/urandom /dev/sda wipe-me
+# dd if=/dev/zero of=/dev/mapper/wipe-me status=progress
+# cryptsetup close
+</pre>
+
+<p>
+After securely erasing each hard drive to be used, we will next setup the
+various partitions for each drive.  Since we will be using <a href="https://www.sourceware.org/lvm2/"><code>LVM</code></a> on a
+<a href="https://gitlab.com/cryptsetup/cryptsetup/blob/master/README.md"><code>LUKS</code></a> container, residing on a <a href="https://en.wikipedia.org/wiki/RAID">RAID 1</a> pair of hard
+drives, our partitioning scheme will be pretty simple.
+</p>
+
+<p>
+Since <a href="https://nixos.org/">NixOS</a>, by default, uses <a href="https://www.gnu.org/software/grub/">Grub2</a>, we will need to
+create a 2 MB first partition for <a href="https://en.wikipedia.org/wiki/BIOS">BIOS</a> systems.
+</p>
+
+<p>
+After partitioning the disk, the partition table should look similar to the
+following:
+</p>
+
+<pre class="example">
+Device       Start        End    Sectors  Size Type
+/dev/sda1     2048       6143       4096    2M BIOS boot
+/dev/sda2     6144    1054719    1048576  512M Linux filesystem
+/dev/sda3  1054720 1953525134 1952470415  931G Linux RAID
+</pre>
+
+<p>
+Perform or replicate the partition table to the second disk.  After which, we
+will begin the configuration of the mirror.
+</p>
+
+<blockquote>
+<p>
+Certainly, it's possible to securely erase one disk, partition it, then copy it
+to the other disk via <code>dd if=/dev/sda of=/dev/sdb status=progress</code>.
+</p>
+</blockquote>
+
+<p>
+We will create two mirrors for this configuration, one for the <code>/boot</code>
+partition and another for the <a href="https://gitlab.com/cryptsetup/cryptsetup/blob/master/README.md"><code>LUKS</code></a> container:
+</p>
+
+<pre class="example">
+# mdadm --create /dev/md1 --level=mirror --raid-devices=2 /dev/sda2 /dev/sdb2
+# mdadm --create /dev/md2 --level=mirror --raid-devices=2 /dev/sda3 /dev/sdb3
+</pre>
+
+<p>
+After creating the mirrors, we need to create the <a href="https://gitlab.com/cryptsetup/cryptsetup/blob/master/README.md"><code>LUKS</code></a> container
+and the format the <code>/boot</code> partition.
+</p>
+
+<p>
+Boot Partition:
+</p>
+
+<pre class="example">
+# mkfs.ext4 -L boot /dev/md1
+</pre>
+
+<p>
+<a href="https://gitlab.com/cryptsetup/cryptsetup/blob/master/README.md"><code>LUKS</code></a> Container:
+</p>
+
+<blockquote>
+<p>
+When configuring encrypted containers, there are lot of different options and
+parameters to choose from.  For example, there are various cryptography schemes
+and modes to choose from.  <code>AES-XTS-PLAIN64</code> is a solid choice since most CPU's
+will have extensions for doing <code>AES</code>, increasing the throughput.  I personally,
+have been looking into the other <code>AES</code> finalists such as
+<a href="https://en.wikipedia.org/wiki/Twofish">Twofish</a> and <a href="https://en.wikipedia.org/wiki/Serpent_(cipher)">Serpent</a>.
+</p>
+</blockquote>
+
+<pre class="example">
+# cryptsetup -v \
+             --type luks \
+             --cipher twofish-xts-plain64 \
+             --key-size 512 \
+             --hash sha512 \
+             --iter-time 5000 \
+             --use-random \
+             --verify-passphrase \
+             luksFormat \
+             /dev/md2
+</pre>
+
+<p>
+Once the <a href="https://gitlab.com/cryptsetup/cryptsetup/blob/master/README.md"><code>LUKS</code></a> container is created, open it:
+</p>
+
+<pre class="example">
+# cryptsetup open /dev/md2 cryptroot
+</pre>
+
+<p>
+Now, we can begin creating the <a href="https://www.sourceware.org/lvm2/"><code>LVM</code></a> volumes:
+</p>
+
+<pre class="example">
+# pvcreate /dev/mapper/cryptroot
+# vgcreate vg0 /dev/mapper/cryptroot
+# lvcreate -L 1G vg0 -n root
+# lvcreate -L 10G vg0 -n var
+# lvcreate -L 20G vg0 -n opt
+# lvcreate -L 32G vg0 -n swap
+# lvcreate -L 100G vg0 -n nix
+# lvcreate -L 100G vg0 -n home
+# lvcreate -L 100G vg0 -n docker
+</pre>
+
+<p>
+Notice, there is no <code>/usr</code> in our <a href="https://www.sourceware.org/lvm2/"><code>LVM</code></a> configuration.  Furthermore,
+notice <code>/</code> is particularly small.  <a href="https://nixos.org/">NixOS</a> is particularly different
+when it comes <a href="http://www.pathname.com/fhs/">Filesystem Hierarchy</a>.  Notably, there is a large portion
+of the volume set aside for <code>/nix</code>.  The majority of the "system" will be in
+this directory.
+</p>
+
+<p>
+Now we need to format the volumes:
+</p>
+
+<pre class="example">
+# mkfs.ext4 -L root /dev/mapper/vg0-root
+# mkfs.ext4 -L var /dev/mapper/vg0-var
+# mkfs.ext4 -L opt /dev/mapper/vg0-opt
+# mkswap /dev/mapper/vg0-swap
+# mkfs.xfs -L nix /dev/mapper/vg0-nix
+# mkfs.xfs -L home /dev/mapper/vg0-home
+# mkfs.btrfs -L docker /dev/mapper/vg0-docker
+</pre>
+
+<p>
+Most volumes will be formatted with the <a href="https://en.wikipedia.org/wiki/Ext4"><code>ext4</code> filesystem</a>,
+typical for standard <a href="https://www.gnu.org">GNU</a>/<a href="https://www.kernel.org/">Linux</a> systems.  However, we will
+use <a href="https://en.wikipedia.org/wiki/XFS"><code>XFS</code></a> for <code>/nix</code> and <code>/home</code>.  <a href="https://en.wikipedia.org/wiki/XFS"><code>XFS</code></a> is
+particularly well suited for purposes of these directories.  Furthermore, since
+<a href="https://www.docker.com/"><code>Docker</code></a> is an (unfortunate) necessity, creating a proper
+<a href="https://en.wikipedia.org/wiki/Copy-on-write">COW</a> filesystem using <a href="https://en.wikipedia.org/wiki/Btrfs"><code>Btrfs</code></a>, we get better
+management of <a href="https://www.docker.com/">Docker</a> images.
+</p>
+
+<p>
+Next, we will mount these volumes into various folders to begin the
+installation, creating the folder trees as necessary to mount:
+</p>
+
+<pre class="example">
+# mount /dev/mapper/vg0-root /mnt/
+# mkdir -p /mnt/{var,nix,home,boot,opt}
+# mount /dev/md1 /mnt/boot
+# mount /dev/mapper/vg0-opt /mnt/opt
+# mount /dev/mapper/vg0-var /mnt/var
+# mount /dev/mapper/vg0-home /mnt/home
+# mount /dev/mapper/vg0-nix /mnt/nix
+# mkdir -p /mnt/var/lib/docker
+# mount /dev/mapper/vg0-docker /mnt/var/lib/docker
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgee3dd4c" class="outline-3">
+<h3 id="orgee3dd4c"><a id="ID-6a12e718-4c78-4070-b084-508dee37644a"></a>Desktop</h3>
+<div class="outline-text-3" id="text-orgee3dd4c">
+<p>
+The desktop preparation and configuration are very similar to the laptop.
+However, as noted above, the complication comes from the fact that instead of a
+single pair of drives, we will have 3 pairs of drives.  Everything else is
+essentially the same.
+</p>
+</div>
+
+<div id="outline-container-org66ba482" class="outline-4">
+<h4 id="org66ba482"><a id="ID-7655a364-79cc-4fd3-b866-b58a93b16a15"></a>Disk Preparation</h4>
+<div class="outline-text-4" id="text-org66ba482">
+<p>
+We first start by securely erasing all the devices:
+</p>
+
+<pre class="example">
+# cryptsetup open --type plain --key-file /dev/urandom /dev/nvme0n1 wipe-me
+# dd if=/dev/zero of=/dev/mapper/wipe-me
+# cryptsetup close wipe-me
+</pre>
+
+<blockquote>
+<p>
+Remember, we don't <span class="underline">have</span> to securely erase <span class="underline">every</span> device since we will be
+mirroring several of them together.  This does require that each drive are
+<b>identical</b>.  If they are not identical, it is likely safer to erase every
+drive.
+</p>
+</blockquote>
+
+<p>
+Next, we will begin by partitioning each of the devices:
+</p>
+
+<pre class="example">
+# gdisk /dev/nvme0n1
+Command (? for help): n
+Partition number (1-128, default 1): 1
+First sector:
+Last sector: +512M
+Hex code or GUID: EF00
+Command (? for help): n
+First sector: 
+Last sector: 
+Hex code or GUID: FD00
+Command (? for help): w
+</pre>
+
+<p>
+This will create the boot <code>EFI</code> system partition and the first encrypted
+container partition.
+</p>
+
+<p>
+We do essentially the same thing for each of the pairs.  However, the next two
+only need a single partition for the <a href="http://neil.brown.name/blog/mdadm"><code>md</code></a> container.
+</p>
+
+<p>
+Unlike the secure erasing above, we <span class="underline">do</span> need to create the partition tables
+for <b>each</b> device.
+</p>
+
+<p>
+After partitioning the drives, we will construct the <a href="https://en.wikipedia.org/wiki/RAID">mirrors</a>:
+</p>
+
+<pre class="example">
+# mdadm --create /dev/md1 --level=mirror --raid-devices=2 --metadata 1.0 /dev/nvme0n1p1 /dev/nvme1n1p1
+# mdadm --create /dev/md2 --level=mirror --raid-devices=2 /dev/nvme0n1p2 /dev/nvme1n1p2
+# mdadm --create /dev/md3 --level=mirror --raid-devices=2 /dev/sda1 /dev/sdb1
+# mdadm --create /dev/md4 --level=mirror --raid-devices=2 /dev/sdd1 /dev/sde1
+</pre>
+
+<p>
+We need to create the <code>/boot</code> mirror with <code>metadata 1.0</code> so that the super blocks
+are put at the end of the RAID such that the <code>UEFI</code> does not get confused when
+attempting to boot the system.  Otherwise, we use the default for all other
+mirrors.
+</p>
+
+<p>
+To monitor the progress of the mirror synchronization, use the following
+command:
+</p>
+
+<pre class="example">
+# watch cat /proc/mdstat
+</pre>
+
+<p>
+It's not vitally important that the mirrors are synchronized before
+continuing.  Although, from a reliability perspective, it is "safer".
+</p>
+
+<blockquote>
+<p>
+It's also possible to specify the second device as <code>missing</code> in each of the
+above commands.  This way, the synchronization process can effectively be
+deferred until the end.
+</p>
+</blockquote>
+
+<p>
+After creating each of the mirrors, we need to format the <code>/boot</code> <code>EFI</code> system
+partition.  This is a <code>UEFI</code> system, therefore, we will be using <code>vfat</code> for the
+filesystem.
+</p>
+
+<pre class="example">
+# mkfs.vfat -n boot /dev/md1
+</pre>
+
+<p>
+Now, we must create the various <a href="https://gitlab.com/cryptsetup/cryptsetup/blob/master/README.md"><code>LUKS</code></a> containers:
+</p>
+
+<pre class="example">
+# cryptsetup -v \
+             --type luks \
+             --cipher twofish-xts-plain64 \
+             --key-size 512 \
+             --hash sha512 \
+             --iter-time 5000 \
+             --use-random \
+             --verify-passphrase \
+             luksFormat \
+             /dev/md2
+# cryptsetup -v \
+             --type luks \
+             --cipher twofish-xts-plain64 \
+             --key-size 512 \
+             --hash sha512 \
+             --iter-time 5000 \
+             --use-random \
+             --verify-passphrase \
+             luksFormat \
+             /dev/md3
+# cryptsetup -v \
+             --type luks \
+             --cipher twofish-xts-plain64 \
+             --key-size 512 \
+             --hash sha512 \
+             --iter-time 5000 \
+             --use-random \
+             --verify-passphrase \
+             luksFormat \
+             /dev/md4
+</pre>
+
+<p>
+Next, we will open and start creating our <a href="https://www.sourceware.org/lvm2/"><code>LVM</code></a> volumes:
+</p>
+
+<pre class="example">
+# cryptsetup open /dev/md2 cvg0
+# cryptsetup open /dev/md3 cvg1
+# cryptsetup open /dev/md4 cvg2
+</pre>
+
+<p>
+Now the <a href="https://www.sourceware.org/lvm2/"><code>LVM</code></a> setup:
+</p>
+
+<pre class="example">
+# pvcreate /dev/mapper/cvg0
+# vgcreate vg0 /dev/mapper/cvg0
+# pvcreate /dev/mapper/cvg1
+# vgcreate vg1 /dev/mapper/cvg1
+# pvcreate /dev/mapper/cvg2
+# vgcreate vg2 /dev/mapper/cvg2
+</pre>
+
+<p>
+Now that the volume groups are created, we will start creating the actual
+logical volumes:
+</p>
+
+<pre class="example">
+# lvcreate -L 1G -n root vg0
+# lvcreate -L 100G -n nix vg0
+# lvcreate -L 15G -n opt vg0
+# lvcreate -L 20G -n var vg1
+# lvcreate -L 100G -n docker vg1
+# lvcreate -L 64G -n swap vg1
+# lvcreate -L 1T -n home vg2
+</pre>
+
+<p>
+Finally, we can format each of the partitions:
+</p>
+
+<pre class="example">
+# mkfs.ext4 -L root /dev/mapper/vg0-root
+# mkfs.ext4 -L opt /dev/mapper/vg0-opt
+# mkfs.xfs -L nix /dev/mapper/vg0-nix
+# mkfs.ext4 -L var /dev/mapper/vg1-var
+# mkfs.btrfs -L docker /dev/mapper/vg1-docker
+# mkfs.xfs -L home /dev/mapper/vg2-home
+# mkswap /dev/mapper/vg1-swap
+</pre>
+
+<p>
+Before moving onto the next step, we first need to mount each of volumes in the
+desired path:
+</p>
+
+<pre class="example">
+# mount /dev/mapper/vg0-root /mnt
+# mkdir -p /mnt/{boot,home,nix,var,opt}
+# mount /dev/md1 /mnt/boot
+# mount /dev/mapper/vg0-nix /mnt/nix
+# mount /dev/mapper/vg0-opt /mnt/opt
+# mount /dev/mapper/vg1-var /mnt/var
+# mkdir -p /mnt/var/lib/docker
+# mount /dev/mapper/vg1-docker /mnt/docker
+# mount /dev/mapper/vg2-home /mnt/home
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd6e1926" class="outline-3">
+<h3 id="orgd6e1926"><a id="ID-33ac70a7-24ba-49bf-8f13-f957ca9e9179"></a>NixOS Configuration and Installation</h3>
+<div class="outline-text-3" id="text-orgd6e1926">
+<p>
+Once the disk preparation is complete, we can follow the steps from the
+<a href="https://nixos.org/nixos/manual/index.html">NixOS Manual</a> to create the initial configuration:
+</p>
+
+<pre class="example">
+# nixos-generate-config --root /mnt
+</pre>
+
+<p>
+After this is done, we can move onto configuring the system the way we want.
+However, this is where we will deviate slightly from the manual.  First, we
+will need to install <code>git</code> so we can pull down our configuration.
+</p>
+
+<blockquote>
+<p>
+The following steps are very personal.  You're free to use my
+<a href="https://git.devnulllabs.io/cfg.nix.git">configuration</a> if you do not have your own, or if you would
+like to try it out.  However, you will likely want different things from <span class="underline">your</span>
+system.  Change the following steps as necessary.
+</p>
+</blockquote>
+
+<pre class="example">
+# nix-env -i git
+# cd /mnt/etc/
+# mv nixos nixos.bak
+# git clone git://git.devnulllabs.io/cfg.nix.git nixos
+# cd nixos
+# cp ../nixos.bak/hardware-configuration.nix .
+</pre>
+
+<p>
+My set of <a href="https://nixos.org/nix/">Nix</a> <a href="https://git.devnulllabs.io/cfg.nix.git">configuration</a> includes subfolders for
+each machine.  To setup a new machine, I soft link ("symlink") the machine's
+<code>configuration.nix</code> into the <code>[/mnt]/etc/nixos</code> folder.  If this is a new
+machine or a rebuild, I typically merge the differences between the
+<code>hardware-configuration.nix</code> files.  After which, I perform the regular
+installation.
+</p>
+
+<pre class="example">
+nixos-install --no-root-passwd
+</pre>
+
+<p>
+Once this finishes, the installation and configuration is done.  Reboot the
+machine, remove the installation/live media, use the freshly installed machine
+as if it was always there.
+</p>
+</div>
+
+<div id="outline-container-org06b0d49" class="outline-4">
+<h4 id="org06b0d49"><a id="ID-c71414c6-6ccd-45c6-809d-f0c53d06aed7"></a>UEFI Notes</h4>
+<div class="outline-text-4" id="text-org06b0d49">
+<p>
+Aside from learning about the <code>mdadm</code> metadata placement being an issue for
+<a href="https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface">UEFI</a> systems to boot, I also had played around with the various
+settings for <a href="https://www.gnu.org/software/grub/">GRUB</a> to install correctly without errors and warnings.
+</p>
+
+<p>
+Here's the full <a href="https://www.gnu.org/software/grub/">GRUB</a> configuration:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-nix">boot.loader.systemd-boot = {
+  enable = true;
+  editor = false;
+};
+boot.loader.efi = {
+  canTouchEfiVariables = false;
+};
+boot.loader.grub = {
+  enable = true;
+  copyKernels = true;
+  efiInstallAsRemovable = true;
+  efiSupport = true;
+  fsIdentifier = "uuid";
+  splashMode = "stretch";
+  version = 2;
+  device = "nodev";
+  extraEntries = ''
+    menuentry "Reboot" {
+      reboot
+    }
+    menuentry "Poweroff" {
+      halt
+    }
+  '';
+};
+</pre>
+</div>
+
+<p>
+Of particular importance are the following variables:
+</p>
+
+<ul class="org-ul">
+<li><code>boot.loader.systemd-boot.enable</code></li>
+
+<li><code>boot.loader.efi.canTouchEfiVariables</code></li>
+
+<li><code>boot.loader.grub.efiInstallAsRemovable</code></li>
+
+<li><code>boot.loader.grub.device</code></li>
+</ul>
+
+<p>
+Ideally, <code>boot.loader.grub.efiSupport</code> would be sufficient to tell
+<a href="https://www.gnu.org/software/grub/">GRUB</a> to install the <a href="https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface">UEFI</a> payload instead.  However, as
+it turns out, there is a few more settings required to ensure proper booting in
+<a href="https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface">UEFI</a> environments, particularly when using <a href="https://en.wikipedia.org/wiki/RAID">RAID</a>.
+</p>
+
+<p>
+According to the manual, it's required to set <code>boot.loader.systemd-boot.enable</code>
+to <code>true</code>.  Setting <code>boot.loader.grub.device</code> or <code>boot.loader.grub.devices</code> to
+anything other than <code>"nodev"</code> or <code>[ "nodev" ]</code> disables
+<code>boot.loader.grub.efiSupport</code>.  Moreover, with
+<code>boot.loader.efi.canTouchEfiVariables</code>, the installation/build process attempts
+to run <code>efibootmgr</code> to modify the NVRAM of the motherboard, setting the boot
+targets, this fails when used with <code>boot.loader.grub.device = "nodev"</code>.
+Therefore, it is required to set <code>boot.loader.efi.canTouchEfiVariables = false</code>
+and <code>boot.loader.grub.efiInstallAsRemovable</code> such that installation process
+simply places the <a href="https://www.gnu.org/software/grub/">GRUB</a> <a href="https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface">UEFI</a> payload in the "default"
+search location for the motherboard, consulted before the NVRAM settings.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge8e8fdc" class="outline-4">
+<h4 id="orge8e8fdc"><a id="ID-46f99075-4013-4f5d-a991-9b07d3e7e564"></a>Docker, <code>nftables</code>, and NixOS Notes</h4>
+<div class="outline-text-4" id="text-orge8e8fdc">
+<p>
+In developing the system configuration, I came across some issues with respect
+to <a href="https://www.docker.com/">Docker</a> and <a href="https://wiki.nftables.org/wiki-nftables/index.php/Main_Page"><code>nftables</code></a>.  The
+<a href="https://wiki.nftables.org/wiki-nftables/index.php/Main_Page"><code>nftables</code></a> project became standard in the <a href="https://www.kernel.org/">Linux</a> kernel
+in version 3.13 and replaces the myriad of existing <code>{ip,ip6,arp,eb}_tables</code>
+tools and (kernel) code.  Specifically, any <a href="https://www.kernel.org/">Linux</a> kernel above 3.13,
+<code>iptables</code> and friends are now simply a user-space front-end to the
+<a href="https://wiki.nftables.org/wiki-nftables/index.php/Main_Page"><code>nftables</code></a> kernel backend.  However, <a href="https://www.docker.com/">Docker</a> still
+does not support <a href="https://wiki.nftables.org/wiki-nftables/index.php/Main_Page"><code>nftables</code></a> directly; there's an
+<a href="https://github.com/moby/moby/issues/26824">issue</a> from 2016.
+</p>
+
+<p>
+With some <a href="https://stephank.nl/p/2017-06-05-ipv6-on-production-docker.html">digging</a> and
+<a href="https://fralef.me/docker-and-iptables.html">work</a>, there's a way to get <a href="https://wiki.nftables.org/wiki-nftables/index.php/Main_Page"><code>nftables</code></a>
+and <a href="https://www.docker.com/">Docker</a> to work nicely with each other.
+</p>
+
+<p>
+Specifically, we configure <a href="https://www.docker.com/">Docker</a> to not modify the <code>iptables</code>
+rules using the <code>--iptables=false</code> configuration flag for the daemon.  In this
+configuration, we can tightly control the firewall with whatever tool we wish,
+in this case, <a href="https://wiki.nftables.org/wiki-nftables/index.php/Main_Page"><code>nftables</code></a>.  This comes with the added benefit of
+bound ports are not automatically opened to the world.
+</p>
+
+<p>
+However, when using <a href="https://nixos.org/">NixOS</a>, any modification to the
+<a href="https://wiki.nftables.org/wiki-nftables/index.php/Main_Page"><code>nftables</code></a> ruleset will require a reload.  However, with
+<a href="https://www.docker.com/">Docker</a> loaded as well, this reload process can actually bring down
+the firewall completely since <a href="https://www.docker.com/">Docker</a> (even with <code>--iptables=false</code>)
+will attempt to load the <code>iptables</code> kernel module, blocking the resulting
+<code>nftables</code> module load.  When using a system such as <a href="https://gentoo.org/">Gentoo</a> this
+was never an issue, since the configuration completely ignore the <code>iptables</code>
+subsystem (since it was compiled out).  In <a href="https://nixos.org/">NixOS</a>, there's a bit more
+dance involved for the time being.
+</p>
+
+<p>
+This is really a minor annoyance as the firewall rules are only seldom changed.
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<footer id="" class="status">
+<footer>
+  <p>&copy; 2014-2022 Kenny Ballou.
+    <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Some rights
+      reserved.</a></p>
+  <p>Powered by <a href="https://gnu.org">GNU/Linux</a></p>
+</footer>
+</footer>
+</body>
+</html>

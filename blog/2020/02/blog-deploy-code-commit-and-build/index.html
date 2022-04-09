@@ -1,0 +1,807 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-04-09 Sat 18:52 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Blog Content Deploy with AWS Code Commit and Code Build</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="kb" />
+<meta name="description" content="Automatically Deploy content with Amazon CodeCommit and CodeBuild"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<meta charset="utf-8">
+
+<meta name="author" content="Kenny Ballou">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<title>~kb</title>
+
+<link rel="canonical" href="/" />
+<link href="/index.xml" rel="alternate" type="application/rss+xml"
+      title="~kb/blog" />
+
+<link rel="stylesheet" href="/css/simple.css" />
+<link rel="stylesheet" href="/css/simple.add.css" />
+<link rel="stylesheet" href="/css/katex.css" />
+<link rel="stylesheet" href="/css/fa-all.css" />
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<script defer type="text/javascript" src="/js/katex.js"></script>
+<script defer type="text/javascript" src="/js/katex-render.js"></script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://kennyballou.com/blog"> UP </a>
+ |
+ <a accesskey="H" href="https://kennyballou.com/"> HOME </a>
+</div><header id="" class="status">
+<nav>
+  <a href="/about.html">
+    <i class="fade fas fa-user-circle"></i>
+  </a>
+  <a href="https://git.devnulllabs.io"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-code-branch fa-1x"></i>
+  </a>
+  <a href="https://github.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-github fa-1x"></i>
+  </a>
+  <a href="https://bitbucket.org/kballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-bitbucket fa-1x"></i>
+  </a>
+  <a href="https://twitter.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-twitter fa-1x"></i>
+  </a>
+  <a href="https://www.buymeacoffee.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-mug-hot fa-1x"></i>
+  </a>
+  <a href="/resume.pdf"
+     target="_blank">
+    <i class="fade far fa-file-pdf"></i>
+  </a>
+  <a href="/932F3E8E1C0F4A9895D7B8B8B0CAA28A02958308.txt"
+     target="_blank">
+    <i class="fade fas fa-key"></i>
+  </a>
+  <a href="/index.xml" rel="alternate"
+     type="application/rss+xml">
+    <i class="fade fas fa-rss fa-1x"></i>
+  </a>
+</nav>
+</header>
+<div id="main">
+<h1 class="title">Blog Content Deploy with AWS Code Commit and Code Build</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org4dd0516">Overview</a></li>
+<li><a href="#org3693ef0">CloudFormation</a></li>
+<li><a href="#org294a822"><code>buildspec.yml</code></a></li>
+<li><a href="#org3d7d468">Docker</a></li>
+<li><a href="#orgdf6421b">Git Remote</a></li>
+<li><a href="#org85003ea">Parting Thoughts</a></li>
+</ul>
+</div>
+</div>
+<div class="PREVIEW">
+<p>
+In a previous post, I discussed a new <a href="https://kennyballou.com/blog/2019/03/static-site-generation">static site
+generation</a> process being used for this <a href="https://kennyballou.com">blog</a>.  More recently, I
+discussed <a href="https://kennyballou.com/blog/2020/02/hosting-with-aws-s3-cloudfront">moving and hosting</a> in <a href="https://aws.amazon.com/">AWS</a> Now, I
+want to briefly discuss how it's now, finally, being auto deployed via
+<a href="https://git-scm.com/">Git</a> and <a href="https://aws.amazon.com/codebuild/">AWS Code Build</a>.
+</p>
+
+</div>
+
+<div id="outline-container-org4dd0516" class="outline-2">
+<h2 id="org4dd0516"><a id="ID-0965d067-3013-4dbc-b3e7-a16cb2f0972b"></a>Overview</h2>
+<div class="outline-text-2" id="text-org4dd0516">
+<p>
+The basic idea is fairly straight forward and is typical of most continuous
+deployment pipelines found elsewhere.  Upon pushing to a particular branch,
+submit a job to build and deploy to some environment.  Since this blog has low
+risks we push straight to "production", where production is simply an
+<a href="https://aws.amazon.com/s3/">S3 bucket</a> as described <a href="https://kennyballou.com/blog/2020/02/hosting-with-aws-s3-cloudfront">before</a>.
+</p>
+
+<p>
+Examining this deployment flow from the <a href="https://aws.amazon.com/">AWS</a> perspective, a branch is
+updated in <a href="https://aws.amazon.com/codecommit/">AWS CodeCommit</a>, this submits a message to an
+<a href="https://aws.amazon.com/sns/">AWS SNS</a> topic.  From here, a <a href="https://aws.amazon.com/lambda/">Lambda</a> function
+receives the event and submits a build request to <a href="https://aws.amazon.com/codebuild/">AWS
+CodeBuild</a>.  This certainly feels as complex as it sounds.  Unfortunately,
+this complexity is necessary as <a href="https://aws.amazon.com/">AWS</a> doesn't currently provide a
+batteries included solution that is appropriately sized for the current
+problem.
+</p>
+
+<p>
+The motivation for this choice in "architecture" is as such,
+<a href="https://aws.amazon.com/codecommit/">CodeCommit</a> can only send events ("triggers") to <span class="underline">either</span>
+<a href="https://aws.amazon.com/sns/">SNS</a> or <a href="https://aws.amazon.com/lambda/">Lambda</a>; furthermore, sending the event to
+<a href="https://aws.amazon.com/sns/">SNS</a> allows for more flexibility in later subscriptions if
+necessary (as is for cases that are not this blog).
+</p>
+
+<p>
+Another available option explored earlier was using
+<a href="https://aws.amazon.com/cloudwatch/">CloudWatch Events</a> to trigger the
+<a href="https://aws.amazon.com/lambda/">Lambda</a> job and in doing so, being able to access little more
+information about the commit submitted.  However, this has other filtering
+issues when considering its usage with many <a href="https://aws.amazon.com/codecommit/">CodeCommit
+repositories</a>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3693ef0" class="outline-2">
+<h2 id="org3693ef0"><a id="ID-f458c5ad-8496-449e-aa89-6dc119d47dcf"></a>CloudFormation</h2>
+<div class="outline-text-2" id="text-org3693ef0">
+<p>
+Let's consider the specifics of creating the necessary components in
+<a href="https://aws.amazon.com/cloudformation/">AWS CloudFormation</a>.
+</p>
+
+<blockquote>
+<p>
+Notice, the values will likely be very specific to this blog.  If attempting to
+replicate for your own usage (which you should feel free to do so!), you will
+likely need to update a few values to your needs.
+</p>
+</blockquote>
+
+<p>
+First, we need an <a href="https://aws.amazon.com/sns/">SNS</a> topic:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-json">"CodeCommitEventsSnsTopic": {
+    "Type": "AWS::SNS::Topic",
+    "Properties": {
+        "DisplayName": "CodeCommit Events",
+        "TopicName": "codecommit-events"
+    }
+}
+</pre>
+</div>
+
+<p>
+Next, we need we will need a few <a href="https://aws.amazon.com/iam/">IAM</a> roles and policies for
+<a href="https://aws.amazon.com/codebuild/">CodeBuild</a> and <a href="https://aws.amazon.com/lambda/">Lambda</a>.
+</p>
+
+<p>
+Here are the two <a href="https://aws.amazon.com/iam/">IAM</a> resources for <a href="https://aws.amazon.com/codebuild/">CodeBuild</a>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-json">"CodeBuildIamManagedPolicy": {
+    "Type": "AWS::IAM::ManagedPolicy",
+    "Properties": {
+        "Description": "CodeBuild Service Policy",
+        "PolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Action": [
+                        "logs:CreateLogStream",
+                        "logs:PutLogEvents"
+                    ],
+                    "Resource": [
+                        {"Fn::Join": [":", [
+                            "arn:aws:logs",
+                            {"Ref": "AWS::Region"},
+                            {"Ref": "AWS::AccountId"},
+                            "log-group:/aws/codebuild/CodeBuild*"]]},
+                        {"Fn::Join": [":", [
+                            "arn:aws:logs",
+                            {"Ref": "AWS::Region"},
+                            {"Ref": "AWS::AccountId"},
+                            "log-group:/aws/codebuild/CodeBuild*",
+                            "log-stream:*"]]}
+                    ]
+                }, {
+                    "Effect": "Allow",
+                    "Action": [
+                        "codecommit:GitPull"
+                    ],
+                    "Resource": [
+                        {"Fn::Join": [":", [
+                            "arn:aws:codecommit",
+                            {"Ref": "AWS::Region"},
+                            {"Ref": "AWS::AccountId"},
+                            "*"]]}
+                    ]
+                }, {
+                    "Effect": "Allow",
+                    "Action": [
+                        "s3:PutObject",
+                        "s3:Get*",
+                        "s3:List"
+                    ],
+                    "Resource": [
+                        {"Fn::GetAtt": ["BlogContentBucket", "Arn"]},
+                        {"Fn::Join": ["", [{"Fn::GetAtt": ["BlogContentBucket", "Arn"]}, "/*"]]}
+                    ]
+                }
+            ]
+        }
+
+    }
+},
+"CodeBuildIamServiceRole": {
+    "Type": "AWS::IAM::Role",
+    "Properties": {
+        "AssumeRolePolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Action": "sts:AssumeRole",
+                    "Principal": {
+                        "Service": "codebuild.amazonaws.com"
+                    },
+                    "Effect": "Allow"
+                }
+            ]
+        },
+        "ManagedPolicyArns": [
+            {"Ref": "CodeBuildIamManagedPolicy"}
+        ]
+    }
+}
+</pre>
+</div>
+
+<p>
+Next are the two for <a href="https://aws.amazon.com/lambda/">Lambda</a>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-json">"LambdaCodeCommitBuildIamManagedPolicy": {
+    "Type": "AWS::IAM::ManagedPolicy",
+    "Properties": {
+        "Description": "Lambda CodeCommit-Build Execution Policy",
+        "PolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Action": [
+                        "logs:CreateLogStream",
+                        "logs:PutLogEvents"
+                    ],
+                    "Resource": [
+                        {"Fn::Join": [":", [
+                            "arn:aws:logs",
+                            {"Ref": "AWS::Region"},
+                            {"Ref": "AWS::AccountId"},
+                            "log-group:/aws/lambda/codecommit-build-bae089e8-3871-4067-9a3d-bac114f08438:*"
+                        ]]}
+                    ]
+                }, {
+                    "Effect": "Allow",
+                    "Action": [
+                        "codebuild:StartBuild"
+                    ],
+                    "Resource": [
+                        {"Fn::Join": [":", [
+                            "arn:aws:codebuild",
+                            {"Ref": "AWS::Region"},
+                            {"Ref": "AWS::AccountId"},
+                            "project/*"]]}
+                    ]
+                }
+            ]
+        }
+
+    }
+},
+"LambdaCodeCommitBuildIamServiceRole": {
+    "Type": "AWS::IAM::Role",
+    "Properties": {
+        "AssumeRolePolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Action": "sts:AssumeRole",
+                    "Principal": {
+                        "Service": "lambda.amazonaws.com"
+                    },
+                    "Effect": "Allow"
+                }
+            ]
+        },
+        "ManagedPolicyArns": [
+            {"Ref": "LambdaCodeCommitBuildIamManagedPolicy"}
+        ]
+    }
+}
+</pre>
+</div>
+
+<p>
+Finally, the <a href="https://aws.amazon.com/lambda/">Lambda</a> function needs to subscribe to the
+<a href="https://aws.amazon.com/sns/">SNS</a> topic.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-json">"CodeCommitBuildSnsSubscription": {
+    "Type": "AWS::SNS::Subscription",
+    "Properties": {
+        "Protocol": "lambda",
+        "Endpoint": {"Fn::GetAtt": [
+            "CodeCommitBuildLambdaFunction", "Arn"]},
+        "TopicArn": {"Ref": "CodeCommitEventsSnsTopic"}
+    }
+}
+</pre>
+</div>
+
+<p>
+Lest we forget, an all to often forgotton resource necessary for creating
+<a href="https://aws.amazon.com/lambda/">Lambda</a> functions via <a href="https://aws.amazon.com/cloudformation/">CloudFormation</a>,
+we need a <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html">Lambda Permission</a> resource:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-json">"CodeCommitBuildLambdaPermission": {
+    "Type": "AWS::Lambda::Permission",
+    "Properties": {
+        "FunctionName": {"Fn::GetAtt": [
+            "CodeCommitBuildLambdaFunction", "Arn"]},
+        "Action": "lambda:InvokeFunction",
+        "Principal": "sns.amazonaws.com",
+        "SourceArn": {"Ref": "CodeCommitEventsSnsTopic"}
+    }
+}
+</pre>
+</div>
+
+<p>
+Finally, we need to add the <a href="https://aws.amazon.com/codebuild/">CodeBuild</a> resources:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-json">"BlogCodeBuildLogGroup": {
+    "Type": "AWS::Logs::LogGroup",
+    "Properties": {
+        "LogGroupName": {"Fn::Join": ["-", [
+            "/aws/codebuild/CodeBuild",
+            {"Ref": "BlogBucketName"}]]},
+        "RetentionInDays": 14
+    }
+},
+"BlogCodeBuild": {
+    "Type": "AWS::CodeBuild::Project",
+    "Properties": {
+        "Name": "BlogCI",
+        "Description": "Blog Build Project",
+        "Artifacts": {
+            "Type": "NO_ARTIFACTS"
+        },
+        "Environment": {
+            "ComputeType": "BUILD_GENERAL1_SMALL",
+            "Image": "kennyballou/debian-pandoc:latest",
+            "Type": "LINUX_CONTAINER"
+        },
+        "LogsConfig": {
+            "CloudWatchLogs": {
+                "GroupName": {"Fn::Join": ["-", [
+                    "/aws/codebuild/CodeBuild",
+                    {"Ref": "BlogBucketName"}
+                ]]},
+                "Status": "ENABLED"
+            }
+        },
+        "ServiceRole": {"Ref": "CodeBuildIamServiceRole"},
+        "Source": {
+            "Type": "CODECOMMIT",
+            "Location": {"Fn::GetAtt": ["BlogContentRepository",
+                                        "CloneUrlHttp"]}
+        }
+    }
+}
+</pre>
+</div>
+
+<p>
+With these resources added, we can now move onto some of the other details
+necessary.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org294a822" class="outline-2">
+<h2 id="org294a822"><a id="ID-92ecfa58-ff40-4bc0-8dba-ab07e8548d26"></a><code>buildspec.yml</code></h2>
+<div class="outline-text-2" id="text-org294a822">
+<p>
+Depending on how complicated the blog content is, the <code>buildspec.yml</code> file can
+be trivial to very complex.  If most of the build instructions are already
+captured in a script or <a href="https://www.gnu.org/software/make/"><code>Makefile</code></a>, the build specificiation will
+likely be fairly straightforward.
+</p>
+
+<p>
+For this blog, the <a href="https://git.devnulllabs.io/blog.kennyballou.com.git/tree/buildspec.yml"><code>buildspec.yml</code></a> file is as follows:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-yaml">version: 0.2
+
+phases:
+  build:
+    commands:
+      - make
+      - make deploy
+</pre>
+</div>
+
+<p>
+Realistically, a line could be removed but is left for clarity.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3d7d468" class="outline-2">
+<h2 id="org3d7d468"><a id="ID-bce37766-fbeb-4d5b-8574-3efe9f4d370d"></a>Docker</h2>
+<div class="outline-text-2" id="text-org3d7d468">
+<p>
+Since this blog is <a href="https://kennyballou.com/blog/2019/03/static-site-generation">built using</a> <a href="https://pandoc.org/">Pandoc</a>
+and some <a href="https://www.gnu.org/software/bash/">Bash scripts</a>, a custom <a href="https://hub.docker.com/repository/docker/kennyballou/debian-pandoc">build image</a>
+was created.
+</p>
+
+<p>
+It's referenced in the <a href="https://aws.amazon.com/codebuild/">CodeBuild</a> resource defined above.
+</p>
+
+<p>
+However, if using different tools to generate content, using the provided
+images from <a href="https://aws.amazon.com/">AWS</a> may be possible.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgdf6421b" class="outline-2">
+<h2 id="orgdf6421b"><a id="ID-3efbcff6-d4f0-404c-b3c2-66bd36b31a66"></a>Git Remote</h2>
+<div class="outline-text-2" id="text-orgdf6421b">
+<p>
+A <a href="https://git-scm.com/">git</a> repository may have any number of remote repositories associated
+with it.  Consider forked projects or repositories on <a href="https://github.com/">GitHub</a> for a
+moment: before opening a pull request against the parent project, it's good
+practice to make sure the changes are based on the latest changes in the parent
+branch.  To trivially achieve this, the local clone of the repository (the
+fork) can be configured to have both the remotes associated, e.g.:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">% git clone ssh://github.com/yours/${<span style="font-weight: bold; font-style: italic;">forked_project</span>}
+% cd ${<span style="font-weight: bold; font-style: italic;">forked_project</span>}
+% git remote add upstream ssh://github.com/parent/${<span style="font-weight: bold; font-style: italic;">forked_project</span>}
+</pre>
+</div>
+
+<p>
+Now, ensuring the changes to be submitted are based on the latest changes in
+the parent only requires a few commands (and possible some merge conflict
+resolution):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">% git remote update -p
+% git rebase upstream/master
+% git push --force-with-lease origin pr-branch
+</pre>
+</div>
+
+<blockquote>
+<p>
+I am making some assumptions of workflow and that the PR branch is <span class="underline">yours</span> and
+you're, therefore, allowed to do <b>whatever</b> you want to its history.
+</p>
+</blockquote>
+
+<p>
+Similarly, for auto deploying blog content, we need to add the new repository
+from <a href="https://aws.amazon.com/codecommit/">CodeCommit</a> to the blog's remotes.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">git remote add aws ssh://git-codecommit.us-east-1.amazonaws.com/v1/repos/blog.kennyballou.com
+</pre>
+</div>
+
+<blockquote>
+<p>
+I recommend using <a href="https://linux.die.net/man/5/ssh_config">SSH Config</a> files to ease using <a href="https://git-scm.com/">Git</a>,
+<a href="https://www.ssh.com/ssh">SSH</a>, and <a href="https://aws.amazon.com/codecommit/">CodeCommit</a>.  Especially so if multiple
+<a href="https://aws.amazon.com/">AWS</a> accounts are involved, each with their own set of repositories.
+</p>
+</blockquote>
+
+<p>
+Afterwhich, when content is ready to be published, it is as simple as pushing
+the branch to the other remote.  Assuming that we're already on the <code>master</code>
+branch, push to the different remote:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">% git push aws master
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org85003ea" class="outline-2">
+<h2 id="org85003ea"><a id="ID-daadda86-f820-42d9-814d-3a0a5656c2b2"></a>Parting Thoughts</h2>
+<div class="outline-text-2" id="text-org85003ea">
+<p>
+Honestly, there may be easier and cheaper ways to host some simple
+infrastructure for running and building projects.  <a href="https://github.com/">GitHub</a> now has
+<a href="https://help.github.com/en/actions/automating-your-workflow-with-github-actions">Actions</a>.  <a href="https://gitlab.com/">GitLab</a> has <a href="https://about.gitlab.com/stages-devops-lifecycle/continuous-integration/">CI/CD
+pipelines</a> as part of their offering.  A new forge, <a href="https://sr.ht/">Source Hut</a>, has
+<a href="https://builds.sr.ht/">builds</a>.  There likely are many more variations I fail to
+mention as I'm not aware of them.  That said, <a href="https://aws.amazon.com/">AWS</a> does provide a 100
+minutes of <a href="https://aws.amazon.com/codebuild/">CodeBuild</a> free each month and
+<a href="https://aws.amazon.com/codecommit/">CodeCommit</a> has some pretty high thresholds before AWS
+begins incuring charges.
+</p>
+
+<p>
+However, for me, when already <a href="https://kennyballou.com/blog/2020/02/hosting-with-aws-s3-cloudfront">hosting</a> the content
+via <a href="https://aws.amazon.com/s3/">S3</a> and <a href="https://aws.amazon.com/cloudfront/">CloudFront</a>, having the ability to
+implicitly authorize write access to the <a href="https://aws.amazon.com/codebuild/">CodeBuild</a> job, it
+is more convincing to run everything within <a href="https://aws.amazon.com/">AWS</a>, even if <a href="https://aws.amazon.com/">AWS</a>
+doesn't always bring the batteries.
+</p>
+
+<p>
+Finally, setting up these resources via the <a href="https://console.aws.amazon.com/">AWS web
+console</a> may be easier than setting them up via
+<a href="https://aws.amazon.com/cloudformation/">CloudFormation</a>, it is the hope that the pain suffered
+in configuring and connecting the various resources together is helpful to
+someone else in a similar position.
+</p>
+</div>
+</div>
+</div>
+<footer id="" class="status">
+<footer>
+  <p>&copy; 2014-2022 Kenny Ballou.
+    <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Some rights
+      reserved.</a></p>
+  <p>Powered by <a href="https://gnu.org">GNU/Linux</a></p>
+</footer>
+</footer>
+</body>
+</html>

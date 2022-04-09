@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/"
+     xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+     xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+     xmlns:georss="http://www.georss.org/georss"
+     xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+     xmlns:media="http://search.yahoo.com/mrss/"><channel>
+  <title>(Git Packfiles)</title>
+  <atom:link href="https://kennyballou.com/index.xml" rel="self" type="application/rss+xml" />
+  <link>https://kennyballou.com</link>
+  <description><![CDATA[Introduction to Git Packfiles]]></description>
+  <language>en</language>
+  <pubDate>Sat, 09 Apr 2022 18:52:58 +0000</pubDate>
+  <lastBuildDate>Sat, 09 Apr 2022 18:52:58 +0000</lastBuildDate>
+  <generator>Emacs 26.3 Org-mode 9.1.9</generator>
+  <webMaster>kb@devnulllabs.io (kb)</webMaster>
+  <image>
+    <url>http://orgmode.org/img/org-mode-unicorn-logo.png</url>
+    <title>(Git Packfiles)</title>
+    <link>https://kennyballou.com</link>
+  </image>
+
+  <div class="PREVIEW">
+    <p>
+      Previously, in <a href="https://kennyballou.com/blog/2016/01/git-in-reverse">Git in Reverse</a>, we learned about <a href="https://git-scm.com/">Git</a> and how it internally
+      stores information.  Namely, we went over the <a href="http://stackoverflow.com/questions/5709687/what-are-the-loose-objects-that-the-git-gui-refers-to#5710039">"loose" object</a> format that Git
+      uses for storage.  However, in the last post, we did not discuss how Git uses
+      another storage format to more compactly store files, changes, and ultimately
+      objects.  In this post we will discuss packfiles and how Git uses these
+      primarily for using less bandwidth and, only secondarily, using less storage
+      space for storing repository contents.
+    </p>
+
+  </div>
+
+  <p>
+    We're only going to discuss the high-level details of packfiles, there are
+    <a href="https://git-scm.com/book/en/v2/Git-Internals-Packfiles">plenty</a> of <a href="https://git-scm.com/docs/git-verify-pack">sources</a> that
+    <a href="https://git.kernel.org/cgit/git/git.git/tree/Documentation/technical/pack-format.txt">describe</a> the <a href="https://codewords.recurse.com/issues/three/unpacking-git-packfiles/">details</a> better.
+  </p>
+</channel>
+</rss>

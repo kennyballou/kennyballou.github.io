@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/"
+     xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+     xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+     xmlns:georss="http://www.georss.org/georss"
+     xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+     xmlns:media="http://search.yahoo.com/mrss/"><channel>
+  <title>(Releasing Elixir/OTP applications to the World)</title>
+  <atom:link href="https://kennyballou.com/index.xml" rel="self" type="application/rss+xml" />
+  <link>https://kennyballou.com</link>
+  <description><![CDATA[The perils of releasing OTP applications in the wild]]></description>
+  <language>en</language>
+  <pubDate>Sat, 09 Apr 2022 18:53:05 +0000</pubDate>
+  <lastBuildDate>Sat, 09 Apr 2022 18:53:05 +0000</lastBuildDate>
+  <generator>Emacs 26.3 Org-mode 9.1.9</generator>
+  <webMaster>kb@devnulllabs.io (kb)</webMaster>
+  <image>
+    <url>http://orgmode.org/img/org-mode-unicorn-logo.png</url>
+    <title>(Releasing Elixir/OTP applications to the World)</title>
+    <link>https://kennyballou.com</link>
+  </image>
+
+  <div class="PREVIEW">
+    <p>
+      Developing Elixir/OTP applications is an enlightening, mind-boggling, and
+      ultimately enjoyable experience.  There are so many features of the language
+      that change the very way we as developers think about concurrency and program
+      structure.  From writing pure functional code, to using message passing to
+      coordinate complex systems, it is one of the best languages for the SMP
+      revolution that has been slowly boiling under our feet.
+    </p>
+
+  </div>
+
+  <p>
+    However, <i>releasing</i> Elixir and OTP applications is an entirely different and
+    seemingly seldom discussed topic.
+  </p>
+
+  <p>
+    The distribution tool chain of Erlang and OTP is a complicated one, There's
+    <a href="http://erlang.org/doc/man/systools.html"><code>systools</code></a>, <a href="http://erlang.org/doc/man/reltool.html"><code>reltool</code></a>,
+    <a href="https://github.com/erlang/rebar3/releases"><code>rebar(?3)</code></a>, and <a href="https://github.com/erlware/relx"><code>relx</code></a> just to name a few that all
+    ultimately help in creating an Erlang/OTP <a href="http://erlang.org/doc/design_principles/release_structure.html">"release"</a>.
+    Similar to <code>rebar3</code>, <a href="https://github.com/bitwalker/exrm"><code>exrm</code></a> takes the high-level abstraction approach
+    to combining <code>reltool</code> and <code>relx</code> into a single tool chain for creating
+    releases of Elixir projects.  Of course, we can also borrow from the collection
+    of <a href="https://en.wikipedia.org/wiki/GNU_Build_System">autotools</a>.
+  </p>
+
+  <p>
+    There are plenty of articles and posts discussing how and why to use <code>exrm</code>.  I
+    feel many of them, however, fail to <i>truly</i> discuss <i>how</i> to do this
+    effectively.  Most will mention the surface of the issue, but never give the
+    issue any real attention.  As any developer that wants to eventually <i>ship</i>
+    code, this is entirely too frustrating to leave alone.
+  </p>
+
+  <p>
+    There are "ways" of deploying OTP code relatively simply, however, these
+    methods generally avoid good practice of continuous integration/continuous
+    deployment, e.g., "build the OTP application <i>on</i> the target system" or simply
+    use <code>mix run</code>, etc.
+  </p>
+
+  <p>
+    I cannot speak for everyone, but my general goal is to <i>not</i> have such a manual
+    step in my release pipeline, let alone having a possibly full autotool chain
+    and Erlang/Elixir stack on the production system is slightly unnerving for it's
+    own set of reasons.
+  </p>
+</channel>
+</rss>

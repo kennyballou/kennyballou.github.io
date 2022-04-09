@@ -1,0 +1,1301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-04-09 Sat 18:52 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Real-Time Streaming with Apache Spark Streaming</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="kb" />
+<meta name="description" content="Overview of Apache Spark and a sample Twitter Sentiment Analysis"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<meta charset="utf-8">
+
+<meta name="author" content="Kenny Ballou">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<title>~kb</title>
+
+<link rel="canonical" href="/" />
+<link href="/index.xml" rel="alternate" type="application/rss+xml"
+      title="~kb/blog" />
+
+<link rel="stylesheet" href="/css/simple.css" />
+<link rel="stylesheet" href="/css/simple.add.css" />
+<link rel="stylesheet" href="/css/katex.css" />
+<link rel="stylesheet" href="/css/fa-all.css" />
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<script defer type="text/javascript" src="/js/katex.js"></script>
+<script defer type="text/javascript" src="/js/katex-render.js"></script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://kennyballou.com/blog"> UP </a>
+ |
+ <a accesskey="H" href="https://kennyballou.com/"> HOME </a>
+</div><header id="" class="status">
+<nav>
+  <a href="/about.html">
+    <i class="fade fas fa-user-circle"></i>
+  </a>
+  <a href="https://git.devnulllabs.io"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-code-branch fa-1x"></i>
+  </a>
+  <a href="https://github.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-github fa-1x"></i>
+  </a>
+  <a href="https://bitbucket.org/kballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-bitbucket fa-1x"></i>
+  </a>
+  <a href="https://twitter.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-twitter fa-1x"></i>
+  </a>
+  <a href="https://www.buymeacoffee.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-mug-hot fa-1x"></i>
+  </a>
+  <a href="/resume.pdf"
+     target="_blank">
+    <i class="fade far fa-file-pdf"></i>
+  </a>
+  <a href="/932F3E8E1C0F4A9895D7B8B8B0CAA28A02958308.txt"
+     target="_blank">
+    <i class="fade fas fa-key"></i>
+  </a>
+  <a href="/index.xml" rel="alternate"
+     type="application/rss+xml">
+    <i class="fade fas fa-rss fa-1x"></i>
+  </a>
+</nav>
+</header>
+<div id="main">
+<h1 class="title">Real-Time Streaming with Apache Spark Streaming</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org0334f00">About Spark</a>
+<ul>
+<li><a href="#orga6405d7">Resilient Distributed Datasets</a></li>
+<li><a href="#orgd510b41">Discretized Streams</a></li>
+<li><a href="#orgb039cce">Hadoop Requirements</a></li>
+<li><a href="#orgb1d7804">Running Spark Applications</a></li>
+<li><a href="#orge96f6c4">Language Support</a></li>
+<li><a href="#orgc66fb18">Initial Thoughts</a></li>
+</ul>
+</li>
+<li><a href="#org94382c2">Test Project: Twitter Stream Sentiment Analysis</a>
+<ul>
+<li><a href="#setup">Setup</a></li>
+<li><a href="#orgff5df8b">Application Overview</a>
+<ul>
+<li><a href="#kafka-receiver-stream">Kafka Receiver Stream</a></li>
+<li><a href="#twitter-data-json-parsing">Twitter Data JSON Parsing</a></li>
+<li><a href="#filtering-and-stemming">Filtering and Stemming</a></li>
+<li><a href="#classifiers">Classifiers</a></li>
+<li><a href="#joining-and-scoring">Joining and Scoring</a></li>
+<li><a href="#reporting-hdfs-and-http-post">Reporting: HDFS and HTTP POST</a></li>
+</ul>
+</li>
+<li><a href="#orgd3e213a">Implementing the Kafka Producer</a></li>
+<li><a href="#orgc6a86db">Implementing the Spark Streaming Application</a>
+<ul>
+<li><a href="#org6e2ad19">Creating Spark Context, Wiring Transformation Chain</a></li>
+<li><a href="#org239dc7e">Twitter Data Filter / Parser</a></li>
+<li><a href="#orgb370e69">Text Filtering</a></li>
+<li><a href="#orga3a6421">Positive and Negative Scoring</a></li>
+<li><a href="#org2fc7829">Joining</a></li>
+<li><a href="#org8a042bd">Scoring: Declaring Winning Class</a></li>
+<li><a href="#org316e9b4">Reporting the Results</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgd197923">Summary</a></li>
+<li><a href="#org41c38eb">Related Links / References</a></li>
+</ul>
+</div>
+</div>
+<div class="PREVIEW">
+<p>
+This is the second post in a series on real-time systems tangential to the
+Hadoop ecosystem. <a href="https://kennyballou.com/blog/2014/07/real-time-streaming-storm-and-kafka/">Last time</a>, we talked about <a href="https://kafka.apache.org/">Apache Kafka</a> and Apache Storm for
+use in a real-time processing engine.  Today, we will be exploring Apache Spark
+(Streaming) as part of a real-time processing engine.
+</p>
+
+</div>
+
+<div id="outline-container-org0334f00" class="outline-2">
+<h2 id="org0334f00"><a id="ID-03647905-6778-4ad2-919d-8878417ad092"></a>About Spark</h2>
+<div class="outline-text-2" id="text-org0334f00">
+<p>
+<a href="https://spark.apache.org/">Apache Spark</a> is a general purpose, large-scale processing engine,
+recently fully inducted as an Apache project and is currently under very active
+development.  As of this writing, Spark is at version 1.0.2 and 1.1 will be
+released some time soon.
+</p>
+
+<p>
+Spark is intended to be a drop in replacement for Hadoop MapReduce providing
+the benefit of improved performance.  Combining Spark with its related projects
+and libraries &#x2013; <a href="https://spark.apache.org/sql/">Spark SQL (formerly Shark)</a>,
+<a href="https://spark.apache.org/streaming/">Spark Streaming</a>, <a href="https://spark.apache.org/mllib/">Spark MLlib</a>,
+<a href="https://spark.apache.org/graphx/">GraphX</a>, among others &#x2013; and a very capable and promising
+processing stack emerges.  Spark is capable of reading from HBase, Hive,
+Cassandra, and any HDFS data source.  Not to mention the many external
+libraries that enable consuming data from many more sources, e.g., hooking
+Apache Kafka into Spark Streaming is trivial.  Further, the Spark Streaming
+project provides the ability to continuously compute transformations on data.
+</p>
+</div>
+
+<div id="outline-container-orga6405d7" class="outline-3">
+<h3 id="orga6405d7"><a id="ID-b4f8ad97-133e-4ed8-bd7d-eb56c535d0cf"></a>Resilient Distributed Datasets</h3>
+<div class="outline-text-3" id="text-orga6405d7">
+<p>
+Apache Spark's primitive type is the Resilient Distributed Dataset (RDD).  All
+transformations, <code>map</code>, <code>join</code>, <code>reduce</code>, etc., in Spark revolve around this
+type.  RDD's can be created in one of three ways: <i>parallelizing</i> (distributing
+a local dataset); reading a stable, external data source, such as an HDFS file;
+or transformations on existing RDD's.
+</p>
+
+<p>
+In Java, parallelizing may look like:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold; text-decoration: underline;">List</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Integer</span>&gt; <span style="font-weight: bold; font-style: italic;">data</span> = Arrays.asList(1, 2, 3, 4, 5);
+<span style="font-weight: bold; text-decoration: underline;">JavaRDD</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Integer</span>&gt; <span style="font-weight: bold; font-style: italic;">distData</span> = sc.parallelize(data);
+</pre>
+</div>
+
+<p>
+Where <code>sc</code> defines the Spark context.
+</p>
+
+<p>
+Similarly, reading a file from HDFS may look like:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold; text-decoration: underline;">JavaRDD</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>&gt; <span style="font-weight: bold; font-style: italic;">distFile</span> = sc.textFile(<span style="font-style: italic;">"hdfs:///data.txt"</span>);
+</pre>
+</div>
+
+<p>
+The resiliency of RDD's comes from their <a href="http://en.wikipedia.org/wiki/Lazy_evaluation">lazy</a>
+materialization and the information required to enable this lazy nature.  RDD's
+are not always fully materialized but they <i>do</i> contain enough information
+(their linage) to be (re)created from a stable source <a href="https://www.usenix.org/system/files/conference/nsdi12/nsdi12-final138.pdf">Zaharia et
+al.</a>.
+</p>
+
+<p>
+RDD's are distributed among the participating machines, and RDD transformations
+are coarse-grained &#x2013; the same transformation will be applied to <i>every</i>
+element in an RDD.  The number of partitions in an RDD is generally defined by
+the locality of the stable source, however, the user may control this number
+via repartitioning.
+</p>
+
+<p>
+Another important property to mention, RDD's are actually immutable.  This
+immutability can be illustrated with <a href="http://spark.apache.org/docs/latest/programming-guide.html">Spark's</a> Word
+Count example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold; text-decoration: underline;">JavaRDD</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>&gt; <span style="font-weight: bold; font-style: italic;">file</span> = sc.textFile(<span style="font-style: italic;">"hdfs:///data.txt"</span>);
+<span style="font-weight: bold; text-decoration: underline;">JavaRDD</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>&gt; <span style="font-weight: bold; font-style: italic;">words</span> = file.flatMap(
+                                     <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">FlatMapFunction</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt;() {
+                                         <span style="font-weight: bold;">public</span> <span style="font-weight: bold; text-decoration: underline;">Iterable</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>&gt; <span style="font-weight: bold;">call</span>(<span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">line</span>) {
+                                             <span style="font-weight: bold;">return</span> Arrays.asList(line.split(<span style="font-style: italic;">" "</span>));
+                                         }
+                                     }
+                                     );
+<span style="font-weight: bold; text-decoration: underline;">JavaPairRDD</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>, <span style="font-weight: bold; text-decoration: underline;">Integer</span>&gt; <span style="font-weight: bold; font-style: italic;">pairs</span> = words.map(
+                                               <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">PairFunction</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>, <span style="font-weight: bold; text-decoration: underline;">Integer</span>&gt;() {
+                                                   <span style="font-weight: bold;">public</span> <span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>, <span style="font-weight: bold; text-decoration: underline;">Integer</span>&gt; <span style="font-weight: bold;">call</span>(<span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">word</span>) {
+                                                       <span style="font-weight: bold;">return</span> <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>, <span style="font-weight: bold; text-decoration: underline;">Integer</span>&gt;(word, 1);
+                                                   }
+                                               }
+                                               );
+<span style="font-weight: bold; text-decoration: underline;">JavaPairRDD</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>, <span style="font-weight: bold; text-decoration: underline;">Integer</span>&gt; <span style="font-weight: bold; font-style: italic;">counts</span> = pairs.reduceByKey(
+                                                        <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Function2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Integer</span>, <span style="font-weight: bold; text-decoration: underline;">Integer</span>&gt;() {
+                                                            <span style="font-weight: bold;">public</span> <span style="font-weight: bold; text-decoration: underline;">Integer</span> <span style="font-weight: bold;">call</span>(<span style="font-weight: bold; text-decoration: underline;">Integer</span> <span style="font-weight: bold; font-style: italic;">a</span>, <span style="font-weight: bold; text-decoration: underline;">Integer</span> <span style="font-weight: bold; font-style: italic;">b</span>) { <span style="font-weight: bold;">return</span> a + b; }
+                                                        }
+                                                        );
+counts.saveAsTextFile(<span style="font-style: italic;">"hdfs:///data_counted.txt"</span>);
+</pre>
+</div>
+
+<p>
+This is the canonical word count example, but here is a brief explanation: load
+a file into an RDD, split the words into a new RDD, map the words into pairs
+where each word is given a count (one), then reduce the counts of each word by
+a key, in this case the word itself.  Notice, each operation, <code>map</code>, <code>flatMap</code>,
+<code>reduceByKey</code>, creates a <i>new</i> RDD.
+</p>
+
+<p>
+To bring all these properties together, Resilient Distributed Datasets are
+read-only, lazy distributed sets of elements that can have a chain of
+transformations applied to them.  They facilitate resiliency by storing lineage
+graphs of the transformations (to be) applied and they
+<a href="http://en.wikipedia.org/wiki/Data_parallelism">parallelize</a> the computations by partitioning the data
+among the participating machines.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd510b41" class="outline-3">
+<h3 id="orgd510b41"><a id="ID-a9efe32f-69b7-414c-923a-85df12cf4575"></a>Discretized Streams</h3>
+<div class="outline-text-3" id="text-orgd510b41">
+<p>
+Moving to Spark Streaming, the primitive is still RDD's.  However, there is
+another type for encapsulating a continuous stream of data: Discretized Streams
+or DStreams.  DStreams are defined as sequences of RDD's.  A DStream is created
+from an input source, such as Apache Kafka, or from the transformation of
+another DStream.
+</p>
+
+<p>
+Turns out, programming against DStreams is <i>very</i> similar to programming
+against RDD's.  The same word count code can be slightly modified to create a
+streaming word counter:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold; text-decoration: underline;">JavaReceiverInputDStream</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>&gt; <span style="font-weight: bold; font-style: italic;">lines</span> = ssc.socketTextStream(<span style="font-style: italic;">"localhost"</span>, 9999);
+<span style="font-weight: bold; text-decoration: underline;">JavaDStream</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>&gt; <span style="font-weight: bold; font-style: italic;">words</span> = lines.flatMap(
+                                          <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">FlatMapFunction</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt;() {
+                                              <span style="font-weight: bold;">public</span> <span style="font-weight: bold; text-decoration: underline;">Iterable</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>&gt; <span style="font-weight: bold;">call</span>(<span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">line</span>) {
+                                                  <span style="font-weight: bold;">return</span> Arrays.asList(line.split(<span style="font-style: italic;">" "</span>));
+                                              }
+                                          }
+                                          );
+<span style="font-weight: bold; text-decoration: underline;">JavaPairDStream</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>, <span style="font-weight: bold; text-decoration: underline;">Integer</span>&gt; <span style="font-weight: bold; font-style: italic;">pairs</span> = words.map(
+                                                   <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">PairFunction</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>, <span style="font-weight: bold; text-decoration: underline;">Integer</span>&gt;() {
+                                                       <span style="font-weight: bold;">public</span> <span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>, <span style="font-weight: bold; text-decoration: underline;">Integer</span>&gt; <span style="font-weight: bold;">call</span>(<span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">word</span>) {
+                                                           <span style="font-weight: bold;">return</span> <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>, <span style="font-weight: bold; text-decoration: underline;">Integer</span>&gt;(word, 1);
+                                                       }
+                                                   }
+                                                   );
+<span style="font-weight: bold; text-decoration: underline;">JavaPairDStream</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>, <span style="font-weight: bold; text-decoration: underline;">Integer</span>&gt; <span style="font-weight: bold; font-style: italic;">counts</span> = pairs.reduceByKey(
+                                                            <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Function2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Integer</span>, <span style="font-weight: bold; text-decoration: underline;">Integer</span>&gt;() {
+                                                                <span style="font-weight: bold;">public</span> <span style="font-weight: bold; text-decoration: underline;">Integer</span> <span style="font-weight: bold;">call</span>(<span style="font-weight: bold; text-decoration: underline;">Integer</span> <span style="font-weight: bold; font-style: italic;">a</span>, <span style="font-weight: bold; text-decoration: underline;">Integer</span> <span style="font-weight: bold; font-style: italic;">b</span>) { <span style="font-weight: bold;">return</span> a + b; }
+                                                            }
+                                                            );
+counts.print();
+</pre>
+</div>
+
+<p>
+Notice, really the only change between first example's code is the return
+types.  In the streaming context, transformations are working on streams of
+RDD's, Spark handles applying the functions (that work against data in the
+RDD's) to the RDD's in the current batch/ DStream.
+</p>
+
+<p>
+Though programming against DStreams is similar, there are indeed some
+differences as well.  Chiefly, DStreams also have <i>statefull</i> transformations.
+These include sharing state between batches/ intervals and modifying the
+current frame when aggregating over a sliding window.
+</p>
+
+<blockquote>
+<p>
+The key idea is to treat streaming as a series of short batch jobs,
+and bring down the latency of these jobs as much as possible.  This
+brings many of the benefits of batch processing models to stream
+processing, including clear consistency semantics and a new parallel
+recovery technique&#x2026;
+[<a href="https://www.usenix.org/system/files/conference/hotcloud12/hotcloud12-final28.pdf">Zaharia
+et al.</a>]
+</p>
+</blockquote>
+</div>
+</div>
+
+<div id="outline-container-orgb039cce" class="outline-3">
+<h3 id="orgb039cce"><a id="ID-70cb8acc-201e-4f63-a594-9c39987083d0"></a>Hadoop Requirements</h3>
+<div class="outline-text-3" id="text-orgb039cce">
+<p>
+Technically speaking, Apache Spark does <a href="http://spark.apache.org/faq.html"><i>not</i></a> require Hadoop to
+be fully functional.  In a cluster setting, however, a means of sharing files
+between tasks will need to be facilitated.  This could be accomplished through
+<a href="http://aws.amazon.com/s3/">S3</a>, <a href="http://en.wikipedia.org/wiki/Network_File_System">NFS</a>, or, more typically, <a href="https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/HdfsUserGuide.html">HDFS</a>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb1d7804" class="outline-3">
+<h3 id="orgb1d7804"><a id="ID-bb6278e4-1d64-4902-84a3-fe4f09d4ba89"></a>Running Spark Applications</h3>
+<div class="outline-text-3" id="text-orgb1d7804">
+<p>
+Apache Spark applications can run in <a href="http://spark.apache.org/docs/latest/spark-standalone.html">standalone mode</a> or
+be managed by <a href="http://hadoop.apache.org/docs/current/hadoop-yarn/hadoop-yarn-site/YARN.html">YARN</a>(<a href="http://spark.apache.org/docs/latest/running-on-yarn.html">Running Spark on YARN</a>),
+<a href="http://mesos.apache.org">Mesos</a>(<a href="http://spark.apache.org/docs/latest/running-on-mesos.html">Running Spark on Mesos</a>), and even
+<a href="http://aws.amazon.com/ec2/">EC2</a>(<a href="http://spark.apache.org/docs/latest/ec2-scripts.html">Running Spark on EC2</a>).  Furthermore, if
+running under YARN or Mesos, Spark does not need to be installed to work.  That
+is, Spark code can execute on YARN and Mesos clusters without change to the
+cluster.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge96f6c4" class="outline-3">
+<h3 id="orge96f6c4"><a id="ID-b42be48e-158e-4de0-91a7-e246c394b75d"></a>Language Support</h3>
+<div class="outline-text-3" id="text-orge96f6c4">
+<p>
+Currently, Apache Spark supports the <a href="http://www.scala-lang.org/">Scala</a>, <a href="https://en.wikipedia.org/wiki/Java_(programming_language)">Java</a>, and
+<a href="https://www.python.org/">Python</a> programming languages.  Though, this post will only be
+discussing examples in <a href="https://en.wikipedia.org/wiki/Java_(programming_language)">Java</a>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc66fb18" class="outline-3">
+<h3 id="orgc66fb18"><a id="ID-2c81e2c8-97f8-4c5a-9838-d549c2e9bce2"></a>Initial Thoughts</h3>
+<div class="outline-text-3" id="text-orgc66fb18">
+<p>
+Getting away from the idea of directed acyclic graphs (DAG's) is &#x2013; may be &#x2013;
+both a bit of a leap and a benefit.  Although it is perfectly acceptable to
+define Spark's transformations altogether as a DAG, this can feel awkward when
+developing Spark applications.  Describing the transformations as
+<a href="http://en.wikipedia.org/wiki/Monad_(functional_programming)">Monadic</a> feels much more natural.  Of course, a monad
+structure fits the DAG analogy quite well, especially when considered in some
+of the physical analogies such as assembly lines.
+</p>
+
+<p>
+Java's, and consequently Spark's, type strictness was an initial hurdle
+to get accustomed.  But overall, this is good.  It means the compiler will
+catch a lot of issues with transformations early.
+</p>
+
+<p>
+Depending on Scala's <code>Tuple[\d]</code> classes feels second-class, but this is
+only a minor tedium.  It's too bad current versions of Java don't have
+good classes for this common structure.
+</p>
+
+<p>
+YARN and Mesos integration is a very nice benefit as it allows full stack
+analytics to not oversubscribe clusters.  Furthermore, it gives the ability to
+add to existing infrastructure without overloading the developers and the
+system administrators with <i>yet another</i> computational suite and/or resource
+manager.
+</p>
+
+<p>
+On the negative side of things, dependency hell can creep into Spark projects.
+Your project and Spark (and possibly Spark's dependencies) may depend on a
+common artifact.  If the versions don't <a href="http://cupofjava.de/blog/2013/02/01/fight-dependency-hell-in-maven/">converge</a>,
+many subtle problems can emerge.  There is an <a href="https://issues.apache.org/jira/browse/SPARK-939">experimental
+configuration option</a> to help alleviate this problem, however, for me, it
+caused more problems than solved.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org94382c2" class="outline-2">
+<h2 id="org94382c2"><a id="ID-61da885f-122b-4537-8fd5-3fd2aea3634e"></a>Test Project: Twitter Stream Sentiment Analysis</h2>
+<div class="outline-text-2" id="text-org94382c2">
+<p>
+To really test Spark (Streaming), a Twitter Sentiment Analysis project was
+developed.  It's almost a direct port of the <a href="https://github.com/zdata-inc/StormSampleProject">Storm
+code</a>.  Though there is an external library for hooking Spark directly into
+Twitter, Kafka is used so a more precise comparison of Spark and Storm can be
+made.
+</p>
+
+<p>
+When the processing is finished, the data are written to HDFS and posted
+to a simple NodeJS application.
+</p>
+</div>
+
+<div id="outline-container-org5d519ef" class="outline-3">
+<h3 id="setup"><a id="org5d519ef"></a><a id="ID-ade07b91-1029-4193-96fe-e13b78d1c94d"></a>Setup</h3>
+<div class="outline-text-3" id="text-setup">
+<p>
+The setup is the same as
+<a href="https://kennyballou.com/blog/2014/07/real-time-streaming-storm-and-kafka">last
+time</a>: 5 node Vagrant virtual cluster with each node running 64 bit
+CentOS 6.5, given 1 core, and 1024MB of RAM.  Every node is running HDFS
+(datanode), YARN worker nodes (nodemanager), ZooKeeper, and Kafka.  The
+first node, <code>node0</code>, is the namenode and resource manager. <code>node0</code> is
+also running a <a href="http://www.docker.io/">Docker</a> container with a NodeJS
+application for reporting purposes.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgff5df8b" class="outline-3">
+<h3 id="orgff5df8b"><a id="ID-b6918587-24dc-422e-844f-2a63e8c42c77"></a>Application Overview</h3>
+<div class="outline-text-3" id="text-orgff5df8b">
+<p>
+This project follows a very similar process structure as the Storm Topology
+from last time.
+</p>
+
+
+<div class="figure">
+<p><img src="../../../../media/SentimentAnalysisTopology.png" alt="SentimentAnalysisTopology.png" />
+</p>
+</div>
+
+<p>
+However, each node in the above graph is actually a transformation on the
+current DStream and not an individual process (or group of processes).
+</p>
+
+<p>
+This test project similarly uses the same <a href="https://github.com/zdata-inc/SimpleKafkaProducer">simple Kafka
+producer</a> developed.  This Kafka producer will be how data are ingested by the
+system.
+</p>
+</div>
+
+<div id="outline-container-orgbe5dd2e" class="outline-4">
+<h4 id="kafka-receiver-stream"><a id="orgbe5dd2e"></a><a id="ID-07fcc612-127d-400a-9f9e-f4eb63981a56"></a>Kafka Receiver Stream</h4>
+<div class="outline-text-4" id="text-kafka-receiver-stream">
+<p>
+The data processed is received from a Kafka Stream and is implemented
+via the
+<a href="https://github.com/apache/spark/tree/master/external/kafka">external
+Kafka</a> library.  This process simply creates a connection to the Kafka
+broker(s), consuming messages from the given set of topics.
+</p>
+</div>
+
+<ul class="org-ul">
+<li><a id="stripping-kafka-message-ids"></a><a id="org4d4b3cd"></a><a id="ID-f31e4590-46a7-44cc-852f-b722a24286ff"></a>Stripping Kafka Message IDs<br />
+<div class="outline-text-5" id="text-stripping-kafka-message-ids">
+<p>
+It turns out the messages from Kafka are retuned as tuples, more
+specifically pairs, with the message ID and the message content.  Before
+continuing, the message ID is stripped and the Twitter JSON data is
+passed down the pipeline.
+</p>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-orgd9588a0" class="outline-4">
+<h4 id="twitter-data-json-parsing"><a id="orgd9588a0"></a><a id="ID-72c2e328-c683-4318-ac30-865c55cc697d"></a>Twitter Data JSON Parsing</h4>
+<div class="outline-text-4" id="text-twitter-data-json-parsing">
+<p>
+As was the case last time, the important parts (tweet ID, tweet text,
+and language code) need to be extracted from the JSON.  Furthermore, this
+project only parses English tweets.  Non-English tweets are filtered out
+at this stage.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org623622c" class="outline-4">
+<h4 id="filtering-and-stemming"><a id="org623622c"></a><a id="ID-b9859559-a38d-4804-b401-671f9f442085"></a>Filtering and Stemming</h4>
+<div class="outline-text-4" id="text-filtering-and-stemming">
+<p>
+Many tweets contain messy or otherwise unnecessary characters and
+punctuation that can be safely ignored.  Moreover, there may also be many
+common words that cannot be reliably scored either positively or
+negatively.  At this stage, these symbols and <i>stop words</i> should be
+filtered.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5a5cc32" class="outline-4">
+<h4 id="classifiers"><a id="org5a5cc32"></a><a id="ID-cf8c297f-47c0-43e8-a7a9-87ed89abf51a"></a>Classifiers</h4>
+<div class="outline-text-4" id="text-classifiers">
+<p>
+Both the Positive classifier and the Negative classifier are in separate
+<code>map</code> transformations.  The implementation of both follows the
+<a href="http://en.wikipedia.org/wiki/Bag-of-words_model">Bag-of-words</a> model.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org519221e" class="outline-4">
+<h4 id="joining-and-scoring"><a id="org519221e"></a><a id="ID-cf331690-0ff6-47f4-8799-bd050fb179e0"></a>Joining and Scoring</h4>
+<div class="outline-text-4" id="text-joining-and-scoring">
+<p>
+Because the classifiers are done separately and a join is contrived, the
+next step is to join the classifier scores together and actually declare
+a winner.  It turns out this is quite trivial to do in Spark.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7e7c7e5" class="outline-4">
+<h4 id="reporting-hdfs-and-http-post"><a id="org7e7c7e5"></a><a id="ID-baad2be3-c3f6-47e4-88e6-b1711d9a6158"></a>Reporting: HDFS and HTTP POST</h4>
+<div class="outline-text-4" id="text-reporting-hdfs-and-http-post">
+<p>
+Finally, once the tweets are joined and scored, the scores need to be
+reported.  This is accomplished by writing the final tuples to HDFS and
+posting a JSON object of the tuple to a simple NodeJS application.
+</p>
+
+<p>
+This process turned out to not be as awkward as was the case with Storm.
+The <code>foreachRDD</code> function of DStreams is a natural way to do side-effect
+inducing operations that don't necessarily transform the data.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd3e213a" class="outline-3">
+<h3 id="orgd3e213a"><a id="ID-9ae134c1-87b9-480e-a10c-b1f156cb1cba"></a>Implementing the Kafka Producer</h3>
+<div class="outline-text-3" id="text-orgd3e213a">
+<p>
+See the <a href="https://kennyballou.com/blog/2014/07/real-time-streaming-storm-and-kafka">post</a> from last time for the details of the
+Kafka producer; this has not changed.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc6a86db" class="outline-3">
+<h3 id="orgc6a86db"><a id="ID-af85b05f-05ab-48e9-96fa-803af482692c"></a>Implementing the Spark Streaming Application</h3>
+<div class="outline-text-3" id="text-orgc6a86db">
+<p>
+Diving into the code, here are some of the primary aspects of this project.
+The full source of this test application can be found on
+<a href="https://github.com/zdata-inc/SparkSampleProject">Github</a>.
+</p>
+</div>
+
+<div id="outline-container-org6e2ad19" class="outline-4">
+<h4 id="org6e2ad19"><a id="ID-f177b8ef-777b-4646-bd3b-1cef8f120ff2"></a>Creating Spark Context, Wiring Transformation Chain</h4>
+<div class="outline-text-4" id="text-org6e2ad19">
+<p>
+The Spark context, the data source, and the transformations need to be defined.
+Proceeding, the context needs to be started.  This is all accomplished with the
+following code:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold; text-decoration: underline;">SparkConf</span> <span style="font-weight: bold; font-style: italic;">conf</span> = <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">SparkConf</span>()
+    .setAppName(<span style="font-style: italic;">"Twitter Sentiment Analysis"</span>);
+
+<span style="font-weight: bold;">if</span> (args.length &gt; 0)
+    conf.setMaster(args[0]);
+<span style="font-weight: bold;">else</span>
+    conf.setMaster(<span style="font-style: italic;">"local[2]"</span>);
+
+<span style="font-weight: bold; text-decoration: underline;">JavaStreamingContext</span> <span style="font-weight: bold; font-style: italic;">ssc</span> = <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">JavaStreamingContext</span>(
+                                                    conf,
+                                                    <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Duration</span>(2000));
+
+<span style="font-weight: bold; text-decoration: underline;">Map</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>, <span style="font-weight: bold; text-decoration: underline;">Integer</span>&gt; <span style="font-weight: bold; font-style: italic;">topicMap</span> = <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">HashMap</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>, <span style="font-weight: bold; text-decoration: underline;">Integer</span>&gt;();
+topicMap.put(KAFKA_TOPIC, KAFKA_PARALLELIZATION);
+
+<span style="font-weight: bold; text-decoration: underline;">JavaPairReceiverInputDStream</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt; <span style="font-weight: bold; font-style: italic;">messages</span> =
+    KafkaUtils.createStream(
+                            ssc,
+                            Properties.getString(<span style="font-style: italic;">"rts.spark.zkhosts"</span>),
+                            <span style="font-style: italic;">"twitter.sentimentanalysis.kafka"</span>,
+                            topicMap);
+
+<span style="font-weight: bold; text-decoration: underline;">JavaDStream</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>&gt; <span style="font-weight: bold; font-style: italic;">json</span> = messages.map(
+                                        <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Function</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt;, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt;() {
+                                            <span style="font-weight: bold;">public</span> <span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold;">call</span>(<span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt; <span style="font-weight: bold; font-style: italic;">message</span>) {
+                                                <span style="font-weight: bold;">return</span> message._2();
+                                            }
+                                        }
+                                        );
+
+<span style="font-weight: bold; text-decoration: underline;">JavaPairDStream</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Long</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt; <span style="font-weight: bold; font-style: italic;">tweets</span> = json.mapToPair(
+                                                      <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">TwitterFilterFunction</span>());
+
+<span style="font-weight: bold; text-decoration: underline;">JavaPairDStream</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Long</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt; <span style="font-weight: bold; font-style: italic;">filtered</span> = tweets.filter(
+                                                       <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Function</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Long</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt;, <span style="font-weight: bold; text-decoration: underline;">Boolean</span>&gt;() {
+                                                           <span style="font-weight: bold;">public</span> <span style="font-weight: bold; text-decoration: underline;">Boolean</span> <span style="font-weight: bold;">call</span>(<span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Long</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt; <span style="font-weight: bold; font-style: italic;">tweet</span>) {
+                                                               <span style="font-weight: bold;">return</span> tweet != <span style="font-weight: bold; text-decoration: underline;">null</span>;
+                                                           }
+                                                       }
+                                                       );
+
+<span style="font-weight: bold; text-decoration: underline;">JavaDStream</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Long</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">tweetsFiltered</span> = filtered.map(
+                                                                <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">TextFilterFunction</span>());
+
+tweetsFiltered = tweetsFiltered.map(
+                                    <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">StemmingFunction</span>());
+
+<span style="font-weight: bold; text-decoration: underline;">JavaPairDStream</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Long</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt;, <span style="font-weight: bold; text-decoration: underline;">Float</span>&gt; <span style="font-weight: bold; font-style: italic;">positiveTweets</span> =
+    tweetsFiltered.mapToPair(<span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">PositiveScoreFunction</span>());
+
+<span style="font-weight: bold; text-decoration: underline;">JavaPairDStream</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Long</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt;, <span style="font-weight: bold; text-decoration: underline;">Float</span>&gt; <span style="font-weight: bold; font-style: italic;">negativeTweets</span> =
+    tweetsFiltered.mapToPair(<span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">NegativeScoreFunction</span>());
+
+<span style="font-weight: bold; text-decoration: underline;">JavaPairDStream</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Long</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt;, <span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Float</span>, <span style="font-weight: bold; text-decoration: underline;">Float</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">joined</span> =
+    positiveTweets.join(negativeTweets);
+
+<span style="font-weight: bold; text-decoration: underline;">JavaDStream</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Tuple4</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Long</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>, <span style="font-weight: bold; text-decoration: underline;">Float</span>, <span style="font-weight: bold; text-decoration: underline;">Float</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">scoredTweets</span> =
+    joined.map(<span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Function</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Long</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt;,
+               <span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Float</span>, <span style="font-weight: bold; text-decoration: underline;">Float</span>&gt;&gt;,
+               <span style="font-weight: bold; text-decoration: underline;">Tuple4</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Long</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>, <span style="font-weight: bold; text-decoration: underline;">Float</span>, <span style="font-weight: bold; text-decoration: underline;">Float</span>&gt;&gt;() {
+            <span style="font-weight: bold;">public</span> <span style="font-weight: bold; text-decoration: underline;">Tuple4</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Long</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>, <span style="font-weight: bold; text-decoration: underline;">Float</span>, <span style="font-weight: bold; text-decoration: underline;">Float</span>&gt; <span style="font-weight: bold;">call</span>(
+                                                           <span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Long</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt;, <span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Float</span>, <span style="font-weight: bold; text-decoration: underline;">Float</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">tweet</span>)
+            {
+                <span style="font-weight: bold;">return</span> <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Tuple4</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Long</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>, <span style="font-weight: bold; text-decoration: underline;">Float</span>, <span style="font-weight: bold; text-decoration: underline;">Float</span>&gt;(
+                                                              tweet._1()._1(),
+                                                              tweet._1()._2(),
+                                                              tweet._2()._1(),
+                                                              tweet._2()._2());
+            }
+        });
+
+<span style="font-weight: bold; text-decoration: underline;">JavaDStream</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Tuple5</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Long</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>, <span style="font-weight: bold; text-decoration: underline;">Float</span>, <span style="font-weight: bold; text-decoration: underline;">Float</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">result</span> =
+    scoredTweets.map(<span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">ScoreTweetsFunction</span>());
+
+result.foreachRDD(<span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">FileWriter</span>());
+result.foreachRDD(<span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">HTTPNotifierFunction</span>());
+
+ssc.start();
+ssc.awaitTermination();
+</pre>
+</div>
+
+<p>
+Some of the more trivial transforms are defined in-line.  The others are
+defined in their respective files.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org239dc7e" class="outline-4">
+<h4 id="org239dc7e"><a id="ID-31adb1aa-8b4c-402d-8004-5523a097b582"></a>Twitter Data Filter / Parser</h4>
+<div class="outline-text-4" id="text-org239dc7e">
+<p>
+Parsing Twitter JSON data is one of the first transformations and is
+accomplished with help of the <a href="https://github.com/FasterXML/jackson-databind">JacksonXML Databind</a>
+library.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold; text-decoration: underline;">JsonNode</span> <span style="font-weight: bold; font-style: italic;">root</span> = mapper.readValue(tweet, JsonNode.<span style="font-weight: bold;">class</span>);
+<span style="font-weight: bold; text-decoration: underline;">long</span> <span style="font-weight: bold; font-style: italic;">id</span>;
+<span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">text</span>;
+<span style="font-weight: bold;">if</span> (root.get(<span style="font-style: italic;">"lang"</span>) != <span style="font-weight: bold; text-decoration: underline;">null</span> &amp;&amp;
+    <span style="font-style: italic;">"en"</span>.equals(root.get(<span style="font-style: italic;">"lang"</span>).textValue()))
+    {
+        <span style="font-weight: bold;">if</span> (root.get(<span style="font-style: italic;">"id"</span>) != <span style="font-weight: bold; text-decoration: underline;">null</span> &amp;&amp; root.get(<span style="font-style: italic;">"text"</span>) != <span style="font-weight: bold; text-decoration: underline;">null</span>)
+            {
+                id = root.get(<span style="font-style: italic;">"id"</span>).longValue();
+                text = root.get(<span style="font-style: italic;">"text"</span>).textValue();
+                <span style="font-weight: bold;">return</span> <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Long</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt;(id, text);
+            }
+        <span style="font-weight: bold;">return</span> <span style="font-weight: bold; text-decoration: underline;">null</span>;
+    }
+<span style="font-weight: bold;">return</span> <span style="font-weight: bold; text-decoration: underline;">null</span>;
+</pre>
+</div>
+
+<p>
+The <code>mapper</code> (<code>ObjectMapper</code>) object is defined at the class level so it is not
+recreated <i>for each</i> RDD in the DStream, a minor optimization.
+</p>
+
+<p>
+You may recall, this is essentially the same code as
+<a href="https://kennyballou.com/blog/2014/07/real-time-streaming-storm-and-kafka">last time</a>.  The only difference really is that the
+tuple is returned instead of being emitted.  Because certain situations (e.g.,
+non-English tweet, malformed tweet) return null, the nulls will need to be
+filtered out.  Thankfully, Spark provides a simple way to accomplish this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold; text-decoration: underline;">JavaPairDStream</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Long</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt; <span style="font-weight: bold; font-style: italic;">filtered</span> = tweets.filter(
+                                                       <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Function</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Long</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt;, <span style="font-weight: bold; text-decoration: underline;">Boolean</span>&gt;() {
+                                                           <span style="font-weight: bold;">public</span> <span style="font-weight: bold; text-decoration: underline;">Boolean</span> <span style="font-weight: bold;">call</span>(<span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Long</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt; <span style="font-weight: bold; font-style: italic;">tweet</span>) {
+                                                               <span style="font-weight: bold;">return</span> tweet != <span style="font-weight: bold; text-decoration: underline;">null</span>;
+                                                           }
+                                                       }
+                                                       );
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb370e69" class="outline-4">
+<h4 id="orgb370e69"><a id="ID-22771161-f84d-4383-a980-8100ab101495"></a>Text Filtering</h4>
+<div class="outline-text-4" id="text-orgb370e69">
+<p>
+As mentioned before, punctuation and other symbols are simply discarded as they
+provide little to no benefit to the classifiers:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">text</span> = tweet._2();
+text = text.replaceAll(<span style="font-style: italic;">"[^a-zA-Z\\s]"</span>, <span style="font-style: italic;">""</span>).trim().toLowerCase();
+<span style="font-weight: bold;">return</span> <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Long</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt;(tweet._1(), text);
+</pre>
+</div>
+
+<p>
+Similarly, common words should be discarded as well:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">text</span> = tweet._2();
+<span style="font-weight: bold; text-decoration: underline;">List</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>&gt; <span style="font-weight: bold; font-style: italic;">stopWords</span> = StopWords.getWords();
+<span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">word</span> : stopWords)
+    {
+        text = text.replaceAll(<span style="font-style: italic;">"\\b"</span> + word + <span style="font-style: italic;">"\\b"</span>, <span style="font-style: italic;">""</span>);
+    }
+<span style="font-weight: bold;">return</span> <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Long</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt;(tweet._1(), text);
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga3a6421" class="outline-4">
+<h4 id="orga3a6421"><a id="ID-15e88c7c-d227-4a25-acbd-5b400509cf4f"></a>Positive and Negative Scoring</h4>
+<div class="outline-text-4" id="text-orga3a6421">
+<p>
+Each classifier is defined in its own class.  Both classifiers are <i>very</i>
+similar in definition.
+</p>
+
+<p>
+The positive classifier is primarily defined by:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">text</span> = tweet._2();
+<span style="font-weight: bold; text-decoration: underline;">Set</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>&gt; <span style="font-weight: bold; font-style: italic;">posWords</span> = PositiveWords.getWords();
+<span style="font-weight: bold; text-decoration: underline;">String</span>[] <span style="font-weight: bold; font-style: italic;">words</span> = text.split(<span style="font-style: italic;">" "</span>);
+<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">numWords</span> = words.length;
+<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">numPosWords</span> = 0;
+<span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">word</span> : words)
+    {
+        <span style="font-weight: bold;">if</span> (posWords.contains(word))
+            numPosWords++;
+    }
+<span style="font-weight: bold;">return</span> <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Long</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt;, <span style="font-weight: bold; text-decoration: underline;">Float</span>&gt;(
+                                               <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Long</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt;(tweet._1(), tweet._2()),
+                                               (<span style="font-weight: bold; text-decoration: underline;">float</span>) numPosWords / numWords
+                                               );
+</pre>
+</div>
+
+<p>
+And the negative classifier:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">text</span> = tweet._2();
+<span style="font-weight: bold; text-decoration: underline;">Set</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>&gt; <span style="font-weight: bold; font-style: italic;">negWords</span> = NegativeWords.getWords();
+<span style="font-weight: bold; text-decoration: underline;">String</span>[] <span style="font-weight: bold; font-style: italic;">words</span> = text.split(<span style="font-style: italic;">" "</span>);
+<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">numWords</span> = words.length;
+<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">numPosWords</span> = 0;
+<span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">word</span> : words)
+    {
+        <span style="font-weight: bold;">if</span> (negWords.contains(word))
+            numPosWords++;
+    }
+<span style="font-weight: bold;">return</span> <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Long</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt;, <span style="font-weight: bold; text-decoration: underline;">Float</span>&gt;(
+                                               <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Long</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt;(tweet._1(), tweet._2()),
+                                               (<span style="font-weight: bold; text-decoration: underline;">float</span>) numPosWords / numWords
+                                               );
+</pre>
+</div>
+
+<p>
+Because both are implementing a <code>PairFunction</code>, a join situation is contrived.
+However, this could <i>easily</i> be defined differently such that one classifier is
+computed, then the next, without ever needing to join the two together.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2fc7829" class="outline-4">
+<h4 id="org2fc7829"><a id="ID-67afc127-068d-4493-a682-99f257366e42"></a>Joining</h4>
+<div class="outline-text-4" id="text-org2fc7829">
+<p>
+It turns out, joining in Spark is very easy to accomplish.  So easy in fact, it
+can be handled without virtually <i>any</i> code:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold; text-decoration: underline;">JavaPairDStream</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Long</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt;, <span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Float</span>, <span style="font-weight: bold; text-decoration: underline;">Float</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">joined</span> =
+    positiveTweets.join(negativeTweets);
+</pre>
+</div>
+
+<p>
+But because working with a Tuple of nested tuples seems unwieldy, transform it
+to a 4 element tuple:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold;">public</span> <span style="font-weight: bold; text-decoration: underline;">Tuple4</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Long</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>, <span style="font-weight: bold; text-decoration: underline;">Float</span>, <span style="font-weight: bold; text-decoration: underline;">Float</span>&gt; <span style="font-weight: bold;">call</span>(
+                                               <span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Long</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt;, <span style="font-weight: bold; text-decoration: underline;">Tuple2</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Float</span>, <span style="font-weight: bold; text-decoration: underline;">Float</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">tweet</span>)
+{
+    <span style="font-weight: bold;">return</span> <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Tuple4</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Long</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>, <span style="font-weight: bold; text-decoration: underline;">Float</span>, <span style="font-weight: bold; text-decoration: underline;">Float</span>&gt;(
+                                                  tweet._1()._1(),
+                                                  tweet._1()._2(),
+                                                  tweet._2()._1(),
+                                                  tweet._2()._2());
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8a042bd" class="outline-4">
+<h4 id="org8a042bd"><a id="ID-5e3dc2a2-7dda-4816-a3e3-e2901d4f25a2"></a>Scoring: Declaring Winning Class</h4>
+<div class="outline-text-4" id="text-org8a042bd">
+<p>
+Declaring the winning class is a matter of a simple map, comparing each class's
+score and take the greatest:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">score</span>;
+<span style="font-weight: bold;">if</span> (tweet._3() &gt;= tweet._4())
+    score = <span style="font-style: italic;">"positive"</span>;
+<span style="font-weight: bold;">else</span>
+    score = <span style="font-style: italic;">"negative"</span>;
+<span style="font-weight: bold;">return</span> <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Tuple5</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Long</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>, <span style="font-weight: bold; text-decoration: underline;">Float</span>, <span style="font-weight: bold; text-decoration: underline;">Float</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt;(
+                                                      tweet._1(),
+                                                      tweet._2(),
+                                                      tweet._3(),
+                                                      tweet._4(),
+                                                      score);
+</pre>
+</div>
+
+<p>
+This declarer is more optimistic about the neutral case but is otherwise
+very straightforward.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org316e9b4" class="outline-4">
+<h4 id="org316e9b4"><a id="ID-2b6f0270-795c-4b0e-8a4c-eb0db801f4b1"></a>Reporting the Results</h4>
+<div class="outline-text-4" id="text-org316e9b4">
+<p>
+Finally, the pipeline completes with writing the results to HDFS:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold;">if</span> (rdd.count() &lt;= 0) <span style="font-weight: bold;">return</span> <span style="font-weight: bold; text-decoration: underline;">null</span>;
+<span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">path</span> = Properties.getString(<span style="font-style: italic;">"rts.spark.hdfs_output_file"</span>) +
+    <span style="font-style: italic;">"_"</span> +
+    time.milliseconds();
+rdd.saveAsTextFile(path);
+</pre>
+</div>
+
+<p>
+And sending POST request to a NodeJS application:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java">rdd.foreach(<span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">SendPostFunction</span>());
+</pre>
+</div>
+
+<p>
+Where <code>SendPostFunction</code> is primarily given by:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">webserver</span> = Properties.getString(<span style="font-style: italic;">"rts.spark.webserv"</span>);
+<span style="font-weight: bold; text-decoration: underline;">HttpClient</span> <span style="font-weight: bold; font-style: italic;">client</span> = <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">DefaultHttpClient</span>();
+<span style="font-weight: bold; text-decoration: underline;">HttpPost</span> <span style="font-weight: bold; font-style: italic;">post</span> = <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">HttpPost</span>(webserver);
+<span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">content</span> = String.format(
+                               <span style="font-style: italic;">"{\"id\": \"%d\", "</span>     +
+                               <span style="font-style: italic;">"\"text\": \"%s\", "</span>    +
+                               <span style="font-style: italic;">"\"pos\": \"%f\", "</span>     +
+                               <span style="font-style: italic;">"\"neg\": \"%f\", "</span>     +
+                               <span style="font-style: italic;">"\"score\": \"%s\" }"</span>,
+                               tweet._1(),
+                               tweet._2(),
+                               tweet._3(),
+                               tweet._4(),
+                               tweet._5());
+
+<span style="font-weight: bold;">try</span>
+    {
+        post.setEntity(<span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">StringEntity</span>(content));
+        <span style="font-weight: bold; text-decoration: underline;">HttpResponse</span> <span style="font-weight: bold; font-style: italic;">response</span> = client.execute(post);
+        <span style="font-weight: bold; text-decoration: underline;">org</span>.<span style="font-weight: bold; text-decoration: underline;">apache</span>.<span style="font-weight: bold; text-decoration: underline;">http</span>.<span style="font-weight: bold; text-decoration: underline;">util</span>.EntityUtils.consume(response.getEntity());
+    }
+<span style="font-weight: bold;">catch</span> (<span style="font-weight: bold; text-decoration: underline;">Exception</span> <span style="font-weight: bold; font-style: italic;">ex</span>)
+    {
+        <span style="font-weight: bold; text-decoration: underline;">Logger</span> <span style="font-weight: bold; font-style: italic;">LOG</span> = Logger.getLogger(<span style="font-weight: bold;">this</span>.getClass());
+        LOG.error(<span style="font-style: italic;">"exception thrown while attempting to post"</span>, ex);
+        LOG.trace(<span style="font-weight: bold; text-decoration: underline;">null</span>, ex);
+    }
+</pre>
+</div>
+
+<p>
+Each file written to HDFS <i>will</i> have data in it, but the data written will be
+small.  A better batching procedure should be implemented so the files written
+match the HDFS block size.
+</p>
+
+<p>
+Similarly, a POST request is opened <i>for each</i> scored tweet.  This can be
+expensive on both the Spark Streaming batch timings and the web server
+receiving the requests.  Batching here could similarly improve overall
+performance of the system.
+</p>
+
+<p>
+That said, writing these side-effects this way fits very naturally into
+the Spark programming style.
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd197923" class="outline-2">
+<h2 id="orgd197923"><a id="ID-2a7fb8c6-2185-4a8b-9406-d6c828885d5b"></a>Summary</h2>
+<div class="outline-text-2" id="text-orgd197923">
+<p>
+Apache Spark, in combination with Apache Kafka, has some amazing potential.
+And not only in the Streaming context, but as a drop-in replacement for
+traditional Hadoop MapReduce.  This combination makes it a very good candidate
+for a part in an analytics engine.
+</p>
+
+<p>
+Stay tuned, as the next post will be a more in-depth comparison between Apache
+Spark and Apache Storm.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org41c38eb" class="outline-2">
+<h2 id="org41c38eb"><a id="ID-c7ca743a-8366-4870-91c3-7c90f13160f2"></a>Related Links / References</h2>
+<div class="outline-text-2" id="text-org41c38eb">
+<ul class="org-ul">
+<li><a href="https://spark.apache.org/">Apache Spark</a></li>
+
+<li><a href="http://inside-bigdata.com/2014/07/15/theres-spark-theres-fire-state-apache-spark-2014/">State of Apache Spark 2014</a></li>
+
+<li><a href="https://github.com/zdata-inc/StormSampleProject">Storm Sample Project</a></li>
+
+<li><a href="https://issues.apache.org/jira/browse/SPARK-939">SPARK-939</a></li>
+
+<li><a href="https://kafka.apache.org/">Apache Spark</a></li>
+
+<li><a href="https://kennyballou.com/blog/2014/07/real-time-streaming-storm-and-kafka">Real-Time Streaming with Apache Storm and Apache
+Kafka</a></li>
+
+<li><a href="http://www.docker.io/">Docker IO Project Page</a></li>
+
+<li><a href="http://aws.amazon.com/s3/">Amazon S3</a></li>
+
+<li><a href="http://en.wikipedia.org/wiki/Network_File_System">Network File System (NFS)</a></li>
+
+<li><a href="http://hadoop.apache.org/docs/current/hadoop-yarn/hadoop-yarn-site/YARN.html">Hadoop YARN</a></li>
+
+<li><a href="http://mesos.apache.org">Apache Mesos</a></li>
+
+<li><a href="https://spark.apache.org/streaming/">Spark Streaming Programming Guide</a></li>
+
+<li><a href="http://en.wikipedia.org/wiki/Monad_(functional_programming)">Monad</a></li>
+
+<li><a href="https://spark.apache.org/sql/">Spark SQL</a></li>
+
+<li><a href="https://spark.apache.org/streaming/">Spark Streaming</a></li>
+
+<li><a href="https://spark.apache.org/mllib/">MLlib</a></li>
+
+<li><a href="https://spark.apache.org/graphx/">GraphX</a></li>
+
+<li><a href="http://spark.apache.org/docs/latest/spark-standalone.html">Spark Standalone Mode</a></li>
+
+<li><a href="http://spark.apache.org/docs/latest/running-on-yarn.html">Running on YARN</a></li>
+
+<li><a href="http://spark.apache.org/docs/latest/running-on-mesos.html">Running on Mesos</a></li>
+
+<li><a href="http://cupofjava.de/blog/2013/02/01/fight-dependency-hell-in-maven/">Fight Dependency Hell in Maven</a></li>
+
+<li><a href="https://github.com/zdata-inc/SimpleKafkaProducer">Simple Kafka Producer</a></li>
+
+<li><a href="https://github.com/apache/spark/tree/master/external/kafka">Spark: External Kafka Library</a></li>
+
+<li><a href="https://github.com/zdata-inc/SparkSampleProject">Spark Sample Project</a></li>
+
+<li><a href="http://en.wikipedia.org/wiki/Bag-of-words_model">Wikipedia: Bag-of-words</a></li>
+
+<li><a href="https://github.com/FasterXML/jackson-databind">Jackson XML Databind Project</a></li>
+
+<li><a href="http://spark.apache.org/docs/latest/programming-guide.html">Spark Programming Guide</a></li>
+
+<li><a href="http://aws.amazon.com/ec2/">Amazon EC2</a></li>
+
+<li><a href="http://spark.apache.org/docs/latest/ec2-scripts.html">Running Spark on EC2</a></li>
+
+<li><a href="http://spark.apache.org/faq.html">Spark FAQ</a></li>
+
+<li><a href="http://databricks.com/blog/2014/03/26/spark-sql-manipulating-structured-data-using-spark-2.html">Future of Shark</a></li>
+
+<li><a href="https://www.usenix.org/system/files/conference/nsdi12/nsdi12-final138.pdf">Resilient Distributed Datasets: A Fault-Tolerant Abstraction for
+In-Memory Cluster Computing (PDF)</a></li>
+
+<li><a href="https://www.usenix.org/system/files/conference/hotcloud12/hotcloud12-final28.pdf">Discretized Streams: An Efficient and Fault-Tolerant Model for
+Stream Processing on Large Clusters (PDF)</a></li>
+
+<li><a href="http://en.wikipedia.org/wiki/Lazy_evaluation">Wikipedia: Lazy evaluation</a></li>
+
+<li><a href="http://en.wikipedia.org/wiki/Data_parallelism">Wikipedia: Data Parallelism</a></li>
+</ul>
+</div>
+</div>
+</div>
+<footer id="" class="status">
+<footer>
+  <p>&copy; 2014-2022 Kenny Ballou.
+    <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Some rights
+      reserved.</a></p>
+  <p>Powered by <a href="https://gnu.org">GNU/Linux</a></p>
+</footer>
+</footer>
+</body>
+</html>

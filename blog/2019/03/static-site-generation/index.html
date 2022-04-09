@@ -1,0 +1,759 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-04-09 Sat 18:52 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>(New) Static Site Generation</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="kb" />
+<meta name="description" content="Migration from Hugo to org-mode, some scripts, and pandoc"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<meta charset="utf-8">
+
+<meta name="author" content="Kenny Ballou">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<title>~kb</title>
+
+<link rel="canonical" href="/" />
+<link href="/index.xml" rel="alternate" type="application/rss+xml"
+      title="~kb/blog" />
+
+<link rel="stylesheet" href="/css/simple.css" />
+<link rel="stylesheet" href="/css/simple.add.css" />
+<link rel="stylesheet" href="/css/katex.css" />
+<link rel="stylesheet" href="/css/fa-all.css" />
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<script defer type="text/javascript" src="/js/katex.js"></script>
+<script defer type="text/javascript" src="/js/katex-render.js"></script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://kennyballou.com/blog"> UP </a>
+ |
+ <a accesskey="H" href="https://kennyballou.com/"> HOME </a>
+</div><header id="" class="status">
+<nav>
+  <a href="/about.html">
+    <i class="fade fas fa-user-circle"></i>
+  </a>
+  <a href="https://git.devnulllabs.io"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-code-branch fa-1x"></i>
+  </a>
+  <a href="https://github.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-github fa-1x"></i>
+  </a>
+  <a href="https://bitbucket.org/kballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-bitbucket fa-1x"></i>
+  </a>
+  <a href="https://twitter.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-twitter fa-1x"></i>
+  </a>
+  <a href="https://www.buymeacoffee.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-mug-hot fa-1x"></i>
+  </a>
+  <a href="/resume.pdf"
+     target="_blank">
+    <i class="fade far fa-file-pdf"></i>
+  </a>
+  <a href="/932F3E8E1C0F4A9895D7B8B8B0CAA28A02958308.txt"
+     target="_blank">
+    <i class="fade fas fa-key"></i>
+  </a>
+  <a href="/index.xml" rel="alternate"
+     type="application/rss+xml">
+    <i class="fade fas fa-rss fa-1x"></i>
+  </a>
+</nav>
+</header>
+<div id="main">
+<h1 class="title">(New) Static Site Generation</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org1fa7e3f">Motivation</a></li>
+<li><a href="#org6598a6f">High-Level Implementation</a></li>
+<li><a href="#org3995e2c">Detailed Implementation</a>
+<ul>
+<li><a href="#orgaa76834">Post Content Generation</a></li>
+<li><a href="#orgb2cdbd0">Summary Page Generation</a></li>
+<li><a href="#org1d7e00f">RSS/XML Generation</a></li>
+</ul>
+</li>
+<li><a href="#orgf61a397">Future Work</a></li>
+<li><a href="#org2ff479e">Parting Thoughts</a></li>
+</ul>
+</div>
+</div>
+<div class="PREVIEW">
+<p>
+For a few years, I've been using <a href="https://gohugo.io/">Hugo</a> for blog generation.  Recently,
+I've decided I wanted to take static site generation into a different
+direction.  Specifically, I wanted to use a different source markup and I
+wanted to write my own tool set for generating the actual HTML.
+</p>
+
+</div>
+
+<p>
+We'll walk through the motivation of changing the content into a different
+format and changing the generation process into a completely custom set of
+scripts.
+</p>
+
+<div id="outline-container-org1fa7e3f" class="outline-2">
+<h2 id="org1fa7e3f"><a id="ID-033a8bdf-c442-4f06-9eca-a3691780cc1e"></a>Motivation</h2>
+<div class="outline-text-2" id="text-org1fa7e3f">
+<p>
+When I first set down to build a blog 5 years ago, I had a pretty basic set of
+requirements.
+</p>
+
+<ul class="org-ul">
+<li>Lightweight</li>
+
+<li>Native Markdown Support</li>
+
+<li>Minimal Dependencies</li>
+</ul>
+
+<p>
+<a href="https://gohugo.io/">Hugo</a> met all of these requirements quite well.  The templating engine
+is fairly simplistic; It supports Markdown; It's a written in <a href="https://golang.org">Go</a>,
+therefore, only the built artifact is necessary for site generation.
+</p>
+
+<p>
+If it fits so well, why change?
+</p>
+
+<p>
+It worked well for what I was asking, however, as I wrote more and time went
+on, the features of <a href="https://gohugo.io/">Hugo</a> became more and more complex and created a
+mismatch of how I wanted to express the text in the markup.  I've felt this was
+going in a direction I did not need nor wanted.  More specifically, the issues
+start surfacing more in the <a href="https://en.wikipedia.org/wiki/Markdown">Markdown</a> side.
+<a href="https://en.wikipedia.org/wiki/Markdown">Markdown</a> simply lacks some features in its markup that is
+corrected by blocks of HTML inline and other hacks that are standard in only
+some specific "flavor" or translator implementation.  <a href="https://gohugo.io/">Hugo</a> attempts
+to patch this over with its implementation of <code>shortcode templates</code>, however,
+these still felt unnatural.
+</p>
+
+<p>
+The final nail was discovering <a href="https://org-mode.org">Org-mode</a>.  I liked the weight of
+<a href="https://en.wikipedia.org/wiki/Markdown">Markdown</a>, but I didn't like its lack of features when
+needed.  I liked <a href="https://en.wikipedia.org/wiki/ReStructuredText">rStructured Text</a>, however, I felt it was always
+too heavy for the documents I was working on.
+</p>
+
+<p>
+In finally giving Emacs a full try (another blog post), I discovered
+<a href="https://org-mode.org">Org-mode</a>.  It was the exact middle weight I was looking for
+between <a href="https://en.wikipedia.org/wiki/Markdown">Markdown</a> and <a href="https://en.wikipedia.org/wiki/ReStructuredText">reST</a>.
+</p>
+
+<p>
+Thus, I was in search of a new tool for generating static HTML from a set of
+source files written in <a href="https://org-mode.org">Org-mode</a>.
+</p>
+
+<p>
+<a href="https://org-mode.org">Org-mode</a> (within Emacs) has a native publish mode, and I had
+discovered <a href="https://justin.abrah.ms/emacs/orgmode_static_site_generator.html">several</a>
+<a href="https://pavpanchekha.com/blog/org-mode-publish.html">posts</a> on how <a href="https://ogbe.net/blog/blogging_with_org.html">people</a> are doing
+<a href="https://www.evenchick.com/blog/blogging-with-org-mode.html">exactly</a> this.  However,
+<a href="https://orgmode.org/manual/Publishing.html#Publishing">Org-publish</a> isn't exactly what I was looking for.
+</p>
+
+<p>
+Therefore, let's revise the current list of requirements:
+</p>
+
+<ul class="org-ul">
+<li>Makefile driven</li>
+
+<li>Does not require Emacs to generate</li>
+</ul>
+
+<p>
+That is, I wanted a <code>Makefile</code> that could generate the site contents.
+Furthermore, and no less importantly, I wanted the <code>Makefile</code> to not include
+lines like <code>Emacs --quick --batch ...</code>.  This obviously creates a bit of a
+challenge since <a href="https://org-mode.org">Org-mode</a> is an Emacs mode.
+</p>
+
+<p>
+I decided I could probably generate the content myself with a few scripts and
+invocations to <a href="https://pandoc.org">Pandoc</a>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6598a6f" class="outline-2">
+<h2 id="org6598a6f"><a id="ID-4347513c-519e-4432-bdc5-f797c58fbe51"></a>High-Level Implementation</h2>
+<div class="outline-text-2" id="text-org6598a6f">
+<p>
+The core of the implementation of the new site generation is blog posts written
+in <a href="https://org-mode.org">Org-mode</a>, processed by several shell scripts, using
+<a href="https://pandoc.org">Pandoc</a> to perform the translation from raw <a href="https://org-mode.org">Org-mode</a>
+markup to HTML, all of which is orchestrated by a <code>Makefile</code>.
+</p>
+
+<p>
+I'm not going extol <a href="https://org-mode.org">Org-mode</a>'s capabilities in this post.
+There's plenty of resources on it already, no greater authority than the
+<a href="https://orgmode.org/manual/">Org-mode Manual</a> itself.
+</p>
+
+<p>
+There is, in fact, some limitations of <a href="https://org-mode.org">Org-mode</a> due to the
+choices of not allowing the generation to include <code>Emacs</code> itself.
+</p>
+
+<p>
+Along the tour of the implementation, it's important to note a guiding
+principle in the conversion was not breaking existing links.  That is, I was
+and am satisfied with the folders and slug usage for posts and I didn't want
+the new version to break existing links.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3995e2c" class="outline-2">
+<h2 id="org3995e2c"><a id="ID-3f40dad3-6b20-43ea-adaf-9e993a588f5a"></a>Detailed Implementation</h2>
+<div class="outline-text-2" id="text-org3995e2c">
+<p>
+The easy part is generating each post.  This is simply an <code>index.html</code> in the
+correct folder.  The majority of the complexities stem from the summaries and
+main <code>index</code> page.
+</p>
+</div>
+
+<div id="outline-container-orgaa76834" class="outline-3">
+<h3 id="orgaa76834"><a id="ID-fd1f96fe-10e0-4b75-b955-8dcdbf5fc265"></a>Post Content Generation</h3>
+<div class="outline-text-3" id="text-orgaa76834">
+<p>
+To generate a blog post's <code>index.html</code> page, we consider the following <code>make</code>
+target:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-makefile"><span style="font-weight: bold; font-style: italic;">blog_dir</span> = $(<span style="font-weight: bold; font-style: italic;">shell</span> $(<span style="font-weight: bold; font-style: italic;">SCRIPTS_DIR</span>)/org-get-slug.sh $(<span style="font-weight: bold; font-style: italic;">1</span>))
+<span style="font-weight: bold; font-style: italic;">TEMPLATE_FILES</span>:=$(<span style="font-weight: bold; font-style: italic;">wildcard</span> templates/*.html)
+
+define BLOG_BUILD_DEF
+<span style="font-weight: bold;">$(</span><span style="font-weight: bold; font-style: italic;">BUILD_DIR</span><span style="font-weight: bold;">)$(</span><span style="font-weight: bold; font-style: italic;">call</span><span style="font-weight: bold;"> blog_dir,$</span><span style="font-weight: bold; text-decoration: underline;">T</span><span style="font-weight: bold;">)</span>:
+        mkdir -p $$@
+<span style="font-weight: bold;">$(</span><span style="font-weight: bold; font-style: italic;">BUILD_DIR</span><span style="font-weight: bold;">)$(</span><span style="font-weight: bold; font-style: italic;">call</span><span style="font-weight: bold;"> blog_dir,$</span><span style="font-weight: bold; text-decoration: underline;">T</span><span style="font-weight: bold;">)/index.html</span>: $<span style="font-weight: bold; text-decoration: underline;">T</span> \
+                                                                                        $(<span style="font-weight: bold; font-style: italic;">TEMPLATE_FILES</span>) \
+                                                                                        Makefile \
+                                                                                  | $(<span style="font-weight: bold; font-style: italic;">BUILD_DIR</span>)$(<span style="font-weight: bold; font-style: italic;">call</span> blog_dir,$<span style="font-weight: bold; text-decoration: underline;">T</span>)
+        $(<span style="font-weight: bold; font-style: italic;">SCRIPTS_DIR</span>)/generate_post_html.sh $$&lt; &gt; $$@
+endef
+
+$(<span style="font-weight: bold; font-style: italic;">foreach</span> T,$(<span style="font-weight: bold; font-style: italic;">POSTS_ORG_INPUT</span>),$(<span style="font-weight: bold; font-style: italic;">eval</span> $(<span style="font-weight: bold; font-style: italic;">BLOG_BUILD_DEF</span>)))
+</pre>
+</div>
+
+<p>
+This definition is fairly opaque now.  However, the definition will expand for
+each post when the <code>foreach</code> macro expands.  For example, when run, the
+following targets will be defined for this post:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-makefile"><span style="font-weight: bold;">$(BUILD_DIR)/blog/2019/03/static-site-generation</span>:
+        mkdir -p <span style="font-weight: bold;">$</span><span style="font-weight: bold; text-decoration: underline;">@</span>
+<span style="font-weight: bold;">$(</span><span style="font-weight: bold; font-style: italic;">BUILD_DIR</span><span style="font-weight: bold;">)/blog/2019/03/static-site-generation/index.html</span>: posts/static-site-generation.org \
+                                                                                                                         $(<span style="font-weight: bold; font-style: italic;">TEMPLATE_FILES</span>) \
+                                                                                                                         Makefile \
+                                                                                                                   | $(<span style="font-weight: bold; font-style: italic;">BUILD_DIR</span>)/blog/2019/03/static-site-generation
+        $(<span style="font-weight: bold; font-style: italic;">SCRIPTS_DIR</span>)/generate_post.html $<span style="font-weight: bold; text-decoration: underline;">&lt;</span> &gt; <span style="font-weight: bold;">$</span><span style="font-weight: bold; text-decoration: underline;">@</span>
+</pre>
+</div>
+
+<p>
+This will create the correct directory for each post, e.g.,
+<code>/blog/2019/03/static-site-generation</code>, and place the translated HTML into this
+directory as <code>index.html</code>.
+</p>
+
+<blockquote>
+<p>
+Note: it doesn't actually translate to <code>$(TEMPLATE_FILES)</code>.  During the
+expansion of the definition, the variable <code>$(TEMPLATE_FILES)</code> is similarly
+expanded.  This is acceptable, however, since it's a static list of files and
+has no bearing on which post's target is being expanded.
+</p>
+</blockquote>
+
+<p>
+The <code>generate_post.sh</code> script is fairly basic:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash"><span style="font-weight: bold; font-style: italic;">#</span><span style="font-weight: bold; font-style: italic;">!/usr/bin/</span><span style="font-weight: bold;">env</span><span style="font-weight: bold; font-style: italic;"> bash</span>
+<span style="font-weight: bold; font-style: italic;"># </span><span style="font-weight: bold; font-style: italic;">Generate HTML for blog post</span>
+
+<span style="font-weight: bold; font-style: italic;">ORGIN</span>=${<span style="font-weight: bold; font-style: italic;">1</span>}
+<span style="font-weight: bold; font-style: italic;">PROJ_ROOT</span>=$(git rev-parse --show-toplevel)
+source ${<span style="font-weight: bold; font-style: italic;">PROJ_ROOT</span>}/scripts/site-templates.sh
+source ${<span style="font-weight: bold; font-style: italic;">PROJ_ROOT</span>}/scripts/org-metadata.sh
+<span style="font-weight: bold; font-style: italic;">DISPLAY_DATE</span>=$(date -d ${<span style="font-weight: bold; font-style: italic;">DATE</span>} +<span style="font-style: italic;">'%a %b %d, %Y'</span>)
+<span style="font-weight: bold; font-style: italic;">SORT_DATE</span>=$(date -d ${<span style="font-weight: bold; font-style: italic;">DATE</span>} +<span style="font-style: italic;">'%Y        %m      %d      '</span>)
+
+cat ${<span style="font-weight: bold; font-style: italic;">HTML_HEADER_FILE</span>}
+cat ${<span style="font-weight: bold; font-style: italic;">HTML_SUB_HEADER_FILE</span>}
+<span style="font-weight: bold;">echo</span> -n <span style="font-style: italic;">"&lt;h1 class=\"title\"&gt;${TITLE}&lt;/h1&gt;"</span>
+<span style="font-weight: bold;">echo</span> -n <span style="font-style: italic;">"&lt;div class=\"post-meta\"&gt;"</span>
+<span style="font-weight: bold;">echo</span> -n <span style="font-style: italic;">'&lt;ul class="tags"&gt;&lt;li&gt;&lt;i class="fa fa-tags"&gt;&lt;/i&gt;&lt;/li&gt;'</span>
+<span style="font-weight: bold;">echo</span> -n <span style="font-style: italic;">"${TAGS}"</span> | awk <span style="font-style: italic;">'{ printf "&lt;li&gt;%s&lt;/li&gt;", $0}'</span>
+<span style="font-weight: bold;">echo</span> -n <span style="font-style: italic;">'&lt;/ul&gt;'</span>
+<span style="font-weight: bold;">echo</span> -n <span style="font-style: italic;">"&lt;h4&gt;${DISPLAY_DATE}&lt;/h4&gt;&lt;/div&gt;"</span>
+pandoc --from org <span style="font-style: italic;">\</span>
+       --to html <span style="font-style: italic;">\</span>
+       ${<span style="font-weight: bold; font-style: italic;">ORGIN</span>}
+cat ${<span style="font-weight: bold; font-style: italic;">HTML_FOOTER_FILE</span>}
+
+</pre>
+</div>
+
+<p>
+The <code>org-metadata.sh</code> script, reads the <a href="https://org-mode.org">Org-mode</a> preamble, lines
+starting with <code>#+</code>, and puts them into different variables available for other
+scripts.  For example, the <code>TITLE</code>, <code>DATE</code>, <code>TAGS</code> are pulled out and used to
+generate the title section of each post.  Furthermore, some templates are
+pulled in to generate the headers and footers of each page.  The templates are
+written directly in HTML and really serve only to simplify each page with
+otherwise largely duplicated content.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb2cdbd0" class="outline-3">
+<h3 id="orgb2cdbd0"><a id="ID-e3626070-bb51-4f0a-a4ff-35ad9a912a49"></a>Summary Page Generation</h3>
+<div class="outline-text-3" id="text-orgb2cdbd0">
+<p>
+The summary page is a bit more involved to generate.  A few questions had to be
+answered before it was possible: how to generate the summary text? And how
+to sort and order posts?
+</p>
+
+<p>
+To answer the first question, I dug into how <a href="https://gohugo.io/">Hugo</a> was generating
+these summaries.  It turns out, it really only takes the first couple hundred
+characters and calls it the "summary".  This depends largely on the content of
+each post to actually describe the post in the first couple hundred characters.
+Obviously, this led to some awkward results, especially with links and section
+headings mixed in.
+</p>
+
+<p>
+To achieve similar results, it <i>would</i> be fairly easy to write a script to
+simply take the first few hundred characters after the preamble and output this
+into something to be collected for the summary page.  However, a better
+solution is available since we are taking full control over the generation
+process.  Namely, we can put the preview content into a specific
+<a href="https://org-mode.org">Org-mode</a> block to be parsed out and used explicitly for this
+purpose.  If the summary for a post is only a sentence or two, the summary
+generation process won't then start reading extra text, if the summary requires
+a little more detail, it won't be cut short by the arbitrary read limit.
+</p>
+
+<p>
+To generate the preview content, the <code>generate_post_preview.sh</code> script is used:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash"><span style="font-weight: bold; font-style: italic;">#</span><span style="font-weight: bold; font-style: italic;">!/usr/bin/</span><span style="font-weight: bold;">env</span><span style="font-weight: bold; font-style: italic;"> bash</span>
+<span style="font-weight: bold; font-style: italic;"># </span><span style="font-weight: bold; font-style: italic;">Generate HTML post summary tags</span>
+
+<span style="font-weight: bold; font-style: italic;">ORGIN</span>=${<span style="font-weight: bold; font-style: italic;">1</span>}
+<span style="font-weight: bold; font-style: italic;">PROJ_ROOT</span>=$(git rev-parse --show-toplevel)
+
+source ${<span style="font-weight: bold; font-style: italic;">PROJ_ROOT</span>}/scripts/org-metadata.sh
+
+<span style="font-weight: bold;">echo</span> <span style="font-style: italic;">"${LINKS}"</span>
+<span style="font-weight: bold;">echo</span> <span style="font-style: italic;">"${PREVIEW}"</span>
+</pre>
+</div>
+
+<p>
+The <code>LINKS</code> variable is included in this file because we are generating an
+intermediate file for <a href="https://pandoc.org">Pandoc</a> to generate the summary content.
+Without the <code>LINKS</code>, any links included in the preview section would be broken.
+</p>
+
+<p>
+The second question actually turns out to be pretty easy in practice: we parse
+the <code>#+ DATE:</code> line from the preamble and prepend it to the summary content.
+</p>
+
+<p>
+From the <code>org-metadata.sh</code> script:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash"><span style="font-weight: bold; font-style: italic;">ORIGIN</span>=${<span style="font-weight: bold; font-style: italic;">1</span>}
+<span style="font-weight: bold; font-style: italic;">DATE</span>=$(awk -F<span style="font-style: italic;">': '</span> <span style="font-style: italic;">'/^#\+DATE:/ { printf "%s", $2}'</span> ${<span style="font-weight: bold; font-style: italic;">ORGIN</span>})
+</pre>
+</div>
+
+<p>
+Then, from the <code>generate_post_summary_html.sh</code> script:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash"><span style="font-weight: bold; font-style: italic;">#</span><span style="font-weight: bold; font-style: italic;">!/usr/bin/</span><span style="font-weight: bold;">env</span><span style="font-weight: bold; font-style: italic;"> bash</span>
+<span style="font-weight: bold; font-style: italic;"># </span><span style="font-weight: bold; font-style: italic;">Generate HTML post summary tags</span>
+
+<span style="font-weight: bold; font-style: italic;">ORGIN</span>=${<span style="font-weight: bold; font-style: italic;">1</span>}
+<span style="font-weight: bold; font-style: italic;">GENERATED_PREVIEW_FILE</span>=${<span style="font-weight: bold; font-style: italic;">2</span>}
+<span style="font-weight: bold; font-style: italic;">PROJ_ROOT</span>=$(git rev-parse --show-toplevel)
+
+source ${<span style="font-weight: bold; font-style: italic;">PROJ_ROOT</span>}/scripts/org-metadata.sh
+<span style="font-weight: bold; font-style: italic;">DISPLAY_DATE</span>=$(date -d ${<span style="font-weight: bold; font-style: italic;">DATE</span>} +<span style="font-style: italic;">'%a %b %d, %Y'</span>)
+<span style="font-weight: bold; font-style: italic;">SORT_DATE</span>=$(date -d ${<span style="font-weight: bold; font-style: italic;">DATE</span>} +<span style="font-style: italic;">'%Y        %m      %d      '</span>)
+<span style="font-weight: bold; font-style: italic;">PREVIEW_CONTENT</span>=$(cat ${<span style="font-weight: bold; font-style: italic;">GENERATED_PREVIEW_FILE</span>} | pandoc -f org -t html)
+
+<span style="font-weight: bold;">echo</span> -n <span style="font-style: italic;">"${SORT_DATE}"</span>
+<span style="font-weight: bold;">echo</span> -n <span style="font-style: italic;">'&lt;article class="post"&gt;&lt;header&gt;'</span>
+<span style="font-weight: bold;">echo</span> -n <span style="font-style: italic;">"&lt;h2&gt;&lt;a href=\"${SLUG}\"&gt;${TITLE}&lt;/a&gt;&lt;/h2&gt;"</span>
+<span style="font-weight: bold;">echo</span> -n <span style="font-style: italic;">"&lt;div class=\"post-meta\"&gt;${DISPLAY_DATE}&lt;/div&gt;&lt;/header&gt;"</span>
+<span style="font-weight: bold;">echo</span> -n <span style="font-style: italic;">"&lt;blockquote&gt;$(echo ${PREVIEW_CONTENT})&lt;/blockquote&gt;"</span>
+<span style="font-weight: bold;">echo</span> -n <span style="font-style: italic;">'&lt;ul class="tags"&gt;&lt;li&gt;&lt;i class="fa fa-tags"&gt;&lt;/i&gt;&lt;/li&gt;'</span>
+<span style="font-weight: bold;">echo</span> -n <span style="font-style: italic;">"${TAGS}"</span> | awk <span style="font-style: italic;">'{ printf "&lt;li&gt;%s&lt;/li&gt;", $0}'</span>
+<span style="font-weight: bold;">echo</span> -n <span style="font-style: italic;">'&lt;/ul&gt;'</span>
+<span style="font-weight: bold;">echo</span> -n <span style="font-style: italic;">'&lt;footer&gt;'</span>
+<span style="font-weight: bold;">echo</span> -n <span style="font-style: italic;">"&lt;a href=\"${SLUG}\"&gt;Read More&lt;/a&gt;"</span>
+<span style="font-weight: bold;">echo</span> -n <span style="font-style: italic;">"&lt;/footer&gt;"</span>
+<span style="font-weight: bold;">echo</span> <span style="font-style: italic;">""</span>
+</pre>
+</div>
+
+<p>
+Finally, this is all put together with the <code>generate_index_html.sh</code> script:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash"><span style="font-weight: bold; font-style: italic;">#</span><span style="font-weight: bold; font-style: italic;">!/usr/bin/</span><span style="font-weight: bold;">env</span><span style="font-weight: bold; font-style: italic;"> bash</span>
+<span style="font-weight: bold; font-style: italic;"># </span><span style="font-weight: bold; font-style: italic;">Generate index.html page</span>
+
+<span style="font-weight: bold; font-style: italic;">INPUT_FILES</span>=${<span style="font-weight: bold; font-style: italic;">@</span>}
+<span style="font-weight: bold; font-style: italic;">PROJ_ROOT</span>=$(git rev-parse --show-toplevel)
+source ${<span style="font-weight: bold; font-style: italic;">PROJ_ROOT</span>}/scripts/site-templates.sh
+
+cat <span style="font-style: italic;">"${HTML_HEADER_FILE}"</span>
+<span style="font-weight: bold;">echo</span> <span style="font-style: italic;">"&lt;body&gt;"</span>
+cat <span style="font-style: italic;">"${HTML_SUB_HEADER_FILE}"</span>
+cat ${<span style="font-weight: bold; font-style: italic;">INPUT_FILES</span>} | sort -r -n -k1 -k2 -k3 | awk -F<span style="font-style: italic;">'   '</span> <span style="font-style: italic;">'{print $4}'</span>
+<span style="font-weight: bold;">echo</span> <span style="font-style: italic;">"&lt;/body&gt;"</span>
+cat <span style="font-style: italic;">"${HTML_FOOTER_FILE}"</span>
+</pre>
+</div>
+
+<p>
+Specifically, the following line is of interest with respect to properly
+sorting:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">cat ${<span style="font-weight: bold; font-style: italic;">INPUT_FILES</span>} | sort -r -n -k1 -k2 -k3 | awk -F<span style="font-style: italic;">'   '</span> <span style="font-style: italic;">'{print $4}'</span>
+</pre>
+</div>
+
+<p>
+Use the tab-separated date fields from before, and use them to sort each of the
+post summaries onto the <code>index.html</code> page.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1d7e00f" class="outline-3">
+<h3 id="org1d7e00f"><a id="ID-37caeae7-0cfd-46d6-ae93-961135f72d33"></a>RSS/XML Generation</h3>
+<div class="outline-text-3" id="text-org1d7e00f">
+<p>
+I also wanted to keep the RSS/XML feeds going.  However, as it turns out,
+generating the RSS feed was achieved by performing essentially the same steps
+used for generating the summary <code>index.html</code> page.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf61a397" class="outline-2">
+<h2 id="orgf61a397"><a id="ID-7f7a054f-f45a-4a60-bafa-0dad37b81575"></a>Future Work</h2>
+<div class="outline-text-2" id="text-orgf61a397">
+<p>
+There is a fairly obvious limitation of the summary page generation, but only
+really obvious if I write more content.  There was and is no current archive
+page.  Moreover, <span class="underline">all</span> posts are put into the <code>index.html</code> summary page.
+If/when more posts are written and published, a solution for the first page
+will be necessary.  However, this was necessary regardless of whether the blog
+is generated using <a href="https://gohugo.io/">Hugo</a> or generated via the new process.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2ff479e" class="outline-2">
+<h2 id="org2ff479e"><a id="ID-7fe3dfbc-f9c9-464a-b5ff-36ab965cf75e"></a>Parting Thoughts</h2>
+<div class="outline-text-2" id="text-org2ff479e">
+<p>
+Like many projects, this was started because I personally was dissatisfied with
+the current state of options.  However, that said, I did not write these
+scripts to be used directly for someone else.  I'm not sure I would necessarily
+recommend this approach to someone else, unless, of course, they wanted to do
+it to learn or to otherwise take control of their content.  That said, I hope
+this captures the essence of the scripts, their major functions, and the
+motivations behind them.  The scripts are available, WITHOUT WARRANTY, under
+the <a href="https://www.gnu.org/licenses/gpl-3.0.html">GNU General Public License (version 3)</a>.
+</p>
+
+<p>
+If you have questions or comments, feel free to reach out to me.
+</p>
+</div>
+</div>
+</div>
+<footer id="" class="status">
+<footer>
+  <p>&copy; 2014-2022 Kenny Ballou.
+    <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Some rights
+      reserved.</a></p>
+  <p>Powered by <a href="https://gnu.org">GNU/Linux</a></p>
+</footer>
+</footer>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/"
+     xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+     xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+     xmlns:georss="http://www.georss.org/georss"
+     xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+     xmlns:media="http://search.yahoo.com/mrss/"><channel>
+  <title>(Conky Mail Notifications using Maildirs)</title>
+  <atom:link href="https://kennyballou.com/index.xml" rel="self" type="application/rss+xml" />
+  <link>https://kennyballou.com</link>
+  <description><![CDATA[How to configure ~conky~ to use local ~maildirs~]]></description>
+  <language>en</language>
+  <pubDate>Sat, 09 Apr 2022 18:52:58 +0000</pubDate>
+  <lastBuildDate>Sat, 09 Apr 2022 18:52:58 +0000</lastBuildDate>
+  <generator>Emacs 26.3 Org-mode 9.1.9</generator>
+  <webMaster>kb@devnulllabs.io (kb)</webMaster>
+  <image>
+    <url>http://orgmode.org/img/org-mode-unicorn-logo.png</url>
+    <title>(Conky Mail Notifications using Maildirs)</title>
+    <link>https://kennyballou.com</link>
+  </image>
+
+  <div class="PREVIEW">
+    <p>
+      Configuring <a href="https://github.com/brndnmtthws/conky"><code>conky</code></a> to display a count and symbol of new mail turned out to be
+      more tricky than I had originally anticipated.  This small post quickly
+      explores the issues and my own misunderstandings that led to a working <a href="https://github.com/brndnmtthws/conky"><code>conky</code></a>
+      configuration and a better understanding of <a href="https://en.wikipedia.org/wiki/Maildir"><code>maildir</code></a>.
+    </p>
+
+  </div>
+
+  <blockquote>
+    <p>
+      When the documentation fails you, use the source.
+    </p>
+  </blockquote>
+
+  <p>
+    I've been trying to configure <a href="https://github.com/brndnmtthws/conky"><code>conky</code></a> to show an icon if
+    there is new mail in my local <a href="https://en.wikipedia.org/wiki/Maildir"><code>maildir</code></a>.  However, I'm
+    seemingly unable to achieve the desired result.
+  </p>
+
+  <p>
+    Here is a trimmed down version of my <a href="https://github.com/brndnmtthws/conky"><code>conky</code></a> configuration
+    for reference:
+  </p>
+
+  <blockquote>
+    <p>
+      This is using <a href="https://github.com/brndnmtthws/conky"><code>conky</code></a>'s new 1.10 syntax.
+    </p>
+  </blockquote>
+
+  <pre class="example">
+    conky.config = {
+    out_to_x = false,
+    own_window = false,
+    out_to_console = true,
+    background = false,
+    };
+
+    conky.text = [[
+    ${mails ${HOME}/.mail/} 
+    ]];
+  </pre>
+
+  <p>
+    However, when attempting to run this through <a href="https://github.com/brndnmtthws/conky"><code>conky</code></a>, I
+    receive the following error:
+  </p>
+
+  <pre class="example">
+    conky: cannot open directory
+  </pre>
+
+  <p>
+    I also tried adding the <code>mail_spool</code> configuration setting to the
+    <code>conky.config</code> table and removing the folder from the <code>${mails}</code> variable.
+    Furthermore, I tried both of the above using the <code>${new_mails}</code> variable as
+    well, similarly to no avail.
+  </p>
+
+  <blockquote>
+    <p>
+      I actually receive a different error suggesting that <code>mail_spool</code> is no
+      longer a valid configuration setting.
+      <a href="https://github.com/brndnmtthws/conky/search?utf8=%E2%9C%93&amp;q=mail_spool&amp;type=">Searching the code base</a>, I feel this is
+      accurate.
+    </p>
+  </blockquote>
+
+  <p>
+    Another variation of the above I have tried is to try quoting the directory
+    path, which failed with a different error suggesting <a href="https://github.com/brndnmtthws/conky"><code>conky</code></a>
+    is attempting to literally open the quoted folder.
+  </p>
+
+  <p>
+    It wasn't until I read the source of <a href="https://github.com/brndnmtthws/conky/blob/master/src/mail.cc#L255"><code>conky</code></a> that I
+    was able to figure out what the <i>actual</i> issue was.
+  </p>
+
+  <p>
+    What was not obvious to me from the documentation was that <code>$mails</code> and friends
+    request a literal <a href="https://en.wikipedia.org/wiki/Maildir"><code>maildir</code></a> as its parameter.  This means,
+    it's required to specify a folder with the triplet of folders: <code>cur</code>, <code>new</code>,
+    and <code>tmp</code> under it.  Without which, <a href="https://github.com/brndnmtthws/conky"><code>conky</code></a> returns the error
+    "cannot open directory" because <a href="https://github.com/brndnmtthws/conky"><code>conky</code></a> is trying to open the
+    directory <code>{provided-mail-directory}/cur</code> instead of the provided directory.
+  </p>
+
+  <p>
+    Therefore, to solve my issue, I had changed the path given to <code>$mails</code> to the
+    following:
+  </p>
+
+  <pre class="example">
+    ${mails ${HOME}/{email-account}/INBOX}
+  </pre>
+
+  <p>
+    Where <code>{email-account}</code> is the email account I want updates for.
+  </p>
+
+  <p>
+    This has been a frustrating experience, and the documentation around
+    <a href="https://github.com/brndnmtthws/conky"><code>conky</code></a> is unfortunately out of date.  But this is partially
+    my own fault, my understanding of <a href="https://en.wikipedia.org/wiki/Maildir"><code>maildir</code></a> was incorrect and
+    certainly led me astray.
+  </p>
+
+  <p>
+    I'm debating whether to submit a pull request for expanding the documentation
+    around <a href="https://en.wikipedia.org/wiki/Maildir"><code>maildir</code></a> usage in the <code>$*mails</code> variables but it's
+    likely my own misunderstanding of <a href="https://en.wikipedia.org/wiki/Maildir"><code>maildir</code></a> that led me to so
+    much issue.
+  </p>
+
+  <p>
+    Next, onto <a href="https://github.com/brndnmtthws/conky"><code>conky</code></a>'s use of <code>if_match</code> and <code>$battery_short</code>
+    to display different battery symbols based on "charging", "discharging" and
+    "full" states.
+  </p>
+</channel>
+</rss>

@@ -1,0 +1,945 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-04-09 Sat 18:52 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Apache Storm and Apache Spark Streaming</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="kb" />
+<meta name="description" content="Comparison of Apache Storm and Apache Spark Streaming"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<meta charset="utf-8">
+
+<meta name="author" content="Kenny Ballou">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<title>~kb</title>
+
+<link rel="canonical" href="/" />
+<link href="/index.xml" rel="alternate" type="application/rss+xml"
+      title="~kb/blog" />
+
+<link rel="stylesheet" href="/css/simple.css" />
+<link rel="stylesheet" href="/css/simple.add.css" />
+<link rel="stylesheet" href="/css/katex.css" />
+<link rel="stylesheet" href="/css/fa-all.css" />
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<script defer type="text/javascript" src="/js/katex.js"></script>
+<script defer type="text/javascript" src="/js/katex-render.js"></script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://kennyballou.com/blog"> UP </a>
+ |
+ <a accesskey="H" href="https://kennyballou.com/"> HOME </a>
+</div><header id="" class="status">
+<nav>
+  <a href="/about.html">
+    <i class="fade fas fa-user-circle"></i>
+  </a>
+  <a href="https://git.devnulllabs.io"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-code-branch fa-1x"></i>
+  </a>
+  <a href="https://github.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-github fa-1x"></i>
+  </a>
+  <a href="https://bitbucket.org/kballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-bitbucket fa-1x"></i>
+  </a>
+  <a href="https://twitter.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-twitter fa-1x"></i>
+  </a>
+  <a href="https://www.buymeacoffee.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-mug-hot fa-1x"></i>
+  </a>
+  <a href="/resume.pdf"
+     target="_blank">
+    <i class="fade far fa-file-pdf"></i>
+  </a>
+  <a href="/932F3E8E1C0F4A9895D7B8B8B0CAA28A02958308.txt"
+     target="_blank">
+    <i class="fade fas fa-key"></i>
+  </a>
+  <a href="/index.xml" rel="alternate"
+     type="application/rss+xml">
+    <i class="fade fas fa-rss fa-1x"></i>
+  </a>
+</nav>
+</header>
+<div id="main">
+<h1 class="title">Apache Storm and Apache Spark Streaming</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgf45e34d">Apache Storm</a></li>
+<li><a href="#org2f079a4">Apache Spark (Streaming)</a></li>
+<li><a href="#orgf627900">Development</a>
+<ul>
+<li><a href="#org467aecb">Implementation Language</a>
+<ul>
+<li><a href="#orgf505e53">Message Passing Layer</a></li>
+</ul>
+</li>
+<li><a href="#org75db295">Commit Velocity</a>
+<ul>
+<li><a href="#org998f0bf">Spark Commit Velocity</a></li>
+<li><a href="#org94be4fb">Storm Commit Velocity</a></li>
+</ul>
+</li>
+<li><a href="#orgb9973b6">Issue Velocity</a></li>
+<li><a href="#orgc97bb57">Contributor/ Community Size</a>
+<ul>
+<li><a href="#orgb7ea726">Storm Contributor Size</a></li>
+<li><a href="#org1e44e9d">Spark Contributor Size</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org4cbec3c">Development Friendliness</a>
+<ul>
+<li><a href="#org7612438">Developing for Storm</a></li>
+<li><a href="#orgefd1afa">Developing for Spark</a></li>
+</ul>
+</li>
+<li><a href="#orgba1b1b0">Installation / Administration</a></li>
+<li><a href="#orgedf8df5">Processing Models</a>
+<ul>
+<li><a href="#org6cc874d">Batch Processing</a></li>
+<li><a href="#org6d5ce67">Event-Stream Processing</a></li>
+<li><a href="#orgb27696e">Micro-Batching</a></li>
+</ul>
+</li>
+<li><a href="#orgae2eca7">Fault-Tolerance / Message Guarantees</a>
+<ul>
+<li><a href="#org35a33cd">Delivery Semantics</a></li>
+<li><a href="#orgd3c37b6">Apache Storm</a></li>
+<li><a href="#orga7c5430">Apache Spark Streaming</a></li>
+</ul>
+</li>
+<li><a href="#org6a44024">Applicability</a>
+<ul>
+<li><a href="#orgd964389">Apache Storm</a></li>
+<li><a href="#org3ec2a11">Apache Spark Streaming</a></li>
+</ul>
+</li>
+<li><a href="#org90b3c26">Final Thoughts</a></li>
+<li><a href="#orga89447c">References</a></li>
+</ul>
+</div>
+</div>
+<div class="PREVIEW">
+<p>
+This is the last post in the series on real-time systems.  In the
+<a href="https://kennyballou.com/blog/2014/07/real-time-streaming-storm-and-kafka">first post</a> we discussed <a href="https://storm.apache.org/">Apache Storm</a> and
+<a href="https://kafka.apache.org/">Apache Kafka</a>.  In the <a href="https://kennyballou.com/blog/2014/08/real-time-streaming-apache-spark-streaming">second post</a> we discussed
+<a href="https://spark.apache.org/">Apache Spark (Streaming)</a>.  In both posts we examined a small Twitter
+Sentiment Analysis program.  Today, we will be reviewing both systems: how they
+compare and how they contrast.
+</p>
+
+</div>
+
+<p>
+The intention is not to cast judgment over one project or the other, but rather
+to exposit the differences and similarities.  Any judgments made, subtle or
+not, are mistakes in exposition and/or organization and are not actual
+endorsements of either project.
+</p>
+
+<div id="outline-container-orgf45e34d" class="outline-2">
+<h2 id="orgf45e34d"><a id="ID-aed72b1a-938b-40fd-8775-aca54e8aebe0"></a>Apache Storm</h2>
+<div class="outline-text-2" id="text-orgf45e34d">
+<p>
+"Storm is a distributed real-time computation system" <a href="https://storm.apache.org/">Storm</a>.  Apache
+Storm is a <a href="http://en.wikipedia.org/wiki/Task_parallelism">task parallel</a> continuous computational
+engine.  It defines its workflows in Directed Acyclic Graphs (DAG's) called
+"topologies".  These topologies run until shutdown by the user or encountering
+an unrecoverable failure.
+</p>
+
+<p>
+Storm does not natively run on top of typical Hadoop clusters, it uses
+<a href="https://zookeeper.apache.org/">Apache ZooKeeper</a> and its own master/minion worker processes to
+coordinate topologies, master and worker state, and the message guarantee
+semantics.  That said, both <a href="https://github.com/yahoo/storm-yarn">Yahoo!</a> and
+<a href="http://hortonworks.com/kb/storm-on-yarn-install-on-hdp2-beta-cluster/">Hortonworks</a> are working on providing libraries for
+running Storm topologies on top of Hadoop 2.x YARN clusters.  Furthermore,
+Storm can run on top of the <a href="https://mesos.apache.org">Mesos</a> scheduler as well,
+<a href="https://mesosphere.io/learn/run-storm-on-mesos/">natively</a> and with help from the <a href="https://github.com/mesosphere/marathon">Marathon</a>
+framework.
+</p>
+
+<p>
+Regardless though, Storm can certainly still consume files from HDFS and/or
+write files to HDFS.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2f079a4" class="outline-2">
+<h2 id="org2f079a4"><a id="ID-51edc096-65ff-4b69-b98b-7846b2ea540c"></a>Apache Spark (Streaming)</h2>
+<div class="outline-text-2" id="text-org2f079a4">
+<p>
+"Apache Spark is a fast and general purpose engine for large-scale data
+processing" <a href="https://spark.apache.org/">Spark</a>.  <a href="https://spark.apache.org/">Apache Spark</a> is a
+<a href="http://en.wikipedia.org/wiki/Data_parallelism">data parallel</a> general purpose batch processing
+engine.  Workflows are defined in a similar and reminiscent style of MapReduce,
+however, is much more capable than traditional Hadoop MapReduce.  Apache Spark
+has its Streaming API project that allows for continuous processing via short
+interval batches.  Similar to Storm, Spark Streaming jobs run until shutdown by
+the user or encounter an unrecoverable failure.
+</p>
+
+<p>
+Apache Spark does not itself require Hadoop to operate.  However, its data
+parallel paradigm requires a shared filesystem for optimal use of stable data.
+The stable source can range from <a href="http://aws.amazon.com/s3/">S3</a>, <a href="http://en.wikipedia.org/wiki/Network_File_System">NFS</a>, or, more
+typically, <a href="http://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/HdfsUserGuide.html">HDFS</a>.
+</p>
+
+<p>
+Executing Spark applications does not <i>require</i> Hadoop YARN.  Spark has its own
+standalone master/server processes.  However, it is common to run Spark
+applications using YARN containers.  Furthermore, Spark can also run on Mesos
+clusters.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf627900" class="outline-2">
+<h2 id="orgf627900"><a id="ID-4a6e00ea-274d-4033-a500-71b54685fe39"></a>Development</h2>
+<div class="outline-text-2" id="text-orgf627900">
+<p>
+As of this writing, Apache Spark is a full, top level Apache project.  Whereas
+Apache Storm is currently undergoing incubation.  Moreover, the latest stable
+version of Apache Storm is <code>0.9.2</code> and the latest stable version of Apache
+Spark is <code>1.0.2</code> (with <code>1.1.0</code> to be released in the coming weeks).  Of course,
+as the Apache Incubation reminder states, this does not strictly reflect
+stability or completeness of either project.  It is, however, a reflection to
+the state of the communities.  Apache Spark operations and its process are
+endorsed by the <a href="http://www.apache.org/">Apache Software Foundation</a>.  Apache Storm is
+working on stabilizing its community and development process.
+</p>
+
+<p>
+Spark's <code>1.x</code> version does state that the API has stabilized and will not be
+doing major changes undermining backward compatibility.  Implicitly, Storm has
+no guaranteed stability in its API, however, it is <a href="http://storm.incubator.apache.org/documentation/Powered-By.html">running
+in production for many different companies</a>.
+</p>
+</div>
+
+<div id="outline-container-org467aecb" class="outline-3">
+<h3 id="org467aecb"><a id="ID-72dd2af0-ba58-491c-bb90-921c19cbc403"></a>Implementation Language</h3>
+<div class="outline-text-3" id="text-org467aecb">
+<p>
+Both <a href="https://spark.apache.org/">Apache Spark</a> and <a href="https://storm.apache.org/">Apache Storm</a> are implemented in JVM
+based languages: <a href="http://www.scala-lang.org/">Scala</a> and <a href="http://clojure.org/">Clojure</a>, respectively.
+</p>
+
+<p>
+Scala is a functional meets object-oriented language.  In other words, the
+language carries ideas from both the functional world and the object-oriented
+world.  This yields an interesting mix of code reusability, extensibility, and
+higher-order functions.
+</p>
+
+<p>
+Clojure is a dialect of <a href="http://en.wikipedia.org/wiki/Lisp_(programming_language)">Lisp</a> targeting the JVM providing the
+Lisp philosophy: code-as-data and providing the rich macro system typical of
+Lisp languages.  Clojure is predominately functional in nature, however, if
+state or side-effects are required, they are facilitated with a transactional
+memory model, aiding in making multi-threaded based applications consistent and
+safe.
+</p>
+</div>
+
+<div id="outline-container-orgf505e53" class="outline-4">
+<h4 id="orgf505e53"><a id="ID-7b5913d9-2e1e-4749-9744-dd9741734863"></a>Message Passing Layer</h4>
+<div class="outline-text-4" id="text-orgf505e53">
+<p>
+Until version <code>0.9.x</code>, Storm was using the Java library <a href="https://github.com/zeromq/jzmq">JZMQ</a> for
+<a href="http://zeromq.org/">ZeroMQ</a> messages.  However, Storm has since moved the default
+messaging layer to <a href="http://netty.io/">Netty</a> with efforts from
+<a href="http://yahooeng.tumblr.com/post/64758709722/making-storm-fly-with-netty">Yahoo!</a>.  Although Netty is now being used by default,
+users can still use ZeroMQ, if desired, since the migration to Netty was
+intended to also make the message layer pluggable.
+</p>
+
+<p>
+Spark, on the other hand, uses a combination of <a href="http://netty.io/">Netty</a> and
+<a href="http://akka.io">Akka</a> for distributing messages throughout the executors.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org75db295" class="outline-3">
+<h3 id="org75db295"><a id="ID-8a375dcc-c663-4ce2-83dc-1c4e367d11b0"></a>Commit Velocity</h3>
+<div class="outline-text-3" id="text-org75db295">
+<p>
+As a reminder, these data are included not to cast judgment on one project or
+the other, but rather to exposit the fluidness of each project.  The continuum
+of the dynamics of both projects can be used as an argument for or against,
+depending on application requirements.  If rigid stability is a strong
+requirement, arguing for a slower commit velocity may be appropriate.
+</p>
+
+<p>
+Source of the following statistics were taken from the graphs at
+<a href="https://github.com/">GitHub</a> and computed from <a href="https://gist.github.com/kennyballou/c6ff37e5eef6710794a6">this script</a>.
+</p>
+</div>
+
+<div id="outline-container-org998f0bf" class="outline-4">
+<h4 id="org998f0bf"><a id="ID-cd67cad7-2fa7-4c2f-8860-c3497701d2a6"></a>Spark Commit Velocity</h4>
+<div class="outline-text-4" id="text-org998f0bf">
+<p>
+Examining the graphs from <a href="https://github.com/apache/spark/graphs/commit-activity">GitHub</a>, over the last
+month (as of this writing), there have been over 330 commits.  The previous
+month had about 340.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org94be4fb" class="outline-4">
+<h4 id="org94be4fb"><a id="ID-a4318c71-4c78-4997-8b0f-4a2f5906e9f3"></a>Storm Commit Velocity</h4>
+<div class="outline-text-4" id="text-org94be4fb">
+<p>
+Again examining the commit graphs from <a href="https://github.com/apache/incubator-storm/graphs/commit-activity">GitHub</a>, over
+the last month (as of this writing), there have been over 70 commits.  The
+month prior had over 130.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb9973b6" class="outline-3">
+<h3 id="orgb9973b6"><a id="ID-7bfb9ac0-1cdb-4499-860b-2be6beb30f43"></a>Issue Velocity</h3>
+<div class="outline-text-3" id="text-orgb9973b6">
+<p>
+Sourcing the summary charts from JIRA, we can see that clearly Spark has a huge
+volume of issues reported and closed in the last 30 days.  Storm, roughly, an
+order of magnitude less.
+</p>
+
+<p>
+Spark Open and Closed JIRA Issues (last 30 days):
+</p>
+
+<div align="center" class="figure">
+
+<div id="org4058b9e" class="figure">
+<p><img src="../../../../media/spark_issues_chart.png" alt="spark_issues_chart.png" />
+</p>
+</div>
+
+</div>
+
+<p>
+Storm Open and Closed JIRA Issues (last 30 days):
+</p>
+
+<div align="center" class="figure">
+
+<div id="orgadbe98a" class="figure">
+<p><img src="../../../../media/storm_issues_chart.png" alt="storm_issues_chart.png" />
+</p>
+</div>
+
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc97bb57" class="outline-3">
+<h3 id="orgc97bb57"><a id="ID-ed5f3573-8ade-4d6a-b9f1-38c045ed40d7"></a>Contributor/ Community Size</h3>
+<div class="outline-text-3" id="text-orgc97bb57">
+</div>
+
+<div id="outline-container-orgb7ea726" class="outline-4">
+<h4 id="orgb7ea726"><a id="ID-768d2f75-4521-472c-b07d-6ddcf68a39ec"></a>Storm Contributor Size</h4>
+<div class="outline-text-4" id="text-orgb7ea726">
+<p>
+Sourcing the reports from <a href="https://github.com/apache/incubator-storm/graphs/contributors">GitHub</a>, Storm has over
+a 100 contributors.  This number, though, is just the unique number of people
+who have committed at least one patch.
+</p>
+
+<p>
+Over the last 60 days, Storm has seen 34 unique contributors and 16 over the
+last 30.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1e44e9d" class="outline-4">
+<h4 id="org1e44e9d"><a id="ID-381c7658-6c09-42ed-8eec-9b7ab13d9171"></a>Spark Contributor Size</h4>
+<div class="outline-text-4" id="text-org1e44e9d">
+<p>
+Similarly sourcing the reports from <a href="https://github.com/apache/spark">GitHub</a>, Spark has roughly
+280 contributors.  A similar note as before must be made about this number:
+this is the number of at least one patch contributors to the project.
+</p>
+
+<p>
+Apache Spark has had over 140 contributors over the last 60 days and 94 over
+the last 30 days.
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4cbec3c" class="outline-2">
+<h2 id="org4cbec3c"><a id="ID-08715824-3f84-4f8d-894c-c84d1854a262"></a>Development Friendliness</h2>
+<div class="outline-text-2" id="text-org4cbec3c">
+</div>
+
+<div id="outline-container-org7612438" class="outline-3">
+<h3 id="org7612438"><a id="ID-fcfe88f0-6e2e-4380-a7af-11ac7bae7098"></a>Developing for Storm</h3>
+<div class="outline-text-3" id="text-org7612438">
+<ul class="org-ul">
+<li>Describing the process structure with DAG's feels natural to the
+<a href="http://en.wikipedia.org/wiki/Task_parallelism">processing model</a>.  Each node in the graph will
+transform the data in a certain way, and the process continues, possibly
+disjointly.</li>
+
+<li>Storm tuples, the data passed between nodes in the DAG, have a very natural
+interface.  However, this comes at a cost to compile-time type safety.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgefd1afa" class="outline-3">
+<h3 id="orgefd1afa"><a id="ID-ea9e5ffc-ab08-4294-af05-bd1306f7eca4"></a>Developing for Spark</h3>
+<div class="outline-text-3" id="text-orgefd1afa">
+<ul class="org-ul">
+<li>Spark's monadic expression of transformations over the data similarly feels
+natural in this <a href="http://en.wikipedia.org/wiki/Data_parallelism">processing model</a>; this falls in
+line with the idea that RDD's are lazy and maintain transformation lineages,
+rather than actuallized results.</li>
+
+<li>Spark's use of Scala Tuples can feel awkward in Java, and this awkwardness is
+only exacerbated with the nesting of generic types.  However, this
+awkwardness does come with the benefit of compile-time type checks.
+
+<ul class="org-ul">
+<li>Furthermore, until Java 1.8, anonymous functions are inherently awkward.</li>
+
+<li>This is probably a non-issue if using Scala.</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgba1b1b0" class="outline-2">
+<h2 id="orgba1b1b0"><a id="ID-1308992a-a469-4706-9d5d-5a40aba41cda"></a>Installation / Administration</h2>
+<div class="outline-text-2" id="text-orgba1b1b0">
+<p>
+Installation of both Apache Spark and Apache Storm are relatively straight
+forward.  Spark may be simpler in some regards, however, since it technically
+does not <i>need</i> to be installed to function on YARN or Mesos clusters.  The
+Spark application will just require the Spark assembly be present in the
+<code>CLASSPATH</code>.
+</p>
+
+<p>
+Storm, on the other hand, requires ZooKeeper to be properly installed and
+running on top of the regular Storm binaries that must be installed.
+Furthermore, like ZooKeeper, Storm should run under
+<a href="http://en.wikipedia.org/wiki/Process_supervision">supervision</a>; installation of a supervisor
+service, e.g., <a href="http://supervisord.org">supervisord</a>, is recommended.
+</p>
+
+<p>
+With respect to installation, supporting projects like Apache Kafka are out of
+scope and have no impact on the installation of either Storm or Spark.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgedf8df5" class="outline-2">
+<h2 id="orgedf8df5"><a id="ID-4ce1b323-ade1-4ae7-81b9-7ff304359f0d"></a>Processing Models</h2>
+<div class="outline-text-2" id="text-orgedf8df5">
+<p>
+Comparing Apache Storm and Apache Spark's Streaming, turns out to be a bit
+challenging.  One is a true stream processing engine that can do
+micro-batching, the other is a batch processing engine which micro-batches, but
+cannot perform streaming in the strictest sense.  Furthermore, the comparison
+between streaming and batching isn't exactly a subtle difference, these are
+fundamentally different computing ideas.
+</p>
+</div>
+
+<div id="outline-container-org6cc874d" class="outline-3">
+<h3 id="org6cc874d"><a id="ID-ace7c720-95c5-46df-a383-29ae914ba66a"></a>Batch Processing</h3>
+<div class="outline-text-3" id="text-org6cc874d">
+<p>
+<a href="http://en.wikipedia.org/wiki/Batch_processing">Batch processing</a> is the familiar concept of
+processing data en masse.  The batch size could be small or very large.  This
+is the processing model of the core Spark library.
+</p>
+
+<p>
+Batch processing excels at processing <i>large</i> amounts of stable, existing data.
+However, it generally incurs a high-latency and is completely unsuitable for
+incoming data.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6d5ce67" class="outline-3">
+<h3 id="org6d5ce67"><a id="ID-2bd17746-7f94-4091-b017-1adf9d331b76"></a>Event-Stream Processing</h3>
+<div class="outline-text-3" id="text-org6d5ce67">
+<p>
+<a href="http://en.wikipedia.org/wiki/Event_stream_processing">Stream processing</a> is a <i>one-at-a-time</i> processing
+model; a datum is processed as it arrives.  The core Storm library follows this
+processing model.
+</p>
+
+<p>
+Stream processing excels at computing transformations as data are ingested with
+sub-second latencies.  However, with stream processing, it is incredibly
+difficult to process stable data efficiently.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb27696e" class="outline-3">
+<h3 id="orgb27696e"><a id="ID-0d77d533-83f6-49cd-8444-f4c70ccf742b"></a>Micro-Batching</h3>
+<div class="outline-text-3" id="text-orgb27696e">
+<p>
+Micro-batching is a special case of batch processing where the batch size is
+orders smaller.  Spark Streaming operates in this manner as does the Storm
+<a href="https://storm.incubator.apache.org/documentation/Trident-API-Overview.html">Trident API</a>.
+</p>
+
+<p>
+Micro-batching seems to be a nice mix between batching and streaming.  However,
+micro-batching incurs a cost of latency.  If sub-second latency is paramount,
+micro-batching will typically not suffice.  On the other hand, micro-batching
+trivially gives stateful computation, making
+<a href="http://en.wikipedia.org/wiki/Window_function_(SQL)#Window_function">windowing</a> an easy task.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgae2eca7" class="outline-2">
+<h2 id="orgae2eca7"><a id="ID-1615649c-d53b-4aab-a626-36cdfd15c8a7"></a>Fault-Tolerance / Message Guarantees</h2>
+<div class="outline-text-2" id="text-orgae2eca7">
+<p>
+As a result of each project's fundamentally different processing models, the
+fault-tolerance and message guarantees are handled differently.
+</p>
+</div>
+
+<div id="outline-container-org35a33cd" class="outline-3">
+<h3 id="org35a33cd"><a id="ID-f1547ad9-ce75-4724-97a1-d6e5c3eb49e8"></a>Delivery Semantics</h3>
+<div class="outline-text-3" id="text-org35a33cd">
+<p>
+Before diving into each project's fault-tolerance and message guarantees, here
+are the common delivery semantics:
+</p>
+
+<ul class="org-ul">
+<li>At most once: messages may be lost but never redelivered.</li>
+
+<li>At least once: messages will never be lost but may be redelivered.</li>
+
+<li>Exactly once: messages are never lost and never redelivered, perfect message
+delivery.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd3c37b6" class="outline-3">
+<h3 id="orgd3c37b6"><a id="ID-e360b349-6f03-45ca-8f08-f0cc13099d2c"></a>Apache Storm</h3>
+<div class="outline-text-3" id="text-orgd3c37b6">
+<p>
+To provide fault-tolerant messaging, Storm has to keep track of each and every
+record.  By default, this is done with at least once delivery semantics.  Storm
+can be configured to provide at most once and exactly once.  The delivery
+semantics offered by Storm can incur latency costs; if data loss in the stream
+is acceptable, at most once delivery will improve performance.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga7c5430" class="outline-3">
+<h3 id="orga7c5430"><a id="ID-39ff23b5-d9e3-4ebe-98b9-259f518bc50e"></a>Apache Spark Streaming</h3>
+<div class="outline-text-3" id="text-orga7c5430">
+<p>
+The resiliency built into Spark RDD's and the micro-batching yields a trivial
+mechanism for providing fault-tolerance and message delivery guarantees.  That
+is, since Spark Streaming is just small-scale batching, exactly once delivery
+is a trivial result for each batch; this is the <i>only</i> delivery semantic
+available to Spark.  However some failure scenarios of Spark Streaming degrade
+to at least once delivery.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6a44024" class="outline-2">
+<h2 id="org6a44024"><a id="ID-de3b5cc1-4f26-4c32-b268-44f60bcaeaa1"></a>Applicability</h2>
+<div class="outline-text-2" id="text-org6a44024">
+</div>
+
+<div id="outline-container-orgd964389" class="outline-3">
+<h3 id="orgd964389"><a id="ID-e702bc5f-35f4-453e-b464-0fa22d47ff01"></a>Apache Storm</h3>
+<div class="outline-text-3" id="text-orgd964389">
+<p>
+Some areas where Storm excels include: near real-time analytics, natural
+language processing, data normalization and <a href="http://en.wikipedia.org/wiki/Extract,_transform,_load">ETL</a> transformations.
+It also stands apart from traditional MapReduce and other course-grained
+technologies yielding fine-grained transformations allowing very flexible
+processing topologies.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3ec2a11" class="outline-3">
+<h3 id="org3ec2a11"><a id="ID-4e9f064f-30b1-4e96-9d17-c6cefb23942b"></a>Apache Spark Streaming</h3>
+<div class="outline-text-3" id="text-org3ec2a11">
+<p>
+Spark has an excellent model for performing iterative machine learning and
+interactive analytics.  But Spark also excels in some similar areas of Storm
+including near real-time analytics, ingestion.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org90b3c26" class="outline-2">
+<h2 id="org90b3c26"><a id="ID-138afe07-ca54-4071-8970-a6a295867e4c"></a>Final Thoughts</h2>
+<div class="outline-text-2" id="text-org90b3c26">
+<p>
+Generally, the requirements will dictate the choice.  However, here are some
+major points to consider when choosing the right tool:
+</p>
+
+<ul class="org-ul">
+<li>Latency: Is the performance of the streaming application paramount?  Storm
+can give sub-second latency much more easily and with less restrictions than
+Spark Streaming.</li>
+
+<li>Development Cost: Is it desired to have similar code bases for batch
+processing <i>and</i> stream processing? With Spark, batching and streaming are
+<i>very</i> similar.  Storm, however, departs dramatically from the MapReduce
+paradigm.</li>
+
+<li>Message Delivery Guarantees: Is there high importance on processing <i>every</i>
+single record, or is some nominal amount of data loss acceptable?
+Disregarding everything else, Spark trivially yields perfect, exactly once
+message delivery.  Storm can provide all three delivery semantics, but getting
+perfect exactly once message delivery requires more effort to properyly
+achieve.</li>
+
+<li>Process Fault Tolerance: Is high-availability of primary concern?  Both
+systems actually handle fault-tolerance of this kind really well and in
+relatively similar ways.
+
+<ul class="org-ul">
+<li>Production Storm clusters will run Storm processes under
+<a href="http://en.wikipedia.org/wiki/Process_supervision">supervision</a>; if a process fails, the
+supervisor process will restart it automatically.  State management is
+handled through ZooKeeper.  Processes restarting will reread the state
+from ZooKeeper on an attempt to rejoin the cluster.</li>
+
+<li>Spark handles restarting workers via the resource manager: YARN, Mesos, or
+its standalone manager.  Spark's standalone resource manager handles master
+node failure with standby-masters and ZooKeeper.  Or, this can be handled
+more primatively with just local filesystem state checkpointing, not
+typically recommended for production environments.</li>
+</ul></li>
+</ul>
+
+<p>
+Both Apache Spark Streaming and Apache Storm are great solutions that solve the
+streaming ingestion and transformation problem.  Either system can be a great
+choice for part of an analytics stack.  Choosing the right one is simply a
+matter of answering the above questions.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga89447c" class="outline-2">
+<h2 id="orga89447c"><a id="ID-3819ddaf-8bb9-488d-a7dc-3cf4b02e6e44"></a>References</h2>
+<div class="outline-text-2" id="text-orga89447c">
+<ul class="org-ul">
+<li><a href="https://storm.apache.org/">Apache Storm Home Page</a></li>
+
+<li><a href="https://spark.apache.org/">Apache Spark</a></li>
+
+<li><a href="https://kennyballou.com/blog/2014/07/real-time-streaming-storm-and-kafka">Real Time Streaming with Apache Storm and Apache Kafka</a></li>
+
+<li><a href="https://kennyballou.com/blog/2014/08/real-time-streaming-apache-spark-streaming">Real Time Streaming with Apache Spark (Streaming)</a></li>
+
+<li><a href="https://kafka.apache.org/">Apache Kafka</a></li>
+
+<li><a href="http://en.wikipedia.org/wiki/Data_parallelism">Wikipedia: Data Parallelism</a></li>
+
+<li><a href="http://en.wikipedia.org/wiki/Task_parallelism">Wikipedia: Task Parallelism</a></li>
+
+<li><a href="https://zookeeper.apache.org/">Apache ZooKeeper</a></li>
+
+<li><a href="https://github.com/yahoo/storm-yarn">Yahoo! Storm-YARN</a></li>
+
+<li><a href="http://hortonworks.com/kb/storm-on-yarn-install-on-hdp2-beta-cluster/">Hortonworks: Storm on YARN</a></li>
+
+<li><a href="https://mesos.apache.org">Apache Mesos</a></li>
+
+<li><a href="https://mesosphere.io/learn/run-storm-on-mesos/">Run Storm on Mesos</a></li>
+
+<li><a href="https://github.com/mesosphere/marathon">Marathon</a></li>
+
+<li><a href="http://xinhstechblog.blogspot.com/2014/06/storm-vs-spark-streaming-side-by-side.html">Storm vs Spark Streaming: Side by Side</a></li>
+
+<li><a href="http://www.slideshare.net/ptgoetz/apache-storm-vs-spark-streaming">Storm vs Spark Streaming (Slideshare)</a></li>
+</ul>
+</div>
+</div>
+</div>
+<footer id="" class="status">
+<footer>
+  <p>&copy; 2014-2022 Kenny Ballou.
+    <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Some rights
+      reserved.</a></p>
+  <p>Powered by <a href="https://gnu.org">GNU/Linux</a></p>
+</footer>
+</footer>
+</body>
+</html>

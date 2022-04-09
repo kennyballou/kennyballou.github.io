@@ -1,0 +1,693 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-04-09 Sat 18:52 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The Art of Manually Editing Hunks</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="kb" />
+<meta name="description" content="How to edit hunk diffs"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<meta charset="utf-8">
+
+<meta name="author" content="Kenny Ballou">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<title>~kb</title>
+
+<link rel="canonical" href="/" />
+<link href="/index.xml" rel="alternate" type="application/rss+xml"
+      title="~kb/blog" />
+
+<link rel="stylesheet" href="/css/simple.css" />
+<link rel="stylesheet" href="/css/simple.add.css" />
+<link rel="stylesheet" href="/css/katex.css" />
+<link rel="stylesheet" href="/css/fa-all.css" />
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<script defer type="text/javascript" src="/js/katex.js"></script>
+<script defer type="text/javascript" src="/js/katex-render.js"></script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://kennyballou.com/blog"> UP </a>
+ |
+ <a accesskey="H" href="https://kennyballou.com/"> HOME </a>
+</div><header id="" class="status">
+<nav>
+  <a href="/about.html">
+    <i class="fade fas fa-user-circle"></i>
+  </a>
+  <a href="https://git.devnulllabs.io"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-code-branch fa-1x"></i>
+  </a>
+  <a href="https://github.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-github fa-1x"></i>
+  </a>
+  <a href="https://bitbucket.org/kballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-bitbucket fa-1x"></i>
+  </a>
+  <a href="https://twitter.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-twitter fa-1x"></i>
+  </a>
+  <a href="https://www.buymeacoffee.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-mug-hot fa-1x"></i>
+  </a>
+  <a href="/resume.pdf"
+     target="_blank">
+    <i class="fade far fa-file-pdf"></i>
+  </a>
+  <a href="/932F3E8E1C0F4A9895D7B8B8B0CAA28A02958308.txt"
+     target="_blank">
+    <i class="fade fas fa-key"></i>
+  </a>
+  <a href="/index.xml" rel="alternate"
+     type="application/rss+xml">
+    <i class="fade fas fa-rss fa-1x"></i>
+  </a>
+</nav>
+</header>
+<div id="main">
+<h1 class="title">The Art of Manually Editing Hunks</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org67270a3">Short Introduction to Unified Diff</a></li>
+<li><a href="#org25e3465">Motivation</a></li>
+<li><a href="#orgdb8968d">Hunk Editing Example</a></li>
+</ul>
+</div>
+</div>
+<div class="PREVIEW">
+<p>
+There's a certain art to editing hunks, seemingly arcane.  Hunks are blocks of
+changes typically found in unified diff patch files, or, more commonly today,
+found in Git patches.
+</p>
+
+</div>
+
+<p>
+Git uses its own variant of the <a href="https://www.gnu.org/software/diffutils/manual/html_node/Unified-Format.html">unified diff format</a>, but it isn't
+much different.  The differences between the unified format and Git's are
+usually not significant.  The patch files created with <a href="https://www.kernel.org/pub/software/scm/git/docs/git-show.html">git-show</a>
+or <a href="https://www.kernel.org/pub/software/scm/git/docs/git-diff.html">git-diff</a> are consumable by the usual tools, <code>patch</code>, <code>git</code>,
+<code>vimdiff</code>, etc.
+</p>
+
+<div id="outline-container-org67270a3" class="outline-2">
+<h2 id="org67270a3"><a id="ID-bdc2a07c-813b-481f-8e01-f998c7f9b0d8"></a>Short Introduction to Unified Diff</h2>
+<div class="outline-text-2" id="text-org67270a3">
+<p>
+A unified diff may look something similar to (freely copied from the
+<code>diffutils</code> manual):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-diff"><span style="font-weight: bold;">--- </span><span style="font-weight: bold;">lao 2002-02-21 23:30:39.942229878 -0800</span>
+<span style="font-weight: bold;">+++ </span><span style="font-weight: bold;">tzu 2002-02-21 23:30:50.442260588 -0800</span>
+<span style="font-weight: bold;">@@ -1,7 +1,6 @@</span>
+-The Way that can be told of is not the eternal Way;
+-The name that can be named is not the eternal name.
+ The Nameless is the origin of Heaven and Earth;
+-The Named is the mother of all things.
++The named is the mother of all things.
++
+ Therefore let there always be non-being,
+   so we may see their subtlety,
+ And let there always be being,
+<span style="font-weight: bold;">@@ -9,3 +8,6 @@</span>
+ The two are the same,
+ But after they are produced,
+   they have different names.
++They both may be called deep and profound.
++Deeper and more profound,
++The door of all subtleties!
+</pre>
+</div>
+
+<p>
+The first two lines define the files that are input into the <code>diff</code> program,
+the first, <code>lao</code>, being the "source" file and the second, <code>tzu</code>, being the
+"new" file.  The starting characters <code>---</code> and <code>+++</code> denote the lines from
+each.
+</p>
+
+<p>
+<code>+</code> denotes a line that will be added to the first file and <code>-</code> denotes a line
+that will be removed from the first file.  Lines with no changes are preceded
+by a single space.
+</p>
+
+<p>
+The <code>@@ -1,7 +1,6 @@</code> and <code>@@ -9,3 +8,6 @@</code> are the hunk identifiers.  That is,
+diff hunks are the blocks identified by <code>@@ -line number[,context] +line
+number[, context] @@</code> in the diff format.  The <code>context</code> number is optional and
+occasionally not needed.  However, it is always included in when using
+<code>git-diff</code>.  The line numbers defines the number the hunk begins.  The context
+number defines the number of lines in the hunk.  Unlike the line number, it
+often differs between the two files.  In the first hunk of the example above,
+the context numbers are <code>7</code> and <code>6</code>, respectively.  That is, lines preceded
+with a <code>-</code> and a space equals 7.  Similarly, lines starting with a <code>+</code> and a
+space equals 6.
+</p>
+
+<blockquote>
+<p>
+Lines starting with a space count towards the context of both files.
+</p>
+</blockquote>
+
+<p>
+Since the second file has a smaller context, this means we are removing more
+(by one) lines than we are adding.  To <code>diff</code>, updating a line is the same as
+removing the old line and adding a new line (with the changes).
+</p>
+
+<p>
+Armed with this information, we can start editing hunks that can be cleanly
+applied.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org25e3465" class="outline-2">
+<h2 id="org25e3465"><a id="ID-30693136-3c1d-4322-90b7-7840d15c461f"></a>Motivation</h2>
+<div class="outline-text-2" id="text-org25e3465">
+<p>
+What might be the motivation for even wanting to edit hunk files? The biggest I
+see is when using <code>git-add --patch</code>.  Particularly when the changes run
+together and cannot be split apart automatically.  We can see this in the diff
+above.
+</p>
+
+<p>
+The trivial case is being able to stage a single hunk of the above diff,
+nothing has to be done to stage the changes separately other than using the
+<code>--patch</code> option.
+</p>
+
+<p>
+However, staging separate changes inside a hunk becomes slightly more
+complicated.  Often, if the changes are broken up with a even just a single
+line (if it exists), they can be split.  When they run together, it becomes
+more difficult to do.
+</p>
+
+<p>
+Of course, a way to solve this problem, is to manually back out the changes (a
+series of "undos"), save the file, stage it, play back the changes (a series of
+"redos", perhaps).  This can be very error prone and if you make any other
+changes during between undo and redo, you may have lost the changes.
+Therefore, being able to manually edit the specific hunk into the right shape,
+no changes are lost.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgdb8968d" class="outline-2">
+<h2 id="orgdb8968d"><a id="ID-2da2b0aa-154b-4652-9fd8-aa282bb5ec7f"></a>Hunk Editing Example</h2>
+<div class="outline-text-2" id="text-orgdb8968d">
+<p>
+Let's walk through an example of staging some changes, and manually editing a
+hunk to stage them into the patches we want.
+</p>
+
+<p>
+Create a temporary Git repository, this will be a just some basic stuff for
+testing.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">% cd /tmp
+% git init foo
+% cd foo
+</pre>
+</div>
+
+<blockquote>
+<p>
+From here on, we will assume the working directory to be <code>/tmp/foo</code>.
+</p>
+</blockquote>
+
+<p>
+Inside this new Git repository, add a new file, <code>quicksort.exs</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-elixir">defmodule Quicksort do
+
+  def sort(list) do
+    _sort(list)
+  end
+
+  defp _sort([]), do: []
+  defp _sort(list = [h|t]) do
+    _sort(Enum.filter(list, &amp;(&amp;1 &lt; h))) ++ [h] ++ _sort(Enum.filter(list, &amp;(&amp;1 &gt; h)))
+  end
+
+end
+</pre>
+</div>
+
+<p>
+Perform the usual actions, <code>git-add</code> and <code>git-commit</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">% git add quicksort.exs
+% git commit -m <span style="font-style: italic;">'initial commit'</span>
+</pre>
+</div>
+
+<p>
+Now, let's make some changes.  For one, there's compiler warning about the
+unused variable <code>t</code> and the actually sorting seems a bit dense.  Let's fix the
+warning and breakup the sorting:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-elixir">defmodule Quicksort do
+
+  def sort(list) do
+    _sort(list)
+  end
+
+  defp _sort([]), do: []
+  defp _sort(list = [h|_]) do
+    (list |&gt; Enum.filter(&amp;(&amp;1 &lt; h)) |&gt; _sort)
+    ++ [h] ++
+    (list |&gt; Enum.filter(&amp;(&amp;1 &gt; h)) |&gt; _sort)
+  end
+
+end
+</pre>
+</div>
+
+<p>
+Saving this version of the file should produce a diff similar to the following:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-diff">diff --git a/quicksort.exs b/quicksort.exs
+index 97b60b4..ed2446b 100644
+<span style="font-weight: bold;">--- </span><span style="font-weight: bold;">a/quicksort.exs</span>
+<span style="font-weight: bold;">+++ </span><span style="font-weight: bold;">b/quicksort.exs</span>
+<span style="font-weight: bold;">@@ -5,8 +5,10 @@</span><span style="font-weight: bold;"> defmodule Quicksort do</span>
+   end
+
+   defp _sort([]), do: []
+-  defp _sort(list = [h|t]) do
+-    _sort(Enum.filter(list, &amp;(&amp;1 &lt; h))) ++ [h] ++ _sort(Enum.filter(list, &amp;(&amp;1 &gt; h)))
++  defp _sort(list = [h|_]) do
++    (list |&gt; Enum.filter(&amp;(&amp;1 &lt; h)) |&gt; _sort)
++    ++ [h] ++
++    (list |&gt; Enum.filter(&amp;(&amp;1 &gt; h)) |&gt; _sort)
+   end
+
+ end
+</pre>
+</div>
+
+<p>
+However, since these changes are actually, argubly, two different changes, they
+should live in two commits.  Let's stage the change for <code>t</code> to <code>_</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">% git add --patch
+</pre>
+</div>
+
+<p>
+We will be presented with the diff from before:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">diff --git a/quicksort.exs b/quicksort.exs
+index 97b60b4..ed2446b 100644
+--- a/quicksort.exs
++++ b/quicksort.exs
+@@ -5,8 +5,10 @@ defmodule Quicksort do
+   end
+
+   defp _sort([]), do: []
+-  defp _sort(list = [h|t]) <span style="font-weight: bold;">do</span>
+-    _sort(Enum.filter(list, &amp;(&amp;1 &lt; h))) ++ [h] ++ _sort(Enum.filter(list, &amp;(&amp;1 &gt; h)))
++  defp _sort(list = [h|_]) <span style="font-weight: bold;">do</span>
++    (list |&gt; Enum.filter(&amp;(&amp;1 &lt; h)) |&gt; _sort)
++    ++ [h] ++
++    (list |&gt; Enum.filter(&amp;(&amp;1 &gt; h)) |&gt; _sort)
+   end
+
+ end
+Stage this hunk [y,n,q,a,d,/,e,?]?
+</pre>
+</div>
+
+<p>
+First thing we want to try is using the <code>split(s)</code> option.  However, this is an
+invalid choice because Git does not know how to split this hunk and we will be
+presented with the available options and the hunk again.  The option we then
+want is <code>edit(e)</code>.
+</p>
+
+<p>
+We will be dropped into our default editor, environment variable <code>$EDITOR</code>, Git
+<code>core.editor</code> setting.  From there, we will be presented with something of the
+following:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-diff"><span style="font-weight: bold; font-style: italic;">#</span><span style="font-weight: bold; font-style: italic;"> Manual hunk edit mode -- see bottom for a quick guide</span>
+<span style="font-weight: bold;">@@ -5,8 +5,10 @@</span><span style="font-weight: bold;"> defmodule Quicksort do</span>
+   end
+
+   defp _sort([]), do: []
+-  defp _sort(list = [h|t]) do
+-    _sort(Enum.filter(list, &amp;(&amp;1 &lt; h))) ++ [h] ++ _sort(Enum.filter(list, &amp;(&amp;1 &gt; h)))
++  defp _sort(list = [h|_]) do
++    (list |&gt; Enum.filter(&amp;(&amp;1 &lt; h)) |&gt; _sort)
++    ++ [h] ++
++    (list |&gt; Enum.filter(&amp;(&amp;1 &gt; h)) |&gt; _sort)
+   end
+
+ end
+<span style="font-weight: bold; font-style: italic;">#</span><span style="font-weight: bold; font-style: italic;"> ---</span>
+<span style="font-weight: bold; font-style: italic;">#</span><span style="font-weight: bold; font-style: italic;"> To remove '-' lines, make them ' ' lines (context).</span>
+<span style="font-weight: bold; font-style: italic;">#</span><span style="font-weight: bold; font-style: italic;"> To remove '+' lines, delete them.</span>
+<span style="font-weight: bold; font-style: italic;">#</span><span style="font-weight: bold; font-style: italic;"> Lines starting with # will be removed.</span>
+<span style="font-weight: bold; font-style: italic;">#</span>
+<span style="font-weight: bold; font-style: italic;">#</span><span style="font-weight: bold; font-style: italic;"> If the patch applies cleanly, the edited hunk will immediately be</span>
+<span style="font-weight: bold; font-style: italic;">#</span><span style="font-weight: bold; font-style: italic;"> marked for staging. If it does not apply cleanly, you will be given</span>
+<span style="font-weight: bold; font-style: italic;">#</span><span style="font-weight: bold; font-style: italic;"> an opportunity to edit again. If all lines of the hunk are removed,</span>
+<span style="font-weight: bold; font-style: italic;">#</span><span style="font-weight: bold; font-style: italic;"> then the edit is aborted and the hunk is left unchanged.</span>
+</pre>
+</div>
+
+<p>
+From here, we want to replace the leading minus of the change removal to a
+space and remove the last three additions.
+</p>
+
+<p>
+That is, we want the diff to look like:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-diff"><span style="font-weight: bold;">@@ -5,8 +5,10 @@</span><span style="font-weight: bold;"> defmodule Quicksort do</span>
+   end
+
+   defp _sort([]), do: []
+-  defp _sort(list = [h|t]) do
+ sort(Enum.filter(list, &amp;(&amp;1 &lt; h))) ++ [h] ++ _sort(Enum.filter(list, &amp;(&amp;1 &gt; h)))
++  defp _sort(list = [h|_]) do
+   end
+
+ end
+</pre>
+</div>
+
+<p>
+Saving and closing the editor now, Git will have staged the desired diff.  We
+can check the staged changes via <code>git-diff</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-diff">% git diff --cached
+diff --git a/quicksort.exs b/quicksort.exs
+index 97b60b4..94a5101 100644
+<span style="font-weight: bold;">--- </span><span style="font-weight: bold;">a/quicksort.exs</span>
+<span style="font-weight: bold;">+++ </span><span style="font-weight: bold;">b/quicksort.exs</span>
+<span style="font-weight: bold;">@@ -5,8 +5,8 @@</span><span style="font-weight: bold;"> defmodule Quicksort do</span>
+   end
+
+   defp _sort([]), do: []
+-  defp _sort(list = [h|t]) do
+     _sort(Enum.filter(list, &amp;(&amp;1 &lt; h))) ++ [h] ++ _sort(Enum.filter(list, &amp;(&amp;1 &gt; h)))
++  defp _sort(list = [h|_]) do
+   end
+
+ end
+</pre>
+</div>
+
+<p>
+Notice, the hunk context data was updated correctly to match the new changes.
+</p>
+
+<p>
+From here, commit the first change, and then add and commit the second change.
+</p>
+
+<p>
+Something to watch out for is over zealously removing changed lines.  For
+example, in Elixir quicksort example we have just did, if we entirely removed
+the second <code>-</code> from the diff <i>and</i> manually updated the hunk header, the patch
+will never apply cleanly.  Therefore, be especially careful with removing <code>-</code>
+lines.
+</p>
+</div>
+</div>
+</div>
+<footer id="" class="status">
+<footer>
+  <p>&copy; 2014-2022 Kenny Ballou.
+    <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Some rights
+      reserved.</a></p>
+  <p>Powered by <a href="https://gnu.org">GNU/Linux</a></p>
+</footer>
+</footer>
+</body>
+</html>

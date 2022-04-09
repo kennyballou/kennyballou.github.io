@@ -1,0 +1,613 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-04-09 Sat 18:52 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Granularity of (Git) Commits</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="kb" />
+<meta name="description" content="How often and why"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<meta charset="utf-8">
+
+<meta name="author" content="Kenny Ballou">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<title>~kb</title>
+
+<link rel="canonical" href="/" />
+<link href="/index.xml" rel="alternate" type="application/rss+xml"
+      title="~kb/blog" />
+
+<link rel="stylesheet" href="/css/simple.css" />
+<link rel="stylesheet" href="/css/simple.add.css" />
+<link rel="stylesheet" href="/css/katex.css" />
+<link rel="stylesheet" href="/css/fa-all.css" />
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<script defer type="text/javascript" src="/js/katex.js"></script>
+<script defer type="text/javascript" src="/js/katex-render.js"></script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://kennyballou.com/blog"> UP </a>
+ |
+ <a accesskey="H" href="https://kennyballou.com/"> HOME </a>
+</div><header id="" class="status">
+<nav>
+  <a href="/about.html">
+    <i class="fade fas fa-user-circle"></i>
+  </a>
+  <a href="https://git.devnulllabs.io"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-code-branch fa-1x"></i>
+  </a>
+  <a href="https://github.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-github fa-1x"></i>
+  </a>
+  <a href="https://bitbucket.org/kballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-bitbucket fa-1x"></i>
+  </a>
+  <a href="https://twitter.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-twitter fa-1x"></i>
+  </a>
+  <a href="https://www.buymeacoffee.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-mug-hot fa-1x"></i>
+  </a>
+  <a href="/resume.pdf"
+     target="_blank">
+    <i class="fade far fa-file-pdf"></i>
+  </a>
+  <a href="/932F3E8E1C0F4A9895D7B8B8B0CAA28A02958308.txt"
+     target="_blank">
+    <i class="fade fas fa-key"></i>
+  </a>
+  <a href="/index.xml" rel="alternate"
+     type="application/rss+xml">
+    <i class="fade fas fa-rss fa-1x"></i>
+  </a>
+</nav>
+</header>
+<div id="main">
+<h1 class="title">Granularity of (Git) Commits</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgebb4876">Introduction</a></li>
+<li><a href="#org9f5137d">Single Story -&gt; Single Commit</a></li>
+<li><a href="#org548b9ea">Discrete Tasks -&gt; Multiple Atomic Commits</a></li>
+<li><a href="#org5a75157">Examples</a></li>
+<li><a href="#org90f94d8">Discussion</a></li>
+</ul>
+</div>
+</div>
+<div class="PREVIEW">
+<p>
+There are <a href="https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html">many</a> <a href="https://chris.beams.io/posts/git-commit/">blog</a> <a href="https://medium.com/@joshuatauberer/write-joyous-git-commit-messages-2f98891114c4">posts</a> which extol the foundations of writing good,
+communicative commit messages.  These same posts, however, tend to otherwise
+ignore the question of granularity.  In this post, I attempt an answer to
+granularity.  The answer is, of course, it depends.
+</p>
+
+</div>
+
+<a href="https://xkcd.com/1296"><figure>
+
+<div id="orgfd4500c" class="figure">
+<p><img src="https://imgs.xkcd.com/comics/git_commit.png" alt="git_commit.png" />
+</p>
+<p><span class="figure-number">Figure 1: </span>Merge branch 'asdfasjkfdlas/alkdjf' into sdkjfls-final</p>
+</div>
+</figure></a>
+
+<div id="outline-container-orgebb4876" class="outline-2">
+<h2 id="orgebb4876"><a id="ID-dfcb1574-d7a9-447a-a0e5-986a88a23cce"></a>Introduction</h2>
+<div class="outline-text-2" id="text-orgebb4876">
+<p>
+Regardless of position on "good" or "communicative," we are often left with
+questions about the commits themselves.  How frequent should we commit?  What
+should be included in the commit?  What should be <i>excluded</i> from the commit?
+What should the operational state of the entire code base be at each commit?
+</p>
+
+<p>
+What we're asking about is the granularity of commits.  How many commits
+constitutes a story, a feature, or a bug.  There are two schools of thought on
+the question, although I'm not sure it's been so explicit.  On one side, the
+discretization of work leads naturally into a series of commits.  Another, the
+task is singular, therefore, there should be only one commit that lands in
+<code>master</code>, seldom more than one.
+</p>
+
+<p>
+While both of these answers have tradeoffs, what you, as a developer do,
+depends entirely on your team.  Similar to good commit messages, if your team
+has a policy of a single commit per task/story/feature/bug/whatever,
+pragmatically, stick with it.  Understand why the team arrived at that answer
+before suggesting the other approach.  Vice-versa, if the team wants the
+discrete chunks of work to be committed and then a series of commits together
+combine into the completion of a task, go with it.  However, if your team
+doesn't have a consistent choice, <i>that</i> is what should be fixed.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9f5137d" class="outline-2">
+<h2 id="org9f5137d"><a id="ID-ca580080-825e-47e1-a481-51aeb317151c"></a>Single Story -&gt; Single Commit</h2>
+<div class="outline-text-2" id="text-org9f5137d">
+<p>
+Using a single commit for tasks comes with a lot of simplicity, but the commits
+themselves will be large.  Integrating the single commit is relatively
+simple.  Resolving merge conflicts is simpler since only the end state has to
+be considered.  Reviewers only have to test the operational build state of the
+single commit when reviewing or merging.  Comprehending the change and its
+rationale includes reading a single commit message.  Ultimately, single commits
+are associated with simplicity.
+</p>
+
+<p>
+However, the commit itself, the changes contained in the commit will, on
+average, be substantial and far reaching.  It may be difficult for reviewers to
+separate the signal from the noise.  If there is an issue with the commit, a
+bisection indicates the single commit is the cause of a bug, and to rapidly
+resolve the issue, a revert is issued, the whole commit goes, including any
+possible refactorings that improved the system.  Worse, these refactorings may
+be referenced down the line, causing more issues.
+</p>
+
+<blockquote>
+<p>
+Arguments can be made that "refactoring" constitutes its own task, and
+therefore is in its own commit.  Unfortunately, this is not always the case.
+The history of code is far messier than even I wish to admit.
+</p>
+</blockquote>
+</div>
+</div>
+
+<div id="outline-container-org548b9ea" class="outline-2">
+<h2 id="org548b9ea"><a id="ID-ebba1bce-544b-4ea5-80a0-57bbb17b8335"></a>Discrete Tasks -&gt; Multiple Atomic Commits</h2>
+<div class="outline-text-2" id="text-org548b9ea">
+<p>
+Instead of using a single commit which contains every single change that was
+made to accomplish the task, we can use a single commit for each of those
+tasks.  This dampens the size of each commit, but incurs a little complexity
+for the reviewing and comprehending phases of development.  Stringent adherence
+to atomic commits allows for <a href="https://www.git-scm.com/docs/git-blame">git blame</a> to provide better contextual information
+when attempting to understand any one specific line of code.  Comparatively, it
+is easy for changes made using a single commit to become lost in the noise and
+lose context.
+</p>
+
+<p>
+Using atomic commits, however, can make integration tasks particularly
+difficult when using <a href="https://www.git-scm.com/docs/git-rebase">rebase</a>.  For example, a series of atomic commits are made
+on a topic branch and are ready for merging into <code>master</code>.  During the
+development of this topic branch, other changes were made and merged before
+this topic branch lands.  Easy, <a href="https://www.git-scm.com/docs/git-fetch">fetch</a> <code>origin/master</code>, <a href="https://www.git-scm.com/docs/git-merge">merge</a> <code>origin/master</code> into
+<code>master</code>, and <a href="https://www.git-scm.com/docs/git-rebase">rebase</a> the topic branch onto <code>master</code>.  Fate would have it, though,
+there are conflicts.  Worse, the conflict is in one of the first commits, and
+the changes need to be propagated through the commits appropriately for the
+series to remain sensible.  This is not easy.  Aside from enabling <a href="https://git-scm.com/docs/git-rerere">rerere</a> and
+using <code>diff3</code> for <a href="https://git-scm.com/docs/merge-config"><code>merge.conflictstyle</code></a>, I am personally unaware of a repeatable,
+universal way to achieve reliable results when rebasing with conflicts.
+</p>
+
+<p>
+The difficulty is that each commit must remain atomic and make the changes it
+states.  However, in the middle of the rebase, it is difficult to remember what
+the change should be for the specified commit.  We easily remember the end
+result, but using the end result may create empty commits or worse, more
+conflicts.
+</p>
+
+<blockquote>
+<p>
+If you, dear reader, are aware of a better approach, please share.
+</p>
+</blockquote>
+
+<p>
+Atomic commits afford more granularity in case a change needs to be reverted.
+Although, finding that one commit may be more difficult since there are
+generally more commits to bisect.  Which leads into the next issue, each atomic
+commit <a href="https://tools.ietf.org/html/rfc2119">MUST</a> be stable and in working order, e.g., the project is buildable
+without error, tests SHALL pass, etc.  Ensuring this is similarly not easy.
+</p>
+
+<p>
+While using a series of commits to communicate a single story can be complex.
+It does afford other flexibilities not possible when using the former approach.
+Specifically, pull requests consisting of multiple commits can be partially
+accepted.  <a href="https://github.com/">GitHub</a> and other source forges do not have tooling for this in their
+web UI's, but this is certainly possible and <span class="underline">is</span> done in larger projects, e.g.,
+<a href="https://www.kernel.org/">Linux</a>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5a75157" class="outline-2">
+<h2 id="org5a75157"><a id="ID-776e8b2e-476b-4949-bd00-f846393ff6f6"></a>Examples</h2>
+<div class="outline-text-2" id="text-org5a75157">
+<p>
+Let's examine some pull requests which demonstrate both approaches.  I'm going
+to point to pull requests I have submitted since I don't want to cast any
+unintentional judgment to someone else.  They are both for the same project and
+they are essentially the same set of changes.  The <a href="https://github.com/mpdel/libmpdel/pull/2">first</a> has one all of the
+changes into a single commit.  It tells a larger story about enabling usage of
+UNIX Sockets for a local connection.  There are several discrete changes
+required to get there, but the it's all for the larger goal of connecting to a
+local machine's <a href="https://www.musicpd.org/">muisc player daemon</a> via the AF<sub>UNIX</sub> connection type.
+</p>
+
+<p>
+Repeated here is the single message and summary diff of the <a href="https://github.com/mpdel/libmpdel/pull/2">first</a> pull request:
+</p>
+
+<pre class="example">
+libmpdel: enable use of local UNIX sockets for MPD
+
+By using `make-network-process` we can tune the parameters for either
+network connections or local UNIX socket connections.
+
+As an added bonus, connections are very fast.  In my limited testing,
+`make-network-process` tends to be dramatically faster than the
+`open-network-stream` function.  Of course, without passing `:family
+'ipv4` to `make-network-process`, the two functions exhibit similar
+performance, so it's not as simple as "one is written in C and the other
+is written in ELisp."
+
+Deprecate/obsolete the `libmpdel-port` variable in favor of
+`libmpdel-service` which semantically makes more sense now that libmpdel
+can connect to either a port or a socket.
+
+`libmpdel-profiles` also work with the new local socket connection
+behaviour.
+
+Although I don't use `customize`, the new variable (`libmpdel-service`)
+and profiles (`libmpdel-profiles`) should be accessible via `customize`
+just the same.
+
+1 file changed, 44 insertions(+), 10 deletions(-)
+libmpdel.el | 54 ++++++++++++++++++++++++++++++++++++++++++++----------
+</pre>
+
+<p>
+The <a href="https://github.com/mpdel/libmpdel/pull/3">second</a> pull request is only slightly different from the first because there
+were changes in the upstream <code>master</code> branch that does some of the leg work that
+the first commit proposed.  However, at the discretion of the project owner and
+maintainer, the first large commit was broken down into its component commits.
+Each commit tells the story of its own change, culminating into the final
+commit closing the larger story of enabling the UNIX socket connection type.
+</p>
+
+<p>
+Repeated here are the series of commit messages and summary differences:
+</p>
+
+<pre class="example">
+add custom variable `libmpdel-family`
+
+This can be used to switch between IPv4 and IPv6 addresses.
+
+1 file changed, 7 insertions(+)
+libmpdel.el | 7 +++++++
+</pre>
+
+<pre class="example">
+Always use `make-network-process`
+
+When making a connection to MPD, whether via local UNIX socket, or TCP
+stream, `make-network-process` tends to be faster at establishing the
+connection.  In my limited testing, `make-network-process` tends to be
+dramatically faster than the `open-network-stream` function.  Of course,
+without passing `:family 'ipv4` to `make-network-process`, the two
+functions exhibit similar performance, so it's not as simple as "one is
+written in C and the other is written in ELisp."
+
+1 file changed, 7 insertions(+), 5 deletions(-)
+libmpdel.el | 12 +++++++-----
+</pre>
+
+<pre class="example">
+Add missing element to `limbpdel-profiles` docstring
+
+1 file changed, 1 insertion(+), 1 deletion(-)
+libmpdel.el | 2 +-
+</pre>
+
+<pre class="example">
+add libmpdel-family to `libmpdel-profiles`
+
+Add ability to specify the address family for connection profiles.
+
+1 file changed, 7 insertions(+), 4 deletions(-)
+libmpdel.el | 11 +++++++----
+</pre>
+
+<p>
+Clearly, each of the previous four commits are smaller and more focused than
+the single, all encompassing commit.  Each commit provides focused commentary
+to the specific lines being changed.  While it's missing in this case, since
+this is more a personal issue than a product with board of story cards, or what
+have you, it's easy to add story context to the bottom of the commit message so
+that others reading this can see more explicit motivation for the smaller
+commit.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org90f94d8" class="outline-2">
+<h2 id="org90f94d8"><a id="ID-8b3791ef-6fba-4bfa-8b77-a7d24786c018"></a>Discussion</h2>
+<div class="outline-text-2" id="text-org90f94d8">
+<p>
+It's rather easy to argue for "small, atomic" commits, but I sense we have
+failed to clearly articulate what we mean by "small".  How small is "small"?
+What are the contours of our definition of "small"?  As a result, we have
+converged to one of two camps, where we say a single story is "small", or the
+individual, discretized changes are "small".
+</p>
+
+<blockquote>
+<p>
+The third and/or fourth camp that exists, which is out of scope of this entire
+discussion, are commits which follow the messy history of <span class="underline">how</span> everything came
+together.  Every commit is not buildable, tested, etc., but merely a step in
+the direction toward the completion of some task.  The first draft, if you
+will, towards the completion of a task.  In previous discussions, I've referred
+to this style has the how the changes "actually" came into existence.  Whereas,
+here, we are talking about commits which are edited to tell the story of the
+changes, how the changes <i>ought</i> to have happened, if we were perfect and knew
+everything.
+</p>
+</blockquote>
+
+<p>
+I'm not going to argue either way which strategy is better.  As mentioned
+before, this is a team and/or personal choice.  It's a protocol about
+communicating changes in software that needs to be decided to effectively
+collaborate.  However, I hope I have provided sufficient informational context
+for you and your team to make a decision about which strategy to pursue.
+</p>
+</div>
+</div>
+</div>
+<footer id="" class="status">
+<footer>
+  <p>&copy; 2014-2022 Kenny Ballou.
+    <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Some rights
+      reserved.</a></p>
+  <p>Powered by <a href="https://gnu.org">GNU/Linux</a></p>
+</footer>
+</footer>
+</body>
+</html>

@@ -1,0 +1,1145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-04-09 Sat 18:52 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Real-Time Streaming with Apache Storm and Apache Kafka</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="kb" />
+<meta name="description" content="Overview of Apache Storm and sample Twitter Sentiment Analysis"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<meta charset="utf-8">
+
+<meta name="author" content="Kenny Ballou">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<title>~kb</title>
+
+<link rel="canonical" href="/" />
+<link href="/index.xml" rel="alternate" type="application/rss+xml"
+      title="~kb/blog" />
+
+<link rel="stylesheet" href="/css/simple.css" />
+<link rel="stylesheet" href="/css/simple.add.css" />
+<link rel="stylesheet" href="/css/katex.css" />
+<link rel="stylesheet" href="/css/fa-all.css" />
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<script defer type="text/javascript" src="/js/katex.js"></script>
+<script defer type="text/javascript" src="/js/katex-render.js"></script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://kennyballou.com/blog"> UP </a>
+ |
+ <a accesskey="H" href="https://kennyballou.com/"> HOME </a>
+</div><header id="" class="status">
+<nav>
+  <a href="/about.html">
+    <i class="fade fas fa-user-circle"></i>
+  </a>
+  <a href="https://git.devnulllabs.io"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-code-branch fa-1x"></i>
+  </a>
+  <a href="https://github.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-github fa-1x"></i>
+  </a>
+  <a href="https://bitbucket.org/kballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-bitbucket fa-1x"></i>
+  </a>
+  <a href="https://twitter.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-twitter fa-1x"></i>
+  </a>
+  <a href="https://www.buymeacoffee.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-mug-hot fa-1x"></i>
+  </a>
+  <a href="/resume.pdf"
+     target="_blank">
+    <i class="fade far fa-file-pdf"></i>
+  </a>
+  <a href="/932F3E8E1C0F4A9895D7B8B8B0CAA28A02958308.txt"
+     target="_blank">
+    <i class="fade fas fa-key"></i>
+  </a>
+  <a href="/index.xml" rel="alternate"
+     type="application/rss+xml">
+    <i class="fade fas fa-rss fa-1x"></i>
+  </a>
+</nav>
+</header>
+<div id="main">
+<h1 class="title">Real-Time Streaming with Apache Storm and Apache Kafka</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org284fa70">About Kafka</a>
+<ul>
+<li><a href="#org7fe59d3">Initial Thoughts</a></li>
+</ul>
+</li>
+<li><a href="#org74c9eee">About Storm</a>
+<ul>
+<li><a href="#org44a58f5">Why Storm</a></li>
+<li><a href="#org6b49913">Integration</a></li>
+<li><a href="#org1d539a5">Initial Thoughts</a></li>
+</ul>
+</li>
+<li><a href="#org3a30607">Test Project: Twitter Stream Sentiment Analysis</a>
+<ul>
+<li><a href="#org43cd5ef">Setup</a></li>
+<li><a href="#org103f378">Overview</a>
+<ul>
+<li><a href="#org92915ef">Spout</a></li>
+<li><a href="#orgbe2f3da">Twitter Data JSON Parsing</a></li>
+<li><a href="#orgaa25fb2">Filtering and Stemming</a></li>
+<li><a href="#orga358f12">Classifiers</a></li>
+<li><a href="#orgb760ad4">Join and Scoring</a></li>
+<li><a href="#orga27e0e6">Reporting: HDFS and HTTP POST</a></li>
+</ul>
+</li>
+<li><a href="#orgdf082ba">Implementing the Kafka Producer</a></li>
+<li><a href="#org55b3823">Implementing the Storm Topology</a>
+<ul>
+<li><a href="#topology-definition">Topology Definition</a></li>
+<li><a href="#org6c6133a">Twitter Data Filter / Parser</a></li>
+<li><a href="#orgbd96232">Text Filtering</a></li>
+<li><a href="#orgc0d7bb0">Positive and Negative Scoring</a></li>
+<li><a href="#org7c841be">Joining Scores</a></li>
+<li><a href="#org78c70cc">Deciding the Winning Class</a></li>
+<li><a href="#org15aa1fc">Report the Results</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org48c3fcf">Summary</a></li>
+<li><a href="#orgfd08afa">Related Links / References</a></li>
+</ul>
+</div>
+</div>
+<div class="PREVIEW">
+<p>
+The following post is one in the series of real-time systems tangential to the
+Hadoop ecosystem.  First, exploring both Apache Storm and Apache Kafka as a
+part of a real-time processing engine.  These two systems work together very
+well and make for an easy development experience while still being very
+performant.
+</p>
+
+</div>
+
+<div id="outline-container-org284fa70" class="outline-2">
+<h2 id="org284fa70"><a id="ID-61479b4b-0b6d-4ea4-905a-61b8d48eb5d3"></a>About Kafka</h2>
+<div class="outline-text-2" id="text-org284fa70">
+<p>
+<a href="http://kafka.apache.org/">Apache Kafka</a> is a message queue rethought as a distributed commit
+log.  It follows the publish-subscribe messaging style, with speed and
+durability built in.
+</p>
+
+<p>
+Kafka uses Zookeeper to share and save state between brokers.  Each broker
+maintains a set of partitions: primary and/ or secondary for each topic.  A set
+of Kafka brokers working together will maintain a set of topics.  Each topic
+has its partitions distributed over the participating Kafka brokers and, as of
+Kafka version 0.8, the replication factor determines, intuitively, the number
+of times a partition is duplicated for fault tolerance.
+</p>
+
+<p>
+While many brokered message queue systems have the broker maintain the state of
+its consumers, Kafka does not.  This frees up resources for the broker to
+ingest data faster.  For more information about Kafka's performance see
+<a href="http://engineering.linkedin.com/kafka/benchmarking-apache-kafka-2-million-writes-second-three-cheap-machines">Benchmarking Kafka</a>.
+</p>
+</div>
+
+<div id="outline-container-org7fe59d3" class="outline-3">
+<h3 id="org7fe59d3"><a id="ID-9c1190eb-1b03-41d5-ae4d-5ba7b6627549"></a>Initial Thoughts</h3>
+<div class="outline-text-3" id="text-org7fe59d3">
+<p>
+Kafka is a very promising project, with astounding throughput and one of the
+easiest pieces of software I have had the joy of installing and configuring.
+Although Kafka is not at the production 1.0 stable release yet, it's well on
+its way.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org74c9eee" class="outline-2">
+<h2 id="org74c9eee"><a id="ID-fafd8d7d-f1e5-434b-b66e-e5a510ba3fba"></a>About Storm</h2>
+<div class="outline-text-2" id="text-org74c9eee">
+<p>
+<a href="https://storm.apache.org/">Apache Storm</a>, currently in incubation, is a real-time computational
+engine made available under the free and open-source Apache version 2.0
+license.  It runs continuously, consuming data from the configured sources
+(Spouts) and passes the data down the processing pipeline (Bolts).  Combined,
+Spouts and Bolts make a Topology.  A topology can be written in any language
+including any JVM based language, Python, Ruby, Perl, or, with some work, even
+C.  See the <a href="https://storm.apache.org/">Storm</a> <a href="https://storm.apache.org/about/multi-language.html">multi-lingual</a>
+documentation.
+</p>
+</div>
+
+<div id="outline-container-org44a58f5" class="outline-3">
+<h3 id="org44a58f5"><a id="ID-b86d156c-a319-40a5-a008-6776eb5cd5bc"></a>Why Storm</h3>
+<div class="outline-text-3" id="text-org44a58f5">
+<p>
+Quoting from the project site:
+</p>
+
+<blockquote>
+<p>
+Storm has many use cases: realtime analytics, online machine learning,
+continuous computation, distributed RPC, ETL, and more.  Storm is fast:
+a benchmark clocked it at over a million tuples processed per second
+per node.  It is scalable, fault-tolerant, guarantees your data will be
+processed, and is easy to set up and operate.
+<a href="https://storm.apache.org/">Storm Homepage</a>
+</p>
+</blockquote>
+</div>
+</div>
+
+<div id="outline-container-org6b49913" class="outline-3">
+<h3 id="org6b49913"><a id="ID-0cb979f5-f9b1-4b70-84c4-8a5939593970"></a>Integration</h3>
+<div class="outline-text-3" id="text-org6b49913">
+<p>
+Storm can integrate with any queuing and any database system.  In fact, there
+are already quite a few existing projects for use to integrate Storm with other
+projects, like <a href="https://storm.apache.org/about/integrates.html">kestrel or Kafka</a>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1d539a5" class="outline-3">
+<h3 id="org1d539a5"><a id="ID-1fda3fa7-7756-444a-8c8c-d590b28b98c8"></a>Initial Thoughts</h3>
+<div class="outline-text-3" id="text-org1d539a5">
+<p>
+I found Storm's verbiage around the computational pipeline to fit my mental
+model very well, thinking about streaming computational processes as directed
+acyclic graphs makes a lot of intuitive sense.  That said, although I haven't
+been developing against Storm for very long, I do find some integration tasks
+to be slightly awkward.  For example, writing an HDFS file writer bolt requires
+some special considerations given bolt life cycles and HDFS writing patterns.
+This is really only a minor blemish however, as it only means the developers of
+Storm topologies have to understand the API more intimately; there are already
+common patterns emerging that should be adaptable to about any
+<a href="https://storm.apache.org/releases/current/Common-patterns.html">situation</a>.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3a30607" class="outline-2">
+<h2 id="org3a30607"><a id="ID-2bc926c1-bbba-4beb-b33e-1f2f8b6cc55e"></a>Test Project: Twitter Stream Sentiment Analysis</h2>
+<div class="outline-text-2" id="text-org3a30607">
+<p>
+To really give Storm a try, something a little more involved than just a simple
+word counter is needed.  Therefore, I have put together a Twitter Sentiment
+Analysis topology.  Though this is a good representative example of a more
+complicated topology, the method used for actually scoring the Twitter data is
+overly simple.
+</p>
+</div>
+
+<div id="outline-container-org43cd5ef" class="outline-3">
+<h3 id="org43cd5ef"><a id="ID-2a41d644-9598-49a0-863b-51dc4d46bf55"></a>Setup</h3>
+<div class="outline-text-3" id="text-org43cd5ef">
+<p>
+The setup used for this demo is a 5 node Vagrant virtual cluster.  Each node is
+running 64 bit CentOS 6.5, given 1 core, and 1024MB of RAM.  Every node is
+running HDFS (datanode), Zookeeper, and Kafka.  The first node, <code>node0</code>, is the
+namenode, and Nimbus &#x2013; Storm's master daemon.  <code>node0</code> is also running a
+<a href="http://www.docker.io/">Docker</a> container with a NodeJS application, part of the reporting
+process.  The remaining nodes, <code>node[1-4]</code>, are Storm worker nodes.  Storm,
+Kafka, and Zookeeper are all run under supervision via
+<a href="http://supervisord.org/">Supervisord</a>, so High-Availability is baked into this virtual
+cluster.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org103f378" class="outline-3">
+<h3 id="org103f378"><a id="ID-9aa28a4a-8b88-4f72-b170-392ada822ac9"></a>Overview</h3>
+<div class="outline-text-3" id="text-org103f378">
+
+<div class="figure">
+<p><img src="../../../../media/SentimentAnalysisTopology.png" alt="SentimentAnalysisTopology.png" />
+</p>
+</div>
+
+<p>
+I wrote a simple Kafka producer that reads files off disk and sends them to the
+Kafka cluster.  This is how we feed the whole system and is used in lieu of
+opening a stream to Twitter.
+</p>
+</div>
+
+<div id="outline-container-org92915ef" class="outline-4">
+<h4 id="org92915ef"><a id="ID-331f15c6-e483-44e2-821f-a9e26119871e"></a>Spout</h4>
+<div class="outline-text-4" id="text-org92915ef">
+<p>
+The orange node from the picture is our
+<a href="https://github.com/apache/incubator-storm/tree/master/external/storm-kafka"><code>KafkaSpout</code></a> that will be consuming incoming
+messages from the Kafka brokers.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbe2f3da" class="outline-4">
+<h4 id="orgbe2f3da"><a id="ID-f564d65f-012a-4430-912d-acc3c1221cb7"></a>Twitter Data JSON Parsing</h4>
+<div class="outline-text-4" id="text-orgbe2f3da">
+<p>
+The first bolt, <code>2</code> in the image, attempts to parse the Twitter JSON data and
+emits <code>tweet_id</code> and <code>tweet_text</code>.  This implementation only processes English
+tweets.  If the topology were to be more ambitious, it may pass the language
+code down and create different scoring bolts for each language.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgaa25fb2" class="outline-4">
+<h4 id="orgaa25fb2"><a id="ID-fd99a733-e41b-459e-a9e9-407c45415fd2"></a>Filtering and Stemming</h4>
+<div class="outline-text-4" id="text-orgaa25fb2">
+<p>
+This next bolt, <code>3</code>, performs first-round data sanitization.  That is, it
+removes all non-alpha characters.
+</p>
+
+<p>
+Following, the next round of data cleansing, <code>4</code>, is to remove common words to
+reduce noise for the classifiers.  These common words are usually referred to
+as <i>stop words</i>.  <a href="http://en.wikipedia.org/wiki/Stemming"><i>Stemming</i></a>, or considering suffixes to
+match the root, could also be performed here, or in another, later bolt.
+</p>
+
+<p>
+<code>4</code>, when finished, will then broadcast the data to both of the classifiers.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga358f12" class="outline-4">
+<h4 id="orga358f12"><a id="ID-633ed308-2496-4a6b-a246-94ee53868bb2"></a>Classifiers</h4>
+<div class="outline-text-4" id="text-orga358f12">
+<p>
+Each classifier is defined by its own bolt.  One classifier for the positive
+class, <code>5</code>, and another for the negative class, <code>6</code>.
+</p>
+
+<p>
+The implementation of the classifiers follows the
+<a href="http://en.wikipedia.org/wiki/Bag-of-words_model">Bag-of-words</a> model.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb760ad4" class="outline-4">
+<h4 id="orgb760ad4"><a id="ID-032820a0-e13c-410f-979e-f48bdeb178f5"></a>Join and Scoring</h4>
+<div class="outline-text-4" id="text-orgb760ad4">
+<p>
+Next, bolt <code>7</code> joins the scores from the two previous classifiers.  The
+implementation of this bolt isn't perfect.  For example, message transaction is
+not guaranteed: if one-side of the join fails, neither side is notified.
+</p>
+
+<p>
+To finish up the scoring, bolt <code>8</code> compares the scores from the classifiers and
+declares the class accordingly.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga27e0e6" class="outline-4">
+<h4 id="orga27e0e6"><a id="ID-4d271aa8-84ac-4fd6-a9ef-ac28101888ed"></a>Reporting: HDFS and HTTP POST</h4>
+<div class="outline-text-4" id="text-orga27e0e6">
+<p>
+Finally, the scoring bolt broadcasts off the results to a HDFS file writer
+bolt, <code>9</code>, and a NodeJS notifier bolt, <code>10</code>.  The HDFS bolt fills a list until
+it has 1000 records in it and then spools to disk.  Of course, like the join
+bolt, this could be better implemented to fail input tuples if the bolt fails
+to write to disk or have a timeout to write to disk after a certain period of
+time.  The NodeJs notifier bolt, on the other hand, sends a HTTP POST each time
+a record is received.  This could be batched as well, but again, this is for
+demonstration purposes only.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdf082ba" class="outline-3">
+<h3 id="orgdf082ba"><a id="ID-f1c52b9a-46f5-4a32-b566-05b910d34121"></a>Implementing the Kafka Producer</h3>
+<div class="outline-text-3" id="text-orgdf082ba">
+<p>
+Here, the main portions of the code for the Kafka producer that was used to
+test our cluster are defined.
+</p>
+
+<p>
+In the main class, we setup the data pipes and threads:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java">LOGGER.debug(<span style="font-style: italic;">"Setting up streams"</span>);
+<span style="font-weight: bold; text-decoration: underline;">PipedInputStream</span> <span style="font-weight: bold; font-style: italic;">send</span> = <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">PipedInputStream</span>(BUFFER_LEN);
+<span style="font-weight: bold; text-decoration: underline;">PipedOutputStream</span> <span style="font-weight: bold; font-style: italic;">input</span> = <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">PipedOutputStream</span>(send);
+
+LOGGER.debug(<span style="font-style: italic;">"Setting up connections"</span>);
+LOGGER.debug(<span style="font-style: italic;">"Setting up file reader"</span>);
+<span style="font-weight: bold; text-decoration: underline;">BufferedFileReader</span> <span style="font-weight: bold; font-style: italic;">reader</span> = <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">BufferedFileReader</span>(filename, input);
+LOGGER.debug(<span style="font-style: italic;">"Setting up kafka producer"</span>);
+<span style="font-weight: bold; text-decoration: underline;">KafkaProducer</span> <span style="font-weight: bold; font-style: italic;">kafkaProducer</span> = <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">KafkaProducer</span>(topic, send);
+
+LOGGER.debug(<span style="font-style: italic;">"Spinning up threads"</span>);
+<span style="font-weight: bold; text-decoration: underline;">Thread</span> <span style="font-weight: bold; font-style: italic;">source</span> = <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Thread</span>(reader);
+<span style="font-weight: bold; text-decoration: underline;">Thread</span> <span style="font-weight: bold; font-style: italic;">kafka</span> = <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Thread</span>(kafkaProducer);
+
+source.start();
+kafka.start();
+
+LOGGER.debug(<span style="font-style: italic;">"Joining"</span>);
+kafka.join();
+</pre>
+</div>
+
+<p>
+The <code>BufferedFileReader</code> in its own thread reads off the data from disk:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java">rd = <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">BufferedReader</span>(<span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">FileReader</span>(<span style="font-weight: bold;">this</span>.fileToRead));
+wd = <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">BufferedWriter</span>(<span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">OutputStreamWriter</span>(<span style="font-weight: bold;">this</span>.outputStream, ENC));
+<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">b</span> = -1;
+<span style="font-weight: bold;">while</span> ((b = rd.read()) != -1)
+{
+    wd.write(b);
+}
+</pre>
+</div>
+
+<p>
+Finally, the <code>KafkaProducer</code> sends asynchronous messages to the Kafka Cluster:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java">rd = <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">BufferedReader</span>(<span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">InputStreamReader</span>(<span style="font-weight: bold;">this</span>.inputStream, ENC));
+<span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">line</span> = <span style="font-weight: bold; text-decoration: underline;">null</span>;
+producer = <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Producer</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Integer</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt;(conf);
+<span style="font-weight: bold;">while</span> ((line = rd.readLine()) != <span style="font-weight: bold; text-decoration: underline;">null</span>)
+{
+    producer.send(<span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">KeyedMessage</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Integer</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt;(<span style="font-weight: bold;">this</span>.topic, line));
+}
+</pre>
+</div>
+
+<p>
+Doing these operations on separate threads gives us the benefit of having disk
+reads not block the Kafka producer or vice-versa, enabling maximum performance
+tunable by the size of the buffer.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org55b3823" class="outline-3">
+<h3 id="org55b3823"><a id="ID-db8e8ad6-aa17-45c0-bc54-a1acd5f1145d"></a>Implementing the Storm Topology</h3>
+<div class="outline-text-3" id="text-org55b3823">
+</div>
+
+<div id="outline-container-orga979ad4" class="outline-4">
+<h4 id="topology-definition"><a id="orga979ad4"></a><a id="ID-04c8a088-d95b-4a57-909e-facf4e393038"></a>Topology Definition</h4>
+<div class="outline-text-4" id="text-topology-definition">
+<p>
+Moving onward to Storm, here we define the topology and how each bolt
+will be talking to each other:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold; text-decoration: underline;">TopologyBuilder</span> <span style="font-weight: bold; font-style: italic;">topology</span> = <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">TopologyBuilder</span>();
+
+topology.setSpout(<span style="font-style: italic;">"kafka_spout"</span>, <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">KafkaSpout</span>(kafkaConf), 4);
+
+topology.setBolt(<span style="font-style: italic;">"twitter_filter"</span>, <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">TwitterFilterBolt</span>(), 4)
+        .shuffleGrouping(<span style="font-style: italic;">"kafka_spout"</span>);
+
+topology.setBolt(<span style="font-style: italic;">"text_filter"</span>, <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">TextFilterBolt</span>(), 4)
+        .shuffleGrouping(<span style="font-style: italic;">"twitter_filter"</span>);
+
+topology.setBolt(<span style="font-style: italic;">"stemming"</span>, <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">StemmingBolt</span>(), 4)
+        .shuffleGrouping(<span style="font-style: italic;">"text_filter"</span>);
+
+topology.setBolt(<span style="font-style: italic;">"positive"</span>, <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">PositiveSentimentBolt</span>(), 4)
+        .shuffleGrouping(<span style="font-style: italic;">"stemming"</span>);
+topology.setBolt(<span style="font-style: italic;">"negative"</span>, <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">NegativeSentimentBolt</span>(), 4)
+        .shuffleGrouping(<span style="font-style: italic;">"stemming"</span>);
+
+topology.setBolt(<span style="font-style: italic;">"join"</span>, <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">JoinSentimentsBolt</span>(), 4)
+        .fieldsGrouping(<span style="font-style: italic;">"positive"</span>, <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Fields</span>(<span style="font-style: italic;">"tweet_id"</span>))
+        .fieldsGrouping(<span style="font-style: italic;">"negative"</span>, <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Fields</span>(<span style="font-style: italic;">"tweet_id"</span>));
+
+topology.setBolt(<span style="font-style: italic;">"score"</span>, <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">SentimentScoringBolt</span>(), 4)
+        .shuffleGrouping(<span style="font-style: italic;">"join"</span>);
+
+topology.setBolt(<span style="font-style: italic;">"hdfs"</span>, <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">HDFSBolt</span>(), 4)
+        .shuffleGrouping(<span style="font-style: italic;">"score"</span>);
+topology.setBolt(<span style="font-style: italic;">"nodejs"</span>, <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">NodeNotifierBolt</span>(), 4)
+        .shuffleGrouping(<span style="font-style: italic;">"score"</span>);
+</pre>
+</div>
+
+<p>
+Notably, the data is shuffled to each bolt until except when joining, as it's
+very important that the same tweets are given to the same instance of the
+joining bolt.  To read more about stream groupings, visit the
+<a href="http://storm.incubator.apache.org/documentation/Concepts.html#stream-groupings">Storm documentation</a>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6c6133a" class="outline-4">
+<h4 id="org6c6133a"><a id="ID-b5acee39-78b9-4a32-81cf-9aa1cab59389"></a>Twitter Data Filter / Parser</h4>
+<div class="outline-text-4" id="text-org6c6133a">
+<p>
+Parsing the Twitter JSON data is one of the first things that needs to be done.
+This is accomplished with the use of the <a href="https://github.com/FasterXML/jackson-databind">JacksonXML
+Databind</a> library.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold; text-decoration: underline;">JsonNode</span> <span style="font-weight: bold; font-style: italic;">root</span> = mapper.readValue(json, JsonNode.<span style="font-weight: bold;">class</span>);
+<span style="font-weight: bold; text-decoration: underline;">long</span> <span style="font-weight: bold; font-style: italic;">id</span>;
+<span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">text</span>;
+<span style="font-weight: bold;">if</span> (root.get(<span style="font-style: italic;">"lang"</span>) != <span style="font-weight: bold; text-decoration: underline;">null</span> &amp;&amp;
+    <span style="font-style: italic;">"en"</span>.equals(root.get(<span style="font-style: italic;">"lang"</span>).textValue()))
+{
+    <span style="font-weight: bold;">if</span> (root.get(<span style="font-style: italic;">"id"</span>) != <span style="font-weight: bold; text-decoration: underline;">null</span> &amp;&amp; root.get(<span style="font-style: italic;">"text"</span>) != <span style="font-weight: bold; text-decoration: underline;">null</span>)
+    {
+        id = root.get(<span style="font-style: italic;">"id"</span>).longValue();
+        text = root.get(<span style="font-style: italic;">"text"</span>).textValue();
+        collector.emit(<span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Values</span>(id, text));
+    }
+    <span style="font-weight: bold;">else</span>
+        LOGGER.debug(<span style="font-style: italic;">"tweet id and/ or text was null"</span>);
+}
+<span style="font-weight: bold;">else</span>
+    LOGGER.debug(<span style="font-style: italic;">"Ignoring non-english tweet"</span>);
+</pre>
+</div>
+
+<p>
+As mentioned before, <code>tweet_id</code> and <code>tweet_text</code> are the only values being
+emitted.
+</p>
+
+<p>
+This is just using the basic <code>ObjectMapper</code> class from the Jackson Databind
+library to map the simple JSON object provided by the Twitter Streaming API to
+a <code>JsonNode</code>.  The language code is first tested to be English, as the topology
+does not support non-English tweets.  The new tuple is emitted down the Storm
+pipeline after ensuring the existence of the desired data, namely, <code>tweet_id</code>,
+and <code>tweet_text</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbd96232" class="outline-4">
+<h4 id="orgbd96232"><a id="ID-4f5225b3-30c4-4c4e-8cc6-32e171ec95c9"></a>Text Filtering</h4>
+<div class="outline-text-4" id="text-orgbd96232">
+<p>
+As previously mentioned, punctuation and other symbols are removed because they
+are just noise to the classifiers:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold; text-decoration: underline;">Long</span> <span style="font-weight: bold; font-style: italic;">id</span> = input.getLong(input.fieldIndex(<span style="font-style: italic;">"tweet_id"</span>));
+<span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">text</span> = input.getString(input.fieldIndex(<span style="font-style: italic;">"tweet_text"</span>));
+text = text.replaceAll(<span style="font-style: italic;">"[^a-zA-Z\\s]"</span>, <span style="font-style: italic;">""</span>).trim().toLowerCase();
+collector.emit(<span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Values</span>(id, text));
+</pre>
+</div>
+
+<p>
+<i>Very</i> common words are also removed because they are similarly noisy to the
+classifiers:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold; text-decoration: underline;">Long</span> <span style="font-weight: bold; font-style: italic;">id</span> = input.getLong(input.fieldIndex(<span style="font-style: italic;">"tweet_id"</span>));
+<span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">text</span> = input.getString(input.fieldIndex(<span style="font-style: italic;">"tweet_text"</span>));
+<span style="font-weight: bold; text-decoration: underline;">List</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>&gt; <span style="font-weight: bold; font-style: italic;">stopWords</span> = StopWords.getWords();
+<span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">word</span> : stopWords)
+{
+    text = text.replaceAll(word, <span style="font-style: italic;">""</span>);
+}
+collector.emit(<span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Values</span>(id, text));
+</pre>
+</div>
+
+<p>
+Here the <code>StopWords</code> class is a singleton holding the list of words we wish to
+omit.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc0d7bb0" class="outline-4">
+<h4 id="orgc0d7bb0"><a id="ID-867b2251-1f33-4889-a287-b57088346802"></a>Positive and Negative Scoring</h4>
+<div class="outline-text-4" id="text-orgc0d7bb0">
+<p>
+Since the approach for scoring is based on a very limited
+<a href="http://en.wikipedia.org/wiki/Bag-of-words_model">Bag-of-words</a> model, Each class is put into its own bolt;
+this also contrives the need for a join later.
+</p>
+
+<p>
+Positive Scoring:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold; text-decoration: underline;">Long</span> <span style="font-weight: bold; font-style: italic;">id</span> = input.getLong(input.fieldIndex(<span style="font-style: italic;">"tweet_id"</span>));
+<span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">text</span> = input.getString(input.fieldIndex(<span style="font-style: italic;">"tweet_text"</span>));
+<span style="font-weight: bold; text-decoration: underline;">Set</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>&gt; <span style="font-weight: bold; font-style: italic;">posWords</span> = PositiveWords.getWords();
+<span style="font-weight: bold; text-decoration: underline;">String</span>[] <span style="font-weight: bold; font-style: italic;">words</span> = text.split(<span style="font-style: italic;">" "</span>);
+<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">numWords</span> = words.length;
+<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">numPosWords</span> = 0;
+<span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">word</span> : words)
+{
+    <span style="font-weight: bold;">if</span> (posWords.contains(word))
+        numPosWords++;
+}
+collector.emit(<span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Values</span>(id, (<span style="font-weight: bold; text-decoration: underline;">float</span>) numPosWords / numWords, text));
+</pre>
+</div>
+
+<p>
+Negative Scoring:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold; text-decoration: underline;">Long</span> <span style="font-weight: bold; font-style: italic;">id</span> = input.getLong(input.fieldIndex(<span style="font-style: italic;">"tweet_id"</span>));
+<span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">text</span> = input.getString(input.fieldIndex(<span style="font-style: italic;">"tweet_text"</span>));
+<span style="font-weight: bold; text-decoration: underline;">Set</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>&gt; <span style="font-weight: bold; font-style: italic;">negWords</span> = NegativeWords.getWords();
+<span style="font-weight: bold; text-decoration: underline;">String</span>[] <span style="font-weight: bold; font-style: italic;">words</span> = text.split(<span style="font-style: italic;">" "</span>);
+<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">numWords</span> = words.length;
+<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">numNegWords</span> = 0;
+<span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">word</span> : words)
+{
+    <span style="font-weight: bold;">if</span> (negWords.contains(word))
+        numNegWords++;
+}
+collector.emit(<span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Values</span>(id, (<span style="font-weight: bold; text-decoration: underline;">float</span>)numNegWords / numWords, text));
+</pre>
+</div>
+
+<p>
+Similar to <code>StopWords</code>, <code>PositiveWords</code> and <code>NegativeWords</code> are both singletons
+maintaining lists of positive and negative words, respectively.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7c841be" class="outline-4">
+<h4 id="org7c841be"><a id="ID-70e4b9e8-53c6-41c0-8737-75f67dd8856d"></a>Joining Scores</h4>
+<div class="outline-text-4" id="text-org7c841be">
+<p>
+Joining in Storm isn't the most straight forward process to implement, although
+the process may be made simpler with the use of the
+<a href="http://storm.incubator.apache.org/documentation/Trident-API-Overview.html">Trident API</a>.  However, to get a feel for what to do
+without Trident and as an Academic exercise, the join is not implemented with
+the Trident API.  On related note, this join isn't perfect! It ignores a couple
+of issues, namely, it does not correctly fail a tuple on a one-sided join (when
+tweets are received twice from the same scoring bolt) and doesn't timeout
+tweets if they are left in the queue for too long.  With this in mind, here is
+our join:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold; text-decoration: underline;">Long</span> <span style="font-weight: bold; font-style: italic;">id</span> = input.getLong(input.fieldIndex(<span style="font-style: italic;">"tweet_id"</span>));
+<span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">text</span> = input.getString(input.fieldIndex(<span style="font-style: italic;">"tweet_text"</span>));
+<span style="font-weight: bold;">if</span> (input.contains(<span style="font-style: italic;">"pos_score"</span>))
+{
+    <span style="font-weight: bold; text-decoration: underline;">Float</span> <span style="font-weight: bold; font-style: italic;">pos</span> = input.getFloat(input.fieldIndex(<span style="font-style: italic;">"pos_score"</span>));
+    <span style="font-weight: bold;">if</span> (<span style="font-weight: bold;">this</span>.tweets.containsKey(id))
+    {
+        <span style="font-weight: bold; text-decoration: underline;">Triple</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>, <span style="font-weight: bold; text-decoration: underline;">Float</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt; <span style="font-weight: bold; font-style: italic;">triple</span> = <span style="font-weight: bold;">this</span>.tweets.get(id);
+        <span style="font-weight: bold;">if</span> (<span style="font-style: italic;">"neg"</span>.equals(triple.getCar()))
+            emit(collector, id, triple.getCaar(), pos, triple.getCdr());
+        <span style="font-weight: bold;">else</span>
+        {
+            LOGGER.warn(<span style="font-style: italic;">"one sided join attempted"</span>);
+            <span style="font-weight: bold;">this</span>.tweets.remove(id);
+        }
+    }
+    <span style="font-weight: bold;">else</span>
+        <span style="font-weight: bold;">this</span>.tweets.put(
+            id,
+            <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Triple</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>, <span style="font-weight: bold; text-decoration: underline;">Float</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt;(<span style="font-style: italic;">"pos"</span>, pos, text));
+}
+<span style="font-weight: bold;">else</span> <span style="font-weight: bold;">if</span> (input.contains(<span style="font-style: italic;">"neg_score"</span>))
+{
+    <span style="font-weight: bold; text-decoration: underline;">Float</span> <span style="font-weight: bold; font-style: italic;">neg</span> = input.getFloat(input.fieldIndex(<span style="font-style: italic;">"neg_score"</span>));
+    <span style="font-weight: bold;">if</span> (<span style="font-weight: bold;">this</span>.tweets.containsKey(id))
+    {
+        <span style="font-weight: bold; text-decoration: underline;">Triple</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>, <span style="font-weight: bold; text-decoration: underline;">Float</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt; <span style="font-weight: bold; font-style: italic;">triple</span> = <span style="font-weight: bold;">this</span>.tweets.get(id);
+        <span style="font-weight: bold;">if</span> (<span style="font-style: italic;">"pos"</span>.equals(triple.getCar()))
+            emit(collector, id, triple.getCaar(), neg, triple.getCdr());
+        <span style="font-weight: bold;">else</span>
+        {
+            LOGGER.warn(<span style="font-style: italic;">"one sided join attempted"</span>);
+            <span style="font-weight: bold;">this</span>.tweets.remove(id);
+        }
+    }
+    <span style="font-weight: bold;">else</span>
+        <span style="font-weight: bold;">this</span>.tweets.put(
+            id,
+            <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Triple</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>, <span style="font-weight: bold; text-decoration: underline;">Float</span>, <span style="font-weight: bold; text-decoration: underline;">String</span>&gt;(<span style="font-style: italic;">"neg"</span>, neg, text));
+}
+</pre>
+</div>
+
+<p>
+Where <code>emit</code> is defined simply by:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold;">private</span> <span style="font-weight: bold; text-decoration: underline;">void</span> <span style="font-weight: bold;">emit</span>(
+    <span style="font-weight: bold; text-decoration: underline;">BasicOutputCollector</span> <span style="font-weight: bold; font-style: italic;">collector</span>,
+    <span style="font-weight: bold; text-decoration: underline;">Long</span> <span style="font-weight: bold; font-style: italic;">id</span>,
+    <span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">text</span>,
+    <span style="font-weight: bold; text-decoration: underline;">float</span> <span style="font-weight: bold; font-style: italic;">pos</span>,
+    <span style="font-weight: bold; text-decoration: underline;">float</span> <span style="font-weight: bold; font-style: italic;">neg</span>)
+{
+    collector.emit(<span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Values</span>(id, pos, neg, text));
+    <span style="font-weight: bold;">this</span>.tweets.remove(id);
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org78c70cc" class="outline-4">
+<h4 id="org78c70cc"><a id="ID-3b4ae28b-b65e-4807-8ff1-6d3d3b7012e5"></a>Deciding the Winning Class</h4>
+<div class="outline-text-4" id="text-org78c70cc">
+<p>
+To ensure the <a href="http://en.wikipedia.org/wiki/Single_responsibility_principle">Single responsibility principle</a> is not violated,
+joining and scoring are split into separate bolts, though the class of the
+tweet could certainly be decided at the time of joining.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold; text-decoration: underline;">Long</span> <span style="font-weight: bold; font-style: italic;">id</span> = tuple.getLong(tuple.fieldIndex(<span style="font-style: italic;">"tweet_id"</span>));
+<span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">text</span> = tuple.getString(tuple.fieldIndex(<span style="font-style: italic;">"tweet_text"</span>));
+<span style="font-weight: bold; text-decoration: underline;">Float</span> <span style="font-weight: bold; font-style: italic;">pos</span> = tuple.getFloat(tuple.fieldIndex(<span style="font-style: italic;">"pos_score"</span>));
+<span style="font-weight: bold; text-decoration: underline;">Float</span> <span style="font-weight: bold; font-style: italic;">neg</span> = tuple.getFloat(tuple.fieldIndex(<span style="font-style: italic;">"neg_score"</span>));
+<span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">score</span> = pos &gt; neg ? <span style="font-style: italic;">"positive"</span> : <span style="font-style: italic;">"negative"</span>;
+collector.emit(<span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Values</span>(id, text, pos, neg, score));
+</pre>
+</div>
+
+<p>
+This decider will prefer negative scores, so if there is a tie, it's
+automatically handed to the negative class.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org15aa1fc" class="outline-4">
+<h4 id="org15aa1fc"><a id="ID-8677abbc-948d-49bf-a999-901d0a26a4be"></a>Report the Results</h4>
+<div class="outline-text-4" id="text-org15aa1fc">
+<p>
+Finally, there are two bolts that will yield results: one that writes data to
+HDFS, and another to send the data to a web server.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold; text-decoration: underline;">Long</span> <span style="font-weight: bold; font-style: italic;">id</span> = input.getLong(input.fieldIndex(<span style="font-style: italic;">"tweet_id"</span>));
+<span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">tweet</span> = input.getString(input.fieldIndex(<span style="font-style: italic;">"tweet_text"</span>));
+<span style="font-weight: bold; text-decoration: underline;">Float</span> <span style="font-weight: bold; font-style: italic;">pos</span> = input.getFloat(input.fieldIndex(<span style="font-style: italic;">"pos_score"</span>));
+<span style="font-weight: bold; text-decoration: underline;">Float</span> <span style="font-weight: bold; font-style: italic;">neg</span> = input.getFloat(input.fieldIndex(<span style="font-style: italic;">"neg_score"</span>));
+<span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">score</span> = input.getString(input.fieldIndex(<span style="font-style: italic;">"score"</span>));
+<span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">tweet_score</span> =
+    String.format(<span style="font-style: italic;">"%s,%s,%f,%f,%s\n"</span>, id, tweet, pos, neg, score);
+<span style="font-weight: bold;">this</span>.tweet_scores.add(tweet_score);
+<span style="font-weight: bold;">if</span> (<span style="font-weight: bold;">this</span>.tweet_scores.size() &gt;= 1000)
+{
+    writeToHDFS();
+    <span style="font-weight: bold;">this</span>.tweet_scores = <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">ArrayList</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>&gt;(1000);
+}
+</pre>
+</div>
+
+<p>
+Where <code>writeToHDFS</code> is primarily given by:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold; text-decoration: underline;">Configuration</span> <span style="font-weight: bold; font-style: italic;">conf</span> = <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Configuration</span>();
+conf.addResource(<span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Path</span>(<span style="font-style: italic;">"/opt/hadoop/etc/hadoop/core-site.xml"</span>));
+conf.addResource(<span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Path</span>(<span style="font-style: italic;">"/opt/hadoop/etc/hadoop/hdfs-site.xml"</span>));
+hdfs = FileSystem.get(conf);
+file = <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Path</span>(
+    Properties.getString(<span style="font-style: italic;">"rts.storm.hdfs_output_file"</span>) + <span style="font-weight: bold;">this</span>.id);
+<span style="font-weight: bold;">if</span> (hdfs.exists(file))
+    os = hdfs.append(file);
+<span style="font-weight: bold;">else</span>
+    os = hdfs.create(file);
+wd = <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">BufferedWriter</span>(<span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">OutputStreamWriter</span>(os, <span style="font-style: italic;">"UTF-8"</span>));
+<span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">tweet_score</span> : tweet_scores)
+{
+    wd.write(tweet_score);
+}
+</pre>
+</div>
+
+<p>
+And our <code>HTTP POST</code> to a web server:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold; text-decoration: underline;">Long</span> <span style="font-weight: bold; font-style: italic;">id</span> = input.getLong(input.fieldIndex(<span style="font-style: italic;">"tweet_id"</span>));
+<span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">tweet</span> = input.getString(input.fieldIndex(<span style="font-style: italic;">"tweet_text"</span>));
+<span style="font-weight: bold; text-decoration: underline;">Float</span> <span style="font-weight: bold; font-style: italic;">pos</span> = input.getFloat(input.fieldIndex(<span style="font-style: italic;">"pos_score"</span>));
+<span style="font-weight: bold; text-decoration: underline;">Float</span> <span style="font-weight: bold; font-style: italic;">neg</span> = input.getFloat(input.fieldIndex(<span style="font-style: italic;">"neg_score"</span>));
+<span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">score</span> = input.getString(input.fieldIndex(<span style="font-style: italic;">"score"</span>));
+<span style="font-weight: bold; text-decoration: underline;">HttpPost</span> <span style="font-weight: bold; font-style: italic;">post</span> = <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">HttpPost</span>(<span style="font-weight: bold;">this</span>.webserver);
+<span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">content</span> = String.format(
+    <span style="font-style: italic;">"{\"id\": \"%d\", "</span>  +
+    <span style="font-style: italic;">"\"text\": \"%s\", "</span> +
+    <span style="font-style: italic;">"\"pos\": \"%f\", "</span>  +
+    <span style="font-style: italic;">"\"neg\": \"%f\", "</span>  +
+    <span style="font-style: italic;">"\"score\": \"%s\" }"</span>,
+    id, tweet, pos, neg, score);
+
+<span style="font-weight: bold;">try</span>
+{
+    post.setEntity(<span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">StringEntity</span>(content));
+    <span style="font-weight: bold; text-decoration: underline;">HttpResponse</span> <span style="font-weight: bold; font-style: italic;">response</span> = client.execute(post);
+    <span style="font-weight: bold; text-decoration: underline;">org</span>.<span style="font-weight: bold; text-decoration: underline;">apache</span>.<span style="font-weight: bold; text-decoration: underline;">http</span>.<span style="font-weight: bold; text-decoration: underline;">util</span>.EntityUtils.consume(response.getEntity());
+}
+<span style="font-weight: bold;">catch</span> (<span style="font-weight: bold; text-decoration: underline;">Exception</span> <span style="font-weight: bold; font-style: italic;">ex</span>)
+{
+    LOGGER.error(<span style="font-style: italic;">"exception thrown while attempting post"</span>, ex);
+    LOGGER.trace(<span style="font-weight: bold; text-decoration: underline;">null</span>, ex);
+    reconnect();
+}
+</pre>
+</div>
+
+<p>
+There are some faults to point out with both of these bolts.  Namely, the HDFS
+bolt tries to batch the writes into 1000 tweets, but does not keep track of the
+tuples nor does it time out tuples or flush them at some interval.  That is, if
+a write fails or if the queue sits idle for too long, the topology is not
+notified and can't resend the tuples.  Similarly, the <code>HTTP POST</code>, does not
+batch and sends each POST synchronously causing the bolt to block for each
+message.  This can be alleviated with more instances of this bolt and more web
+servers to handle the increase in posts, and/ or a better batching process.
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org48c3fcf" class="outline-2">
+<h2 id="org48c3fcf"><a id="ID-1a6e1bd7-cc82-411a-82a7-9c24e8c1eaae"></a>Summary</h2>
+<div class="outline-text-2" id="text-org48c3fcf">
+<p>
+The full source of this test application can be found on
+<a href="https://github.com/zdata-inc/StormSampleProject">Github</a>.
+</p>
+
+<p>
+Apache Storm and Apache Kafka both have great potential in the real-time
+streaming market and have so far proven themselves to be very capable systems
+for performing real-time analytics.
+</p>
+
+<p>
+Stay tuned, as the next post in this series will be an overview look at
+Streaming with Apache Spark.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgfd08afa" class="outline-2">
+<h2 id="orgfd08afa"><a id="ID-19d9ee90-fc1f-4bc1-aece-f3c31fe4be7f"></a>Related Links / References</h2>
+<div class="outline-text-2" id="text-orgfd08afa">
+<ul class="org-ul">
+<li><a href="https://storm.apache.org/">Apache Storm Project Page</a></li>
+
+<li><a href="https://storm.apache.org/about/multi-language.html">Storm Multi-Language Documentation</a></li>
+
+<li><a href="http://kafka.apache.org/">Apache Kafka Project Page</a></li>
+
+<li><a href="http://engineering.linkedin.com/kafka/benchmarking-apache-kafka-2-million-writes-second-three-cheap-machines">LinkedIn Kafka Benchmarking: 2 million writes per
+second</a></li>
+
+<li><a href="https://storm.apache.org/about/integrates.html">Storm Integration Documentation</a></li>
+
+<li><a href="http://supervisord.org/">Supervisord Project Page</a></li>
+
+<li><a href="http://www.docker.io/">Docker IO Project Page</a></li>
+
+<li><a href="https://github.com/apache/incubator-storm/tree/master/external/storm-kafka">Storm-Kafka Source</a></li>
+
+<li><a href="https://github.com/zdata-inc/StormSampleProject">Full Source of Test Project</a></li>
+
+<li><a href="https://wiki.apache.org/incubator/StormProposal">Apache Storm Incubation Proposal</a></li>
+
+<li><a href="https://github.com/FasterXML/jackson-databind">Jackson Databind Project Bag</a></li>
+
+<li><a href="http://en.wikipedia.org/wiki/Bag-of-words_model">Wikipedia: Bag of words</a></li>
+
+<li><a href="http://storm.incubator.apache.org/documentation/Trident-API-Overview.html">Storm Trident API Overview</a></li>
+
+<li><a href="http://en.wikipedia.org/wiki/Single_responsibility_principle">Wikipedia: Single responsibility principle</a></li>
+
+<li><a href="http://en.wikipedia.org/wiki/Stemming">Wikipedia: Stemming</a></li>
+
+<li><a href="https://storm.apache.org/releases/current/Common-patterns.html">Storm Documentation: Common Patterns</a></li>
+
+<li><a href="http://storm.incubator.apache.org/documentation/Concepts.html#stream-groupings">Stream Groupings</a></li>
+</ul>
+</div>
+</div>
+</div>
+<footer id="" class="status">
+<footer>
+  <p>&copy; 2014-2022 Kenny Ballou.
+    <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Some rights
+      reserved.</a></p>
+  <p>Powered by <a href="https://gnu.org">GNU/Linux</a></p>
+</footer>
+</footer>
+</body>
+</html>

@@ -1,0 +1,617 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-04-09 Sat 18:52 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tracking Review Branches with Git</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="kb" />
+<meta name="description" content="Automatically pulling pull-request branches"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<meta charset="utf-8">
+
+<meta name="author" content="Kenny Ballou">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<title>~kb</title>
+
+<link rel="canonical" href="/" />
+<link href="/index.xml" rel="alternate" type="application/rss+xml"
+      title="~kb/blog" />
+
+<link rel="stylesheet" href="/css/simple.css" />
+<link rel="stylesheet" href="/css/simple.add.css" />
+<link rel="stylesheet" href="/css/katex.css" />
+<link rel="stylesheet" href="/css/fa-all.css" />
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<script defer type="text/javascript" src="/js/katex.js"></script>
+<script defer type="text/javascript" src="/js/katex-render.js"></script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://kennyballou.com/blog"> UP </a>
+ |
+ <a accesskey="H" href="https://kennyballou.com/"> HOME </a>
+</div><header id="" class="status">
+<nav>
+  <a href="/about.html">
+    <i class="fade fas fa-user-circle"></i>
+  </a>
+  <a href="https://git.devnulllabs.io"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-code-branch fa-1x"></i>
+  </a>
+  <a href="https://github.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-github fa-1x"></i>
+  </a>
+  <a href="https://bitbucket.org/kballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-bitbucket fa-1x"></i>
+  </a>
+  <a href="https://twitter.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-twitter fa-1x"></i>
+  </a>
+  <a href="https://www.buymeacoffee.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-mug-hot fa-1x"></i>
+  </a>
+  <a href="/resume.pdf"
+     target="_blank">
+    <i class="fade far fa-file-pdf"></i>
+  </a>
+  <a href="/932F3E8E1C0F4A9895D7B8B8B0CAA28A02958308.txt"
+     target="_blank">
+    <i class="fade fas fa-key"></i>
+  </a>
+  <a href="/index.xml" rel="alternate"
+     type="application/rss+xml">
+    <i class="fade fas fa-rss fa-1x"></i>
+  </a>
+</nav>
+</header>
+<div id="main">
+<h1 class="title">Tracking Review Branches with Git</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org1c87d68">GitHub</a></li>
+<li><a href="#org5f1fdb1">GitLab</a></li>
+<li><a href="#org960079a">Local Branch Prefix</a></li>
+<li><a href="#org33ac088">Branch Discovery</a></li>
+<li><a href="#org4f7b44d">Manual Checkout</a></li>
+<li><a href="#org00bbbc2">Repositories with Many Pull Requests</a></li>
+<li><a href="#orgc5492a2">tl;dr:</a></li>
+</ul>
+</div>
+</div>
+<div class="PREVIEW">
+<p>
+When reviewing code, it's often necessary to pull the changes under review.
+There are ad-hoc ways of doing this.  But there are also more automatic ways as
+well.  In this post, we discuss the more automatic approaches for <a href="https://github.com">GitHub</a> and
+<a href="https://gitlab.com">GitLab</a>.  Other forges may have the ability to use this trick, we discuss how to
+discover the remote references, if they are available.
+</p>
+
+</div>
+
+<blockquote>
+<p>
+Terminology: I am going to use "pull request" to refer to <a href="https://github.com">GitHub's</a> "pull
+requests" and <a href="https://gitlab.com">GitLab's</a> "merge requests."  The difference in naming is purely
+cosmetic, both represent the same concept, and both borrow that concept from
+kernel development etiquette, what <a href="https://git-scm.com/">https://git-scm.com/</a> was originally developed for.
+</p>
+</blockquote>
+
+<div id="outline-container-org1c87d68" class="outline-2">
+<h2 id="org1c87d68"><a id="ID-9b9ad4e4-653e-4e80-8868-dd144f291b12"></a>GitHub</h2>
+<div class="outline-text-2" id="text-org1c87d68">
+<p>
+If we are working with a <a href="https://github.com">GitHub</a> repository, we can run the following command,
+assuming <code>origin</code> is the remote where pull requests are submitted:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">git config --add remote.origin.fetch <span style="font-style: italic;">"+refs/pull/*/head:refs/remotes/origin/pull/*"</span>
+</pre>
+</div>
+
+<p>
+This command adds a line to the <code>remote.origin</code> configuration section of the
+current repository.  The <code>fetch</code> value provides a remote to local naming pattern
+to be used when fetching changes from the remote.
+</p>
+
+<p>
+The full <code>remote.origin</code> section should look similar to the following:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-config">[remote "origin"]
+	fetch = +refs/heads/*:refs/remotes/origin/*
+	url = git@github.com:owner/repo.git
+	fetch = +refs/pull/*/head:refs/remotes/origin/pull/*
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5f1fdb1" class="outline-2">
+<h2 id="org5f1fdb1"><a id="ID-d73325c5-552c-481f-b744-9547318eaf24"></a>GitLab</h2>
+<div class="outline-text-2" id="text-org5f1fdb1">
+<p>
+Similarly, if we are working with <a href="https://gitlab.com">GitLab</a> repositories, we can use a similar
+command to accomplish the same result, again assuming <code>origin</code> as the remote:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">git config --add remote.origin.fetch <span style="font-style: italic;">"+refs/merge-requests/*/head:refs/remotes/origin/merge-requests/*"</span>
+</pre>
+</div>
+
+<p>
+Likewise, the full <code>remote.origin</code> configuration should be similar to the
+following:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-config">[remote "origin"]
+  url = https://gitlab.com/owner/repo.git
+  fetch = +refs/heads/*:refs/remotes/origin/*
+  fetch = +refs/merge-requests/*/head:refs/remotes/origin/merge-requests/*
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org960079a" class="outline-2">
+<h2 id="org960079a"><a id="ID-ac0df415-b1f5-4352-8abc-45f7f13b76e9"></a>Local Branch Prefix</h2>
+<div class="outline-text-2" id="text-org960079a">
+<p>
+The local branch prefix can be set to any value that is desired.  Don't like
+<code>origin/pull/${pr}</code>?  Change it.  A <a href="https://gist.github.com/piscisaureus/3342247">common option</a> is to use <code>origin/pr</code> instead.
+Similarly, don't like <code>origin/merge-requests/${pr}</code>?  Feel free to change the
+reference prefix.  Simply modify the commands above to use the appropriate
+prefix for each remote:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">git config --add remote.origin.fetch <span style="font-style: italic;">"+refs/pull/*/head:refs/remotes/origin/pr/*"</span>
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-bash">git config --add remote.origin.fetch <span style="font-style: italic;">"+refs/merge-requests/*/head:refs/remotes/origin/pr/*"</span>
+</pre>
+</div>
+
+<p>
+When choosing a prefix, it's important not to choose a prefix for pull requests
+that are often also used for branches on the remote.  For example, if
+developers often push branches to the project such as <code>pr/1337</code>, <a href="https://git-scm.com/">https://git-scm.com/</a> warns that
+these references are ambiguous.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org33ac088" class="outline-2">
+<h2 id="org33ac088"><a id="ID-09327560-6051-475c-9fd0-c7fe0bae9733"></a>Branch Discovery</h2>
+<div class="outline-text-2" id="text-org33ac088">
+<p>
+When using a different forge than <a href="https://github.com">GitHub</a> or <a href="https://gitlab.com">GitLab</a>, it may be possible to
+discover the appropriate pattern for references to pull requests.
+Documentation for checking out pull request references may not be available,
+unlike  <a href="https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/checking-out-pull-requests-locally">GitHub</a> and <a href="https://docs.gitlab.com/ee/user/project/merge_requests/reviews/">GitLab</a>.  Therefore, we need to look to <a href="https://git-scm.com/">git</a> itself,
+specifically, <a href="https://www.git-scm.com/docs/git-ls-remote">git-ls-remote</a>.
+</p>
+
+<p>
+Using <a href="https://www.git-scm.com/docs/git-ls-remote">git-ls-remote</a>, we can list <b>all</b> remote references hosted by the
+repository.  <a href="https://www.git-scm.com/docs/git-branch">git-branch</a>, by comparison, only lists references which are being
+"tracked," i.e., fetched by the fetch rules for the remote repository.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">git ls-remote
+</pre>
+</div>
+
+<p>
+From the list of references, it should be evident which references refer to
+pull requests.  Unfortunately, there is no immediate way to select between open
+and closed pull requests.  For <a href="https://github.com">GitHub</a>, this means <a href="https://www.git-scm.com/docs/git-ls-remote"><code>git ls-remote</code></a> returns <span class="underline">every</span>
+pull requests for the repository.
+</p>
+
+<p>
+The following is an example listing from <a href="https://github.com/nix-community/emacs-overlay">nix-community/emacs-overlay</a>:
+</p>
+
+<pre class="example">
+c30763fa3d800911ee57c4cdaf558b416e4c5780	HEAD
+5b9f3a8258c4b42c9c3dfcb77bde5d2e3abbc6eb	refs/heads/elpa
+6cce77a7865731bd64f12b0ade938c0082f869c6	refs/heads/expect
+47a2e0b85642a229aa45c03c4c590ad0e4294788	refs/heads/gccemacs
+c30763fa3d800911ee57c4cdaf558b416e4c5780	refs/heads/master
+80b60da21dbf15a683a3fcc0138a96478794bef0	refs/heads/melpa
+b74dbf73ecf7cc420740c87af4c2d113d1fdd58e	refs/heads/nativecomp-pkgs
+f911b18763ad50bf49a5928b95fb149ba638b2e2	refs/heads/updater-python
+3d7612182992cc57148c545c11cb9415bb7d23f0	refs/pull/103/head
+2ecd882d2b6e2f4f710c08419a5899d8215f7cc9	refs/pull/103/merge
+7689a4093e2986e72a2b3e981b4ae86124c1dfb6	refs/pull/105/head
+d7bdc8d3be125e90c8f01650e17b66b814609ec3	refs/pull/111/head
+9e8e8cae4dba0fe46569f010119b4ca269a3a9c0	refs/pull/118/head
+401546016dc12b1416f5a3f85e26e1b8294ee5c4	refs/pull/119/head
+997966c8d635dcada8c8bd3aa40a643745dd5ca8	refs/pull/12/head
+f911b18763ad50bf49a5928b95fb149ba638b2e2	refs/pull/121/head
+5a99e863b84825a13a125b145170b8d6aeef9200	refs/pull/121/merge
+</pre>
+
+<p>
+From the above list, we can see the pull requests are under the <code>refs/pull</code>
+path.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4f7b44d" class="outline-2">
+<h2 id="org4f7b44d"><a id="ID-59daddd1-4dc0-45b2-a94a-ae8b1291982d"></a>Manual Checkout</h2>
+<div class="outline-text-2" id="text-org4f7b44d">
+<p>
+Without downloading and keeping track of <i>all</i> pull request branches, individual
+pull requests can be checked out as well.  However, doing so requires an extra
+command.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">git fetch origin pull/${<span style="font-weight: bold; font-style: italic;">pr</span>}/head
+git checkout -b pr/${<span style="font-weight: bold; font-style: italic;">pr</span>} FETCH_HEAD
+</pre>
+</div>
+
+<p>
+<a href="https://github.com">GitHub</a> automatically creates a merge reference between the pull request and the
+merge target branch.  This is done to check whether a pull request can be
+merged cleanly or if merge conflicts exist.  Following similar steps, we can
+checkout <a href="https://github.com">GitHub's</a> automatically merged pull request reference:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">git fetch origin pull/${<span style="font-weight: bold; font-style: italic;">pr</span>}/merge
+git checkout -b pr/${<span style="font-weight: bold; font-style: italic;">pr</span>}/merge FETCH_HEAD
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org00bbbc2" class="outline-2">
+<h2 id="org00bbbc2"><a id="ID-d4d68742-79b6-4e79-97ad-0a90295e8cca"></a>Repositories with Many Pull Requests</h2>
+<div class="outline-text-2" id="text-org00bbbc2">
+<p>
+While adding the extra fetch and branch prefix is a nice way to automatically
+track pull requests against a repository, the repository may have more pull
+requests than we wish to regularly fetch and update.  Consider <a href="https://github.com/NixOS/nixpkgs">NixOS/nixpkgs</a>.
+As of this writing, the number of open pull requests is 2,540.  Furthermore,
+there has been 101,345 pull requests submitted to date.  49 pull requests were
+opened today alone.  Running <code>git remote update</code> or <code>git fetch upstream</code> with the
+added fetch for pull requests might be to demanding for a regular workflow.
+</p>
+
+<p>
+Instead of always downloading pull request references, instead, we can fetch
+the pull requests from a different "remote."
+</p>
+
+<p>
+For example, the following is the relevant sections of my <code>.git/config</code> for
+<a href="https://github.com/NixOS/nixpkgs">NixOS/nixpkgs</a>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-config">[remote "origin"]
+	url = ssh://github.com/kennyballou/nixpkgs.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[remote "upstream"]
+	url = git://github.com/nixos/nixpkgs.git
+	fetch = +refs/heads/*:refs/remotes/upstream/*
+[remote "review"]
+	url = git://github.com/nixos/nixpkgs.git
+	fetch = +refs/pull/*/head:refs/remotes/review/*
+</pre>
+</div>
+
+<p>
+This way, <code>git fetch upstream</code> only fetches upstream branch changes; no pull
+request references are fetched.  Conversely, <code>git fetch review</code> fetches
+references for all pull requests.  This enables rebase workflows to still be
+relatively fast, while review workflows can still be accomplished using the
+same fetch trick as above.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc5492a2" class="outline-2">
+<h2 id="orgc5492a2"><a id="ID-53f2c709-78ed-40d4-b9d7-651dfa4ec462"></a>tl;dr:</h2>
+<div class="outline-text-2" id="text-orgc5492a2">
+<p>
+To automatically fetch pull requests from <a href="https://github.com">GitHub</a> repositories, run the
+following command, assuming <code>upstream</code> is the remote where pull requests are
+submitted:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">git config --add remote.upstream.fetch <span style="font-style: italic;">"+refs/pull/*/head:refs/remotes/upstream/pr/*"</span>
+</pre>
+</div>
+
+<p>
+Or, for <a href="https://gitlab.com">GitLab</a> repositories, under the same assumption:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">git config --add remote.upstream.fetch <span style="font-style: italic;">"+refs/merge-requests/*/head:refs/remotes/upstream/pr/*"</span>
+</pre>
+</div>
+
+<p>
+To manually checkout a pull request branch, use the following:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">git fetch upstream pull/${<span style="font-weight: bold; font-style: italic;">pr</span>}/head
+git checkout -b pr/${<span style="font-weight: bold; font-style: italic;">pr</span>} FETCH_HEAD
+</pre>
+</div>
+
+<p>
+Finally, if the repository contains a large number of pull requests, it may be
+preferred to use a different "remote" for tracking pull request references:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">git remote add review $(git config remote.upstream.url)
+git remote review.upstream.fetch <span style="font-style: italic;">"+refs/pull/*/head:refs/remotes/review/*"</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+<footer id="" class="status">
+<footer>
+  <p>&copy; 2014-2022 Kenny Ballou.
+    <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Some rights
+      reserved.</a></p>
+  <p>Powered by <a href="https://gnu.org">GNU/Linux</a></p>
+</footer>
+</footer>
+</body>
+</html>

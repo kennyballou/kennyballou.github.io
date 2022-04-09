@@ -1,0 +1,701 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-04-09 Sat 18:52 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Git Packfiles</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="kb" />
+<meta name="description" content="Introduction to Git Packfiles"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<meta charset="utf-8">
+
+<meta name="author" content="Kenny Ballou">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<title>~kb</title>
+
+<link rel="canonical" href="/" />
+<link href="/index.xml" rel="alternate" type="application/rss+xml"
+      title="~kb/blog" />
+
+<link rel="stylesheet" href="/css/simple.css" />
+<link rel="stylesheet" href="/css/simple.add.css" />
+<link rel="stylesheet" href="/css/katex.css" />
+<link rel="stylesheet" href="/css/fa-all.css" />
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<script defer type="text/javascript" src="/js/katex.js"></script>
+<script defer type="text/javascript" src="/js/katex-render.js"></script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://kennyballou.com/blog"> UP </a>
+ |
+ <a accesskey="H" href="https://kennyballou.com/"> HOME </a>
+</div><header id="" class="status">
+<nav>
+  <a href="/about.html">
+    <i class="fade fas fa-user-circle"></i>
+  </a>
+  <a href="https://git.devnulllabs.io"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-code-branch fa-1x"></i>
+  </a>
+  <a href="https://github.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-github fa-1x"></i>
+  </a>
+  <a href="https://bitbucket.org/kballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-bitbucket fa-1x"></i>
+  </a>
+  <a href="https://twitter.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-twitter fa-1x"></i>
+  </a>
+  <a href="https://www.buymeacoffee.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-mug-hot fa-1x"></i>
+  </a>
+  <a href="/resume.pdf"
+     target="_blank">
+    <i class="fade far fa-file-pdf"></i>
+  </a>
+  <a href="/932F3E8E1C0F4A9895D7B8B8B0CAA28A02958308.txt"
+     target="_blank">
+    <i class="fade fas fa-key"></i>
+  </a>
+  <a href="/index.xml" rel="alternate"
+     type="application/rss+xml">
+    <i class="fade fas fa-rss fa-1x"></i>
+  </a>
+</nav>
+</header>
+<div id="main">
+<h1 class="title">Git Packfiles</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org95cf80f">Packfiles</a>
+<ul>
+<li><a href="#orgae7fe36">Packs</a></li>
+<li><a href="#orgf1691bf">Indexes</a></li>
+<li><a href="#orge814609">Plumbing</a></li>
+</ul>
+</li>
+<li><a href="#org4d57cea">Summary</a></li>
+</ul>
+</div>
+</div>
+<div class="PREVIEW">
+<p>
+Previously, in <a href="https://kennyballou.com/blog/2016/01/git-in-reverse">Git in Reverse</a>, we learned about <a href="https://git-scm.com/">Git</a> and how it internally
+stores information.  Namely, we went over the <a href="http://stackoverflow.com/questions/5709687/what-are-the-loose-objects-that-the-git-gui-refers-to#5710039">"loose" object</a> format that Git
+uses for storage.  However, in the last post, we did not discuss how Git uses
+another storage format to more compactly store files, changes, and ultimately
+objects.  In this post we will discuss packfiles and how Git uses these
+primarily for using less bandwidth and, only secondarily, using less storage
+space for storing repository contents.
+</p>
+
+</div>
+
+<p>
+We're only going to discuss the high-level details of packfiles, there are
+<a href="https://git-scm.com/book/en/v2/Git-Internals-Packfiles">plenty</a> of <a href="https://git-scm.com/docs/git-verify-pack">sources</a> that
+<a href="https://git.kernel.org/cgit/git/git.git/tree/Documentation/technical/pack-format.txt">describe</a> the <a href="https://codewords.recurse.com/issues/three/unpacking-git-packfiles/">details</a> better.
+</p>
+
+<div id="outline-container-org95cf80f" class="outline-2">
+<h2 id="org95cf80f"><a id="ID-e571fbca-34f8-48b5-b511-b139f5e8156a"></a>Packfiles</h2>
+<div class="outline-text-2" id="text-org95cf80f">
+<p>
+Packfiles, like <a href="https://kennyballou.com/blog/2016/01/git-in-reverse">git objects before</a>, are an internal file
+set for storing objects in a more compressed format.  That is, instead of
+storing <i>each</i> version of a file in its entirety, Git can store a single
+version of the file in its entirety and maintain an internal set of objects
+which contain patches to derive the other versions.  Furthermore, Git can store
+entire repository's objects into a single packfile, thus eliminating large
+numbers of small files and improving efficiency of object access.
+</p>
+
+<p>
+The actual files themselves are in the <code>.git/objects/pack</code> folder of a
+repository and there are both pack, <code>.pack</code>, files and index, <code>.idx</code>, files.
+</p>
+
+<p>
+Here is the packfile that contains this repository (as of this writing):
+</p>
+
+<pre class="example">
+± find .git/objects/pack -type f
+.git/objects/pack/pack-31966bc41ef450ccfecdfb5ef6cd98f7097eea38.pack
+.git/objects/pack/pack-31966bc41ef450ccfecdfb5ef6cd98f7097eea38.idx
+</pre>
+
+<p>
+Notice, there are not two "packs", but two files that describe the same "pack".
+There is the <code>.pack</code> file itself.  This is the file that contains the actual
+objects.  There is also the <code>.idx</code> file which provides an "index" of the
+objects contained in the pack.
+</p>
+
+<p>
+We'll take a small moment to describe each in a little more detail.
+</p>
+</div>
+
+<div id="outline-container-orgae7fe36" class="outline-3">
+<h3 id="orgae7fe36"><a id="ID-2769f358-432f-4363-b095-5319759246b4"></a>Packs</h3>
+<div class="outline-text-3" id="text-orgae7fe36">
+<p>
+Packfiles are relatively straight forward, there's a 12 byte header, first four
+spell "PACK", next four provide the version, "2" as of this writing, and the
+final four provide the number of objects in this pack.  Following the header,
+there's a number of objects stored in a very compact but variable length
+format.  Finally, there's a 20 byte trailer that is the checksum of the
+packfile's contents&#x2013; header and objects.
+</p>
+
+<p>
+In the header, the number of objects is encoded in a 4-byte integer, thus,
+there can only be \(2\^{32}\) or little over 4 billion objects in a packfile.
+However, this does not give an upper bound of the <i>size</i> of the pack files
+themselves on disk.  The length of each object is encoded in a variable length
+integer prefacing each object in the packfile.
+</p>
+
+<p>
+The format of the objects in the packfile is not as they usually exist in the
+loose format, but it will compress them <i>more</i>, usually resulting in less space
+used on disk.  That is, the objects stored in the packfile may be a base,
+<i>undeltified</i> object, or it may be a <i>deltified</i> object.
+</p>
+
+<p>
+Undeltified objects are not necessarily as interesting, for one, because they
+are already [covered][3].  The deltified objects, however, are pretty
+interesting, and definitely different.
+</p>
+
+<p>
+The deltified objects, as the name might imply, contain the delta, or,
+preferably, the patch and the base object name to create the defined object.
+That is, Git will store inside a regular Git object a patch used to derive the
+defined object.  But it only does this in the context of packfiles.
+Furthermore, the structure allows for the base object to itself be a deltified
+object, thus, making it possible to only store one version of the full file,
+but then derive all other versions from deltas or patches.
+</p>
+
+<p>
+While it is entirely possible to use only the packfile itself to access the
+contained objects, it's not very efficient for random access.  Therefore, the
+index file is created to maintain a way to peer into the packfile efficiently.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf1691bf" class="outline-3">
+<h3 id="orgf1691bf"><a id="ID-d14930d6-58d4-49dd-97e9-351165e79ed8"></a>Indexes</h3>
+<div class="outline-text-3" id="text-orgf1691bf">
+<p>
+Packfile indexes solve the random object access efficiency problems caused by
+heavily compacting objects into a single file.
+</p>
+
+<p>
+Although, the contents of the index are little more complicated than the pack
+file.
+</p>
+
+<p>
+In version 1 of packfiles, the index does not have a header.  In version 2, the
+current version, there are 8 bytes dedicated to the header: the first 4 bytes
+will always be <code>255, 116, 79, 99</code>, because these are invalid bytes for the
+fanout table; the other 4 bytes of the header are dedicated to the version,
+currently, <code>2</code>.
+</p>
+
+<p>
+Following the "$header", there is, what Git calls, a fanout table.  This header
+table consists of 256 4-byte integers, each entry of the table records the
+number of objects whose first byte are less than or equal to this entry.
+</p>
+
+<p>
+That is, if the repository has 2 objects that start with <code>00</code>, there will be a
+2 in the <code>00~th entry of the table.  Furthermore, if there are 3 objects that
+start with ~01</code>, the ~01~th entry will report <i>5</i> objects.  Remember, each
+entry in the table is the sum of all previous entries ("less than or equal to
+this entry").  Examining at the 256th entry would provide the total number of
+objects in the packfile.
+</p>
+
+<p>
+Following the fanout table is a sorted table of 20-byte SHA-1 hashes.
+</p>
+
+<p>
+In version 2, there is another table following the sorted hashes that consists
+of 4-byte CRC32 values of the packed object data.  This table enables easier
+copying of data between packfiles.  For example, this improves the efficiency
+of creating new packfiles for new objects.
+</p>
+
+<p>
+Next, is another table of 4-byte offset values, usually packed into 31-bits,
+larger offsets being encoded as offsets for indexes into the next table.
+</p>
+
+<p>
+Last table, 8-byte offset entries, this table will be empty if the packfile is
+less than 2GiB.
+</p>
+
+<p>
+Finally, there is a 20-byte checksum of the packfile and another 20-byte
+checksum of all of the above data.
+</p>
+
+<p>
+All of these tables are used to make sure Git has very quick and efficient
+access to objects in the repository.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge814609" class="outline-3">
+<h3 id="orge814609"><a id="ID-67831768-6286-42f8-83d6-7c22881cdd40"></a>Plumbing</h3>
+<div class="outline-text-3" id="text-orge814609">
+<p>
+Git will automatically create packfiles when synchronizing a repository (e.g.,
+pushing, pulling, cloning), but they can also be created manually with the
+<a href="https://www.kernel.org/pub/software/scm/git/docs/git-gc.html"><code>git-gc</code></a> command.  Let's assume there are some loose objects in the
+current repository.
+</p>
+
+<pre class="example">
+± find .git/objects -type f
+.git/objects/f2/e90bed364168fcca0893437fb569d762cdbbce
+.git/objects/f4/2946046ed0926d5c7b34772642478390a696c9
+.git/objects/87/713bb957eef1ed6a8d12f36b2d8b328a72b453
+.git/objects/8c/d57af30ad9bf0f2e0640d0141eb908d276d2f1
+.git/objects/1f/846d4278f5741d33111d28c03d29b589dabffe
+.git/objects/be/020e47fadb8d80281259b1f886c3940dc51a19
+.git/objects/d1/2254d273712af99e0585e7dd9dfea2106d5692
+.git/objects/ea/41dba10b54a794284e0be009a11f0ff3716a28
+.git/objects/98/c37b0fb33a8b2f7ac4c5d94571382071ae859c
+.git/objects/4d/5fcadc293a348e88f777dc0920f11e7d71441c
+.git/objects/e6/9de29bb2d1d6434b8b29ae775ad8c2e48c5391
+± git gc
+Counting objects: 11, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (5/5), done.
+Writing objects: 100% (11/11), done.
+Total 11 (delta 0), reused 0 (delta 0)
+± find .git/objects -type f
+.git/objects/info/packs
+.git/objects/pack/pack-1fc05518e49da3867792b704561b68d5b00e6317.idx
+.git/objects/pack/pack-1fc05518e49da3867792b704561b68d5b00e6317.pack
+</pre>
+
+<p>
+We started with 11 objects, in the loose format, we ran <a href="https://www.kernel.org/pub/software/scm/git/docs/git-gc.html"><code>git-gc</code></a>
+and we are left with a packfile.
+</p>
+
+<p>
+The output of <a href="https://www.kernel.org/pub/software/scm/git/docs/git-gc.html"><code>git-gc</code></a> tells us how many objects we packed, how
+many delta objects were used to create the pack, in this case, 0, and how many
+objects were copied from an existing pack and how many deltas from an existing
+pack, both 0 in this example.
+</p>
+
+<p>
+Of course, we can also examine the packfile with the
+<a href="https://git-scm.com/docs/git-verify-pack"><code>git-verify-pack</code></a> command:
+</p>
+
+<pre class="example">
+± git verify-pack -v .git/objects/pack/pack-1fc05518e49da3867792b704561b68d5b00e6317.idx
+f2e90bed364168fcca0893437fb569d762cdbbce commit 225 153 12
+d12254d273712af99e0585e7dd9dfea2106d5692 commit 220 145 165
+98c37b0fb33a8b2f7ac4c5d94571382071ae859c commit 172 117 310
+e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 blob   0 9 427
+be020e47fadb8d80281259b1f886c3940dc51a19 blob   9 18 436
+f42946046ed0926d5c7b34772642478390a696c9 tree   93 81 454
+87713bb957eef1ed6a8d12f36b2d8b328a72b453 tree   31 40 535
+8cd57af30ad9bf0f2e0640d0141eb908d276d2f1 tree   31 40 575
+1f846d4278f5741d33111d28c03d29b589dabffe tree   31 42 615
+ea41dba10b54a794284e0be009a11f0ff3716a28 tree   62 50 657
+4d5fcadc293a348e88f777dc0920f11e7d71441c tree   31 42 707
+non delta: 11 objects
+.git/objects/pack/pack-1fc05518e49da3867792b704561b68d5b00e6317.pack: ok
+</pre>
+
+<blockquote>
+<p>
+It does not matter whether the <code>.pack</code> or <code>.idx</code> file are specified to the
+<a href="https://git-scm.com/docs/git-verify-pack"><code>git-verify-pack</code></a> command, the output will be the same.
+However, tab completion will prefer the <code>.idx</code> files.
+</p>
+</blockquote>
+
+<p>
+This output has a lot of information to it: first, it tells us about all the
+objects in the packfile, we see our 11 original objects from before.  But we
+are also given each object's type, size, size in pack, and offset into the
+packfile, respectively.  For undeltified objects, these sizes won't be very
+different, but for deltified objects, these two sizes can be significantly
+different.
+</p>
+
+<p>
+This output also tells us the pack contains no deltified objects.  Let's see
+what this would look like with deltified objects:
+</p>
+
+<pre class="example">
+± git gc
+Counting objects: 17, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (9/9), done.
+Writing objects: 100% (17/17), done.
+Total 17 (delta 1), reused 10 (delta 0)
+± git verify-pack -v .git/objects/pack/pack-21f02890d9770ec6b5a566c3c82c03e69f530c19.idx
+47f24ac6ba3af12714f0dbf7219b9d854f269097 commit 219 146 12
+8cfd10e321ac6349132ceb93774f0a881a1b9316 commit 219 146 158
+f2e90bed364168fcca0893437fb569d762cdbbce commit 225 153 304
+d12254d273712af99e0585e7dd9dfea2106d5692 commit 220 145 457
+98c37b0fb33a8b2f7ac4c5d94571382071ae859c commit 172 117 602
+5716ca5987cbf97d6bb54920bea6adde242d87e6 blob   4 13 719
+be020e47fadb8d80281259b1f886c3940dc51a19 blob   9 18 732
+257cc5642cb1a054f08cc83f2d943e56fd3ebe99 blob   4 13 750
+3783c58c8b17ba95b2917e5f92a0395efcec9759 tree   93 100 763
+87713bb957eef1ed6a8d12f36b2d8b328a72b453 tree   31 40 863
+8cd57af30ad9bf0f2e0640d0141eb908d276d2f1 tree   31 40 903
+1f846d4278f5741d33111d28c03d29b589dabffe tree   31 42 943
+7470c9c852271284dfb0cb8f3ad9047709847e0d tree   93 101 985
+e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 blob   0 9 1086
+f42946046ed0926d5c7b34772642478390a696c9 tree   25 37 1095 1 7470c9c852271284dfb0cb8f3ad9047709847e0d
+ea41dba10b54a794284e0be009a11f0ff3716a28 tree   62 50 1132
+4d5fcadc293a348e88f777dc0920f11e7d71441c tree   31 42 1182
+non delta: 16 objects
+chain length = 1: 1 object
+.git/objects/pack/pack-21f02890d9770ec6b5a566c3c82c03e69f530c19.pack: ok
+± find .git/objects -type f
+.git/objects/info/packs
+.git/objects/pack/pack-21f02890d9770ec6b5a566c3c82c03e69f530c19.idx
+.git/objects/pack/pack-21f02890d9770ec6b5a566c3c82c03e69f530c19.pack
+</pre>
+
+<p>
+Notice, we repacked the repository then listed the contents of the new pack,
+also notice the old pack is gone, but the objects that were in the old pack are
+still available in the new pack.
+</p>
+
+<p>
+More importantly, notice that <code>f42946</code> is a deltified object based on
+<code>7470c9c</code>.  That is, the tree defined in <code>f42946</code> is derived by patching
+<code>7470c9c</code> with the contents of the object in the packfile.  This is also
+evident in the size listings, the size on disk of the loose object is 25 bytes,
+but the size in the pack is 37.  The increase in size is often, unfortunately,
+due to how text compression sometimes <i>doesn't</i> work.  This is the first look
+of what Git calls "chains".
+</p>
+
+<p>
+Chains are a simple way to describe the length of a deltified object set.  The
+longest chain in this repository is only 1.  But if we examine bigger
+repositories, this number could be much higher.  Git itself, for example, has a
+chain length of 46 for one object, or another 6 objects with a chain length of
+44 each.
+</p>
+
+<p>
+Another thing to note, unlike the loose object format, it's much more difficult
+to get to the contents of the objects in the packfile <i>using</i> only the packfile
+without some effort.  However, <code>git-cat-file</code> and other plumbing commands will
+still work as expected given an object name, even if the object is contained
+within a packfile.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4d57cea" class="outline-2">
+<h2 id="org4d57cea"><a id="ID-a1020e6b-57f1-4020-a1e0-e4b44481ce40"></a>Summary</h2>
+<div class="outline-text-2" id="text-org4d57cea">
+<p>
+Hopefully, we now have a deeper knowledge of the compact object format Git
+uses, namely, packfiles.  Remember, the motivation for these files was not
+efficiency in storage, but efficiency in network bandwidth when transferring
+objects and lookup speed when there's a large number of loose objects.  Thus,
+if working in stealth mode, it can be sometimes important to run
+<a href="https://www.kernel.org/pub/software/scm/git/docs/git-gc.html"><code>git-gc</code></a> occasionally to keep your private repository quick and
+efficient.
+</p>
+</div>
+</div>
+</div>
+<footer id="" class="status">
+<footer>
+  <p>&copy; 2014-2022 Kenny Ballou.
+    <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Some rights
+      reserved.</a></p>
+  <p>Powered by <a href="https://gnu.org">GNU/Linux</a></p>
+</footer>
+</footer>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/"
+     xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+     xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+     xmlns:georss="http://www.georss.org/georss"
+     xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+     xmlns:media="http://search.yahoo.com/mrss/"><channel>
+  <title>(Elixir/Erlang Hot Swapping Code)</title>
+  <atom:link href="https://kennyballou.com/index.xml" rel="self" type="application/rss+xml" />
+  <link>https://kennyballou.com</link>
+  <description><![CDATA[Hot code reloading with Elixir and Erlang]]></description>
+  <language>en</language>
+  <pubDate>Sat, 09 Apr 2022 18:53:06 +0000</pubDate>
+  <lastBuildDate>Sat, 09 Apr 2022 18:53:06 +0000</lastBuildDate>
+  <generator>Emacs 26.3 Org-mode 9.1.9</generator>
+  <webMaster>kb@devnulllabs.io (kb)</webMaster>
+  <image>
+    <url>http://orgmode.org/img/org-mode-unicorn-logo.png</url>
+    <title>(Elixir/Erlang Hot Swapping Code)</title>
+    <link>https://kennyballou.com</link>
+  </image>
+
+  <div class="PREVIEW">
+    <p>
+      One of the untold benefits of having a runtime is the ability for that runtime
+      to enable loading and unloading code while the runtime is active.  Since the
+      runtime is itself, essentially, a virtual machine with its own operating system
+      and process scheduling, it has the ability to start and stop, load and unload
+      processes and code similar to how "real" operating systems do.
+    </p>
+
+  </div>
+
+  <div class="embed-video">
+    <iframe width="560" height="315"
+	    src="https://www.youtube.com/embed/xrIjfIjssLE?rel=0"
+	    frameborder="0" allow="autoplay; encrypted-media"
+	    allowfullscreen></iframe></div>
+
+    <blockquote>
+      <p>
+	Warning, there be black magic here.
+      </p>
+    </blockquote>
+
+    <p>
+      This enables some spectacular power in terms of creating deployments and
+      rolling out those deployments.  That is, if we can provide a particular
+      artifact for the runtime to load and replace the running system with, we can
+      instruct it to upgrade our system(s) <i>without</i> restarting them, without
+      interrupting our services or affecting users of those systems.  Furthermore, if
+      we constrain the system and make a few particular assumptions, this can all
+      happen nearly instantaneously.  For example, Erlang releases happen in seconds
+      because of the functional approach taken by the language, this compared to
+      other systems like <a href="https://docker.com">Docker</a> and/or <a href="http://kubernetes.io/">Kubernetes</a> which
+      may take several minutes or hours to transition a version because there is no
+      safe assumptions to make about running code.
+    </p>
+
+    <p>
+      This post will be a small tour through how Elixir and Erlang can perform code
+      hot swapping, and how this can be useful for deployments.
+    </p>
+  </channel>
+</rss>

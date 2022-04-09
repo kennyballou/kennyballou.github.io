@@ -1,0 +1,580 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-04-09 Sat 18:52 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>GPG Key Transition</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="kb" />
+<meta name="description" content="Key transition statement and verification steps"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<meta charset="utf-8">
+
+<meta name="author" content="Kenny Ballou">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<title>~kb</title>
+
+<link rel="canonical" href="/" />
+<link href="/index.xml" rel="alternate" type="application/rss+xml"
+      title="~kb/blog" />
+
+<link rel="stylesheet" href="/css/simple.css" />
+<link rel="stylesheet" href="/css/simple.add.css" />
+<link rel="stylesheet" href="/css/katex.css" />
+<link rel="stylesheet" href="/css/fa-all.css" />
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<script defer type="text/javascript" src="/js/katex.js"></script>
+<script defer type="text/javascript" src="/js/katex-render.js"></script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://kennyballou.com/blog"> UP </a>
+ |
+ <a accesskey="H" href="https://kennyballou.com/"> HOME </a>
+</div><header id="" class="status">
+<nav>
+  <a href="/about.html">
+    <i class="fade fas fa-user-circle"></i>
+  </a>
+  <a href="https://git.devnulllabs.io"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-code-branch fa-1x"></i>
+  </a>
+  <a href="https://github.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-github fa-1x"></i>
+  </a>
+  <a href="https://bitbucket.org/kballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-bitbucket fa-1x"></i>
+  </a>
+  <a href="https://twitter.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-twitter fa-1x"></i>
+  </a>
+  <a href="https://www.buymeacoffee.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-mug-hot fa-1x"></i>
+  </a>
+  <a href="/resume.pdf"
+     target="_blank">
+    <i class="fade far fa-file-pdf"></i>
+  </a>
+  <a href="/932F3E8E1C0F4A9895D7B8B8B0CAA28A02958308.txt"
+     target="_blank">
+    <i class="fade fas fa-key"></i>
+  </a>
+  <a href="/index.xml" rel="alternate"
+     type="application/rss+xml">
+    <i class="fade fas fa-rss fa-1x"></i>
+  </a>
+</nav>
+</header>
+<div id="main">
+<h1 class="title">GPG Key Transition</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#key-verification">Key Verification</a></li>
+<li><a href="#new-gpg-setup">New GPG Setup</a>
+<ul>
+<li><a href="#key-generation-and-storage">Key Generation and Storage</a></li>
+<li><a href="#multiple-identities">Multiple Identities</a></li>
+<li><a href="#backups">Backups</a></li>
+<li><a href="#future-work">Future Work</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="PREVIEW">
+<p>
+Today I'm announcing my <a href="https://gnupg.org/">GPG</a> transition from my old, and now expired, <a href="https://gnupg.org/">GPG</a> key:
+<a href="https://pgp.mit.edu/pks/lookup?op=get&amp;search=0x1066BA71A5F56C58">DAEE96513758BF6337F71E491066BA71A5F56C58</a> and
+<a href="https://pgp.mit.edu/pks/lookup?op=get&amp;search=0x1CFA8A9CD949D956">8FCAF4F0CBB0BB9C590C8ED11CFA8A9CD949D956</a> to a new master key
+<a href="https://pgp.mit.edu/pks/lookup?op=get&amp;search=0xB0CAA28A02958308">932F3E8E1C0F4A9895D7B8B8B0CAA28A02958308</a>.  The old key will remain vaild for a
+little while longer, but I prefer all future correspondence to be addressed to
+my new key.
+</p>
+
+</div>
+
+<p>
+This transition document is signed by all three keys to validate the
+transition.
+</p>
+
+<p>
+If you have signed my old key, I would appreciate new signatures on my new key
+as well, provided that your signing policy permits that without
+re-authenticating me.
+</p>
+
+<div id="outline-container-org4268909" class="outline-2">
+<h2 id="key-verification"><a id="org4268909"></a><a id="ID-93519da3-32a4-4df8-a912-aa42a393c0f3"></a>Key Verification</h2>
+<div class="outline-text-2" id="text-key-verification">
+<p>
+Specifically, the old keys were:
+</p>
+
+<pre class="example">
+pub   rsa4096 2014-06-12 [expired: 2017-06-27]
+DAEE 9651 3758 BF63 37F7 1E49 1066 BA71 A5F5 6C58
+</pre>
+
+<p>
+and,
+</p>
+
+<pre class="example">
+pub   rsa4096 2015-01-30 [expires: 2018-01-30]
+8FCA F4F0 CBB0 BB9C 590C 8ED1 1CFA 8A9C D949 D956
+</pre>
+
+<p>
+The new key is:
+</p>
+
+<pre class="example">
+pub   rsa4096 2017-06-27 [expires: 2022-06-26]
+932F 3E8E 1C0F 4A98 95D7 B8B8 B0CA A28A 0295 8308
+</pre>
+
+<p>
+To fetch my new key from a key server, use the following:
+</p>
+
+<pre class="example">
+gpg --keyserver pool.sks-keyservers.net --recv-key 0xB0CAA28A02958308
+</pre>
+
+<p>
+Or, if you prefer, you may also download the new key from
+<a href="https://kennyballou.com/kballou.pub.asc">this blog</a>:
+</p>
+
+<pre class="example">
+curl -fsL https://kennyballou.com/kballou.asc -O
+</pre>
+
+<p>
+The new key can be verified with the old key:
+</p>
+
+<pre class="example">
+gpg --check-sigs 0xB0CAA28A02958308
+</pre>
+
+<p>
+If you do not have the old key, or would like to double check, the fingerprint
+can be verified against the one above:
+</p>
+
+<pre class="example">
+gpg --fingerprint 0xB0CAA28A02958308
+</pre>
+
+<p>
+If you have all of the keys, <a href="https://kennyballou.com/blog/2017/08/gpg-key-transition/gpg-transition.org.asc">this document</a> can be
+verified to be signed by all keys:
+</p>
+
+<pre class="example">
+gpg --verify gpg-transition.org.asc
+</pre>
+
+<p>
+If you are satisfied that you have the correct key and the UID's match, and if
+it's compatible with your key signing policy, I would greatly appreciate it if
+you would sign my key:
+</p>
+
+<pre class="example">
+gpg --sign-key 0xB0CAA28A02958308
+</pre>
+
+<p>
+Finally, if you could upload these signatures, I would appreciate it.  You can
+either upload the signatures to a public key server directly:
+</p>
+
+<pre class="example">
+gpg --keyserver pool.sks-keyservers.net \
+    --send-key 0xB0CAA28A02958308
+</pre>
+
+<p>
+Or you can send me an email with the new signatures:
+</p>
+
+<pre class="example">
+gpg --armor --export 0xB0CAA28A02958308
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orga110c63" class="outline-2">
+<h2 id="new-gpg-setup"><a id="orga110c63"></a><a id="ID-154ce9aa-58a4-4e0f-8569-47d18cd7ac00"></a>New GPG Setup</h2>
+<div class="outline-text-2" id="text-new-gpg-setup">
+<p>
+The new key/transition is brought about by a number of months of thinking about
+<a href="https://gnupg.org/">GPG</a> and a set of small problems I've been facing with
+<a href="https://gnupg.org/">GPG</a>.  Mainly, sharing keys between the number of different computers
+I use through the day makes me sad and worrisome.  Similarly, there isn't a
+good backup/recovery solution to the previous setup, something the transition
+aims to fix.  Finally, multiple keys per identity was more bothersome than I
+had originally anticipated.
+</p>
+
+<p>
+My knowledge of <a href="https://gnupg.org/">GPG</a> was young and it was time to level up my
+knowledge.  To that end, I will, briefly, describe how my current setup works.
+</p>
+</div>
+
+<div id="outline-container-org25f9aa8" class="outline-3">
+<h3 id="key-generation-and-storage"><a id="org25f9aa8"></a><a id="ID-e2113a22-983d-461a-92a7-1a941bcea676"></a>Key Generation and Storage</h3>
+<div class="outline-text-3" id="text-key-generation-and-storage">
+<p>
+This new setup follows the basic "master-key with sub-keys" approach.  I have
+an encrypted USB drive (several, actually), that contains the master key and
+the sub keys.  The master key is used for signing and self-certification, but
+has no other purpose.  The sub keys are created for the other purposes, e.g.,
+encryption, signing, and authentication.  I will not go over the specifics of
+generating the keys or creating this setup, there are
+<a href="https://www.chameth.com/2016/08/11/offline-gnupg-master-yubikey-subkeys/">many</a>
+<a href="https://www.void.gr/kargig/blog/2013/12/02/creating-a-new-gpg-key-with-subkeys/">guides</a> <a href="https://gist.github.com/abeluck/3383449">already</a> for that
+purpose.
+</p>
+
+<p>
+To solve the multiple device problem, I purchased a <a href="https://www.yubico.com/products/yubikey-hardware/yubikey-neo/">Yubikey Neo</a>
+to contain the sub keys.  I'm currently, as of this writing, only using the
+<a href="https://en.wikipedia.org/wiki/Smart_card">smartcard</a> functionality of the Yubikey, thus, I cannot
+speak to its other uses.  However, something to note, the current Yubikey
+(series 4) cannot hold keys bigger than 3072 bits, thus, all of my sub keys are
+2048 bits.  This turns out to be an acceptable trade off, as 2048 keys are
+really, really similar in strength to 4096 keys.  I don't have enough
+cryptographic knowledge to sink into the Elliptic-Curve based key algorithms,
+but they seem to show great strengths against the larger RSA algorithm without
+as many weaknesses.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org208a87b" class="outline-3">
+<h3 id="multiple-identities"><a id="org208a87b"></a><a id="ID-5715c163-d63b-4db2-a23c-fd900e03bb6f"></a>Multiple Identities</h3>
+<div class="outline-text-3" id="text-multiple-identities">
+<p>
+<a href="https://gnupg.org/">GPG</a> keys can have multiple UID's associated with them, eliminating
+the need for a mapping of keys to email addresses, (unless of course, a key not
+associated with your identity is desired).  However, I took a bit of a
+pragmatic approach here: I did not want "work" keys tightly integrated with my
+own identity.  It will be likely I will still generate a separate key for work
+related activities.  This way, deleting passwords and other secrets is as
+simple as deleting the key, I do not actually have to worry about the
+possibility of still being able to decrypt the passwords and encrypted data.
+</p>
+
+<p>
+The one drawback to this approach of having a separate key pair for personal
+and work related activities is that it either necessitates <i>another</i>
+<a href="https://www.yubico.com/products/yubikey-hardware/yubikey-neo/">Yubikey</a>, or I'm back to where I was with the previous setup and
+the multi-device headaches that are associated with it.  However, I feel this
+is acceptable, because <i>usually</i> I only have one "work" device, but multiple
+personal devices.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org02f4cca" class="outline-3">
+<h3 id="backups"><a id="org02f4cca"></a><a id="ID-3bf9cc35-a412-4429-ae32-c501e774d3d3"></a>Backups</h3>
+<div class="outline-text-3" id="text-backups">
+<p>
+I've created numerous copies of the encrypted USB drive, and they will be
+scattered to a number of locations, to make sure that I can still access at
+least <i>a</i> copy of the keys, it might not be the most up to date key, but it
+will get me started in getting back online.
+</p>
+
+<p>
+Furthermore, because flash memory isn't perfect, I've also created a number of
+printouts using <a href="http://www.jabberwocky.com/software/paperkey/">paperkey</a> such that I can recover the key even if
+<i>all</i> of the USB keys fail.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf269924" class="outline-3">
+<h3 id="future-work"><a id="orgf269924"></a><a id="ID-ad339190-1899-465c-aa29-50d0902a7afc"></a>Future Work</h3>
+<div class="outline-text-3" id="text-future-work">
+<p>
+One aspect of the system I would like to improve at some point is that instead
+of creating exact duplicates of the flash drives or the <a href="http://www.jabberwocky.com/software/paperkey/">paperkey</a>
+printouts, I would like to be able to create \(n\) by \(m\) chunks of the key
+data.  That is, create a backup of \(n\) pieces that only require \(m\) copies
+to be recoverable.
+</p>
+</div>
+</div>
+</div>
+</div>
+<footer id="" class="status">
+<footer>
+  <p>&copy; 2014-2022 Kenny Ballou.
+    <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Some rights
+      reserved.</a></p>
+  <p>Powered by <a href="https://gnu.org">GNU/Linux</a></p>
+</footer>
+</footer>
+</body>
+</html>

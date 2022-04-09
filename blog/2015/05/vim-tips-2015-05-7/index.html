@@ -1,0 +1,564 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-04-09 Sat 18:52 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Vim Tips 2015-05-07</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="kb" />
+<meta name="description" content="Vim Tips: Visual Mode and Macros"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<meta charset="utf-8">
+
+<meta name="author" content="Kenny Ballou">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<title>~kb</title>
+
+<link rel="canonical" href="/" />
+<link href="/index.xml" rel="alternate" type="application/rss+xml"
+      title="~kb/blog" />
+
+<link rel="stylesheet" href="/css/simple.css" />
+<link rel="stylesheet" href="/css/simple.add.css" />
+<link rel="stylesheet" href="/css/katex.css" />
+<link rel="stylesheet" href="/css/fa-all.css" />
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<script defer type="text/javascript" src="/js/katex.js"></script>
+<script defer type="text/javascript" src="/js/katex-render.js"></script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://kennyballou.com/blog"> UP </a>
+ |
+ <a accesskey="H" href="https://kennyballou.com/"> HOME </a>
+</div><header id="" class="status">
+<nav>
+  <a href="/about.html">
+    <i class="fade fas fa-user-circle"></i>
+  </a>
+  <a href="https://git.devnulllabs.io"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-code-branch fa-1x"></i>
+  </a>
+  <a href="https://github.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-github fa-1x"></i>
+  </a>
+  <a href="https://bitbucket.org/kballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-bitbucket fa-1x"></i>
+  </a>
+  <a href="https://twitter.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-twitter fa-1x"></i>
+  </a>
+  <a href="https://www.buymeacoffee.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-mug-hot fa-1x"></i>
+  </a>
+  <a href="/resume.pdf"
+     target="_blank">
+    <i class="fade far fa-file-pdf"></i>
+  </a>
+  <a href="/932F3E8E1C0F4A9895D7B8B8B0CAA28A02958308.txt"
+     target="_blank">
+    <i class="fade fas fa-key"></i>
+  </a>
+  <a href="/index.xml" rel="alternate"
+     type="application/rss+xml">
+    <i class="fade fas fa-rss fa-1x"></i>
+  </a>
+</nav>
+</header>
+<div id="main">
+<h1 class="title">Vim Tips 2015-05-07</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org2a00081">Visual Mode</a>
+<ul>
+<li><a href="#orgb6d15e7">Visual Mode Basics</a></li>
+<li><a href="#orga56870b">Some Examples</a></li>
+</ul>
+</li>
+<li><a href="#org888fc98">Macros</a>
+<ul>
+<li><a href="#org77e89a8">Macro Basics</a></li>
+<li><a href="#orgd75649f">Some Examples</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="PREVIEW">
+<p>
+Many Vim users may have, accidentally or not, discovered the dot (<code>.</code>) command
+in Vim.  It's a main stay for a lot of Vim users and is clearly one of those
+actions that should be in more editors.  Except when it is the wrong action for
+the job.
+</p>
+
+</div>
+
+<p>
+More often than not, the visual selection mode and one-off macros are a better
+choice.
+</p>
+
+<div id="outline-container-org2a00081" class="outline-2">
+<h2 id="org2a00081"><a id="ID-3db6b4a7-d2b0-43e5-ac16-e2f888280b42"></a>Visual Mode</h2>
+<div class="outline-text-2" id="text-org2a00081">
+<p>
+I won't go into all of the cool things that can be accomplished with Vim's
+visual mode, but I will showcase a few examples where the visual editor is
+clearly a better choice than the dot (<code>.</code>).
+</p>
+
+<p>
+Visual mode offers, in essence, a multi-line cursor for which you can do a lot
+of changes, quickly.
+</p>
+</div>
+
+<div id="outline-container-orgb6d15e7" class="outline-3">
+<h3 id="orgb6d15e7"><a id="ID-ead6e212-0699-42a4-a8cd-3e837d5749e4"></a>Visual Mode Basics</h3>
+<div class="outline-text-3" id="text-orgb6d15e7">
+<p>
+To enter visual mode, it is as simple as pressing <code>^v</code> or <code>ctrl-v</code>.  Next you
+will want to select what you want to change with your typical movement commands
+(<code>h</code>, <code>j</code>, <code>k</code>, <code>l</code>, and of course <code>w</code>, <code>e</code> and all the rest).  Finally, you
+finish with the action: <code>I</code> if you want to insert before the selection, <code>A</code> if
+you want to append after the selection, <code>C</code> if you want to change the
+selection, and <code>d</code>, <code>D</code>, <code>x</code> if you want to remove the selection, just to name
+a few.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga56870b" class="outline-3">
+<h3 id="orga56870b"><a id="ID-2e7759d3-d8d5-4d62-ae93-24273f389c55"></a>Some Examples</h3>
+<div class="outline-text-3" id="text-orga56870b">
+<p>
+For (a bad) example, if you need to comment out a contiguous set of lines, you
+can easily accomplish this with the visual mode.
+</p>
+
+
+<div class="embed-video">
+<video controls="controls" width="90%" height="90%">
+<source src="/media/videos/comment.ogg" type="video/ogg"/>
+<p>
+Your browser does not support the video tag.
+</p>
+</video>
+
+</div>
+
+<p>
+A related example to prefixing is indentation changes, I often use the visual
+mode to fix code indentation when changing block-level indentation or when
+copying code into a markdown file.
+</p>
+
+<div class="embed-video">
+<video controls="controls" width="90%" height="90%">
+<source src="/media/videos/indent.ogg" type="video/ogg"/>
+<p>
+Your browser does not support the video tag.
+</p>
+</video>
+
+</div>
+
+<p>
+As another example, if you need to change a single word in multiple columns,
+visual mode will make easy work of this (especially when the columns are
+aligned, if not see macros below or <a href="https://kennyballou.com/blog/2015/03/vim-tips-2015-03-17/">substitution
+ranges</a> from the previous tip).
+</p>
+
+<div class="embed-video">
+<video controls="controls" width="90%" height="90%">
+<source src="/media/videos/cw.ogg" type="video/ogg"/>
+<p>
+Your browser does not support the video tag.
+</p>
+</video>
+
+</div>
+
+<p>
+For more information on Visual Mode, you can check Vim's
+<a href="http://vimdoc.sourceforge.net/htmldoc/visual.html">visual</a> help document.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org888fc98" class="outline-2">
+<h2 id="org888fc98"><a id="ID-0554e90c-f09e-4bd0-930c-eab63b312a36"></a>Macros</h2>
+<div class="outline-text-2" id="text-org888fc98">
+<p>
+For when visual mode may not be enough or when the change is repetitive in
+operations but not in columns or what have you, it's time to bust out the
+macros.  Vim macros are easily available for use you can use all the registers
+to record and store each macro.
+</p>
+</div>
+
+<div id="outline-container-org77e89a8" class="outline-3">
+<h3 id="org77e89a8"><a id="ID-308ae45d-1e37-48cc-92cc-6238a5ea16db"></a>Macro Basics</h3>
+<div class="outline-text-3" id="text-org77e89a8">
+<p>
+To record a macro, it's as simple as <code>q&lt;register-label&gt;&lt;commands&gt;q</code>.  That is,
+press <code>q</code>, select a register (a-z1-0), enter your commands as if you were using
+Vim normally, and finally <code>q</code> again to finish.  Once your macro is recorded,
+you can use it with <code>@&lt;register-label&gt;</code>.  And, like most Vim commands, you can
+attach a repetition to it: <code>&lt;n&gt;@&lt;register-label&gt;</code> where <code>&lt;n&gt;</code> is the number of
+times to repeat the command.
+</p>
+
+<p>
+You can also replay the last macro with <code>@@</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd75649f" class="outline-3">
+<h3 id="orgd75649f"><a id="ID-44dd7a43-f124-4d50-9667-6854dd2ba3d2"></a>Some Examples</h3>
+<div class="outline-text-3" id="text-orgd75649f">
+<p>
+As a simplistic example, we can use a macro to convert it into, say, JSON (this
+example is clearly taken from the <a href="http://vim.wikia.com/wiki/Macros">Vim Wikia</a>).
+</p>
+
+<p>
+Let's say we have the following data:
+</p>
+
+<pre class="example">
+one     first example
+two     second example
+three   third example
+four    fourth example
+</pre>
+
+<p>
+And we want to change it to the following:
+</p>
+
+<pre class="example">
+data = {
+    'one': 'first example',
+    'two': 'second example',
+    'three': 'third example',
+    'four': 'fourth example',
+}
+</pre>
+
+<p>
+We can do this by performing the following:
+</p>
+
+<p>
+First, we want to start recording our macro.  While the cursor is under the 'o'
+of 'one', we will press <code>qd</code> to record our macro to the <code>d</code> register.
+</p>
+
+<p>
+Next, we will want to change the tabbing by performing a substitution:
+</p>
+
+<pre class="example">
+:s/\s\+/': '
+</pre>
+
+<p>
+Then, we will insert our first tick with:
+</p>
+
+<pre class="example">
+I'
+</pre>
+
+<p>
+And append the last tick and comma with:
+</p>
+
+<pre class="example">
+A',
+</pre>
+
+<p>
+Before we finish recording, one of the more important operations of making
+macros repeatable is moving the cursor to the next line and putting it into the
+correct position for the next execution.  Therefore, move the cursor the
+begging of the line and move down one line:
+</p>
+
+<pre class="example">
+0j
+</pre>
+
+<p>
+Finally, press <code>q</code> to finish recording.
+</p>
+
+<p>
+We should now be able to press <code>3@d</code> and watch as the rest of the lines change.
+</p>
+
+<p>
+To finish up the example, we'll manually enter <code>data = {</code> and the tailing <code>}</code>.
+</p>
+
+<div class="embed-video">
+<video controls="controls" width="90%" height="90%">
+<source src="/media/videos/macros.ogg" type="video/ogg" />
+<p>
+Your browser does not support the video tag.
+</p>
+</video>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<footer id="" class="status">
+<footer>
+  <p>&copy; 2014-2022 Kenny Ballou.
+    <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Some rights
+      reserved.</a></p>
+  <p>Powered by <a href="https://gnu.org">GNU/Linux</a></p>
+</footer>
+</footer>
+</body>
+</html>

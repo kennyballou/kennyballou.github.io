@@ -1,0 +1,1007 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-04-09 Sat 18:52 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Coreboot for x230</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="kb" />
+<meta name="description" content="Getting Coreboot onto Lenovo x230"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<meta charset="utf-8">
+
+<meta name="author" content="Kenny Ballou">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<title>~kb</title>
+
+<link rel="canonical" href="/" />
+<link href="/index.xml" rel="alternate" type="application/rss+xml"
+      title="~kb/blog" />
+
+<link rel="stylesheet" href="/css/simple.css" />
+<link rel="stylesheet" href="/css/simple.add.css" />
+<link rel="stylesheet" href="/css/katex.css" />
+<link rel="stylesheet" href="/css/fa-all.css" />
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<script defer type="text/javascript" src="/js/katex.js"></script>
+<script defer type="text/javascript" src="/js/katex-render.js"></script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://kennyballou.com/blog"> UP </a>
+ |
+ <a accesskey="H" href="https://kennyballou.com/"> HOME </a>
+</div><header id="" class="status">
+<nav>
+  <a href="/about.html">
+    <i class="fade fas fa-user-circle"></i>
+  </a>
+  <a href="https://git.devnulllabs.io"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-code-branch fa-1x"></i>
+  </a>
+  <a href="https://github.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-github fa-1x"></i>
+  </a>
+  <a href="https://bitbucket.org/kballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-bitbucket fa-1x"></i>
+  </a>
+  <a href="https://twitter.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-twitter fa-1x"></i>
+  </a>
+  <a href="https://www.buymeacoffee.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-mug-hot fa-1x"></i>
+  </a>
+  <a href="/resume.pdf"
+     target="_blank">
+    <i class="fade far fa-file-pdf"></i>
+  </a>
+  <a href="/932F3E8E1C0F4A9895D7B8B8B0CAA28A02958308.txt"
+     target="_blank">
+    <i class="fade fas fa-key"></i>
+  </a>
+  <a href="/index.xml" rel="alternate"
+     type="application/rss+xml">
+    <i class="fade fas fa-rss fa-1x"></i>
+  </a>
+</nav>
+</header>
+<div id="main">
+<h1 class="title">Coreboot for x230</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org6bf43b2">Coreboot</a></li>
+<li><a href="#org7c8aa9b">Motivation</a></li>
+<li><a href="#orgad8dbea">Necessary Equipment</a></li>
+<li><a href="#orgba6d78d">Disassembly and BIOS Access</a>
+<ul>
+<li><a href="#orge9eb2cb">Connecting the Raspberry Pi to the SOIC Clip</a></li>
+<li><a href="#orgb682844">Using the Raspberry Pi</a></li>
+</ul>
+</li>
+<li><a href="#org55d9f6c">Configuration and Compilation</a>
+<ul>
+<li><a href="#orgfea0c9f">Configuration</a></li>
+<li><a href="#org77c1106">Compilation</a></li>
+</ul>
+</li>
+<li><a href="#org20a433e">Flashing the New Image</a></li>
+<li><a href="#org6be9dab">Common Problems</a></li>
+<li><a href="#orgd7e24ff">Summary and Auxiliary Advice</a></li>
+<li><a href="#org4cc79ff">References</a></li>
+</ul>
+</div>
+</div>
+<div class="PREVIEW">
+<p>
+In this post, we will go through the steps to get <a href="https://www.coreboot.org">coreboot</a> compiled and
+installed on a <a href="http://shop.lenovo.com/us/en/laptops/thinkpad/x-series/x230/">Lenovo x230</a> laptop.  This is a somewhat lengthy and involved
+process that is not for the faint of heart.  It is very possible to ruin or
+otherwise brick your laptop performing these steps improperly or even properly!
+You have been warned.
+</p>
+
+</div>
+
+<figure>
+
+<div id="orgaaf850b" class="figure">
+<p><img src="./../../../../media/coreboot-x230-1.png" alt="coreboot-x230-1.png" width="70%" />
+</p>
+</div>
+</figure>
+
+<div id="outline-container-org6bf43b2" class="outline-2">
+<h2 id="org6bf43b2"><a id="ID-b461135c-68bd-44b4-b60e-951f484acb6d"></a>Coreboot</h2>
+<div class="outline-text-2" id="text-org6bf43b2">
+<blockquote>
+<p>
+coreboot is an extended firmware platform that delivers a lightning fast and
+secure boot experience on modern computers and embedded systems
+--<a href="https://www.coreboot.org">coreboot project</a>
+</p>
+</blockquote>
+
+<p>
+Coreboot is an OpenSource firmware alternative that supports a number of modern
+computers and embedded systems.  It can replace your system's
+<a href="https://en.wikipedia.org/wiki/BIOS">BIOS</a> with a faster and more secure platform.  It can be preloaded
+with a number of payloads, e.g., <a href="https://www.seabios.org/SeaBIOS">SeaBIOS</a> or
+<a href="http://www.tianocore.org/">tianocore</a>, and/or it can come with some additional payloads,
+e.g., <a href="http://www.memtest.org/">memtest86+</a>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7c8aa9b" class="outline-2">
+<h2 id="org7c8aa9b"><a id="ID-f3d7d6dd-5cda-4af2-8928-ffa107b636bc"></a>Motivation</h2>
+<div class="outline-text-2" id="text-org7c8aa9b">
+<p>
+Why replace the default BIOS image in the first place? There are several
+motivations for doing this.  For one, it's <a href="https://duckduckgo.com/?q=lenovo+whitelist+bios">well
+documented</a> that Lenovo installs a device whitelist onto its systems,
+disabling the computer if a third-party peripheral is installed, which can
+include WiFi cards and SSD's.  If you're more adventurous and want to replace
+the x230 screen with that of an x240, the whitelist will also get in the way.
+By replacing the BIOS entirely, this whitelist problem will be avoided.
+</p>
+
+<p>
+Furthermore, in older laptops, x200/1 for example, it's possible to replace the
+disastrous <a href="https://en.wikipedia.org/wiki/Intel_Active_Management_Technology">Intel ME</a> platform.  This is, unfortunately,
+(currently) impossible on the x230 and later.  That is, removing the ME code
+will make the laptop effectively unusable.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgad8dbea" class="outline-2">
+<h2 id="orgad8dbea"><a id="ID-307b7a44-b47f-4c6f-a841-46c65256f08f"></a>Necessary Equipment</h2>
+<div class="outline-text-2" id="text-orgad8dbea">
+<p>
+Before we go into the actual steps, let's take a moment to gather all the
+necessary equipment.  Disassembly is necessary because the BIOS chip is locked
+and not accessible from software flashers like <a href="https://www.flashrom.org/Flashrom">flashrom</a>.
+However, desoldering will not be necessary.
+</p>
+
+<ul class="org-ul">
+<li><p>
+SPI Flash Programmer
+</p>
+
+<p>
+This guide will perform the ROM flashing via the GPIO headers of a
+<a href="https://www.raspberrypi.org/products/raspberry-pi-2-model-b/">Raspberry Pi 2</a> (RPI-1 should work, but different pinouts
+are required).
+</p></li>
+
+<li><p>
+<a href="https://www.sparkfun.com/products/13153">SOIC-8 Clip</a>
+</p>
+
+<p>
+This clip will be used for interfacing with the BIOS chip and the SPI
+programmer.  They are sometimes available for less (with longer shipping
+times) from <a href="https://ebay.com">eBay</a>.
+</p></li>
+
+<li><p>
+Some <a href="https://www.amazon.com/Elegoo-120pcs-Multicolored-Breadboard-arduino/dp/B01EV70C78"><i>short</i> cables</a>
+</p>
+
+<p>
+These cables will connect the SOIC chip to the GPIO headers of the Raspberry
+Pi.  It is important that they are short, no more than 25cm or so.
+</p></li>
+
+<li><p>
+<a href="https://www.amazon.com/Professional-Non-Abrasive-Spudgers-Anti-Static-Tweezers/dp/B00PHNMEMC">Plastic opening tools</a>
+</p>
+
+<p>
+After not having these for too long, I can't recommend these enough for
+opening up laptops and other devices.
+</p></li>
+
+<li><p>
+A precision Phillips screwdriver
+</p>
+
+<p>
+A percision set will be better, used for disassembling the laptop.
+</p></li>
+
+<li><p>
+A magnifying lens
+</p>
+
+<p>
+The specific chip found in <i>your</i> x230 may be different from mine.  A
+magnifying lens will be helpful in determining the exact version.
+</p></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgba6d78d" class="outline-2">
+<h2 id="orgba6d78d"><a id="ID-b675bf52-308c-4dbc-8f4a-4ca5ac2b69c1"></a>Disassembly and BIOS Access</h2>
+<div class="outline-text-2" id="text-orgba6d78d">
+<p>
+<a href="http://www.myfixguide.com/manual/lenovo-thinkpad-x230-disassembly-clean-cooling-fan-remove-keyboard/">Steps</a> and <a href="https://www.ifixit.com/Device/Lenovo_Thinkpad_x230">manuals</a> for
+disassembling the laptop can be found with a simple search.  However, it's only
+necessary to remove the keyboard and the palm rest to gain access to the BIOS
+chip.  Of course, remove the battery and power supply before opening the
+laptop.  I personally, removed the hard drive and WiFi card as well, I wanted
+nothing attached while working.
+</p>
+
+<figure>
+
+<div id="org7287a1c" class="figure">
+<p><img src="./../../../../media/coreboot-x230-2.png" alt="coreboot-x230-2.png" width="30%" />
+</p>
+</div>
+</figure>
+
+<p>
+You will notice there are two chips in the above figure.  The combination of
+these two chips is what makes up the BIOS (and the Intel ME) for the x230. <i>We
+will be dealing exclusively with the /top</i> chip/ (one closest to the screen).
+</p>
+
+<p>
+Once we have physical access to the top chip, use the magnifying glass to read
+the <i>tiny</i> print of the chip.  We need to know the precise version of the chip
+to remove any future guesswork from the process, especially for disaster
+recovery.
+</p>
+
+<p>
+If you are unable to read the version of the chip, there are steps we can take
+to proceed, but it will be far more tedious and less comfortable.
+</p>
+</div>
+
+<div id="outline-container-orge9eb2cb" class="outline-3">
+<h3 id="orge9eb2cb"><a id="ID-d2281163-b8b1-490e-88dd-f969c454729a"></a>Connecting the Raspberry Pi to the SOIC Clip</h3>
+<div class="outline-text-3" id="text-orge9eb2cb">
+<p>
+Next, we will be connecting the Raspberry Pi with the cables and clips to the
+BIOS chip.
+</p>
+
+<blockquote>
+<p>
+I found this to be the most difficult of the entire process.  Finding a solid
+source for the documentation on the chip and the GPIO headers was incredibly
+difficult the first time around.
+</p>
+</blockquote>
+
+<p>
+First, get <a href="http://www.raspberrypi-spy.co.uk/wp-content/uploads/2014/07/Raspberry-Pi-GPIO-Layout-Worksheet.pdf">GPIO header diagram</a> for your
+Raspberry Pi model.
+</p>
+
+<p>
+Next, cross-reference the header diagram with your chip's spec sheet.  It
+should be in the list at <a href="http://www.alldatasheet.com">All Data Sheet</a>.  Specifically, I
+found mine <a href="http://html.alldatasheet.com/html-pdf/575458/MCNIX/MX25L3208EM2I12G/1149/7/MX25L3208EM2I12G.html">here</a>.  It's very likely, yours
+will be similar.  Cross reference the "Pin Configuration" page with the GPIO
+header diagram to discern the proper connections.
+</p>
+
+<p>
+The pin arrangement that I used was the following (using the notch on the chip
+for starting):
+</p>
+
+<ul class="org-ul">
+<li>1: GPIO 26</li>
+
+<li>2: GPIO 19</li>
+
+<li>3: Not Connected</li>
+
+<li>4: GPIO 17</li>
+
+<li>5: GPIO 21</li>
+
+<li>6: GPIO 23</li>
+
+<li>7: Not Connected</li>
+
+<li>8: GPIO 25</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgb682844" class="outline-3">
+<h3 id="orgb682844"><a id="ID-87d2573e-956a-4a26-90f1-8afbc2c78a9a"></a>Using the Raspberry Pi</h3>
+<div class="outline-text-3" id="text-orgb682844">
+<figure>
+
+<div id="org72e464e" class="figure">
+<p><img src="./../../../../media/coreboot-x230-3.png" alt="coreboot-x230-3.png" width="70%" />
+</p>
+</div>
+</figure>
+
+<blockquote>
+<p>
+Before connecting the clip, it's imperative to remove all external power
+sources.  The Raspberry Pi will be providing power to the ROM chip, any
+external current can and most likely <i>will</i> brick your laptop.
+</p>
+</blockquote>
+
+<p>
+Attach the clip to the chip and power on the Raspberry Pi.  Before you are able
+to read the chip, you may need to install <a href="https://www.flashrom.org/Flashrom">flashrom</a> and ensure
+your kernel has SPI enabled.  Most distributions will have it on by default.  An
+easy way to check is to list the contents of <code>/dev</code> and look for <code>spi</code> devices,
+since the chip is connected, there should be one.
+</p>
+
+<p>
+Before we begin the process of flashing, let's inspect the ROM itself.  First,
+simply run flashrom, specifying the SPI device as the programmer:
+</p>
+
+<pre class="example">
+# flashrom --programmer linux_spi:dev=/dev/spidev0.0
+flashrom v0.9.9-r1955 on Linux 4.4.10-1-ARCH (armv7l)
+flashrom is free software, get the source code at https://flashrom.org
+
+Calibrating delay loop... OK.
+Found Macronix flash chip "MX25L3205(A)" (4096 kB, SPI) on linux_spi.
+Found Macronix flash chip "MX25L3205D/MX25L3208D" (4096 kB, SPI) on linux_spi.
+Found Macronix flash chip "MX25L3206E/MX25L3208E" (4096 kB, SPI) on linux_spi.
+Found Macronix flash chip "MX25L3273E" (4096 kB, SPI) on linux_spi.
+Multiple flash chip definitions match the detected chip(s): "MX25L3205(A)", "MX25L3205D/MX25L3208D", "MX25L3206E/MX25L3208E", "MX25L3273E"
+Please specify which chip definition to use with the -c &lt;chipname&gt; option.
+</pre>
+
+<blockquote>
+<p>
+If you are seeing numbers like 8192 kB, you're reading the wrong chip!
+Disconnect and attach to the other.
+</p>
+</blockquote>
+
+<p>
+If you were able to read the chip number, pass it along, and try again:
+</p>
+
+<pre class="example">
+# flashrom --programmer linux_spi:dev=/dev/spidev0.0 \
+           --chip "MX25L3206E/MX25L3208E"
+flashrom v0.9.9-r1955 on Linux 4.4.10-1-ARCH (armv7l)
+flashrom is free software, get the source code at https://flashrom.org
+
+Calibrating delay loop... OK.
+Found Macronix flash chip "MX25L3206E/MX25L3208E" (4096 kB, SPI) on linux_spi.
+</pre>
+
+<p>
+Now, we will want to create a back up image of the ROM, but we also want to
+verify we are reading correctly:
+</p>
+
+<pre class="example">
+# flashrom --programmer linux_spi:dev=/dev/spidev0.0 \
+           --chip "MX25L3206E/MX25L3208E" \
+           --read original.1.rom
+flashrom v0.9.9-r1955 on Linux 4.4.10-1-ARCH (armv7l)
+flashrom is free software, get the source code at https://flashrom.org
+
+Calibrating delay loop... OK.
+Found Macronix flash chip "MX25L3206E/MX25L3208E" (4096 kB, SPI) on linux_spi.
+Reading flash... done.
+
+# flashrom --programmer linux_spi:dev=/dev/spidev0.0 \
+           --chip "MX25L3206E/MX25L3208E" \
+           --read original.2.rom
+flashrom v0.9.9-r1955 on Linux 4.4.10-1-ARCH (armv7l)
+flashrom is free software, get the source code at https://flashrom.org
+
+Calibrating delay loop... OK.
+Found Macronix flash chip "MX25L3206E/MX25L3208E" (4096 kB, SPI) on linux_spi.
+Reading flash... done.
+
+# diff original.1.rom original.2.rom
+</pre>
+
+<blockquote>
+<p>
+Again, if the size of <code>original.1.rom</code> and <code>original.2.rom</code> are 8MB, you're
+reading the wrong chip, move the clip to the other chip and repeat the above
+steps!
+</p>
+</blockquote>
+
+<p>
+If you get no output from the last command, we should be set, or it means we're
+reading both incorrectly.  However, it's more likely flashrom will complain
+first.
+</p>
+
+<p>
+Keep at least one of the images around just in case this fails and you need to
+attempt recovery.
+</p>
+
+<blockquote>
+<p>
+If you were unable to read the serial number off the chip, perform the read 4
+to 8 times, once or twice for each chip type.
+</p>
+</blockquote>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org55d9f6c" class="outline-2">
+<h2 id="org55d9f6c"><a id="ID-86a3c4af-c19f-442a-ade1-2cd1445e423b"></a>Configuration and Compilation</h2>
+<div class="outline-text-2" id="text-org55d9f6c">
+<p>
+Half the battle to getting Coreboot onto your system is properly putting
+together the build-tools and compiling the coreboot image.  There already
+exists a <a href="https://www.coreboot.org/Build_HOWTO">guide for configuring and building</a> the
+Coreboot tool-chain, but for completeness, the basic steps will be copied here.
+</p>
+
+<blockquote>
+<p>
+I'll assume a certain comfortability with GNU/Linux and the GNU GCC and Make
+tools.
+</p>
+</blockquote>
+
+<p>
+First up, get a copy of the <a href="https://www.coreboot.org/downloads.html">Coreboot Source</a>:
+</p>
+
+<pre class="example">
+% git clone --recursive https://review.coreboot.org/coreboot.git
+</pre>
+
+<p>
+This will get the latest source code of the Coreboot project and also
+initialize the project's submodules.
+</p>
+
+<p>
+Next, we will need to download the blobs archive:
+</p>
+
+<pre class="example">
+% curl -SLO https://www.coreboot.org/releases/coreboot-blobs-4.5.tar.xz
+</pre>
+
+<blockquote>
+<p>
+The link can be found from the
+<a href="https://www.coreboot.org/downloads.html">Coreboot Downloads</a> page.
+</p>
+</blockquote>
+
+<p>
+Now, unpack the blobs into the <code>coreboot/3rdparty/blobs</code> folder:
+</p>
+
+<pre class="example">
+% tar -xf coreboot-blobs-4.5.tar.xz --strip-components=1 -C coreboot
+</pre>
+
+<p>
+Now, we can move onto configuring the tool-chain, building the tool-chain, and
+finally building the coreboot image itself.
+</p>
+</div>
+
+<div id="outline-container-orgfea0c9f" class="outline-3">
+<h3 id="orgfea0c9f"><a id="ID-373752d9-60dc-48d3-863e-ff81dd0f4d99"></a>Configuration</h3>
+<div class="outline-text-3" id="text-orgfea0c9f">
+<pre class="example">
+% cd coreboot
+</pre>
+
+<p>
+We'll start by configuring the compile options for coreboot:
+</p>
+
+<pre class="example">
+± make menuconfig
+</pre>
+
+<p>
+OR
+</p>
+
+<pre class="example">
+± make nconfig
+</pre>
+
+<p>
+Set the following options:
+</p>
+
+<pre class="example">
+general  --|
+           |-[*] Compress ramstage with LZMA
+           |-[*] Include the coreboot .config file into the ROM image
+mainboard -|
+           |-Mainboard vendor (Lenovo)
+           |-Mainboard model (ThinkPad X230)
+           |-ROM chip size (12288 KB (12 MB))
+           |-(0x100000) Size of CBFS filesystem in ROM
+devices ---|
+           |-[*] Use native graphics initialization
+generic ---|
+           |-[*] PS/2 keyboard init
+console ---|
+           |-[*] Squelch AP CPUs from early console.
+           |-[*] Send console output to a CBMEM buffer
+           |-[*] Send POST codes to an external device
+           |-[*] Send POST codes to an IO port
+sys table -|
+           |-[*] Generate SMBIOS tables
+payload ---|
+           |-Add a payload (SeaBIOS)
+           |-SeaBIOS version (master)
+           |-(10) PS/2 keyboard controller initialization timeout (milliseconds)
+           |-[*] Hardware init during option ROM execution
+           |-[*] Include generated option rom that implements legacy VGA BIOS compatibility
+           |-[*] Use LZMA compression for payloads
+</pre>
+
+<p>
+These configuration options were borrowed from
+<a href="https://www.ericholzbach.net/blog/x230_coreboot/">Unix Blather</a>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org77c1106" class="outline-3">
+<h3 id="org77c1106"><a id="ID-96cbceff-bc36-4aff-8893-c0f7b781d951"></a>Compilation</h3>
+<div class="outline-text-3" id="text-org77c1106">
+<blockquote>
+<p>
+If you were thinking of compiling the ROM on the Pi, I recommend you
+reconsider.  If you have an exorbitant amount of time to kill, go for it, but
+you'll prefer a machine with more power.
+</p>
+</blockquote>
+
+<p>
+From here, we can build the tool-chain:
+</p>
+
+<pre class="example">
+± make crossgcc-x64 CPUS=$(nproc)
+</pre>
+
+<p>
+This will only build the tool-chain for the x64 architecture, update as
+necessary.
+</p>
+
+<p>
+<code>CPUS=#</code> is used to specify the parallelization of the tool-build.  This is
+unfortunately different from the usual <code>--jobs|-j</code> argument of <code>make</code>, but has
+the same effect.
+</p>
+
+<p>
+Now, we can build the coreboot image itself:
+</p>
+
+<pre class="example">
+± make -j$(nproc)
+</pre>
+
+<p>
+This will create <code>build/coreboot.rom</code> image.
+</p>
+
+<p>
+However, this will <i>not</i> be the image we flash onto our laptop!  Because the
+Lenovo x230 comes with the <a href="https://en.wikipedia.org/wiki/Intel_Active_Management_Technology">nasty Intel ME</a> and we built the
+coreboot image using a stub for the Intel ME section, we need to create a new
+image that contains only the Coreboot contents.  To do this, we will use <code>dd</code>
+to skip the first 8MB of the image, and only grab the last 4:
+</p>
+
+<pre class="example">
+± dd if=build/coreboot.rom bs=1M of=/tmp/x230.rom skip=8
+</pre>
+
+<p>
+This will create a 4MB file in <code>/tmp/</code> named <code>x230.rom</code>.  Finally, copy the new
+image to the Raspberry Pi.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org20a433e" class="outline-2">
+<h2 id="org20a433e"><a id="ID-8879cf7b-f823-4ac8-89d2-0f3cd2e9324f"></a>Flashing the New Image</h2>
+<div class="outline-text-2" id="text-org20a433e">
+<p>
+After the image is copied to the Pi, we can use flashrom to write the new
+image:
+</p>
+
+<pre class="example">
+# flashrom --programmer linux_spi:dev=/dev/spidev0.0
+           --chip "MX25L3206E/MX25L3208E"
+           --write /tmp/x230.rom
+flashrom v0.9.9-r1955 on Linux 4.4.10-1-ARCH (armv7l)
+flashrom is free software, get the source code at https://flashrom.org
+
+Calibrating delay loop... OK.
+Found Macronix flash chip "MX25L3206E/MX25L3208E" (4096 kB, SPI) on linux_spi.
+Reading old flash chip contents... done.
+Erasing and writing flash chip... Erase/write done.
+Verifying flash... VERIFIED.
+</pre>
+
+<p>
+Flashrom will read back the new contents and verify it was successful, however,
+I like the comfort of having done this myself.  This can be accomplished two
+ways: using flashrom's <code>--verify</code> option, or reading the image and running
+<code>diff</code>:
+</p>
+
+<pre class="example">
+# flashrom --programmer linux_spi:dev=/dev/spidev0.0
+           --chip "MX25L3206E/MX25L3208E"
+           --verify /tmp/x230.rom
+flashrom v0.9.9-r1955 on Linux 4.4.10-1-ARCH (armv7l)
+flashrom is free software, get the source code at https://flashrom.org
+
+Calibrating delay loop... OK.
+Found Macronix flash chip "MX25L3206E/MX25L3208E" (4096 kB, SPI) on linux_spi.
+Reading old flash chip contents... done.
+Verifying flash... VERIFIED.
+</pre>
+
+<p>
+OR
+</p>
+
+<pre class="example">
+# flashrom --programmer linux_spi:dev=/dev/spidev0.0 \
+           --chip "MX25L3206E/MX25L3208E" \
+           --read /tmp/x230.2.rom
+flashrom v0.9.9-r1955 on Linux 4.4.10-1-ARCH (armv7l)
+flashrom is free software, get the source code at https://flashrom.org
+
+Calibrating delay loop... OK.
+Found Macronix flash chip "MX25L3206E/MX25L3208E" (4096 kB, SPI) on linux_spi.
+Reading flash... done.
+
+# diff /tmp/x230.rom /tmp/x230.2.rom
+</pre>
+
+<p>
+If you get "VERIFIED" or no output, respectively, the contents of the BIOS chip
+should be replaced with the Coreboot image.
+</p>
+
+<p>
+All that's next is to disconnect the chip, reassemble the laptop and hope it
+works!
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6be9dab" class="outline-2">
+<h2 id="org6be9dab"><a id="ID-229348bf-2725-4b85-bb58-2974ae7102b1"></a>Common Problems</h2>
+<div class="outline-text-2" id="text-org6be9dab">
+<p>
+If you're having issues flashing or reading your BIOS, check the following:
+</p>
+
+<ul class="org-ul">
+<li>The chip is getting sufficient power</li>
+
+<li>The wires used to connect the Raspberry Pi and the chip are not <i>too long</i></li>
+
+<li>Make sure your pinout is correct</li>
+</ul>
+
+<p>
+For some more information, check Flashrom's <a href="https://www.flashrom.org/ISP">in system
+programming</a>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd7e24ff" class="outline-2">
+<h2 id="orgd7e24ff"><a id="ID-c0950f38-f89f-4494-93d7-1a9558a8b55b"></a>Summary and Auxiliary Advice</h2>
+<div class="outline-text-2" id="text-orgd7e24ff">
+<p>
+Hopefully, you're now booting into your x230 with Coreboot.  Enjoy your new
+BIOS, whitelist free and awesome!
+</p>
+
+<p>
+However, if you have issues, e.g., the flashing doesn't go as planned: <i>DO NOT
+POWER OFF THE CHIP!</i> Get help from the <a href="//irc.freenode.net/coreboot">#coreboot</a> IRC channel
+on <a href="https://freenode.net/">freenode</a> or <a href="https://www.coreboot.org/Mailinglist">email the mailing list</a>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4cc79ff" class="outline-2">
+<h2 id="org4cc79ff"><a id="ID-286cfd79-8d9a-4e82-bb87-1f7b8b012a8d"></a>References</h2>
+<div class="outline-text-2" id="text-org4cc79ff">
+<ul class="org-ul">
+<li><a href="https://www.coreboot.org">coreboot homepage</a></li>
+
+<li><a href="http://shop.lenovo.com/us/en/laptops/thinkpad/x-series/x230/">x230 product page</a></li>
+
+<li><a href="https://www.raspberrypi.org/products/raspberry-pi-2-model-b/">Raspberry Pi 2 Model B</a></li>
+
+<li><a href="https://www.sparkfun.com/products/13153">IC Test Clip - SOIC 8-Pin</a></li>
+
+<li><a href="https://en.wikipedia.org/wiki/Intel_Active_Management_Technology">Intel Active Management Technology Wikipedia Post</a></li>
+
+<li><a href="https://www.coreboot.org/Build_HOWTO">Coreboot Build HOWTO</a></li>
+
+<li><a href="https://www.coreboot.org/downloads.html">Coreboot Downloads</a></li>
+
+<li><a href="https://www.flashrom.org/Flashrom">Flashrom Project Homepage</a></li>
+
+<li><a href="http://www.raspberrypi-spy.co.uk/wp-content/uploads/2014/07/Raspberry-Pi-GPIO-Layout-Worksheet.pdf">Raspberry Pi GPIO Header Sheet B/B+</a></li>
+
+<li><a href="https://www.ericholzbach.net/blog/x230_coreboot/">Unix Blather: Coreboot on the Lenovo x230</a></li>
+</ul>
+</div>
+</div>
+</div>
+<footer id="" class="status">
+<footer>
+  <p>&copy; 2014-2022 Kenny Ballou.
+    <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Some rights
+      reserved.</a></p>
+  <p>Powered by <a href="https://gnu.org">GNU/Linux</a></p>
+</footer>
+</footer>
+</body>
+</html>

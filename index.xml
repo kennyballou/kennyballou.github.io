@@ -1,0 +1,765 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/"
+     xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+     xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+     xmlns:georss="http://www.georss.org/georss"
+     xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+     xmlns:media="http://search.yahoo.com/mrss/"><channel>
+  <title>(Blog)</title>
+  <atom:link href="https://kennyballou.com/index.xml" rel="self" type="application/rss+xml" />
+  <link>https://kennyballou.com</link>
+  <description><![CDATA[A rambling in self-inflicted suffering with Java, Emacs, DAP, and Firewalls!
+  Automatically pulling pull-request branches
+  How often and why
+  Organizing Workspace/Source Code
+  Organizing Research Papers
+  Sharing Work in Progress
+  Automatically Deploy content with Amazon CodeCommit and CodeBuild
+  Static Site Hosting with Amazon
+  Override commands for ECS tasks when using Event Rules
+  NixOS setup with RAID, LUKS, and LVM
+  NixOS
+  Migration from Hugo to org-mode, some scripts, and pandoc
+  How to configure ~conky~ to use local ~maildirs~
+  Key transition statement and verification steps
+  Introduction to Git Packfiles
+  Getting Coreboot onto Lenovo x230
+  Hot code reloading with Elixir and Erlang
+  Resurrect Lost History from the Information Manager from Hell
+  The perils of releasing OTP applications in the wild
+  A backwards introduction to the information manager from hell
+  How to edit hunk diffs
+  Vim Tips: Visual Mode and Macros
+  My own list of links, articles, paper, etc. I enjoyed reading about distributed systems
+  First vim tip post of a series of unknown size
+  Comparison of Apache Storm and Apache Spark Streaming
+  Overview of Apache Spark and a sample Twitter Sentiment Analysis
+  Overview of Apache Storm and sample Twitter Sentiment Analysis]]></description>
+  <language>en</language>
+  <pubDate>Sat, 09 Apr 2022 18:53:00 +0000</pubDate>
+  <lastBuildDate>Sat, 09 Apr 2022 18:53:00 +0000</lastBuildDate>
+  <generator>Emacs 26.3 Org-mode 9.1.9</generator>
+  <webMaster>kb@devnulllabs.io (kb)</webMaster>
+  <image>
+    <url>http://orgmode.org/img/org-mode-unicorn-logo.png</url>
+    <title>(Blog)</title>
+    <link>https://kennyballou.com</link>
+  </image>
+
+
+  <item>
+    <title>Default Drop IPv6 -- Self-inflicted Pain</title>
+    <link>https://kennyballou.com/https://kennyballou.com/blog/2021/07/default-drop-ipv6-self-inflicted-pain/index.html</link>
+    <author>kb</author>
+    <guid isPermaLink="false">https://kennyballou.com/https://kennyballou.com/blog/2021/07/default-drop-ipv6-self-inflicted-pain/index.html</guid>
+    <pubDate>Thu, 22 Jul 2021 00:00:00 +0000</pubDate>
+
+    <description><![CDATA[<blockquote>
+    <div class="PREVIEW">
+    <p>
+    Debugging <a href="https://www.oracle.com/java/">Java</a> programs in <a href="https://www.gnu.org/software/emacs/">Emacs</a> has been a goal and overall feature I have
+    wanted for some time.  However, every time I've reached for it, <code>dap-java-debug</code>
+    demonstrated an unbearably slow startup.  So much so, that it was often faster
+    and more productive to launch <a href="https://www.jetbrains.com/idea/">IntelliJ</a>, fight <a href="https://nixos.org/">Nix</a> and <a href="https://www.jetbrains.com/idea/">IntelliJ</a> to load the
+    project correctly, and launch the debugger from <a href="https://www.jetbrains.com/idea/">IntelliJ</a>.
+    </p>
+
+    <p>
+    No more.  The pain is gone, forced on by fighting <a href="https://www.jetbrains.com/idea/">IntelliJ</a> to load one too many
+    times.
+    </p>
+
+    <p>
+    tl;dr: self-inflicted pain is a strange way to deeply learn.
+    </p>
+
+    </div>
+    </blockquote>
+
+    <p>
+    <a href="https://kennyballou.com/blog/2021/07/default-drop-ipv6-self-inflicted-pain/index.html%20">Read More</a>
+    </p>
+    ]]></description>
+  </item>
+
+  <item>
+    <title>Git: Tracking Review Branches</title>
+    <link>https://kennyballou.com/https://kennyballou/blog/2021/05/git-tracking-review-branches/index.html</link>
+    <author>kb</author>
+    <guid isPermaLink="false">https://kennyballou.com/https://kennyballou/blog/2021/05/git-tracking-review-branches/index.html</guid>
+    <pubDate>Sat, 08 May 2021 00:00:00 +0000</pubDate>
+
+    <description><![CDATA[<blockquote>
+    <div class="PREVIEW">
+    <p>
+    When reviewing code, it's often necessary to pull the changes under review.
+    There are ad-hoc ways of doing this.  But there are also more automatic ways as
+    well.  In this post, we discuss the more automatic approaches for <a href="https://github.com">GitHub</a> and
+    <a href="https://gitlab.com">GitLab</a>.  Other forges may have the ability to use this trick, we discuss how to
+    discover the remote references, if they are available.
+    </p>
+
+    </div>
+    </blockquote>
+
+    <p>
+    <a href="https://kennyballou.com/blog/2021/05/git-tracking-review-branches/index.html">Read More</a>
+    </p>
+    ]]></description>
+  </item>
+
+  <item>
+    <title>Commit Granularity</title>
+    <link>https://kennyballou.com/https://kennyballou/blog/2021/03/commit-granularity/index.html</link>
+    <author>kb</author>
+    <guid isPermaLink="false">https://kennyballou.com/https://kennyballou/blog/2021/03/commit-granularity/index.html</guid>
+    <pubDate>Wed, 17 Mar 2021 00:00:00 +0000</pubDate>
+
+    <description><![CDATA[<blockquote>
+    <div class="PREVIEW">
+    <p>
+    There are <a href="https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html">many</a> <a href="https://chris.beams.io/posts/git-commit/">blog</a> <a href="https://medium.com/@joshuatauberer/write-joyous-git-commit-messages-2f98891114c4">posts</a> which extol the foundations of writing good,
+    communicative commit messages.  These same posts, however, tend to otherwise
+    ignore the question of granularity.  In this post, I attempt an answer to
+    granularity.  The answer is, of course, it depends.
+    </p>
+
+    </div>
+    </blockquote>
+
+    <p>
+    <a href="https://kennyballou.com/blog/2021/03/commit-granularity/index.html">Read More</a>
+    </p>
+    ]]></description>
+  </item>
+
+  <item>
+    <title>Organizing Source</title>
+    <link>https://kennyballou.com/https://kennyballou.com/blog/2020/08/organizing-source/index.html</link>
+    <author>kb</author>
+    <guid isPermaLink="false">https://kennyballou.com/https://kennyballou.com/blog/2020/08/organizing-source/index.html</guid>
+    <pubDate>Mon, 24 Aug 2020 00:00:00 +0000</pubDate>
+
+    <description><![CDATA[<blockquote>
+    <div class="PREVIEW">
+    <p>
+    Another brief digression into organizing source code and projects.  Described
+    here is my current ideal, subject to change, that has evolved over the years of
+    being a student, a professional, a contractor, and now a student again.
+    </p>
+
+    </div>
+    </blockquote>
+
+    <p>
+    <a href="https://kennyballou.com/blog/2020/08/organizing-source/index.html">Read More</a>
+    </p>
+    ]]></description>
+  </item>
+
+  <item>
+    <title>Organizing Research</title>
+    <link>https://kennyballou.com/https://kennyballou.com/blog/2020/08/organizing-research/index.html</link>
+    <author>kb</author>
+    <guid isPermaLink="false">https://kennyballou.com/https://kennyballou.com/blog/2020/08/organizing-research/index.html</guid>
+    <pubDate>Wed, 19 Aug 2020 00:00:00 +0000</pubDate>
+
+    <description><![CDATA[<blockquote>
+    <div class="PREVIEW">
+    <p>
+    Small tangent into the basic, how to organize research papers and related
+    artifacts.  I have a few ideas for how to best handle this, but nothing
+    concrete I can point to that I'm satisfied with.
+    </p>
+
+    <p>
+    Is this a useless divergence into tool sharpening and small optimizations for
+    little gain?  Or is this a worthwhile venture to get right early on that pays
+    off in the long term?
+    </p>
+
+    </div>
+    </blockquote>
+
+    <p>
+    <a href="https://kennyballou.com/blog/2020/08/organizing-research/index.html">Read More</a>
+    </p>
+    ]]></description>
+  </item>
+
+  <item>
+    <title>Yesterday You Said Tomorrow</title>
+    <link>https://kennyballou.com/https://kennyballou.com/blog/2020/08/yesterday-you-said-tomorrow/index.html</link>
+    <author>kb</author>
+    <guid isPermaLink="false">https://kennyballou.com/https://kennyballou.com/blog/2020/08/yesterday-you-said-tomorrow/index.html</guid>
+    <pubDate>Tue, 18 Aug 2020 00:00:00 +0000</pubDate>
+
+    <description><![CDATA[<blockquote>
+    <div class="PREVIEW">
+    <p>
+    <a href="https://www.youtube.com/watch?v=iAg4yMangmY">"Yesterday, you said tomorrow."</a>  Entering the first week of being a full-time
+    graduate assistant, I want to start a more earnest attempt to share more of the
+    experience and the journey.  I've always maintained that the journey itself is
+    the worthier part, the ends only a different way to spell "beginning".
+    </p>
+
+    </div>
+    </blockquote>
+
+    <p>
+    <a href="https://kennyballou.com/blog/2020/08/yesterday-you-said-tomorrow/index.html">Read More</a>
+    </p>
+    ]]></description>
+  </item>
+
+  <item>
+    <title>Blog Content Deploy with AWS Code Commit and Code Build</title>
+    <link>https://kennyballou.com/https://kennyballou.com/blog/2020/02/blog-deploy-code-commit-and-build/index.html</link>
+    <author>kb</author>
+    <guid isPermaLink="false">https://kennyballou.com/https://kennyballou.com/blog/2020/02/blog-deploy-code-commit-and-build/index.html</guid>
+    <pubDate>Wed, 12 Feb 2020 00:00:00 +0000</pubDate>
+
+    <description><![CDATA[<blockquote>
+    <div class="PREVIEW">
+    <p>
+    In a previous post, I discussed a new <a href="https://kennyballou.com/blog/2019/03/static-site-generation">static site
+    generation</a> process being used for this <a href="https://kennyballou.com">blog</a>.  More recently, I
+    discussed <a href="https://kennyballou.com/blog/2020/02/hosting-with-aws-s3-cloudfront">moving and hosting</a> in <a href="https://aws.amazon.com/">AWS</a> Now, I
+    want to briefly discuss how it's now, finally, being auto deployed via
+    <a href="https://git-scm.com/">Git</a> and <a href="https://aws.amazon.com/codebuild/">AWS Code Build</a>.
+    </p>
+
+    </div>
+    </blockquote>
+
+    <p>
+    <a href="https://kennyballou.com/blog/2020/02/blog-deploy-code-commit-and-build/index.html">Read More</a>
+    </p>
+    ]]></description>
+  </item>
+
+  <item>
+    <title>Hosting with AWS S3 and CloudFront</title>
+    <link>https://kennyballou.com/https://kennyballou.com/blog/2020/02/hosting-with-aws-s3-cloudfront/index.html</link>
+    <author>kb</author>
+    <guid isPermaLink="false">https://kennyballou.com/https://kennyballou.com/blog/2020/02/hosting-with-aws-s3-cloudfront/index.html</guid>
+    <pubDate>Wed, 12 Feb 2020 00:00:00 +0000</pubDate>
+
+    <description><![CDATA[<blockquote>
+    <div class="PREVIEW">
+    <p>
+    There are many posts already out about how to host static sites in <a href="https://aws.amazon.com/s3/">S3</a> and
+    <a href="https://aws.amazon.com/cloudfront/">CloudFront</a>.  However, I would like to add to the discussion a small
+    contribution of how to do this by creating the resources in <a href="https://aws.amazon.com/cloudformation/">CloudFormation</a>, and
+    specifically, how to ensure all content is served <span class="underline">via</span> <a href="https://aws.amazon.com/cloudfront/">CloudFront</a> and is
+    strictly not available via <a href="https://aws.amazon.com/s3/">S3</a>.
+    </p>
+
+    </div>
+    </blockquote>
+
+    <p>
+    <a href="https://kennyballou.com/blog/2020/02/hosting-with-aws-s3-cloudfront/index.html">Read More</a>
+    </p>
+    ]]></description>
+  </item>
+
+  <item>
+    <title>AWS ECS Container Overrides for Event Targets</title>
+    <link>https://kennyballou.com/https://kennyballou.com/blog/2019/10/aws-ecs-events-target-input/index.html</link>
+    <author>kb</author>
+    <guid isPermaLink="false">https://kennyballou.com/https://kennyballou.com/blog/2019/10/aws-ecs-events-target-input/index.html</guid>
+    <pubDate>Tue, 29 Oct 2019 00:00:00 +0000</pubDate>
+
+    <description><![CDATA[<blockquote>
+    <div class="PREVIEW">
+    <p>
+    Using <a href="https://aws.amazon.com/cloudformation/">AWS CloudFormation</a> to configure <a href="https://aws.amazon.com/cloudwatch/">AWS CloudWatch Events</a> to target <a href="https://aws.amazon.com/ecs/">ECS</a> is
+    not as well documented as it should be.  Here, we walk-through a highly
+    specific use case where the documentation was not here to help, how the
+    solution was found, and possibly some insight when facing similar issues in the
+    future.
+    </p>
+
+    <p>
+    In a previous <a href="https://kennyballou.com/blog/2017/10/conky-maildirs-config">post</a>, I made the fecicious call out to use the source.
+    </p>
+
+    </div>
+    </blockquote>
+
+    <p>
+    <a href="https://kennyballou.com/blog/2019/10/aws-ecs-events-target-input/index.html%20">Read More</a>
+    </p>
+    ]]></description>
+  </item>
+
+  <item>
+    <title>NixOS Setup and Configuration</title>
+    <link>https://kennyballou.com/https://kennyballou.com/blog/2019/07/nixos-md-luks-lvm-setup/index.html</link>
+    <author>kb</author>
+    <guid isPermaLink="false">https://kennyballou.com/https://kennyballou.com/blog/2019/07/nixos-md-luks-lvm-setup/index.html</guid>
+    <pubDate>Tue, 23 Jul 2019 00:00:00 +0000</pubDate>
+
+    <description><![CDATA[<blockquote>
+    <div class="PREVIEW">
+    <p>
+    A brief overview (read instructions) on setting up a new <a href="https://nixos.org/">NixOS</a> system with <a href="https://www.sourceware.org/lvm2/">LVM</a>
+    on <a href="https://gitlab.com/cryptsetup/cryptsetup/blob/master/README.md">LUKS</a> on <a href="http://neil.brown.name/blog/mdadm">md</a>.  We go through drive preparation, basic <a href="https://nixos.org/">NixOS</a> installation
+    instructions, and slight modifications to the instructions for installing a new
+    system from configuration.
+    </p>
+
+    </div>
+    </blockquote>
+
+    <p>
+    <a href="https://kennyballou.com/blog/2019/07/nixos-md-luks-lvm-setup/index.html">Read More</a>
+    </p>
+    ]]></description>
+  </item>
+
+  <item>
+    <title>NixOS</title>
+    <link>https://kennyballou.com/https://kennyballou.com/blog/2019/07/nixos/index.html</link>
+    <author>kb</author>
+    <guid isPermaLink="false">https://kennyballou.com/https://kennyballou.com/blog/2019/07/nixos/index.html</guid>
+    <pubDate>Fri, 19 Jul 2019 00:00:00 +0000</pubDate>
+
+    <description><![CDATA[<blockquote>
+    <div class="PREVIEW">
+    <p>
+    <a href="https://nixos.org/">NixOS</a> is a new kind of <a href="https://www.gnu.org">GNU</a>/<a href="https://www.kernel.org/">Linux</a> distribution, borrowing the ideas of
+    functional programming languages to bring about a revolution of how we think
+    about operating systems and software development.
+    </p>
+
+    </div>
+    </blockquote>
+
+    <p>
+    <a href="https://kennyballou.com/blog/2019/07/nixos/index.html">Read More</a>
+    </p>
+    ]]></description>
+  </item>
+
+  <item>
+    <title>(New) Static Site Generation</title>
+    <link>https://kennyballou.com/https://kennyballou.com/blog/2019/03/static-site-generation/index.html</link>
+    <author>kb</author>
+    <guid isPermaLink="false">https://kennyballou.com/https://kennyballou.com/blog/2019/03/static-site-generation/index.html</guid>
+    <pubDate>Sun, 03 Mar 2019 00:00:00 +0000</pubDate>
+
+    <description><![CDATA[<blockquote>
+    <div class="PREVIEW">
+    <p>
+    For a few years, I've been using <a href="https://gohugo.io/">Hugo</a> for blog generation.  Recently,
+    I've decided I wanted to take static site generation into a different
+    direction.  Specifically, I wanted to use a different source markup and I
+    wanted to write my own tool set for generating the actual HTML.
+    </p>
+
+    </div>
+    </blockquote>
+
+    <p>
+    <a href="https://kennyballou.com/blog/2019/03/static-site-generation/index.html">Read More</a>
+    </p>
+    ]]></description>
+  </item>
+
+  <item>
+    <title>Conky Mail Notifications using Maildirs</title>
+    <link>https://kennyballou.com/https://kennyballou.com/blog/2017/10/conky-maildirs-config/index.html</link>
+    <author>kb</author>
+    <guid isPermaLink="false">https://kennyballou.com/https://kennyballou.com/blog/2017/10/conky-maildirs-config/index.html</guid>
+    <pubDate>Sun, 08 Oct 2017 00:00:00 +0000</pubDate>
+
+    <description><![CDATA[<blockquote>
+    <div class="PREVIEW">
+    <p>
+    Configuring <a href="https://github.com/brndnmtthws/conky"><code>conky</code></a> to display a count and symbol of new mail turned out to be
+    more tricky than I had originally anticipated.  This small post quickly
+    explores the issues and my own misunderstandings that led to a working <a href="https://github.com/brndnmtthws/conky"><code>conky</code></a>
+    configuration and a better understanding of <a href="https://en.wikipedia.org/wiki/Maildir"><code>maildir</code></a>.
+    </p>
+
+    </div>
+    </blockquote>
+
+    <p>
+    <a href="https://kennyballou.com/blog/2017/10/conky-maildirs-config/index.html">Read More</a>
+    </p>
+    ]]></description>
+  </item>
+
+  <item>
+    <title>GPG Key Transition</title>
+    <link>https://kennyballou.com/https://kennyballou.com/blog/2017/08/gpg-key-transition/index.html</link>
+    <author>kb</author>
+    <guid isPermaLink="false">https://kennyballou.com/https://kennyballou.com/blog/2017/08/gpg-key-transition/index.html</guid>
+    <pubDate>Wed, 23 Aug 2017 00:00:00 +0000</pubDate>
+
+    <description><![CDATA[<blockquote>
+    <div class="PREVIEW">
+    <p>
+    Today I'm announcing my <a href="https://gnupg.org/">GPG</a> transition from my old, and now expired, <a href="https://gnupg.org/">GPG</a> key:
+    <a href="https://pgp.mit.edu/pks/lookup?op=get&amp;search=0x1066BA71A5F56C58">DAEE96513758BF6337F71E491066BA71A5F56C58</a> and
+    <a href="https://pgp.mit.edu/pks/lookup?op=get&amp;search=0x1CFA8A9CD949D956">8FCAF4F0CBB0BB9C590C8ED11CFA8A9CD949D956</a> to a new master key
+    <a href="https://pgp.mit.edu/pks/lookup?op=get&amp;search=0xB0CAA28A02958308">932F3E8E1C0F4A9895D7B8B8B0CAA28A02958308</a>.  The old key will remain vaild for a
+    little while longer, but I prefer all future correspondence to be addressed to
+    my new key.
+    </p>
+
+    </div>
+    </blockquote>
+
+    <p>
+    <a href="https://kennyballou.com/blog/2017/08/gpg-key-transition/index.html">Read More</a>
+    </p>
+    ]]></description>
+  </item>
+
+  <item>
+    <title>Git Packfiles</title>
+    <link>https://kennyballou.com/https://kennyballou.com/blog/2017/03/git-packfiles/index.html</link>
+    <author>kb</author>
+    <guid isPermaLink="false">https://kennyballou.com/https://kennyballou.com/blog/2017/03/git-packfiles/index.html</guid>
+    <pubDate>Wed, 01 Mar 2017 00:00:00 +0000</pubDate>
+
+    <description><![CDATA[<blockquote>
+    <div class="PREVIEW">
+    <p>
+    Previously, in <a href="https://kennyballou.com/blog/2016/01/git-in-reverse">Git in Reverse</a>, we learned about <a href="https://git-scm.com/">Git</a> and how it internally
+    stores information.  Namely, we went over the <a href="http://stackoverflow.com/questions/5709687/what-are-the-loose-objects-that-the-git-gui-refers-to#5710039">"loose" object</a> format that Git
+    uses for storage.  However, in the last post, we did not discuss how Git uses
+    another storage format to more compactly store files, changes, and ultimately
+    objects.  In this post we will discuss packfiles and how Git uses these
+    primarily for using less bandwidth and, only secondarily, using less storage
+    space for storing repository contents.
+    </p>
+
+    </div>
+    </blockquote>
+
+    <p>
+    <a href="https://kennyballou.com/blog/2017/03/git-packfiles/index.html">Read More</a>
+    </p>
+    ]]></description>
+  </item>
+
+  <item>
+    <title>Coreboot for x230</title>
+    <link>https://kennyballou.com/https://kennyballou.com/blog/2017/01/coreboot-x230/index.html</link>
+    <author>kb</author>
+    <guid isPermaLink="false">https://kennyballou.com/https://kennyballou.com/blog/2017/01/coreboot-x230/index.html</guid>
+    <pubDate>Tue, 31 Jan 2017 00:00:00 +0000</pubDate>
+
+    <description><![CDATA[<blockquote>
+    <div class="PREVIEW">
+    <p>
+    In this post, we will go through the steps to get <a href="https://www.coreboot.org">coreboot</a> compiled and
+    installed on a <a href="http://shop.lenovo.com/us/en/laptops/thinkpad/x-series/x230/">Lenovo x230</a> laptop.  This is a somewhat lengthy and involved
+    process that is not for the faint of heart.  It is very possible to ruin or
+    otherwise brick your laptop performing these steps improperly or even properly!
+    You have been warned.
+    </p>
+
+    </div>
+    </blockquote>
+
+    <p>
+    <a href="https://kennyballou.com/blog/2017/01/coreboot-x230/index.html">Read More</a>
+    </p>
+    ]]></description>
+  </item>
+
+  <item>
+    <title>Elixir/Erlang Hot Swapping Code</title>
+    <link>https://kennyballou.com/https://kennyballou.com/blog/2016/12/elixir-hot-swapping/index.html</link>
+    <author>kb</author>
+    <guid isPermaLink="false">https://kennyballou.com/https://kennyballou.com/blog/2016/12/elixir-hot-swapping/index.html</guid>
+    <pubDate>Wed, 07 Dec 2016 00:00:00 +0000</pubDate>
+
+    <description><![CDATA[<blockquote>
+    <div class="PREVIEW">
+    <p>
+    One of the untold benefits of having a runtime is the ability for that runtime
+    to enable loading and unloading code while the runtime is active.  Since the
+    runtime is itself, essentially, a virtual machine with its own operating system
+    and process scheduling, it has the ability to start and stop, load and unload
+    processes and code similar to how "real" operating systems do.
+    </p>
+
+    </div>
+    </blockquote>
+
+    <p>
+    <a href="https://kennyballou.com/blog/2016/12/elixir-hot-swapping/index.html">Read More</a>
+    </p>
+    ]]></description>
+  </item>
+
+  <item>
+    <title>Git Resurrecting History</title>
+    <link>https://kennyballou.com/https://kennyballou.com/blog/2016/09/git-resurrecting-history/index.html</link>
+    <author>kb</author>
+    <guid isPermaLink="false">https://kennyballou.com/https://kennyballou.com/blog/2016/09/git-resurrecting-history/index.html</guid>
+    <pubDate>Sun, 04 Sep 2016 00:00:00 +0000</pubDate>
+
+    <description><![CDATA[<blockquote>
+    <div class="PREVIEW">
+    <p>
+    We all make mistakes.  They are inevitable.  We must accept that we make them
+    and move on.  But making mistakes in Git seems to be overly complex to resolve
+    and most will simply result to cloning anew and copying the working tree (or
+    some subset) and moving on.  This, to me, however, seems like a waste of
+    bandwidth as most issues resulting in broken history are in fact quite easy to
+    resolve, especially so once the necessary tools are known.
+    </p>
+
+    </div>
+    </blockquote>
+
+    <p>
+    <a href="https://kennyballou.com/blog/2016/09/git-resurrecting-history/index.html">Read More</a>
+    </p>
+    ]]></description>
+  </item>
+
+  <item>
+    <title>Releasing Elixir/OTP Applications to the World</title>
+    <link>https://kennyballou.com/https://kennyballou.com/blog/2016/05/elixir-otp-releases/index.html</link>
+    <author>kb</author>
+    <guid isPermaLink="false">https://kennyballou.com/https://kennyballou.com/blog/2016/05/elixir-otp-releases/index.html</guid>
+    <pubDate>Fri, 27 May 2016 00:00:00 +0000</pubDate>
+
+    <description><![CDATA[<blockquote>
+    <div class="PREVIEW">
+    <p>
+    Developing Elixir/OTP applications is an enlightening, mind-boggling, and
+    ultimately enjoyable experience.  There are so many features of the language
+    that change the very way we as developers think about concurrency and program
+    structure.  From writing pure functional code, to using message passing to
+    coordinate complex systems, it is one of the best languages for the SMP
+    revolution that has been slowly boiling under our feet.
+    </p>
+
+    </div>
+    </blockquote>
+
+    <p>
+    <a href="https://kennyballou.com/blog/2016/05/elixir-otp-releases/index.html">Read More</a>
+    </p>
+    ]]></description>
+  </item>
+
+  <item>
+    <title>Git in Reverse</title>
+    <link>https://kennyballou.com/https://kennyballou.com/blog/2016/01/git-in-reverse/index.html</link>
+    <author>kb</author>
+    <guid isPermaLink="false">https://kennyballou.com/https://kennyballou.com/blog/2016/01/git-in-reverse/index.html</guid>
+    <pubDate>Mon, 18 Jan 2016 00:00:00 +0000</pubDate>
+
+    <description><![CDATA[<blockquote>
+    <div class="PREVIEW">
+    <p>
+    It is certainly counter-intuitive to learn to drive by first going backwards,
+    so why learn how to use Git in reverse? The short answer is: knowing the
+    internals of Git <i>should</i> make the commands and workflows of Git more
+    accessible and understandable.
+    </p>
+
+    </div>
+    </blockquote>
+
+    <p>
+    <a href="https://kennyballou.com/blog/2016/01/git-in-reverse/index.html">Read More</a>
+    </p>
+    ]]></description>
+  </item>
+
+  <item>
+    <title>The Art of Manually Editing Hunks</title>
+    <link>https://kennyballou.com/https://kennyballou.com/blog/2015/10/art-manually-edit-hunks/index.html</link>
+    <author>kb</author>
+    <guid isPermaLink="false">https://kennyballou.com/https://kennyballou.com/blog/2015/10/art-manually-edit-hunks/index.html</guid>
+    <pubDate>Sat, 24 Oct 2015 00:00:00 +0000</pubDate>
+
+    <description><![CDATA[<blockquote>
+    <div class="PREVIEW">
+    <p>
+    There's a certain art to editing hunks, seemingly arcane.  Hunks are blocks of
+    changes typically found in unified diff patch files, or, more commonly today,
+    found in Git patches.
+    </p>
+
+    </div>
+    </blockquote>
+
+    <p>
+    <a href="https://kennyballou.com/blog/2015/10/art-manually-edit-hunks/index.html">Read More</a>
+    </p>
+    ]]></description>
+  </item>
+
+  <item>
+    <title>Vim Tips 2015-05-07</title>
+    <link>https://kennyballou.com/https://kennyballou.com/blog/2015/05/vim-tips-2015-05-7/index.html</link>
+    <author>kb</author>
+    <guid isPermaLink="false">https://kennyballou.com/https://kennyballou.com/blog/2015/05/vim-tips-2015-05-7/index.html</guid>
+    <pubDate>Thu, 07 May 2015 00:00:00 +0000</pubDate>
+
+    <description><![CDATA[<blockquote>
+    <div class="PREVIEW">
+    <p>
+    Many Vim users may have, accidentally or not, discovered the dot (<code>.</code>) command
+    in Vim.  It's a main stay for a lot of Vim users and is clearly one of those
+    actions that should be in more editors.  Except when it is the wrong action for
+    the job.
+    </p>
+
+    </div>
+    </blockquote>
+
+    <p>
+    <a href="https://kennyballou.com/blog/2015/05/vim-tips-2015-05-7/index.html">Read More</a>
+    </p>
+    ]]></description>
+  </item>
+
+  <item>
+    <title>Readings in Distributed Systems</title>
+    <link>https://kennyballou.com/https://kennyballou.com/blog/2015/05/readings-in-distributed-systems/index.html</link>
+    <author>kb</author>
+    <guid isPermaLink="false">https://kennyballou.com/https://kennyballou.com/blog/2015/05/readings-in-distributed-systems/index.html</guid>
+    <pubDate>Fri, 08 May 2015 00:00:00 +0000</pubDate>
+
+    <description><![CDATA[<blockquote>
+    <div class="PREVIEW">
+    <p>
+    This page is dedicated to general discussion of distributed systems, references
+    to general overviews and the like. Distributed systems are difficult and even
+    the well established ones aren't
+    <a href="http://aphyr.com/posts/288-the-network-is-reliable">bulletproof</a>. How can we make this better? As
+    SysAdmins? As Developers? First we can attempt to understand some of the issues
+    related to designing and implementing distributed systems. Then we can throw
+    all that out and figure out what <i>really</i> happens to distributed systems.
+    </p>
+
+    </div>
+    </blockquote>
+
+    <p>
+    <a href="https://kennyballou.com/blog/2015/05/readings-in-distributed-systems/index.html">Read More</a>
+    </p>
+    ]]></description>
+  </item>
+
+  <item>
+    <title>Vim Tips 2015-03-17</title>
+    <link>https://kennyballou.com/https://kennyballou.com/blog/2015/03/vim-tips-2015-03-17/index.html</link>
+    <author>kb</author>
+    <guid isPermaLink="false">https://kennyballou.com/https://kennyballou.com/blog/2015/03/vim-tips-2015-03-17/index.html</guid>
+    <pubDate>Tue, 17 Mar 2015 00:00:00 +0000</pubDate>
+
+    <description><![CDATA[<blockquote>
+    <div class="PREVIEW">
+    <p>
+    This is the start of a series of posts about better Vim usage.  It's yet to be
+    determined how often and how frequent this will run, but expect more than just
+    this first post.
+    </p>
+
+    </div>
+    </blockquote>
+
+    <p>
+    <a href="https://kennyballou.com/blog/2015/03/vim-tips-2015-03-17/index.html">Read More</a>
+    </p>
+    ]]></description>
+  </item>
+
+  <item>
+    <title>Apache Storm vs Apache Spark</title>
+    <link>https://kennyballou.com/https://kennyballou.com/blog/2014/09/apache-storm-vs-apache-spark/index.html</link>
+    <author>kb</author>
+    <guid isPermaLink="false">https://kennyballou.com/https://kennyballou.com/blog/2014/09/apache-storm-vs-apache-spark/index.html</guid>
+    <pubDate>Mon, 08 Sep 2014 00:00:00 +0000</pubDate>
+
+    <description><![CDATA[<blockquote>
+    <div class="PREVIEW">
+    <p>
+    This is the last post in the series on real-time systems.  In the
+    <a href="https://kennyballou.com/blog/2014/07/real-time-streaming-storm-and-kafka">first post</a> we discussed <a href="https://storm.apache.org/">Apache Storm</a> and
+    <a href="https://kafka.apache.org/">Apache Kafka</a>.  In the <a href="https://kennyballou.com/blog/2014/08/real-time-streaming-apache-spark-streaming">second post</a> we discussed
+    <a href="https://spark.apache.org/">Apache Spark (Streaming)</a>.  In both posts we examined a small Twitter
+    Sentiment Analysis program.  Today, we will be reviewing both systems: how they
+    compare and how they contrast.
+    </p>
+
+    </div>
+    </blockquote>
+
+    <p>
+    <a href="https://kennyballou.com/blog/2014/09/apache-storm-vs-apache-spark/index.html">Read More</a>
+    </p>
+    ]]></description>
+  </item>
+
+  <item>
+    <title>Real-time Streaming with Apache Spark</title>
+    <link>https://kennyballou.com/https://kennyballou.com/blog/2014/08/real-time-streaming-apache-spark-streaming/index.html</link>
+    <author>kb</author>
+    <guid isPermaLink="false">https://kennyballou.com/https://kennyballou.com/blog/2014/08/real-time-streaming-apache-spark-streaming/index.html</guid>
+    <pubDate>Mon, 18 Aug 2014 00:00:00 +0000</pubDate>
+
+    <description><![CDATA[<blockquote>
+    <div class="PREVIEW">
+    <p>
+    This is the second post in a series on real-time systems tangential to the
+    Hadoop ecosystem. <a href="https://kennyballou.com/blog/2014/07/real-time-streaming-storm-and-kafka/">Last time</a>, we talked about <a href="https://kafka.apache.org/">Apache Kafka</a> and Apache Storm for
+    use in a real-time processing engine.  Today, we will be exploring Apache Spark
+    (Streaming) as part of a real-time processing engine.
+    </p>
+
+    </div>
+    </blockquote>
+
+    <p>
+    <a href="https://kennyballou.com/blog/2014/08/real-time-streaming-apache-spark-streaming/index.html%20">Read More</a>
+    </p>
+    ]]></description>
+  </item>
+
+  <item>
+    <title>Real-time Streaming with Apache Storm</title>
+    <link>https://kennyballou.com/https://kennyballou.com/blog/2014/07/real-time-streaming-storm-and-kafka/index.html</link>
+    <author>kb</author>
+    <guid isPermaLink="false">https://kennyballou.com/https://kennyballou.com/blog/2014/07/real-time-streaming-storm-and-kafka/index.html</guid>
+    <pubDate>Wed, 16 Jul 2014 00:00:00 +0000</pubDate>
+
+    <description><![CDATA[<blockquote>
+    <div class="PREVIEW">
+    <p>
+    The following post is one in the series of real-time systems tangential to the
+    Hadoop ecosystem.  First, exploring both Apache Storm and Apache Kafka as a
+    part of a real-time processing engine.  These two systems work together very
+    well and make for an easy development experience while still being very
+    performant.
+    </p>
+
+    </div>
+    </blockquote>
+
+    <p>
+    <a href="https://kennyballou.com/blog/2014/07/real-time-streaming-storm-and-kafka/index.html">Read More</a>
+    </p>
+    ]]></description>
+  </item>
+</channel>
+</rss>
