@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-04-09 Sat 18:52 -->
+<!-- 2022-04-09 Sat 19:00 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Elixir/Erlang Hot Swapping Code</title>
@@ -302,21 +302,21 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org7d5a0c9">Hot Code Swapping: Basics</a>
+<li><a href="#orgdf9a01f">Hot Code Swapping: Basics</a>
 <ul>
-<li><a href="#org7ba810b">Example</a></li>
-<li><a href="#orgf0f3ecb">Example: <code>iex</code></a></li>
+<li><a href="#org11e7cd3">Example</a></li>
+<li><a href="#org76f9e88">Example: <code>iex</code></a></li>
 </ul>
 </li>
-<li><a href="#org5c3d556">Relups</a>
+<li><a href="#org1906630">Relups</a>
 <ul>
-<li><a href="#org3c3a00d">Erlang Applications</a></li>
-<li><a href="#orgdb4c95b">Erlang Releases</a></li>
-<li><a href="#orga2637e9">Appups and Relups</a></li>
+<li><a href="#orgb6272f9">Erlang Applications</a></li>
+<li><a href="#orgcbe8042">Erlang Releases</a></li>
+<li><a href="#org073ce0a">Appups and Relups</a></li>
 <li><a href="#generating-releases-and-upgrades-with-elixir">Generating Releases and Upgrades with Elixir</a></li>
 </ul>
 </li>
-<li><a href="#org00bfdaa">Summary</a></li>
+<li><a href="#org4ef3797">Summary</a></li>
 </ul>
 </div>
 </div>
@@ -362,9 +362,9 @@ This post will be a small tour through how Elixir and Erlang can perform code
 hot swapping, and how this can be useful for deployments.
 </p>
 
-<div id="outline-container-org7d5a0c9" class="outline-2">
-<h2 id="org7d5a0c9"><a id="ID-f8a908a1-55e1-4dbf-930e-6757e55dfbdd"></a>Hot Code Swapping: Basics</h2>
-<div class="outline-text-2" id="text-org7d5a0c9">
+<div id="outline-container-orgdf9a01f" class="outline-2">
+<h2 id="orgdf9a01f"><a id="ID-f8a908a1-55e1-4dbf-930e-6757e55dfbdd"></a>Hot Code Swapping: Basics</h2>
+<div class="outline-text-2" id="text-orgdf9a01f">
 <p>
 There are several functions defined in the <a href="http://erlang.org/doc/man/sys.html"><code>:sys</code></a> and
 <a href="http://erlang.org/doc/man/code.html"><code>:code</code></a> modules that are required for this first example.
@@ -394,9 +394,9 @@ the restarted process's <code>code_change/3</code> function.
 </p>
 </div>
 
-<div id="outline-container-org7ba810b" class="outline-3">
-<h3 id="org7ba810b"><a id="ID-eac2bc44-e0ba-436c-b79f-25f89556409d"></a>Example</h3>
-<div class="outline-text-3" id="text-org7ba810b">
+<div id="outline-container-org11e7cd3" class="outline-3">
+<h3 id="org11e7cd3"><a id="ID-eac2bc44-e0ba-436c-b79f-25f89556409d"></a>Example</h3>
+<div class="outline-text-3" id="text-org11e7cd3">
 <p>
 Let's assume we have a particularly simple module, say <code>KV</code>, similar to
 the following:
@@ -552,9 +552,9 @@ reloading API, there are better ways to achieve the same result.
 </div>
 </div>
 
-<div id="outline-container-orgf0f3ecb" class="outline-3">
-<h3 id="orgf0f3ecb"><a id="ID-4f411482-163e-4665-9a28-33552d7998e5"></a>Example: <code>iex</code></h3>
-<div class="outline-text-3" id="text-orgf0f3ecb">
+<div id="outline-container-org76f9e88" class="outline-3">
+<h3 id="org76f9e88"><a id="ID-4f411482-163e-4665-9a28-33552d7998e5"></a>Example: <code>iex</code></h3>
+<div class="outline-text-3" id="text-org76f9e88">
 <p>
 There are several functions available to us when using <code>iex</code> that
 essentially perform the above actions for us:
@@ -607,9 +607,9 @@ deployments.
 </div>
 </div>
 
-<div id="outline-container-org5c3d556" class="outline-2">
-<h2 id="org5c3d556"><a id="ID-5e4bd930-de65-4419-a94c-881dc960869e"></a>Relups</h2>
-<div class="outline-text-2" id="text-org5c3d556">
+<div id="outline-container-org1906630" class="outline-2">
+<h2 id="org1906630"><a id="ID-5e4bd930-de65-4419-a94c-881dc960869e"></a>Relups</h2>
+<div class="outline-text-2" id="text-org1906630">
 <p>
 Fortunately, there is another set of tooling that allows us to more
 easily deploy releases, and more pointedly, perform upgrades: Relups.
@@ -618,9 +618,9 @@ concepts.
 </p>
 </div>
 
-<div id="outline-container-org3c3a00d" class="outline-3">
-<h3 id="org3c3a00d"><a id="ID-fa58adb4-bc8c-4d55-ae3f-d29094628c07"></a>Erlang Applications</h3>
-<div class="outline-text-3" id="text-org3c3a00d">
+<div id="outline-container-orgb6272f9" class="outline-3">
+<h3 id="orgb6272f9"><a id="ID-fa58adb4-bc8c-4d55-ae3f-d29094628c07"></a>Erlang Applications</h3>
+<div class="outline-text-3" id="text-orgb6272f9">
 <p>
 As part of Erlang "Applications", there is a related file, the
 <a href="http://erlang.org/doc/man/app.html"><code>.app</code></a> file.  This resource file describes the application:
@@ -660,9 +660,9 @@ application requires to run.
 </div>
 </div>
 
-<div id="outline-container-orgdb4c95b" class="outline-3">
-<h3 id="orgdb4c95b"><a id="ID-ddd6acc5-6d88-44a8-8b72-518173f02d04"></a>Erlang Releases</h3>
-<div class="outline-text-3" id="text-orgdb4c95b">
+<div id="outline-container-orgcbe8042" class="outline-3">
+<h3 id="orgcbe8042"><a id="ID-ddd6acc5-6d88-44a8-8b72-518173f02d04"></a>Erlang Releases</h3>
+<div class="outline-text-3" id="text-orgcbe8042">
 <p>
 An Erlang "release", similar to Erlang application, is an entire system: the
 Erlang VM, the dependent set of applications, and arguments for the Erlang VM.
@@ -697,9 +697,9 @@ tuple.
 </div>
 </div>
 
-<div id="outline-container-orga2637e9" class="outline-3">
-<h3 id="orga2637e9"><a id="ID-668fa2fe-193d-437e-9549-95523ed52b1e"></a>Appups and Relups</h3>
-<div class="outline-text-3" id="text-orga2637e9">
+<div id="outline-container-org073ce0a" class="outline-3">
+<h3 id="org073ce0a"><a id="ID-668fa2fe-193d-437e-9549-95523ed52b1e"></a>Appups and Relups</h3>
+<div class="outline-text-3" id="text-org073ce0a">
 <p>
 As the naming might suggest, "appups" and "relups" are the "upgrade"
 versions of applications and releases, respectively.  Appups describe how
@@ -845,8 +845,8 @@ essentially the same.
 </div>
 </div>
 
-<div id="outline-container-org5b68d8a" class="outline-3">
-<h3 id="generating-releases-and-upgrades-with-elixir"><a id="org5b68d8a"></a><a id="ID-a53b1cd0-627c-46f7-b527-aa9d9509007b"></a>Generating Releases and Upgrades with Elixir</h3>
+<div id="outline-container-org8b4b8dd" class="outline-3">
+<h3 id="generating-releases-and-upgrades-with-elixir"><a id="org8b4b8dd"></a><a id="ID-a53b1cd0-627c-46f7-b527-aa9d9509007b"></a>Generating Releases and Upgrades with Elixir</h3>
 <div class="outline-text-3" id="text-generating-releases-and-upgrades-with-elixir">
 <p>
 Now that we have some basic understanding of releases and upgrades, let's see
@@ -1041,9 +1041,9 @@ necessary since the upgrade process may require more than simply jumping to the
 </div>
 </div>
 
-<div id="outline-container-org00bfdaa" class="outline-2">
-<h2 id="org00bfdaa"><a id="ID-1689a26c-c787-43fd-8e5b-70b78013df7a"></a>Summary</h2>
-<div class="outline-text-2" id="text-org00bfdaa">
+<div id="outline-container-org4ef3797" class="outline-2">
+<h2 id="org4ef3797"><a id="ID-1689a26c-c787-43fd-8e5b-70b78013df7a"></a>Summary</h2>
+<div class="outline-text-2" id="text-org4ef3797">
 <p>
 Release management is a complex topic, upgrading without restarting seemingly
 even more so.  However, the process <i>can</i> be understood, and knowing how the

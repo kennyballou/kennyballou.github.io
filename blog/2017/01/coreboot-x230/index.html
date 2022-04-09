@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-04-09 Sat 18:52 -->
+<!-- 2022-04-09 Sat 19:00 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Coreboot for x230</title>
@@ -302,25 +302,25 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org6bf43b2">Coreboot</a></li>
-<li><a href="#org7c8aa9b">Motivation</a></li>
-<li><a href="#orgad8dbea">Necessary Equipment</a></li>
-<li><a href="#orgba6d78d">Disassembly and BIOS Access</a>
+<li><a href="#orgefa9e13">Coreboot</a></li>
+<li><a href="#org5e63300">Motivation</a></li>
+<li><a href="#orgc498693">Necessary Equipment</a></li>
+<li><a href="#org4f5b5e1">Disassembly and BIOS Access</a>
 <ul>
-<li><a href="#orge9eb2cb">Connecting the Raspberry Pi to the SOIC Clip</a></li>
-<li><a href="#orgb682844">Using the Raspberry Pi</a></li>
+<li><a href="#orgeafdc76">Connecting the Raspberry Pi to the SOIC Clip</a></li>
+<li><a href="#orgd85b848">Using the Raspberry Pi</a></li>
 </ul>
 </li>
-<li><a href="#org55d9f6c">Configuration and Compilation</a>
+<li><a href="#org66a472f">Configuration and Compilation</a>
 <ul>
-<li><a href="#orgfea0c9f">Configuration</a></li>
-<li><a href="#org77c1106">Compilation</a></li>
+<li><a href="#orgdd19ac2">Configuration</a></li>
+<li><a href="#org9a768b0">Compilation</a></li>
 </ul>
 </li>
-<li><a href="#org20a433e">Flashing the New Image</a></li>
-<li><a href="#org6be9dab">Common Problems</a></li>
-<li><a href="#orgd7e24ff">Summary and Auxiliary Advice</a></li>
-<li><a href="#org4cc79ff">References</a></li>
+<li><a href="#orgac89dfb">Flashing the New Image</a></li>
+<li><a href="#orgafd2137">Common Problems</a></li>
+<li><a href="#orgfd97366">Summary and Auxiliary Advice</a></li>
+<li><a href="#org57cf585">References</a></li>
 </ul>
 </div>
 </div>
@@ -337,15 +337,15 @@ You have been warned.
 
 <figure>
 
-<div id="orgaaf850b" class="figure">
+<div id="orgfd77162" class="figure">
 <p><img src="./../../../../media/coreboot-x230-1.png" alt="coreboot-x230-1.png" width="70%" />
 </p>
 </div>
 </figure>
 
-<div id="outline-container-org6bf43b2" class="outline-2">
-<h2 id="org6bf43b2"><a id="ID-b461135c-68bd-44b4-b60e-951f484acb6d"></a>Coreboot</h2>
-<div class="outline-text-2" id="text-org6bf43b2">
+<div id="outline-container-orgefa9e13" class="outline-2">
+<h2 id="orgefa9e13"><a id="ID-b461135c-68bd-44b4-b60e-951f484acb6d"></a>Coreboot</h2>
+<div class="outline-text-2" id="text-orgefa9e13">
 <blockquote>
 <p>
 coreboot is an extended firmware platform that delivers a lightning fast and
@@ -365,9 +365,9 @@ e.g., <a href="http://www.memtest.org/">memtest86+</a>.
 </div>
 </div>
 
-<div id="outline-container-org7c8aa9b" class="outline-2">
-<h2 id="org7c8aa9b"><a id="ID-f3d7d6dd-5cda-4af2-8928-ffa107b636bc"></a>Motivation</h2>
-<div class="outline-text-2" id="text-org7c8aa9b">
+<div id="outline-container-org5e63300" class="outline-2">
+<h2 id="org5e63300"><a id="ID-f3d7d6dd-5cda-4af2-8928-ffa107b636bc"></a>Motivation</h2>
+<div class="outline-text-2" id="text-org5e63300">
 <p>
 Why replace the default BIOS image in the first place? There are several
 motivations for doing this.  For one, it's <a href="https://duckduckgo.com/?q=lenovo+whitelist+bios">well
@@ -387,9 +387,9 @@ will make the laptop effectively unusable.
 </div>
 </div>
 
-<div id="outline-container-orgad8dbea" class="outline-2">
-<h2 id="orgad8dbea"><a id="ID-307b7a44-b47f-4c6f-a841-46c65256f08f"></a>Necessary Equipment</h2>
-<div class="outline-text-2" id="text-orgad8dbea">
+<div id="outline-container-orgc498693" class="outline-2">
+<h2 id="orgc498693"><a id="ID-307b7a44-b47f-4c6f-a841-46c65256f08f"></a>Necessary Equipment</h2>
+<div class="outline-text-2" id="text-orgc498693">
 <p>
 Before we go into the actual steps, let's take a moment to gather all the
 necessary equipment.  Disassembly is necessary because the BIOS chip is locked
@@ -456,9 +456,9 @@ magnifying lens will be helpful in determining the exact version.
 </div>
 </div>
 
-<div id="outline-container-orgba6d78d" class="outline-2">
-<h2 id="orgba6d78d"><a id="ID-b675bf52-308c-4dbc-8f4a-4ca5ac2b69c1"></a>Disassembly and BIOS Access</h2>
-<div class="outline-text-2" id="text-orgba6d78d">
+<div id="outline-container-org4f5b5e1" class="outline-2">
+<h2 id="org4f5b5e1"><a id="ID-b675bf52-308c-4dbc-8f4a-4ca5ac2b69c1"></a>Disassembly and BIOS Access</h2>
+<div class="outline-text-2" id="text-org4f5b5e1">
 <p>
 <a href="http://www.myfixguide.com/manual/lenovo-thinkpad-x230-disassembly-clean-cooling-fan-remove-keyboard/">Steps</a> and <a href="https://www.ifixit.com/Device/Lenovo_Thinkpad_x230">manuals</a> for
 disassembling the laptop can be found with a simple search.  However, it's only
@@ -470,7 +470,7 @@ nothing attached while working.
 
 <figure>
 
-<div id="org7287a1c" class="figure">
+<div id="org95b2e7e" class="figure">
 <p><img src="./../../../../media/coreboot-x230-2.png" alt="coreboot-x230-2.png" width="30%" />
 </p>
 </div>
@@ -495,9 +495,9 @@ to proceed, but it will be far more tedious and less comfortable.
 </p>
 </div>
 
-<div id="outline-container-orge9eb2cb" class="outline-3">
-<h3 id="orge9eb2cb"><a id="ID-d2281163-b8b1-490e-88dd-f969c454729a"></a>Connecting the Raspberry Pi to the SOIC Clip</h3>
-<div class="outline-text-3" id="text-orge9eb2cb">
+<div id="outline-container-orgeafdc76" class="outline-3">
+<h3 id="orgeafdc76"><a id="ID-d2281163-b8b1-490e-88dd-f969c454729a"></a>Connecting the Raspberry Pi to the SOIC Clip</h3>
+<div class="outline-text-3" id="text-orgeafdc76">
 <p>
 Next, we will be connecting the Raspberry Pi with the cables and clips to the
 BIOS chip.
@@ -549,12 +549,12 @@ for starting):
 </div>
 </div>
 
-<div id="outline-container-orgb682844" class="outline-3">
-<h3 id="orgb682844"><a id="ID-87d2573e-956a-4a26-90f1-8afbc2c78a9a"></a>Using the Raspberry Pi</h3>
-<div class="outline-text-3" id="text-orgb682844">
+<div id="outline-container-orgd85b848" class="outline-3">
+<h3 id="orgd85b848"><a id="ID-87d2573e-956a-4a26-90f1-8afbc2c78a9a"></a>Using the Raspberry Pi</h3>
+<div class="outline-text-3" id="text-orgd85b848">
 <figure>
 
-<div id="org72e464e" class="figure">
+<div id="org20b6b86" class="figure">
 <p><img src="./../../../../media/coreboot-x230-3.png" alt="coreboot-x230-3.png" width="70%" />
 </p>
 </div>
@@ -674,9 +674,9 @@ to 8 times, once or twice for each chip type.
 </div>
 </div>
 
-<div id="outline-container-org55d9f6c" class="outline-2">
-<h2 id="org55d9f6c"><a id="ID-86a3c4af-c19f-442a-ade1-2cd1445e423b"></a>Configuration and Compilation</h2>
-<div class="outline-text-2" id="text-org55d9f6c">
+<div id="outline-container-org66a472f" class="outline-2">
+<h2 id="org66a472f"><a id="ID-86a3c4af-c19f-442a-ade1-2cd1445e423b"></a>Configuration and Compilation</h2>
+<div class="outline-text-2" id="text-org66a472f">
 <p>
 Half the battle to getting Coreboot onto your system is properly putting
 together the build-tools and compiling the coreboot image.  There already
@@ -733,9 +733,9 @@ finally building the coreboot image itself.
 </p>
 </div>
 
-<div id="outline-container-orgfea0c9f" class="outline-3">
-<h3 id="orgfea0c9f"><a id="ID-373752d9-60dc-48d3-863e-ff81dd0f4d99"></a>Configuration</h3>
-<div class="outline-text-3" id="text-orgfea0c9f">
+<div id="outline-container-orgdd19ac2" class="outline-3">
+<h3 id="orgdd19ac2"><a id="ID-373752d9-60dc-48d3-863e-ff81dd0f4d99"></a>Configuration</h3>
+<div class="outline-text-3" id="text-orgdd19ac2">
 <pre class="example">
 % cd coreboot
 </pre>
@@ -796,9 +796,9 @@ These configuration options were borrowed from
 </div>
 </div>
 
-<div id="outline-container-org77c1106" class="outline-3">
-<h3 id="org77c1106"><a id="ID-96cbceff-bc36-4aff-8893-c0f7b781d951"></a>Compilation</h3>
-<div class="outline-text-3" id="text-org77c1106">
+<div id="outline-container-org9a768b0" class="outline-3">
+<h3 id="org9a768b0"><a id="ID-96cbceff-bc36-4aff-8893-c0f7b781d951"></a>Compilation</h3>
+<div class="outline-text-3" id="text-org9a768b0">
 <blockquote>
 <p>
 If you were thinking of compiling the ROM on the Pi, I recommend you
@@ -858,9 +858,9 @@ image to the Raspberry Pi.
 </div>
 </div>
 
-<div id="outline-container-org20a433e" class="outline-2">
-<h2 id="org20a433e"><a id="ID-8879cf7b-f823-4ac8-89d2-0f3cd2e9324f"></a>Flashing the New Image</h2>
-<div class="outline-text-2" id="text-org20a433e">
+<div id="outline-container-orgac89dfb" class="outline-2">
+<h2 id="orgac89dfb"><a id="ID-8879cf7b-f823-4ac8-89d2-0f3cd2e9324f"></a>Flashing the New Image</h2>
+<div class="outline-text-2" id="text-orgac89dfb">
 <p>
 After the image is copied to the Pi, we can use flashrom to write the new
 image:
@@ -930,9 +930,9 @@ works!
 </div>
 </div>
 
-<div id="outline-container-org6be9dab" class="outline-2">
-<h2 id="org6be9dab"><a id="ID-229348bf-2725-4b85-bb58-2974ae7102b1"></a>Common Problems</h2>
-<div class="outline-text-2" id="text-org6be9dab">
+<div id="outline-container-orgafd2137" class="outline-2">
+<h2 id="orgafd2137"><a id="ID-229348bf-2725-4b85-bb58-2974ae7102b1"></a>Common Problems</h2>
+<div class="outline-text-2" id="text-orgafd2137">
 <p>
 If you're having issues flashing or reading your BIOS, check the following:
 </p>
@@ -952,9 +952,9 @@ programming</a>.
 </div>
 </div>
 
-<div id="outline-container-orgd7e24ff" class="outline-2">
-<h2 id="orgd7e24ff"><a id="ID-c0950f38-f89f-4494-93d7-1a9558a8b55b"></a>Summary and Auxiliary Advice</h2>
-<div class="outline-text-2" id="text-orgd7e24ff">
+<div id="outline-container-orgfd97366" class="outline-2">
+<h2 id="orgfd97366"><a id="ID-c0950f38-f89f-4494-93d7-1a9558a8b55b"></a>Summary and Auxiliary Advice</h2>
+<div class="outline-text-2" id="text-orgfd97366">
 <p>
 Hopefully, you're now booting into your x230 with Coreboot.  Enjoy your new
 BIOS, whitelist free and awesome!
@@ -968,9 +968,9 @@ on <a href="https://freenode.net/">freenode</a> or <a href="https://www.coreboot
 </div>
 </div>
 
-<div id="outline-container-org4cc79ff" class="outline-2">
-<h2 id="org4cc79ff"><a id="ID-286cfd79-8d9a-4e82-bb87-1f7b8b012a8d"></a>References</h2>
-<div class="outline-text-2" id="text-org4cc79ff">
+<div id="outline-container-org57cf585" class="outline-2">
+<h2 id="org57cf585"><a id="ID-286cfd79-8d9a-4e82-bb87-1f7b8b012a8d"></a>References</h2>
+<div class="outline-text-2" id="text-org57cf585">
 <ul class="org-ul">
 <li><a href="https://www.coreboot.org">coreboot homepage</a></li>
 
