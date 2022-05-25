@@ -1,0 +1,176 @@
+#+TITLE: Org-Mode Publishing Static Site Generation
+#+DESCRIPTION: New New Static site generation with Org-Mode Publishing
+#+DATE: 2022-05-25
+#+SLUG: org-mode-publishing
+#+TAGS: Org-Mode
+#+TAGS: Static-Site Generation
+#+LINK: aws https://aws.amazon.com/
+#+LINK: aws-cloudfront https://aws.amazon.com/cloudfront
+#+LINK: aws-code-build-commit https://kennyballou.com/blog/2020/02/blog-deploy-code-commit-and-build/index.html
+#+LINK: aws-codebuild https://aws.amazon.com/codebuild/
+#+LINK: aws-s3 https://aws.amazon.com/s3
+#+LINK: bash https://www.gnu.org/software/bash/
+#+LINK: emacs https://gnu.org/software/emacs
+#+LINK: github https://github.com/
+#+LINK: github-pages https://pages.github.com/
+#+LINK: gnu-make https://www.gnu.org/software/make/
+#+LINK: hugo https://gohugo.io/
+#+LINK: ogbe-org-mode https://ogbe.net/blog/blogging_with_org.html
+#+LINK: org-mode https://orgmode.org/
+#+LINK: org-publish https://orgmode.org/manual/Publishing.html
+#+LINK: ox-rss https://github.com/kennyballou/kennyballou.github.io/blob/31878715d1f29ab9c95c31b9d9d713db74dabfba/lisp/ox-rss.el
+#+LINK: pandoc https://pandoc.org/
+#+LINK: simplecss https://simplecss.org/
+#+LINK: solarized https://ethanschoonover.com/solarized/
+#+LINK: static-pandoc https://kennyballou.com/blog/2019/03/static-site-generation/index.html
+#+LINK: system-crafters-auto-org-blog https://systemcrafters.net/publishing-websites-with-org-mode/automated-site-publishing/
+
+
+#+begin_preview
+[[static-pandoc][Previously]], I discussed changing the generation of this site.  Specifically,
+using [[org-mode][Org-Mode]] files with [[pandoc][Pandoc]] and some [[bash][Bash]] scripts to generate the site.
+However, today, I have changed the site again.  Now, the site is generated
+entirely using [[org-mode][Org-Mode]].
+#+end_preview
+
+The Intertubes overflow with [[system-crafters-auto-org-blog][previous]] [[ogbe-org-mode][posts]] about static site generation or
+blogging with only [[org-mode][Org Mode]].  I focus mainly on a few details to make things
+work here.  But first, motivation.  Why change.
+
+** Motivation
+:PROPERTIES:
+:ID:       acce0d8b-ba0b-4a41-b602-bf5fe85f15f6
+:END:
+
+I wanted to transition the blog into a more general purpose site and I felt my
+hand-rolled generation would not be adequate.  I did not want to go back to
+bigger tools like [[hugo][Hugo]] and friends.  While these would certainly be capable,
+remaining in [[org-mode][Org]] and [[emacs][Emacs]] seemed like the "winning" move.
+
+I also switched from using my own [[solarized][Solarized]] CSS, to [[simplecss][Simple CSS]].
+
+A nice benefit of this change is automatic table of contents generated for each
+post and easily disabled for pages where table of contents do not make sense.
+Another benefit was learning that many of the links in the previous posts were
+broken.  [[org-publish][Publishing]] does not generate sites with broken links.
+
+** Some Emacs Lisp
+:PROPERTIES:
+:ID:       6e176d27-2076-414a-bf13-a85b288575e0
+:END:
+
+Defining an [[org-mode][Org]] project is fairly straightforward, but some parameters to the
+publishing projects depend on the circumstance.
+
+*** Preamble and Postamble
+:PROPERTIES:
+:ID:       b056b1ae-2d91-4be5-8d31-578eea0fcdca
+:END:
+
+To handle the headers and footers of the site, I defined the following function
+to read in, now modified versions of, the previous header and footer HTML
+content.
+
+#+begin_src elisp
+(defun read-template (filename)
+  "Read template contents from FILENAME."
+  (with-temp-buffer
+    (insert-file-contents filename)
+    (buffer-string)))
+#+end_src
+
+Then, this function can be used to load in the content of the template files:
+
+#+begin_src elisp
+(setq head-extra-template (read-template "templates/html_header.html"))
+(setq header-template (read-template "templates/html_sub_header.html"))
+(setq header-nav (read-template "templates/nav.html"))
+(setq footer-template (read-template "templates/html_footer.html"))
+#+end_src
+
+Then for each project, the following keys are set:
+
+#+begin_src elisp
+:html-head-extra head-extra-template
+:html-preamble header-nav
+:html-postamble footer-template
+#+end_src
+
+*** Simple CSS Preamble + Postamble
+:PROPERTIES:
+:ID:       2179da31-6405-4ab4-84e8-f218abc6f6a2
+:END:
+
+To get the preamble and postamble to be styled right by [[simplecss][SimpleCSS]], the
+following keys were necessary:
+
+#+begin_src elisp
+:html-divs '((preamble "header" "")
+             (content "div" "main")
+             (postamble "footer" ""))
+#+end_src
+
+*** ~ox-rss~
+:PROPERTIES:
+:ID:       dd218b6b-ff74-4b5c-a9d2-75024203102c
+:END:
+
+To publish the RSS feed, I needed to copy the [[ox-rss][~ox-rss.el~]] file wholesale so that
+it was accessible during the automated publishing.
+
+** Building and Publishing
+:PROPERTIES:
+:ID:       3f319213-17dd-4fb4-ba22-272ee1e52077
+:END:
+
+*** Make
+:PROPERTIES:
+:ID:       36a872f9-1de5-4955-97b8-51e1192a3eb3
+:END:
+
+With the ~build-site.el~ file defined, the [[gnu-make][Make target]] is quite simple.
+
+#+begin_src GNUMakefile
+.PHONY: org-publish
+org-publish:
+	emacs -Q --script ./build-site.el
+#+end_src
+
+*** GitHub Actions
+:PROPERTIES:
+:ID:       02aa27f6-4d0d-43e1-b443-dcc6ae4839bb
+:END:
+
+In an earlier [[aws-code-build-commit][post]], I described using [[aws-codebuild][AWS CodeBuild]] to automatically build site
+content and copy the files to [[aws-s3][S3]].  However, after one timed-out build attempted
+to put 15 GB of useless files into my [[aws-s3][S3]] bucket and caused over 400,000
+requests against the bucket, it was time to try something new.
+
+While hosting with [[aws-s3][S3]] and [[aws-cloudfront][CloudFront]] is cheap, hosting with [[github-pages][GitHub Pages]] is
+free.  More than that, if I ever write something people are interested in, I do
+not need to worry about my [[aws-cloudfront][CloudFront]] costs ballooning out of control.
+
+#+begin_quote
+Of course, this is not a real worry.  CloudFront has only cost about $0.01 for
+a while, sometimes less.
+#+end_quote
+
+The process of setting this up is straightforward and more up-to-date
+documentation is available from [[github][GitHub]].
+
+** Parting Thoughts
+:PROPERTIES:
+:ID:       c5143824-6017-4a2f-98ea-094d5789a104
+:END:
+
+Nothing is perfect, but overall, I am pleased with the result of switching to
+using [[org-mode][Org Mode]] for publishing.  There exists a learning curve-- as with all
+things-- however, not needing to develop and maintain the publishing scripts to
+the degree the custom rolled solution required is a relief.  It may require
+/some/ code to develop a new section or something else.  But not nearly to the
+degree the old method required.
+
+Certainly, changing the hosting was not intended.  I started the publishing
+change with the intent that it would still be hosted with [[aws-cloudfront][AWS CloudFront]] and
+[[aws-s3][AWS S3]].  Unfortunately, the build issues described above and my own second
+guessing the rationale for hosting with [[aws][AWS]] persuaded me to switch.
