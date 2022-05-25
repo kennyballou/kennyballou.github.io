@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-05-25 Wed 13:36 -->
+<!-- 2022-05-25 Wed 15:08 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Learning Git in Reverse</title>
@@ -302,33 +302,33 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org657be6c">What is Git±</a></li>
-<li><a href="#org8287eb2">Plumbing</a>
+<li><a href="#orga7d62f7">What is Git±</a></li>
+<li><a href="#orga53b6b5">Plumbing</a>
 <ul>
-<li><a href="#org37c9229">Git Objects</a>
+<li><a href="#org733463a">Git Objects</a>
 <ul>
-<li><a href="#org6337eb8"><code>git-hash-object(1)</code></a></li>
+<li><a href="#orgcfcdd80"><code>git-hash-object(1)</code></a></li>
 </ul>
 </li>
-<li><a href="#org84f863a">Git Trees</a></li>
-<li><a href="#org4c32ec6">Git Commits</a></li>
+<li><a href="#org37fef2f">Git Trees</a></li>
+<li><a href="#orge43a696">Git Commits</a></li>
 </ul>
 </li>
-<li><a href="#orgb2462cc">Porcelain</a>
+<li><a href="#orgffecee8">Porcelain</a>
 <ul>
-<li><a href="#orgc54d1e4"><code>git-clone(1)</code></a></li>
-<li><a href="#orge974e85"><code>git-status(1)</code></a></li>
-<li><a href="#orgea6bfde"><code>git-log(1)</code></a></li>
-<li><a href="#orgd6b5657"><code>git-pull(1)</code> and <code>git-fetch(1)</code></a></li>
-<li><a href="#orge8f45ba"><code>git-push(1)</code></a></li>
-<li><a href="#orgba87043"><code>git-remote(1)</code></a></li>
+<li><a href="#org3040b50"><code>git-clone(1)</code></a></li>
+<li><a href="#org9c44fd3"><code>git-status(1)</code></a></li>
+<li><a href="#orgcefa774"><code>git-log(1)</code></a></li>
+<li><a href="#org4be9cdc"><code>git-pull(1)</code> and <code>git-fetch(1)</code></a></li>
+<li><a href="#org8448262"><code>git-push(1)</code></a></li>
+<li><a href="#orgb4028b7"><code>git-remote(1)</code></a></li>
 </ul>
 </li>
-<li><a href="#org93630fd">Branches</a></li>
-<li><a href="#org0eaf0b5">Merging</a></li>
-<li><a href="#org4083d87">Summary</a>
+<li><a href="#orgb18293b">Branches</a></li>
+<li><a href="#orgecdd52a">Merging</a></li>
+<li><a href="#orgae6ad0f">Summary</a>
 <ul>
-<li><a href="#orgacb9021">References</a></li>
+<li><a href="#org18e44f1">References</a></li>
 </ul>
 </li>
 </ul>
@@ -356,12 +356,12 @@ We will start by touring the plumbing commands and walk all the way through
 branching.
 </p>
 
-<div id="outline-container-org657be6c" class="outline-2">
-<h2 id="org657be6c"><a id="ID-5667db69-0fd9-496d-a1a8-4147d2ffae02"></a>What is Git±</h2>
-<div class="outline-text-2" id="text-org657be6c">
+<div id="outline-container-orga7d62f7" class="outline-2">
+<h2 id="orga7d62f7"><a id="ID-5667db69-0fd9-496d-a1a8-4147d2ffae02"></a>What is Git±</h2>
+<div class="outline-text-2" id="text-orga7d62f7">
 <a href="https://xkcd.com/1597"><figure>
 
-<div id="org809e2c0" class="figure">
+<div id="org81b3795" class="figure">
 <p><img src="https://imgs.xkcd.com/comics/git.png" alt="git.png" />
 </p>
 <p><span class="figure-number">Figure 1: </span>If that doesn't fix it, git.txt contains the phone number of a friend of mine who understands git.  Just wait through a few minutes of 'It's really pretty simple, just think of branches as&#x2026;' and eventually you'll learn the commands that will fix everything.</p>
@@ -388,18 +388,18 @@ filesystem.  Git only knows how to store "objects".  There is really no other
 </div>
 </div>
 
-<div id="outline-container-org8287eb2" class="outline-2">
-<h2 id="org8287eb2"><a id="ID-710d7891-5b96-4a5d-bac0-7928ef39de0e"></a>Plumbing</h2>
-<div class="outline-text-2" id="text-org8287eb2">
+<div id="outline-container-orga53b6b5" class="outline-2">
+<h2 id="orga53b6b5"><a id="ID-710d7891-5b96-4a5d-bac0-7928ef39de0e"></a>Plumbing</h2>
+<div class="outline-text-2" id="text-orga53b6b5">
 <p>
 We will start by learning a few of the most basic plumbing commands of Git,
 beginning with the <a href="https://www.kernel.org/pub/software/scm/git/docs/git-hash-object.html"><code>git-hash-object(1)</code></a> command:
 </p>
 </div>
 
-<div id="outline-container-org37c9229" class="outline-3">
-<h3 id="org37c9229"><a id="ID-7fc611b9-7119-490a-bb54-3b71baab0eb2"></a>Git Objects</h3>
-<div class="outline-text-3" id="text-org37c9229">
+<div id="outline-container-org733463a" class="outline-3">
+<h3 id="org733463a"><a id="ID-7fc611b9-7119-490a-bb54-3b71baab0eb2"></a>Git Objects</h3>
+<div class="outline-text-3" id="text-org733463a">
 <p>
 Git objects are a <a href="https://en.wikipedia.org/wiki/Zlib">zlib</a> compressed binary file stored under the
 <code>.git/objects</code> folder of any Git repository.  They are typically created with
@@ -472,9 +472,9 @@ With all this out of the way, we can now start creating objects.
 </p>
 </div>
 
-<div id="outline-container-org6337eb8" class="outline-4">
-<h4 id="org6337eb8"><a id="ID-f72c1a87-6a58-4117-9175-ee4ea11687ce"></a><a href="https://www.kernel.org/pub/software/scm/git/docs/git-hash-object.html"><code>git-hash-object(1)</code></a></h4>
-<div class="outline-text-4" id="text-org6337eb8">
+<div id="outline-container-orgcfcdd80" class="outline-4">
+<h4 id="orgcfcdd80"><a id="ID-f72c1a87-6a58-4117-9175-ee4ea11687ce"></a><a href="https://www.kernel.org/pub/software/scm/git/docs/git-hash-object.html"><code>git-hash-object(1)</code></a></h4>
+<div class="outline-text-4" id="text-orgcfcdd80">
 <p>
 We can start out by providing some content for
 <a href="https://www.kernel.org/pub/software/scm/git/docs/git-hash-object.html"><code>git-hash-object(1)</code></a>:
@@ -564,9 +564,9 @@ filenames yet.  Thus, we will need a new type of object, trees.
 </div>
 </div>
 
-<div id="outline-container-org84f863a" class="outline-3">
-<h3 id="org84f863a"><a id="ID-8343f731-baa4-4dec-a490-b984a3f8f3b8"></a>Git Trees</h3>
-<div class="outline-text-3" id="text-org84f863a">
+<div id="outline-container-org37fef2f" class="outline-3">
+<h3 id="org37fef2f"><a id="ID-8343f731-baa4-4dec-a490-b984a3f8f3b8"></a>Git Trees</h3>
+<div class="outline-text-3" id="text-org37fef2f">
 <p>
 Trees are objects.
 </p>
@@ -602,7 +602,7 @@ Visually, this may look like something similar to the following image:
 
 <figure>
 
-<div id="org7f881a1" class="figure">
+<div id="orgc8037d7" class="figure">
 <p><img src="../../../../media/git-tree-1.png" alt="git-tree-1.png" />
 </p>
 </div>
@@ -648,7 +648,7 @@ A more complicated example of a Git tree may look like the following image:
 
 <figure>
 
-<div id="org56551a8" class="figure">
+<div id="orgf91ed16" class="figure">
 <p><img src="../../../../media/git-tree-2.png" alt="git-tree-2.png" />
 </p>
 </div>
@@ -663,9 +663,9 @@ another object to store this information.
 </div>
 </div>
 
-<div id="outline-container-org4c32ec6" class="outline-3">
-<h3 id="org4c32ec6"><a id="ID-f70cbb44-2c36-4fa2-bf76-706e923dc9c0"></a>Git Commits</h3>
-<div class="outline-text-3" id="text-org4c32ec6">
+<div id="outline-container-orge43a696" class="outline-3">
+<h3 id="orge43a696"><a id="ID-f70cbb44-2c36-4fa2-bf76-706e923dc9c0"></a>Git Commits</h3>
+<div class="outline-text-3" id="text-orge43a696">
 <p>
 This will sound familiar: Git commits are &#x2026; objects.
 </p>
@@ -741,7 +741,7 @@ single line.
 
 <figure>
 
-<div id="org775b06b" class="figure">
+<div id="org6d57216" class="figure">
 <p><img src="../../../../media/git-commit-1.png" alt="git-commit-1.png" />
 </p>
 </div>
@@ -941,9 +941,9 @@ code patches as a means of versioning.
 </div>
 </div>
 
-<div id="outline-container-orgb2462cc" class="outline-2">
-<h2 id="orgb2462cc"><a id="ID-a1386739-658b-44f9-b61c-428557a8ca94"></a>Porcelain</h2>
-<div class="outline-text-2" id="text-orgb2462cc">
+<div id="outline-container-orgffecee8" class="outline-2">
+<h2 id="orgffecee8"><a id="ID-a1386739-658b-44f9-b61c-428557a8ca94"></a>Porcelain</h2>
+<div class="outline-text-2" id="text-orgffecee8">
 <p>
 Now that we have gone through our tour of the plumbing commands and Git
 internals, we can start <i>actually</i> use Git.  It will be very rare that the
@@ -1005,9 +1005,9 @@ basis: <a href="https://www.kernel.org/pub/software/scm/git/docs/git-clone.html"
 </p>
 </div>
 
-<div id="outline-container-orgc54d1e4" class="outline-3">
-<h3 id="orgc54d1e4"><a id="ID-26a88bb3-57c5-4931-93e4-a2a7590c7768"></a><a href="https://www.kernel.org/pub/software/scm/git/docs/git-clone.html"><code>git-clone(1)</code></a></h3>
-<div class="outline-text-3" id="text-orgc54d1e4">
+<div id="outline-container-org3040b50" class="outline-3">
+<h3 id="org3040b50"><a id="ID-26a88bb3-57c5-4931-93e4-a2a7590c7768"></a><a href="https://www.kernel.org/pub/software/scm/git/docs/git-clone.html"><code>git-clone(1)</code></a></h3>
+<div class="outline-text-3" id="text-org3040b50">
 <p>
 Before you can contribute to a project, you need your own copy of the
 repository, this is where we would use <a href="https://www.kernel.org/pub/software/scm/git/docs/git-clone.html"><code>git-clone(1)</code></a>.  As
@@ -1064,9 +1064,9 @@ listed here in order of preference:
 </div>
 </div>
 
-<div id="outline-container-orge974e85" class="outline-3">
-<h3 id="orge974e85"><a id="ID-a030ac63-b1c0-4207-a62a-f3acadc8f3fe"></a><a href="https://www.kernel.org/pub/software/scm/git/docs/git-status.html"><code>git-status(1)</code></a></h3>
-<div class="outline-text-3" id="text-orge974e85">
+<div id="outline-container-org9c44fd3" class="outline-3">
+<h3 id="org9c44fd3"><a id="ID-a030ac63-b1c0-4207-a62a-f3acadc8f3fe"></a><a href="https://www.kernel.org/pub/software/scm/git/docs/git-status.html"><code>git-status(1)</code></a></h3>
+<div class="outline-text-3" id="text-org9c44fd3">
 <p>
 Often, you will need to know the state of the current repository, and the go-to
 command to view the current state of the repository is the
@@ -1078,9 +1078,9 @@ something to push, etc.
 </div>
 </div>
 
-<div id="outline-container-orgea6bfde" class="outline-3">
-<h3 id="orgea6bfde"><a id="ID-7506481c-d658-4a7f-87d2-7d475d4b13c2"></a><a href="https://www.kernel.org/pub/software/scm/git/docs/git-log.html"><code>git-log(1)</code></a></h3>
-<div class="outline-text-3" id="text-orgea6bfde">
+<div id="outline-container-orgcefa774" class="outline-3">
+<h3 id="orgcefa774"><a id="ID-7506481c-d658-4a7f-87d2-7d475d4b13c2"></a><a href="https://www.kernel.org/pub/software/scm/git/docs/git-log.html"><code>git-log(1)</code></a></h3>
+<div class="outline-text-3" id="text-orgcefa774">
 <p>
 <a href="https://www.kernel.org/pub/software/scm/git/docs/git-log.html"><code>git-log(1)</code></a> is used to check the history of the repository.
 Using <a href="https://www.kernel.org/pub/software/scm/git/docs/git-log.html"><code>git-log(1)</code></a> with a few arguments, you can get a pretty
@@ -1101,9 +1101,9 @@ Some commonly used options you might use might be:
 </div>
 </div>
 
-<div id="outline-container-orgd6b5657" class="outline-3">
-<h3 id="orgd6b5657"><a id="ID-b710abe8-2c49-4f58-a207-40847727f3c2"></a><a href="https://www.kernel.org/pub/software/scm/git/docs/git-pull.html"><code>git-pull(1)</code></a> and <a href="https://www.kernel.org/pub/software/scm/git/docs/git-fetch.html"><code>git-fetch(1)</code></a></h3>
-<div class="outline-text-3" id="text-orgd6b5657">
+<div id="outline-container-org4be9cdc" class="outline-3">
+<h3 id="org4be9cdc"><a id="ID-b710abe8-2c49-4f58-a207-40847727f3c2"></a><a href="https://www.kernel.org/pub/software/scm/git/docs/git-pull.html"><code>git-pull(1)</code></a> and <a href="https://www.kernel.org/pub/software/scm/git/docs/git-fetch.html"><code>git-fetch(1)</code></a></h3>
+<div class="outline-text-3" id="text-org4be9cdc">
 <p>
 <a href="https://www.kernel.org/pub/software/scm/git/docs/git-pull.html"><code>git-pull(1)</code></a> is used to pull remote changes into your
 current working copy.  I prefer not use <a href="https://www.kernel.org/pub/software/scm/git/docs/git-pull.html"><code>git-pull(1)</code></a> because
@@ -1120,9 +1120,9 @@ branch.
 </div>
 </div>
 
-<div id="outline-container-orge8f45ba" class="outline-3">
-<h3 id="orge8f45ba"><a id="ID-067f449a-5795-444f-893f-8a9944975321"></a><a href="https://www.kernel.org/pub/software/scm/git/docs/git-push.html"><code>git-push(1)</code></a></h3>
-<div class="outline-text-3" id="text-orge8f45ba">
+<div id="outline-container-org8448262" class="outline-3">
+<h3 id="org8448262"><a id="ID-067f449a-5795-444f-893f-8a9944975321"></a><a href="https://www.kernel.org/pub/software/scm/git/docs/git-push.html"><code>git-push(1)</code></a></h3>
+<div class="outline-text-3" id="text-org8448262">
 <p>
 <a href="https://www.kernel.org/pub/software/scm/git/docs/git-push.html"><code>git-push(1)</code></a> will send your changes to the remote location.
 By default, this command will not attempt to overwrite the remote if the
@@ -1131,9 +1131,9 @@ changes cannot be applied with a "fast-forward" merge operation.
 </div>
 </div>
 
-<div id="outline-container-orgba87043" class="outline-3">
-<h3 id="orgba87043"><a id="ID-26140451-6785-403b-9ace-7605ee7c4150"></a><a href="https://www.kernel.org/pub/software/scm/git/docs/git-remote.html"><code>git-remote(1)</code></a></h3>
-<div class="outline-text-3" id="text-orgba87043">
+<div id="outline-container-orgb4028b7" class="outline-3">
+<h3 id="orgb4028b7"><a id="ID-26140451-6785-403b-9ace-7605ee7c4150"></a><a href="https://www.kernel.org/pub/software/scm/git/docs/git-remote.html"><code>git-remote(1)</code></a></h3>
+<div class="outline-text-3" id="text-orgb4028b7">
 <p>
 <a href="https://www.kernel.org/pub/software/scm/git/docs/git-remote.html"><code>git-remote(1)</code></a> is an overall "remote" management command.
 It allows you to add remotes, rename remotes, and even fetch information about
@@ -1195,9 +1195,9 @@ git branches, and merging techniques.
 </div>
 </div>
 
-<div id="outline-container-org93630fd" class="outline-2">
-<h2 id="org93630fd"><a id="ID-2421f2df-ac9d-4dab-8351-a093bcf01f1f"></a>Branches</h2>
-<div class="outline-text-2" id="text-org93630fd">
+<div id="outline-container-orgb18293b" class="outline-2">
+<h2 id="orgb18293b"><a id="ID-2421f2df-ac9d-4dab-8351-a093bcf01f1f"></a>Branches</h2>
+<div class="outline-text-2" id="text-orgb18293b">
 <p>
 Git branches are actually a very simplistic concept in both implementation and
 intuition.  Code and applications versioned by any version control tool have
@@ -1209,7 +1209,7 @@ isn't much different.
 
 <figure>
 
-<div id="orgc6dfdcc" class="figure">
+<div id="org6c856f4" class="figure">
 <p><img src="../../../../media/code-branching.png" alt="code-branching.png" />
 </p>
 </div>
@@ -1225,7 +1225,7 @@ branches.
 
 <figure>
 
-<div id="org5d775d7" class="figure">
+<div id="orgf02cbe3" class="figure">
 <p><img src="../../../../media/git-branching-1.png" alt="git-branching-1.png" />
 </p>
 </div>
@@ -1270,9 +1270,9 @@ these two steps in one:
 </div>
 </div>
 
-<div id="outline-container-org0eaf0b5" class="outline-2">
-<h2 id="org0eaf0b5"><a id="ID-cf2d9146-1e73-4bcd-9aaf-e66001cd91b2"></a>Merging</h2>
-<div class="outline-text-2" id="text-org0eaf0b5">
+<div id="outline-container-orgecdd52a" class="outline-2">
+<h2 id="orgecdd52a"><a id="ID-cf2d9146-1e73-4bcd-9aaf-e66001cd91b2"></a>Merging</h2>
+<div class="outline-text-2" id="text-orgecdd52a">
 <p>
 Once you're ready to merge your changes from one branch into another branch,
 you can use the <a href="https://www.kernel.org/pub/software/scm/git/docs/git-merge.html"><code>git-merge(1)</code></a> command to accomplish that.
@@ -1287,7 +1287,7 @@ history point forward.
 
 <figure>
 
-<div id="org6f3eeb2" class="figure">
+<div id="org3eb5076" class="figure">
 <p><img src="../../../../media/git-ff-merge-1.png" alt="git-ff-merge-1.png" />
 </p>
 </div>
@@ -1295,7 +1295,7 @@ history point forward.
 
 <figure>
 
-<div id="org1f40bce" class="figure">
+<div id="org93b9936" class="figure">
 <p><img src="../../../../media/git-ff-merge-2.png" alt="git-ff-merge-2.png" />
 </p>
 </div>
@@ -1317,7 +1317,7 @@ commit.  For more information on merging, see the
 
 <figure>
 
-<div id="org6cffca0" class="figure">
+<div id="org317d474" class="figure">
 <p><img src="../../../../media/git-resolve-merge.png" alt="git-resolve-merge.png" />
 </p>
 </div>
@@ -1325,9 +1325,9 @@ commit.  For more information on merging, see the
 </div>
 </div>
 
-<div id="outline-container-org4083d87" class="outline-2">
-<h2 id="org4083d87"><a id="ID-95cf9c09-6bec-45d8-9adc-5c58fc3727f0"></a>Summary</h2>
-<div class="outline-text-2" id="text-org4083d87">
+<div id="outline-container-orgae6ad0f" class="outline-2">
+<h2 id="orgae6ad0f"><a id="ID-95cf9c09-6bec-45d8-9adc-5c58fc3727f0"></a>Summary</h2>
+<div class="outline-text-2" id="text-orgae6ad0f">
 <p>
 Git is not the most complicated version control system out there, and I hope
 peering into the internals of Git demonstrates that fact. If anything, it may
@@ -1350,9 +1350,9 @@ Beyond these problems, Git is a very powerful and capable source control tool.
 </p>
 </div>
 
-<div id="outline-container-orgacb9021" class="outline-3">
-<h3 id="orgacb9021"><a id="ID-21f0c08f-8b8e-4e0a-9c37-3696c458a1ac"></a>References</h3>
-<div class="outline-text-3" id="text-orgacb9021">
+<div id="outline-container-org18e44f1" class="outline-3">
+<h3 id="org18e44f1"><a id="ID-21f0c08f-8b8e-4e0a-9c37-3696c458a1ac"></a>References</h3>
+<div class="outline-text-3" id="text-org18e44f1">
 <ul class="org-ul">
 <li><a href="https://git-scm.com">Git SCM Site</a></li>
 

@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-05-25 Wed 13:36 -->
+<!-- 2022-05-25 Wed 15:08 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>NixOS</title>
@@ -302,16 +302,16 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org6a905ad">NixOS</a>
+<li><a href="#org4d1051f">NixOS</a>
 <ul>
-<li><a href="#org9c5eb70">Nix (the package manager)</a></li>
-<li><a href="#orgfc5d7ea">Nix Store</a></li>
-<li><a href="#orgc74550c">Nix Profiles</a></li>
-<li><a href="#org0009324">System Profiles</a></li>
+<li><a href="#org852f3ba">Nix (the package manager)</a></li>
+<li><a href="#org9d86510">Nix Store</a></li>
+<li><a href="#org3303152">Nix Profiles</a></li>
+<li><a href="#orgb45cd1d">System Profiles</a></li>
 </ul>
 </li>
-<li><a href="#org345678e">Alternatives</a></li>
-<li><a href="#org152e44a">Impressions and Thoughts</a></li>
+<li><a href="#org2a385c6">Alternatives</a></li>
+<li><a href="#org8fc8ea1">Impressions and Thoughts</a></li>
 </ul>
 </div>
 </div>
@@ -324,9 +324,9 @@ about operating systems and software development.
 
 </div>
 
-<div id="outline-container-org6a905ad" class="outline-2">
-<h2 id="org6a905ad"><a id="ID-09a7cc51-527a-4c65-8eb8-dedcdff2004d"></a>NixOS</h2>
-<div class="outline-text-2" id="text-org6a905ad">
+<div id="outline-container-org4d1051f" class="outline-2">
+<h2 id="org4d1051f"><a id="ID-09a7cc51-527a-4c65-8eb8-dedcdff2004d"></a>NixOS</h2>
+<div class="outline-text-2" id="text-org4d1051f">
 <p>
 <a href="https://nixos.org/">NixOS</a> is a "functional" <a href="https://www.gnu.org">GNU</a>/<a href="https://www.kernel.org/">Linux</a> distribution
 extending the ideas of functional programming languages to operating systems.
@@ -390,9 +390,9 @@ detour through <a href="https://nixos.org/nix/">Nix</a>, the package manager.
 </p>
 </div>
 
-<div id="outline-container-org9c5eb70" class="outline-3">
-<h3 id="org9c5eb70"><a id="ID-24f226f1-5bdc-4253-8e67-4b6853e740b8"></a>Nix (the package manager)</h3>
-<div class="outline-text-3" id="text-org9c5eb70">
+<div id="outline-container-org852f3ba" class="outline-3">
+<h3 id="org852f3ba"><a id="ID-24f226f1-5bdc-4253-8e67-4b6853e740b8"></a>Nix (the package manager)</h3>
+<div class="outline-text-3" id="text-org852f3ba">
 <p>
 Beyond the comparisons of language paradigms, there are some other <span class="underline">really</span>
 neat ideas that come from the <a href="https://nixos.org/nix/">Nix</a> family.  Specifically, I want to
@@ -439,9 +439,9 @@ by <code>A</code> is left untouched and package <code>A</code> works just the sa
 </div>
 </div>
 
-<div id="outline-container-orgfc5d7ea" class="outline-3">
-<h3 id="orgfc5d7ea"><a id="ID-44725a66-ef15-47cf-8050-ec4d76d9290a"></a>Nix Store</h3>
-<div class="outline-text-3" id="text-orgfc5d7ea">
+<div id="outline-container-org9d86510" class="outline-3">
+<h3 id="org9d86510"><a id="ID-44725a66-ef15-47cf-8050-ec4d76d9290a"></a>Nix Store</h3>
+<div class="outline-text-3" id="text-org9d86510">
 <p>
 After examining the above example, how does <a href="https://nixos.org/nix/">Nix</a> accomplish this?
 </p>
@@ -544,9 +544,9 @@ the package's inputs.
 </div>
 </div>
 
-<div id="outline-container-orgc74550c" class="outline-3">
-<h3 id="orgc74550c"><a id="ID-1a539227-a134-47c3-98c4-7218cb43f9cd"></a>Nix Profiles</h3>
-<div class="outline-text-3" id="text-orgc74550c">
+<div id="outline-container-org3303152" class="outline-3">
+<h3 id="org3303152"><a id="ID-1a539227-a134-47c3-98c4-7218cb43f9cd"></a>Nix Profiles</h3>
+<div class="outline-text-3" id="text-org3303152">
 <p>
 Packages in <a href="https://nixos.org/nix/">Nix</a> are directory trees found in the <a href="https://nixos.org/nix/">Nix</a> store,
 what are profiles?  Perhaps, more appropriately, what are user environments?
@@ -685,9 +685,9 @@ adversely affected.
 </div>
 </div>
 
-<div id="outline-container-org0009324" class="outline-3">
-<h3 id="org0009324"><a id="ID-32b83c94-6bfc-4ef0-90d9-5f01db970330"></a>System Profiles</h3>
-<div class="outline-text-3" id="text-org0009324">
+<div id="outline-container-orgb45cd1d" class="outline-3">
+<h3 id="orgb45cd1d"><a id="ID-32b83c94-6bfc-4ef0-90d9-5f01db970330"></a>System Profiles</h3>
+<div class="outline-text-3" id="text-orgb45cd1d">
 <p>
 After user profiles, we are left with system profiles.  What exactly is
 <a href="https://nixos.org/">NixOS</a>?  If any of the above provides any foreshadowing, the answer
@@ -806,9 +806,9 @@ interaction of services and their underlying configuration.
 </div>
 </div>
 
-<div id="outline-container-org345678e" class="outline-2">
-<h2 id="org345678e"><a id="ID-a9f063d9-2e50-462b-b7c7-1e06e8dcdbc6"></a>Alternatives</h2>
-<div class="outline-text-2" id="text-org345678e">
+<div id="outline-container-org2a385c6" class="outline-2">
+<h2 id="org2a385c6"><a id="ID-a9f063d9-2e50-462b-b7c7-1e06e8dcdbc6"></a>Alternatives</h2>
+<div class="outline-text-2" id="text-org2a385c6">
 <p>
 Aside from <a href="https://nixos.org/">NixOS</a>, there is also <a href="https://guix.gnu.org/">Guix</a>, a <a href="https://www.gnu.org">GNU</a>
 alternative to <a href="https://nixos.org/nix/">Nix</a> and <a href="https://nixos.org/">NixOS</a>.  Many of the ideas of
@@ -847,9 +847,9 @@ be installed via the software configuration tools.
 </div>
 </div>
 
-<div id="outline-container-org152e44a" class="outline-2">
-<h2 id="org152e44a"><a id="ID-845c7afd-defe-4838-8fbc-814cf7e42b78"></a>Impressions and Thoughts</h2>
-<div class="outline-text-2" id="text-org152e44a">
+<div id="outline-container-org8fc8ea1" class="outline-2">
+<h2 id="org8fc8ea1"><a id="ID-845c7afd-defe-4838-8fbc-814cf7e42b78"></a>Impressions and Thoughts</h2>
+<div class="outline-text-2" id="text-org8fc8ea1">
 <p>
 <a href="https://nixos.org/nix/">Nix</a> and by extension <a href="https://nixos.org/">NixOS</a> (hopefully) solve some really
 annoying problems I tend to keep running into when developing software and
