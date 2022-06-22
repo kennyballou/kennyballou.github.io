@@ -6,11 +6,9 @@
 <!-- 2022-06-22 Wed 23:06 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Org-Mode Publishing Static Site Generation</title>
+<title>GPG Key Transition</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="kb" />
-<meta name="description" content="New New Static site generation with Org-Mode Publishing"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -297,217 +295,99 @@ for the JavaScript code in this tag.
 </nav>
 </header>
 <div id="main">
-<h1 class="title">Org-Mode Publishing Static Site Generation</h1>
+<h1 class="title">GPG Key Transition</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org9788408">Motivation</a></li>
-<li><a href="#org2ee9d7a">Some Emacs Lisp</a>
-<ul>
-<li><a href="#org5f580dc">Preamble and Postamble</a></li>
-<li><a href="#org8c0750a">Simple CSS Preamble + Postamble</a></li>
-<li><a href="#orgf42d964"><code>ox-rss</code></a></li>
-</ul>
-</li>
-<li><a href="#org4f01fb4">Building and Publishing</a>
-<ul>
-<li><a href="#orgdc5ecad">Make</a></li>
-<li><a href="#org3b82a52">GitHub Actions</a></li>
-</ul>
-</li>
-<li><a href="#org3147a0b">Parting Thoughts</a></li>
+<li><a href="#org4d14903">Verification</a></li>
+<li><a href="#org14f13bf">Differences from Old Setup</a></li>
 </ul>
 </div>
 </div>
-<div class="preview">
+<div class="PREVIEW">
 <p>
-<a href="https://kennyballou.com/blog/2019/03/static-site-generation/index.html">Previously</a>, I discussed changing the generation of this site.  Specifically,
-using <a href="https://orgmode.org/">Org-Mode</a> files with <a href="https://pandoc.org/">Pandoc</a> and some <a href="https://www.gnu.org/software/bash/">Bash</a> scripts to generate the site.
-However, today, I have changed the site again.  Now, the site is generated
-entirely using <a href="https://orgmode.org/">Org-Mode</a>.
+Once again, it is time to announce a new GPG key.  This document is signed with
+the old and new key to establish authenticity.  However, I forgot the password
+for the master key, so I cannot certify the new key with the old key.  Please
+use the new key.
 </p>
 
 </div>
 
+<div id="outline-container-org4d14903" class="outline-2">
+<h2 id="org4d14903"><a id="ID-ce2f0821-7be8-4c81-8bda-235fb6c8b958"></a>Verification</h2>
+<div class="outline-text-2" id="text-org4d14903">
 <p>
-The Intertubes overflow with <a href="https://systemcrafters.net/publishing-websites-with-org-mode/automated-site-publishing/">previous</a> <a href="https://ogbe.net/blog/blogging_with_org.html">posts</a> about static site generation or
-blogging with only <a href="https://orgmode.org/">Org Mode</a>.  I focus mainly on a few details to make things
-work here.  But first, motivation.  Why change.
-</p>
-
-<div id="outline-container-org9788408" class="outline-2">
-<h2 id="org9788408"><a id="ID-acce0d8b-ba0b-4a41-b602-bf5fe85f15f6"></a>Motivation</h2>
-<div class="outline-text-2" id="text-org9788408">
-<p>
-I wanted to transition the blog into a more general purpose site and I felt my
-hand-rolled generation would not be adequate.  I did not want to go back to
-bigger tools like <a href="https://gohugo.io/">Hugo</a> and friends.  While these would certainly be capable,
-remaining in <a href="https://orgmode.org/">Org</a> and <a href="https://gnu.org/software/emacs">Emacs</a> seemed like the "winning" move.
-</p>
-
-<p>
-I also switched from using my own <a href="https://ethanschoonover.com/solarized/">Solarized</a> CSS, to <a href="https://simplecss.org/">Simple CSS</a>.
-</p>
-
-<p>
-A nice benefit of this change is automatic table of contents generated for each
-post and easily disabled for pages where table of contents do not make sense.
-Another benefit was learning that many of the links in the previous posts were
-broken.  <a href="https://orgmode.org/manual/Publishing.html">Publishing</a> does not generate sites with broken links.
-</p>
-</div>
-</div>
-
-<div id="outline-container-org2ee9d7a" class="outline-2">
-<h2 id="org2ee9d7a"><a id="ID-6e176d27-2076-414a-bf13-a85b288575e0"></a>Some Emacs Lisp</h2>
-<div class="outline-text-2" id="text-org2ee9d7a">
-<p>
-Defining an <a href="https://orgmode.org/">Org</a> project is fairly straightforward, but some parameters to the
-publishing projects depend on the circumstance.
-</p>
-</div>
-
-<div id="outline-container-org5f580dc" class="outline-3">
-<h3 id="org5f580dc"><a id="ID-b056b1ae-2d91-4be5-8d31-578eea0fcdca"></a>Preamble and Postamble</h3>
-<div class="outline-text-3" id="text-org5f580dc">
-<p>
-To handle the headers and footers of the site, I defined the following function
-to read in, now modified versions of, the previous header and footer HTML
-content.
+This document is signed using the following command:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-elisp">(<span style="font-weight: bold;">defun</span> <span style="font-weight: bold;">read-template</span> (filename)
-  <span style="font-style: italic;">"Read template contents from FILENAME."</span>
-  (<span style="font-weight: bold;">with-temp-buffer</span>
-    (insert-file-contents filename)
-    (buffer-string)))
+<pre class="src src-bash">gpg --clearsign --armor --sign-with B0CAA28A02958308 --sign-with 82D94B35744E1B34 index.org
 </pre>
 </div>
 
 <p>
-Then, this function can be used to load in the content of the template files:
+Download the public key with the following command:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-elisp">(<span style="font-weight: bold;">setq</span> head-extra-template (read-template <span style="font-style: italic;">"templates/html_header.html"</span>))
-(<span style="font-weight: bold;">setq</span> header-template (read-template <span style="font-style: italic;">"templates/html_sub_header.html"</span>))
-(<span style="font-weight: bold;">setq</span> header-nav (read-template <span style="font-style: italic;">"templates/nav.html"</span>))
-(<span style="font-weight: bold;">setq</span> footer-template (read-template <span style="font-style: italic;">"templates/html_footer.html"</span>))
+<pre class="src src-bash">curl -fSL https://kennyballou.com/B74CC4B41148C3DB364BC21182D94B35744E1B34.asc -O
+gpg --import B74CC4B41148C3DB364BC21182D94B35744E1B34.asc
 </pre>
 </div>
 
 <p>
-Then for each project, the following keys are set:
+Verify the fingerprint of the new key:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-elisp"><span style="font-weight: bold;">:html-head-extra</span> head-extra-template
-<span style="font-weight: bold;">:html-preamble</span> header-nav
-<span style="font-weight: bold;">:html-postamble</span> footer-template
+<pre class="src src-bash">gpg --fingerprint B74CC4B41148C3DB364BC21182D94B35744E1B34
+</pre>
+</div>
+
+<pre class="example">
+pub   ed25519/0x82D94B35744E1B34 2022-06-17 [C] [expires: 2030-06-15]
+      Key fingerprint = B74C C4B4 1148 C3DB 364B  C211 82D9 4B35 744E 1B34
+uid                   [ultimate] Kenny Ballou &lt;kennyballou@u.boisestate.edu&gt;
+uid                   [ultimate] Kenny Ballou &lt;kb@devnulllabs.io&gt;
+uid                   [ultimate] Kenny Ballou &lt;kballou@devnulllabs.io&gt;
+uid                   [ultimate] Kenny Ballou &lt;kennethmgballou@gmail.com&gt;
+sub   ed25519/0xFE55890B57AEDCE5 2022-06-17 [S]
+      Key fingerprint = 10F4 14AB D526 0D0E 2372  8C08 FE55 890B 57AE DCE5
+sub   cv25519/0x67D198693104300D 2022-06-17 [E]
+      Key fingerprint = 9B57 EC72 7A5C 5796 FB40  1954 67D1 9869 3104 300D
+sub   ed25519/0xCEF8DC24E2133889 2022-06-17 [A]
+      Key fingerprint = 8F1F B6DE 17B1 B8FE C5E1  ACA8 CEF8 DC24 E213 3889
+</pre>
+
+<p>
+Download the text of this <a href="https://kennyballou.com/blog/2022/06/new-gpg-key/index.org.asc">document</a> and verify with the following commands:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">curl -fSL https://kennyballou.com/blog/2022/06/new-gpg-key/index.org.asc -O
+gpg --verify index.org.asc
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org8c0750a" class="outline-3">
-<h3 id="org8c0750a"><a id="ID-2179da31-6405-4ab4-84e8-f218abc6f6a2"></a>Simple CSS Preamble + Postamble</h3>
-<div class="outline-text-3" id="text-org8c0750a">
+<div id="outline-container-org14f13bf" class="outline-2">
+<h2 id="org14f13bf"><a id="ID-03d947d0-c70a-4fea-b700-f2041ed2f1f1"></a>Differences from Old Setup</h2>
+<div class="outline-text-2" id="text-org14f13bf">
 <p>
-To get the preamble and postamble to be styled right by <a href="https://simplecss.org/">SimpleCSS</a>, the
-following keys were necessary:
-</p>
-
-<div class="org-src-container">
-<pre class="src src-elisp"><span style="font-weight: bold;">:html-divs</span> '((preamble <span style="font-style: italic;">"header"</span> <span style="font-style: italic;">""</span>)
-             (content <span style="font-style: italic;">"div"</span> <span style="font-style: italic;">"main"</span>)
-             (postamble <span style="font-style: italic;">"footer"</span> <span style="font-style: italic;">""</span>))
-</pre>
-</div>
-</div>
-</div>
-
-<div id="outline-container-orgf42d964" class="outline-3">
-<h3 id="orgf42d964"><a id="ID-dd218b6b-ff74-4b5c-a9d2-75024203102c"></a><code>ox-rss</code></h3>
-<div class="outline-text-3" id="text-orgf42d964">
-<p>
-To publish the RSS feed, I needed to copy the <a href="https://github.com/kennyballou/kennyballou.github.io/blob/31878715d1f29ab9c95c31b9d9d713db74dabfba/lisp/ox-rss.el"><code>ox-rss.el</code></a> file wholesale so that
-it was accessible during the automated publishing.
-</p>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org4f01fb4" class="outline-2">
-<h2 id="org4f01fb4"><a id="ID-3f319213-17dd-4fb4-ba22-272ee1e52077"></a>Building and Publishing</h2>
-<div class="outline-text-2" id="text-org4f01fb4">
-</div>
-
-<div id="outline-container-orgdc5ecad" class="outline-3">
-<h3 id="orgdc5ecad"><a id="ID-36a872f9-1de5-4955-97b8-51e1192a3eb3"></a>Make</h3>
-<div class="outline-text-3" id="text-orgdc5ecad">
-<p>
-With the <code>build-site.el</code> file defined, the <a href="https://www.gnu.org/software/make/">Make target</a> is quite simple.
-</p>
-
-<div class="org-src-container">
-<pre class="src src-GNUMakefile">.PHONY: org-publish
-org-publish:
-	emacs -Q --script ./build-site.el
-</pre>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org3b82a52" class="outline-3">
-<h3 id="org3b82a52"><a id="ID-02aa27f6-4d0d-43e1-b443-dcc6ae4839bb"></a>GitHub Actions</h3>
-<div class="outline-text-3" id="text-org3b82a52">
-<p>
-In an earlier <a href="https://kennyballou.com/blog/2020/02/blog-deploy-code-commit-and-build/index.html">post</a>, I described using <a href="https://aws.amazon.com/codebuild/">AWS CodeBuild</a> to automatically build site
-content and copy the files to <a href="https://aws.amazon.com/s3">S3</a>.  However, after one timed-out build attempted
-to put 15 GB of useless files into my <a href="https://aws.amazon.com/s3">S3</a> bucket and caused over 400,000
-requests against the bucket, it was time to try something new.
+Instead of using RSA keys, I have switched to using Elliptic Curve (ed25519)
+keys which should have around the same strength of RSA 4096 keys.  Furthermore,
+the benefit of this is that the subkeys all have the same strength, which
+previously was not an option with RSA keys.
 </p>
 
 <p>
-While hosting with <a href="https://aws.amazon.com/s3">S3</a> and <a href="https://aws.amazon.com/cloudfront">CloudFront</a> is cheap, hosting with <a href="https://pages.github.com/">GitHub Pages</a> is
-free.  More than that, if I ever write something people are interested in, I do
-not need to worry about my <a href="https://aws.amazon.com/cloudfront">CloudFront</a> costs ballooning out of control.
-</p>
-
-<blockquote>
-<p>
-Of course, this is not a real worry.  CloudFront has only cost about $0.01 for
-a while, sometimes less.
-</p>
-</blockquote>
-
-<p>
-The process of setting this up is straightforward and more up-to-date
-documentation is available from <a href="https://github.com/">GitHub</a>.
-</p>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org3147a0b" class="outline-2">
-<h2 id="org3147a0b"><a id="ID-c5143824-6017-4a2f-98ea-094d5789a104"></a>Parting Thoughts</h2>
-<div class="outline-text-2" id="text-org3147a0b">
-<p>
-Nothing is perfect, but overall, I am pleased with the result of switching to
-using <a href="https://orgmode.org/">Org Mode</a> for publishing.  There exists a learning curve&#x2013; as with all
-things&#x2013; however, not needing to develop and maintain the publishing scripts to
-the degree the custom rolled solution required is a relief.  It may require
-<i>some</i> code to develop a new section or something else.  But not nearly to the
-degree the old method required.
-</p>
-
-<p>
-Certainly, changing the hosting was not intended.  I started the publishing
-change with the intent that it would still be hosted with <a href="https://aws.amazon.com/cloudfront">AWS CloudFront</a> and
-<a href="https://aws.amazon.com/s3">AWS S3</a>.  Unfortunately, the build issues described above and my own second
-guessing the rationale for hosting with <a href="https://aws.amazon.com/">AWS</a> persuaded me to switch.
+The expiration of the master key is a little longer than the previous keys, 8
+years instead of 5 years.  Ideally, this means another key transition post
+won't appear for 8 years.  If I remember the password, and cryptography doesn't
+change significantly, I can also extend the expiration of the key as well.
 </p>
 </div>
 </div>

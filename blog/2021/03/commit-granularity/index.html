@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-06-22 Wed 17:27 -->
+<!-- 2022-06-22 Wed 23:06 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Granularity of (Git) Commits</title>
@@ -286,7 +286,7 @@ for the JavaScript code in this tag.
      target="_blank">
     <i class="fade far fa-file-pdf"></i>
   </a>
-  <a href="/932F3E8E1C0F4A9895D7B8B8B0CAA28A02958308.txt"
+  <a href="/B74CC4B41148C3DB364BC21182D94B35744E1B34.asc"
      target="_blank">
     <i class="fade fas fa-key"></i>
   </a>
@@ -302,11 +302,11 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgc222fe3">Introduction</a></li>
-<li><a href="#org1f2afdc">Single Story -&gt; Single Commit</a></li>
-<li><a href="#orgba0cff1">Discrete Tasks -&gt; Multiple Atomic Commits</a></li>
-<li><a href="#org009593b">Examples</a></li>
-<li><a href="#org44212cc">Discussion</a></li>
+<li><a href="#org1f9ab1e">Introduction</a></li>
+<li><a href="#org3eb9a6b">Single Story -&gt; Single Commit</a></li>
+<li><a href="#orgd49d616">Discrete Tasks -&gt; Multiple Atomic Commits</a></li>
+<li><a href="#orgf1b89ad">Examples</a></li>
+<li><a href="#org1f48f2d">Discussion</a></li>
 </ul>
 </div>
 </div>
@@ -322,16 +322,16 @@ granularity.  The answer is, of course, it depends.
 
 <a href="https://xkcd.com/1296"><figure>
 
-<div id="org39e87ae" class="figure">
+<div id="org370f0f7" class="figure">
 <p><img src="https://imgs.xkcd.com/comics/git_commit.png" alt="git_commit.png" />
 </p>
 <p><span class="figure-number">Figure 1: </span>Merge branch 'asdfasjkfdlas/alkdjf' into sdkjfls-final</p>
 </div>
 </figure></a>
 
-<div id="outline-container-orgc222fe3" class="outline-2">
-<h2 id="orgc222fe3"><a id="ID-dfcb1574-d7a9-447a-a0e5-986a88a23cce"></a>Introduction</h2>
-<div class="outline-text-2" id="text-orgc222fe3">
+<div id="outline-container-org1f9ab1e" class="outline-2">
+<h2 id="org1f9ab1e"><a id="ID-dfcb1574-d7a9-447a-a0e5-986a88a23cce"></a>Introduction</h2>
+<div class="outline-text-2" id="text-org1f9ab1e">
 <p>
 Regardless of position on "good" or "communicative," we are often left with
 questions about the commits themselves.  How frequent should we commit?  What
@@ -361,9 +361,9 @@ doesn't have a consistent choice, <i>that</i> is what should be fixed.
 </div>
 </div>
 
-<div id="outline-container-org1f2afdc" class="outline-2">
-<h2 id="org1f2afdc"><a id="ID-ca580080-825e-47e1-a481-51aeb317151c"></a>Single Story -&gt; Single Commit</h2>
-<div class="outline-text-2" id="text-org1f2afdc">
+<div id="outline-container-org3eb9a6b" class="outline-2">
+<h2 id="org3eb9a6b"><a id="ID-ca580080-825e-47e1-a481-51aeb317151c"></a>Single Story -&gt; Single Commit</h2>
+<div class="outline-text-2" id="text-org3eb9a6b">
 <p>
 Using a single commit for tasks comes with a lot of simplicity, but the commits
 themselves will be large.  Integrating the single commit is relatively
@@ -394,9 +394,9 @@ The history of code is far messier than even I wish to admit.
 </div>
 </div>
 
-<div id="outline-container-orgba0cff1" class="outline-2">
-<h2 id="orgba0cff1"><a id="ID-ebba1bce-544b-4ea5-80a0-57bbb17b8335"></a>Discrete Tasks -&gt; Multiple Atomic Commits</h2>
-<div class="outline-text-2" id="text-orgba0cff1">
+<div id="outline-container-orgd49d616" class="outline-2">
+<h2 id="orgd49d616"><a id="ID-ebba1bce-544b-4ea5-80a0-57bbb17b8335"></a>Discrete Tasks -&gt; Multiple Atomic Commits</h2>
+<div class="outline-text-2" id="text-orgd49d616">
 <p>
 Instead of using a single commit which contains every single change that was
 made to accomplish the task, we can use a single commit for each of those
@@ -455,9 +455,9 @@ web UI's, but this is certainly possible and <span class="underline">is</span> d
 </div>
 </div>
 
-<div id="outline-container-org009593b" class="outline-2">
-<h2 id="org009593b"><a id="ID-776e8b2e-476b-4949-bd00-f846393ff6f6"></a>Examples</h2>
-<div class="outline-text-2" id="text-org009593b">
+<div id="outline-container-orgf1b89ad" class="outline-2">
+<h2 id="orgf1b89ad"><a id="ID-776e8b2e-476b-4949-bd00-f846393ff6f6"></a>Examples</h2>
+<div class="outline-text-2" id="text-orgf1b89ad">
 <p>
 Let's examine some pull requests which demonstrate both approaches.  I'm going
 to point to pull requests I have submitted since I don't want to cast any
@@ -566,9 +566,9 @@ commit.
 </div>
 </div>
 
-<div id="outline-container-org44212cc" class="outline-2">
-<h2 id="org44212cc"><a id="ID-8b3791ef-6fba-4bfa-8b77-a7d24786c018"></a>Discussion</h2>
-<div class="outline-text-2" id="text-org44212cc">
+<div id="outline-container-org1f48f2d" class="outline-2">
+<h2 id="org1f48f2d"><a id="ID-8b3791ef-6fba-4bfa-8b77-a7d24786c018"></a>Discussion</h2>
+<div class="outline-text-2" id="text-org1f48f2d">
 <p>
 It's rather easy to argue for "small, atomic" commits, but I sense we have
 failed to clearly articulate what we mean by "small".  How small is "small"?
