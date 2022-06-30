@@ -1,0 +1,783 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-06-30 Thu 01:35 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Org Projects with Gantt Charts</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="kb" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<meta charset="utf-8">
+
+<meta name="author" content="Kenny Ballou">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<title>~kb</title>
+
+<link rel="canonical" href="/" />
+<link href="/index.xml" rel="alternate" type="application/rss+xml"
+      title="~kb/blog" />
+
+<link rel="stylesheet" href="/css/simple.css" />
+<link rel="stylesheet" href="/css/simple.add.css" />
+<link rel="stylesheet" href="/css/katex.css" />
+<link rel="stylesheet" href="/css/fa-all.css" />
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<script defer type="text/javascript" src="/js/katex.js"></script>
+<script defer type="text/javascript" src="/js/katex-render.js"></script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://kennyballou.com/blog"> UP </a>
+ |
+ <a accesskey="H" href="https://kennyballou.com/"> HOME </a>
+</div><header id="" class="status">
+<nav>
+  <a href="/about.html">
+    <i class="fade fas fa-user-circle"></i>
+  </a>
+  <a href="https://git.sr.ht/~kennyballou/"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-code-branch fa-1x"></i>
+  </a>
+  <a href="https://github.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-github fa-1x"></i>
+  </a>
+  <a href="https://bitbucket.org/kballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-bitbucket fa-1x"></i>
+  </a>
+  <a href="https://linkedin.com/in/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-linkedin-in fa-1x"></i>
+  </a>
+  <a href="https://www.buymeacoffee.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fas fa-mug-hot fa-1x"></i>
+  </a>
+  <a href="/resume.pdf"
+     target="_blank">
+    <i class="fade far fa-file-pdf"></i>
+  </a>
+  <a href="/B74CC4B41148C3DB364BC21182D94B35744E1B34.asc"
+     target="_blank">
+    <i class="fade fas fa-key"></i>
+  </a>
+  <a href="/index.xml" rel="alternate"
+     type="application/rss+xml">
+    <i class="fade fas fa-rss fa-1x"></i>
+  </a>
+</nav>
+</header>
+<div id="main">
+<h1 class="title">Org Projects with Gantt Charts</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgfcde3d5">Background</a>
+<ul>
+<li><a href="#org6cf2963">Prior Art</a></li>
+<li><a href="#org9ba8a70">Rationale</a></li>
+</ul>
+</li>
+<li><a href="#org2be16b5">Implementation</a></li>
+<li><a href="#org8334fd3">Usage</a></li>
+<li><a href="#org9973751">Examples</a></li>
+<li><a href="#org7fa9d4e">Limitations</a></li>
+<li><a href="#orgd04d5ab">Future Work/Improvements</a></li>
+</ul>
+</div>
+</div>
+<div class="PREVIEW">
+<p>
+<a href="https://orgmode.org/">Org-Mode</a> is a great way to store <code>TODO</code> items, store notes, and keep track of
+projects.  However, possibly due to ignorance of what is available, getting a
+concrete high-level view of a project is difficult.  There are numerous
+different visualizations that can be created to see the state of a project.
+Each answers a specific question, none are entirely complete.  Today, I have
+worked out a mechanism to generate <a href="https://en.wikipedia.org/wiki/Gantt_chart">Gantt Charts</a> using <a href="https://orgmode.org/manual/Dynamic-Blocks.html">dynamic blocks</a> for a
+specific project tree.  In followup posts, I may work out some other
+visualizations.
+</p>
+
+</div>
+
+<p>
+<a href="https://orgmode.org/manual/Agenda-Views.html">Agenda</a> views can help gather and provide filtered projections of the <code>TODO</code> lists
+that comprise various projects.  But getting a holistic view of the progress is
+not entirely captured by <a href="https://orgmode.org/manual/Breaking-Down-Tasks.html">progress cookies</a> and <a href="https://orgmode.org/manual/Agenda-Views.html">agenda views</a>.  For example, a
+progress cookie cannot predict a project's completion because it lacks
+information about size of each task and estimated complexity of each task.  A
+project could be 98% complete, but the last 2% of tasks consist of 80% of the
+work necessary to complete.  Arguably, this is a failure in the project
+breakdown, but the point remains, some amount of tasks left over as a whole do
+not communicate the holistic progress and prediction towards completion.
+</p>
+
+<div id="outline-container-orgfcde3d5" class="outline-2">
+<h2 id="orgfcde3d5"><a id="ID-2557e93f-35ea-48a4-909e-7b548d6c67bc"></a>Background</h2>
+<div class="outline-text-2" id="text-orgfcde3d5">
+<p>
+<a href="https://en.wikipedia.org/wiki/Gantt_chart">Gantt charts</a> model project schedules as a sort of bar chart.  Dependencies and
+links can be shown to draw the critical path of the project and the timeline of
+the various tasks that makeup a project.  These project schedules are more
+common in <a href="https://en.wikipedia.org/wiki/Waterfall_model">waterfall</a> project management techniques or resource scheduling,
+therefore, they are likely less popular than other visualizations.  However,
+the critical path projection is still an important view of any project
+management philosophy.  Furthermore, the complexity and cost of generating
+<a href="https://en.wikipedia.org/wiki/Gantt_chart">Gantt charts</a> has made them unlikely visualizations even for smaller task
+breakdowns.  Another important aspect that <a href="https://en.wikipedia.org/wiki/Gantt_chart">Gantt charts</a> model is task duration
+as either an abstract unit, such as "story points", or as calendar dates with
+some chosen granularity of time units such as days, months, or years.
+</p>
+</div>
+
+<div id="outline-container-org6cf2963" class="outline-3">
+<h3 id="org6cf2963"><a id="ID-8879b0df-0aaf-48e2-a08b-0e3c7b5bd68b"></a>Prior Art</h3>
+<div class="outline-text-3" id="text-org6cf2963">
+<p>
+There are several existing projects which attempt to generate <a href="https://en.wikipedia.org/wiki/Gantt_chart">Gantt charts</a> from
+<a href="https://orgmode.org/">Org TODO entries</a>.  Specifically, <a href="https://orgmode.org/">Org mode</a> supports exporting directly to
+<a href="https://taskjuggler.org/index.html">TaskJuggler</a>, there is even a <a href="https://orgmode.org/worg/org-tutorials/org-taskjuggler.html">tutorial</a> on the <a href="https://orgmode.org/">Org mode</a> website.  There are also
+third-party packages such as <a href="https://github.com/legalnonsense/elgantt/">elgantt</a> and <a href="https://github.com/swillner/org-gantt">Org-Gantt</a>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9ba8a70" class="outline-3">
+<h3 id="org9ba8a70"><a id="ID-a3fd48d9-bd23-4ca5-a7c2-6537cc353c4c"></a>Rationale</h3>
+<div class="outline-text-3" id="text-org9ba8a70">
+<p>
+Given that there are existing solutions to generating <a href="https://en.wikipedia.org/wiki/Gantt_chart">Gantt charts</a> from <a href="https://orgmode.org/">Org
+mode</a> entries, why create another one?  The other solutions require either the
+<a href="https://orgmode.org/">Org</a> entries change or metadata added such that the chart generator of choice
+has the necessary information.  Instead, it is better to leverage the existing
+information already present entries to generate the charts.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2be16b5" class="outline-2">
+<h2 id="org2be16b5"><a id="ID-8ac4f510-ec2d-4c99-9caa-6f6d8509f420"></a>Implementation</h2>
+<div class="outline-text-2" id="text-org2be16b5">
+<blockquote>
+<p>
+Currently, the implementation is not packaged, but that may change at a future
+date.
+</p>
+</blockquote>
+
+<p>
+The basics of the implementation involves <a href="https://www.gnu.org/software/emacs/manual/html_node/elisp/index.html">Emacs Lisp</a>, <a href="https://orgmode.org/">Org mode</a>, <a href="https://www.latex-project.org/">\LaTeX</a>, <a href="https://tikz.dev/">TikZ</a>,
+and <a href="https://www.ctan.org/pkg/pgfgantt/">pgfGantt</a>.  Using an existing (sub)tree of tasks (<a href="https://orgmode.org/">Org</a> <code>TODO</code> entries), we
+create a dynamic block that processes the current tree and generates the
+necessary <code>\ganttbars</code> for generating a <a href="https://en.wikipedia.org/wiki/Gantt_chart">Gantt Chart</a> using <a href="https://www.ctan.org/pkg/pgfgantt/">pgfGantt</a>.  Then, the
+document or subtree can be exported to PDF using <a href="https://www.latex-project.org/">\LaTeX</a> to create <a href="https://en.wikipedia.org/wiki/Gantt_chart">Gantt chart</a>
+projection.
+</p>
+
+<p>
+We define a special function, <code>org-dblock-write:gantt</code> which is used to generate
+the necessary <a href="https://tikz.dev/">TikZ</a>/<a href="https://www.ctan.org/pkg/pgfgantt/">pgfGantt</a> commands to draw the chart.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-elisp">(<span style="font-weight: bold;">require</span> '<span style="font-weight: bold; text-decoration: underline;">org</span>)
+(<span style="font-weight: bold;">require</span> '<span style="font-weight: bold; text-decoration: underline;">seq</span>)
+
+(<span style="font-weight: bold;">defun</span> <span style="font-weight: bold;">org-dblock-write:gantt</span> (params)
+  <span style="font-style: italic;">"Create pgf Gantt Chart from subtree."</span>
+  (<span style="font-weight: bold;">defun</span> <span style="font-weight: bold;">org-parse-date</span> (date-string)
+    (<span style="font-weight: bold;">cond</span> ((null date-string) nil)
+          (t (seconds-to-time (org-matcher-time date-string)))))
+  (<span style="font-weight: bold;">defun</span> <span style="font-weight: bold;">org-duration-&gt;minutes</span> (duration-string)
+    <span style="font-style: italic;">"Parse DURATION-STRING into numerical minutes."</span>
+    (<span style="font-weight: bold;">cond</span> ((org-duration-p duration-string) (org-duration-to-minutes duration-string))
+          (t 0)))
+  (<span style="font-weight: bold;">defun</span> <span style="font-weight: bold;">org--alist-entry</span> (<span style="font-weight: bold; text-decoration: underline;">&amp;optional</span> filter-level)
+    (<span style="font-weight: bold;">let*</span> ((props (org-entry-properties))
+           (level (cl-first (org-heading-components)))
+           (entry-title (cdr (assoc <span style="font-style: italic;">"ITEM"</span> props)))
+           (entry-id (cdr (assoc <span style="font-style: italic;">"ID"</span> props)))
+           (effort-string (cdr (assoc <span style="font-style: italic;">"EFFORT"</span> props)))
+           (clock-minutes (org-clock-sum-current-item))
+           (scheduled (cdr (assoc <span style="font-style: italic;">"SCHEDULED"</span> props)))
+           (deadline (cdr (assoc <span style="font-style: italic;">"DEADLINE"</span> props)))
+           (effort-minutes (org-duration-&gt;minutes effort-string))
+           (status (cl-third (org-heading-components)))
+           (done (seq-contains-p org-done-keywords status))
+           (progress (<span style="font-weight: bold;">cond</span> (done 100.0)
+                           ((not (equal effort-minutes 0)) (* (/ clock-minutes effort-minutes) 100))
+                           (t nil))))
+      `((LEVEL . ,level)
+        (TYPE . ,(<span style="font-weight: bold;">cond</span> ((&lt; level filter-level) 'GROUP)
+                       (t 'BAR)))
+        (TITLE . ,entry-title)
+        (ID . ,entry-id)
+        (EFFORT . ,effort-minutes)
+        (CLOCKED . ,clock-minutes)
+        (SCHEDULED . ,scheduled)
+        (DEADLINE . ,deadline)
+        (PROGRESS . ,progress)
+        (DONE . ,done))))
+  (<span style="font-weight: bold;">defun</span> <span style="font-weight: bold;">format-entry</span> (entry)
+    (<span style="font-weight: bold;">defun</span> <span style="font-weight: bold;">format-progress</span> (value)
+      (<span style="font-weight: bold;">if</span> (null value) 0 value))
+    (<span style="font-weight: bold;">defun</span> <span style="font-weight: bold;">format-title</span> (title)
+      (<span style="font-weight: bold;">let*</span> ((replaced-title (string-replace <span style="font-style: italic;">"%"</span> <span style="font-style: italic;">"\\%"</span> title))
+             (truncate-to (min (length replaced-title) 15)))
+        (substring replaced-title 0 truncate-to)))
+    (<span style="font-weight: bold;">defun</span> <span style="font-weight: bold;">format-date</span> (date)
+      (format-time-string <span style="font-style: italic;">"%Y-%m-%d"</span> date))
+    (<span style="font-weight: bold;">let-alist</span> entry
+      (<span style="font-weight: bold;">cond</span> ((equal 'GROUP .TYPE) (format <span style="font-style: italic;">"\\ganttgroup[progress=today]{%s}{%s}{%s} \\\\\n"</span>
+                                          (format-title .TITLE)
+                                          (format-date .SCHEDULED)
+                                          (format-date .DEADLINE)))
+            (t (format <span style="font-style: italic;">"\\ganttbar[progress=%00.0f]{%s}{%s}{%s} \\\\\n"</span>
+                       (format-progress .PROGRESS)
+                       (format-title .TITLE)
+                       (format-date .SCHEDULED)
+                       (format-date .DEADLINE))))))
+  (<span style="font-weight: bold;">let*</span> ((start (org-parse-date (plist-get params <span style="font-weight: bold;">:tstart</span>)))
+         (end (org-parse-date (plist-get params <span style="font-weight: bold;">:tend</span>)))
+         (today (org-parse-date <span style="font-style: italic;">"&lt;today&gt;"</span>))
+         (current-level (+ 1 (cl-first (org-heading-components))))
+         (level (<span style="font-weight: bold;">or</span> (plist-get params <span style="font-weight: bold;">:level</span>) current-level))
+         (tunit (<span style="font-weight: bold;">or</span> (plist-get params <span style="font-weight: bold;">:tunit</span>) <span style="font-style: italic;">"month"</span>))
+         (entries (seq-filter (<span style="font-weight: bold;">lambda</span> (entry) (<span style="font-weight: bold;">let-alist</span> entry
+                                                (&lt;= .LEVEL level)))
+                              (org-map-entries (<span style="font-weight: bold;">lambda</span> () (org--alist-entry level)) t 'tree))))
+    (insert (format <span style="font-style: italic;">"#+begin_src latex</span>
+<span style="font-style: italic;">\\begin{ganttchart}[%%</span>
+<span style="font-style: italic;">    expand chart=\\textwidth,</span>
+<span style="font-style: italic;">    vgrid,</span>
+<span style="font-style: italic;">    hgrid,</span>
+<span style="font-style: italic;">    time slot format=isodate,</span>
+<span style="font-style: italic;">    bar height=0.6,</span>
+<span style="font-style: italic;">    bar label font=\\scriptsize,</span>
+<span style="font-style: italic;">    bar/.append style={fill=green!50},</span>
+<span style="font-style: italic;">    bar incomplete/.append style={fill=red!50},</span>
+<span style="font-style: italic;">    group/.append style={fill=blue!50},</span>
+<span style="font-style: italic;">    group incomplete/.append style={fill=brown!50},</span>
+<span style="font-style: italic;">    group left shift=0,</span>
+<span style="font-style: italic;">    group right shift=0,</span>
+<span style="font-style: italic;">    group top shift=.6,</span>
+<span style="font-style: italic;">    group height=.3,</span>
+<span style="font-style: italic;">    group peaks height=.2,</span>
+<span style="font-style: italic;">    today=%s,</span>
+<span style="font-style: italic;">    time slot unit=%s]{%s}{%s}\n"</span>
+                    (format-time-string <span style="font-style: italic;">"%Y-%m-%d"</span> today)
+                    tunit
+                    (format-time-string <span style="font-style: italic;">"%Y-%m-%d"</span> start)
+                    (format-time-string <span style="font-style: italic;">"%Y-%m-%d"</span> end)))
+    (insert (format <span style="font-style: italic;">"\\gantttitlecalendar{year, month%s} \\\\\n"</span>
+                    (<span style="font-weight: bold;">if</span> (equal tunit <span style="font-style: italic;">"day"</span>) <span style="font-style: italic;">", day"</span> <span style="font-style: italic;">""</span>)))
+    (<span style="font-weight: bold;">let</span> ((previous-end (decode-time nil (current-time-zone) t)))
+      (cl-map nil (<span style="font-weight: bold;">lambda</span> (entry) (<span style="font-weight: bold;">let*</span> ((id (cdr (assoc 'ID entry)))
+                                         (level (cdr (assoc 'LEVEL entry)))
+                                         (type (cdr (assoc 'TYPE entry)))
+                                         (title (cdr (assoc 'TITLE entry)))
+                                         (clocked (cdr (assoc 'CLOCKED entry)))
+                                         (done (cdr (assoc 'DONE entry)))
+                                         (effort (cdr (assoc 'EFFORT entry)))
+                                         (scheduled (<span style="font-weight: bold;">or</span> (org-parse-date (cdr (assoc 'SCHEDULED entry)))
+                                                        (encode-time previous-end)))
+                                         (deadline (<span style="font-weight: bold;">or</span> (org-parse-date (cdr (assoc 'DEADLINE entry)))
+                                                       (encode-time (decoded-time-add
+                                                                     (decode-time scheduled)
+                                                                     (make-decoded-time <span style="font-weight: bold;">:minute</span> effort)))))
+                                         (progress (cdr (assoc 'PROGRESS entry)))
+                                         (task `((ID . ,id)
+                                                 (PROGRESS . ,progress)
+                                                 (TYPE . ,type)
+                                                 (LEVEL . ,level)
+                                                 (TITLE . ,title)
+                                                 (EFFORT . ,effort)
+                                                 (CLOCKED . ,clocked)
+                                                 (SCHEDULED . ,scheduled)
+                                                 (DEADLINE . ,deadline)
+                                                 (DONE . ,done))))
+                                    (print task)
+                                    (<span style="font-weight: bold;">if</span> (equal 'BAR type)
+                                        (<span style="font-weight: bold;">setq</span> previous-end (decode-time deadline)))
+                                    (insert (format-entry task))))
+              entries))
+    (insert (format <span style="font-style: italic;">"\\end{ganttchart}\n#+end_src"</span>))))
+</pre>
+</div>
+
+<p>
+The function works by mapping over the entries of the current tree and
+processing each of them into either a <code>\ganttgroup</code> or <code>\ganttbar</code>.  Each <code>TODO</code>
+entry has a duration equal to the estimated effort of the task.  If the effort
+is not estimated, it is the same as <code>0</code>, which <a href="https://www.ctan.org/pkg/pgfgantt/">pgfGantt</a> shows as a day.  While it
+may be fine that a task defaults to a day, it does not properly show the likely
+schedule given that all subsequent tasks start on the same day since there is
+no duration to the tasks.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8334fd3" class="outline-2">
+<h2 id="org8334fd3"><a id="ID-0cd1ddc2-d32d-4010-9b26-ef39bf8cbd69"></a>Usage</h2>
+<div class="outline-text-2" id="text-org8334fd3">
+<p>
+Add the following block to the subtree of entries.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-org"><span style="font-weight: bold; font-style: italic;">#+begin: gantt :tstart "&lt;today&gt;" :tend "&lt;2022-07-15&gt;" :tunit "day"</span>
+<span style="font-weight: bold; font-style: italic;">#+end:</span>
+</pre>
+</div>
+
+<p>
+Then executing <code>org-update-dblock</code> or pressing <code>C-c C-c</code> when the point is on the
+block generates the necessary plotting commands, which when exported to PDF
+generates the <a href="https://en.wikipedia.org/wiki/Gantt_chart">Gantt chart</a> for the subtree.  The parameters <code>:tstart</code> and <code>:tend</code>
+can be any <a href="https://orgmode.org/">Org mode</a> parseable date string, such as "&lt;today&gt;", "&lt;yesterday&gt;", or
+some specific time stamp in <a href="https://www.iso.org/standard/70908.html">ISO-8601</a> format.  The unit parameter, <code>:tunit</code> can
+either be "days" or "months".
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9973751" class="outline-2">
+<h2 id="org9973751"><a id="ID-35e3d5ec-0845-425d-bd08-4ffab953df88"></a>Examples</h2>
+<div class="outline-text-2" id="text-org9973751">
+<p>
+To highlight how this function works, we consider the following example <a href="https://orgmode.org/">Org</a>
+<a href="https://kennyballou.com/blog/2022/06/org-projects-with-gantt/example.org">file</a>.  At the top level, there is an entry for all projects.  Because this is
+an example, we have a single project named, "Major Project" which has 2 of its
+5 major activities completed.  We can see the generated <a href="https://en.wikipedia.org/wiki/Gantt_chart">Gantt chart</a> for the
+major activity below.  Within each of the activities, we can have arbitrarily
+deep subtasks.  The following chart shows the breakdown of tasks for "Activity
+3".
+</p>
+
+<blockquote>
+<p>
+My apologies to dark mode readers, the image text elements do not invert in
+dark mode.
+</p>
+</blockquote>
+
+<div class="org-src-container">
+<pre class="src src-org"><span style="font-weight: bold; font-style: italic;">#+COLUMNS: %40ITEM(Task) %17Effort(Estimated Effort){:} %CLOCKSUM</span>
+<span style="font-weight: bold; font-style: italic;">#+LATEX_HEADER: \usepackage{pgfgantt}</span>
+<span style="font-weight: bold; font-style: italic;">#+LATEX_HEADER: \usepackage{fullpage}</span>
+<span style="font-weight: bold;">* Projects</span>
+<span style="font-weight: bold;">:PROPERTIES:</span>
+<span style="font-weight: bold;">:ID:</span>       92c26e6f-327c-4517-ab73-000ab6b3794e
+<span style="font-weight: bold;">:END:</span>
+<span style="font-weight: bold; font-style: italic;">** </span><span style="font-weight: bold;">[2/5]</span><span style="font-weight: bold; font-style: italic;"> Major Project</span>
+<span style="font-weight: bold;">DEADLINE:</span> <span style="text-decoration: underline;">&lt;2022-08-21 Sun&gt;</span>
+<span style="font-weight: bold;">:PROPERTIES:</span>
+<span style="font-weight: bold;">:ID:</span>       bd0c7101-6df8-4fd3-838d-3b03a0d84677
+<span style="font-weight: bold;">:END:</span>
+<span style="font-weight: bold; font-style: italic;">#+begin: gantt :tstart "&lt;today&gt;" :tend "&lt;2022-08-21&gt;" :tunit "month"</span>
+<span style="font-weight: bold; font-style: italic;">#+end:</span>
+<span style="font-weight: bold;">*** </span><span style="font-weight: bold;">DONE</span><span style="font-weight: bold;"> Activity 1</span>
+<span style="font-weight: bold;">CLOSED:</span> <span style="text-decoration: underline;">[2022-06-28 Tue 18:29]</span>
+<span style="font-weight: bold;">:PROPERTIES:</span>
+<span style="font-weight: bold;">:ID:</span>       1ba87343-1926-49c3-8dc9-f01ffde95d05
+<span style="font-weight: bold;">:END:</span>
+<span style="font-weight: bold;">:LOGBOOK:</span>
+- State "DONE"       from "TODO"       <span style="text-decoration: underline;">[2022-06-28 Tue 18:29]</span>
+<span style="font-weight: bold;">:END:</span>
+<span style="font-weight: bold; font-style: italic;">**** </span><span style="font-weight: bold;">DONE</span><span style="font-weight: bold; font-style: italic;"> Task 1</span>
+<span style="font-weight: bold;">CLOSED:</span> <span style="text-decoration: underline;">[2022-06-28 Tue 18:32]</span>
+<span style="font-weight: bold;">:PROPERTIES:</span>
+<span style="font-weight: bold;">:ID:</span>       6436a4d7-cc68-45fc-b46c-c10395b951a0
+<span style="font-weight: bold;">:END:</span>
+<span style="font-weight: bold;">:LOGBOOK:</span>
+- State "DONE"       from "TODO"       <span style="text-decoration: underline;">[2022-06-28 Tue 18:32]</span>
+<span style="font-weight: bold;">:END:</span>
+<span style="font-weight: bold; font-style: italic;">**** </span><span style="font-weight: bold;">DONE</span><span style="font-weight: bold; font-style: italic;"> Task 2</span>
+<span style="font-weight: bold;">CLOSED:</span> <span style="text-decoration: underline;">[2022-06-28 Tue 18:32]</span>
+<span style="font-weight: bold;">:PROPERTIES:</span>
+<span style="font-weight: bold;">:ID:</span>       cb294f7f-2e8d-49fc-9f53-b9fbdebd3f31
+<span style="font-weight: bold;">:END:</span>
+<span style="font-weight: bold;">:LOGBOOK:</span>
+- State "DONE"       from "TODO"       <span style="text-decoration: underline;">[2022-06-28 Tue 18:32]</span>
+<span style="font-weight: bold;">:END:</span>
+<span style="font-weight: bold; font-style: italic;">**** </span><span style="font-weight: bold;">DONE</span><span style="font-weight: bold; font-style: italic;"> Task 3</span>
+<span style="font-weight: bold;">CLOSED:</span> <span style="text-decoration: underline;">[2022-06-28 Tue 18:32]</span>
+<span style="font-weight: bold;">:PROPERTIES:</span>
+<span style="font-weight: bold;">:ID:</span>       824d2572-830c-493c-bedc-b4cdcc8ce307
+<span style="font-weight: bold;">:END:</span>
+<span style="font-weight: bold;">:LOGBOOK:</span>
+- State "DONE"       from "TODO"       <span style="text-decoration: underline;">[2022-06-28 Tue 18:32]</span>
+<span style="font-weight: bold;">:END:</span>
+<span style="font-weight: bold;">*** </span><span style="font-weight: bold;">DONE</span><span style="font-weight: bold;"> Activity 2</span>
+<span style="font-weight: bold;">CLOSED:</span> <span style="text-decoration: underline;">[2022-06-28 Tue 18:29]</span>
+<span style="font-weight: bold;">:PROPERTIES:</span>
+<span style="font-weight: bold;">:ID:</span>       81fb1423-447d-4fa3-92e4-cbba9d3aa7c8
+<span style="font-weight: bold;">:END:</span>
+<span style="font-weight: bold;">:LOGBOOK:</span>
+- State "DONE"       from "TODO"       <span style="text-decoration: underline;">[2022-06-28 Tue 18:29]</span>
+<span style="font-weight: bold;">:END:</span>
+<span style="font-weight: bold;">*** </span><span style="font-weight: bold;">TODO</span><span style="font-weight: bold;"> Activity 3</span>
+<span style="font-weight: bold;">DEADLINE:</span> <span style="text-decoration: underline;">&lt;2022-07-28 Thu&gt;</span>
+<span style="font-weight: bold;">:PROPERTIES:</span>
+<span style="font-weight: bold;">:ID:</span>       ce490c67-04f2-4060-b83d-f32675cc35e6
+<span style="font-weight: bold;">:EFFORT:</span>   26d 0h 0min
+<span style="font-weight: bold;">:END:</span>
+
+<span style="font-weight: bold; font-style: italic;">#+begin: gantt :tstart "&lt;today&gt;" :tend "&lt;2022-07-28&gt;" :tunit "day"</span>
+<span style="font-weight: bold; font-style: italic;">#+end:</span>
+
+<span style="font-weight: bold; font-style: italic;">**** </span><span style="font-weight: bold;">TODO</span><span style="font-weight: bold; font-style: italic;"> Task 1</span>
+<span style="font-weight: bold;">:PROPERTIES:</span>
+<span style="font-weight: bold;">:ID:</span>       f41e0083-7642-44a8-b653-f13124a1bcb9
+<span style="font-weight: bold;">:Effort:</span>   5d
+<span style="font-weight: bold;">:END:</span>
+<span style="font-weight: bold; font-style: italic;">**** </span><span style="font-weight: bold;">TODO</span><span style="font-weight: bold; font-style: italic;"> Task 2</span>
+<span style="font-weight: bold;">:PROPERTIES:</span>
+<span style="font-weight: bold;">:ID:</span>       e22aca56-18d9-4b43-b754-d11eadd73a97
+<span style="font-weight: bold;">:Effort:</span>   7d
+<span style="font-weight: bold;">:END:</span>
+<span style="font-weight: bold; font-style: italic;">**** </span><span style="font-weight: bold;">TODO</span><span style="font-weight: bold; font-style: italic;"> Task 3</span>
+<span style="font-weight: bold;">:PROPERTIES:</span>
+<span style="font-weight: bold;">:ID:</span>       c6bd2a10-dfcc-4e26-aa57-6629b6aa047c
+<span style="font-weight: bold;">:Effort:</span>   14d
+<span style="font-weight: bold;">:END:</span>
+<span style="font-weight: bold; font-style: italic;">**** </span><span style="font-weight: bold;">TODO</span><span style="font-weight: bold; font-style: italic;"> Task 4</span>
+<span style="font-weight: bold;">:PROPERTIES:</span>
+<span style="font-weight: bold;">:ID:</span>       78c88e86-da8a-41ba-991d-acfad713d4d1
+<span style="font-weight: bold;">:Effort:</span>   4d
+<span style="font-weight: bold;">:END:</span>
+<span style="font-weight: bold;">*** </span><span style="font-weight: bold;">TODO</span><span style="font-weight: bold;"> Activity 4</span>
+<span style="font-weight: bold;">:PROPERTIES:</span>
+<span style="font-weight: bold;">:ID:</span>       6b92c6d0-ff88-4dbe-b9e9-da2b2e7b0fd9
+<span style="font-weight: bold;">:Effort:</span>   14d
+<span style="font-weight: bold;">:END:</span>
+<span style="font-weight: bold;">*** </span><span style="font-weight: bold;">TODO</span><span style="font-weight: bold;"> Activity 5</span>
+<span style="font-weight: bold;">:PROPERTIES:</span>
+<span style="font-weight: bold;">:ID:</span>       cabc7511-5430-42c6-86ea-f59899fc3875
+<span style="font-weight: bold;">:Effort:</span>   14d
+<span style="font-weight: bold;">:END:</span>
+
+</pre>
+</div>
+
+
+<div class="figure">
+<p><object type="image/svg+xml" data="../../../../blog/2022/06/org-projects-with-gantt/gantt-1.svg" class="org-svg">
+Sorry, your browser does not support SVG.</object>
+</p>
+</div>
+
+
+<div class="figure">
+<p><object type="image/svg+xml" data="../../../../blog/2022/06/org-projects-with-gantt/gantt-2.svg" class="org-svg">
+Sorry, your browser does not support SVG.</object>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7fa9d4e" class="outline-2">
+<h2 id="org7fa9d4e"><a id="ID-5b038686-293f-4805-97e2-b02f81e88686"></a>Limitations</h2>
+<div class="outline-text-2" id="text-org7fa9d4e">
+<p>
+This process is currently pretty limited, see future work for improvements.
+One notable limitation, however, to make the charts fit on the page, the titles
+of the tasks are truncated to 15 characters.  Furthermore, the code is fairly
+dense at the moment.  It is certainly not the best code, but it serves the
+purpose.  Perhaps with some more cycles, the quality and readability can be
+improved.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd04d5ab" class="outline-2">
+<h2 id="orgd04d5ab"><a id="ID-baf8b1be-2e2a-4c6b-855e-a6cf39856f28"></a>Future Work/Improvements</h2>
+<div class="outline-text-2" id="text-orgd04d5ab">
+<p>
+The tasks can be automatically linked via <code>\ganttlinkedbar</code> and this would be
+natively supported by <a href="https://orgmode.org/manual/TODO-dependencies.html#TODO-dependencies">TODO dependencies</a>.  Alternatively, adding links could be
+possible after parsing dependency information available via <a href="https://orgmode.org/worg/org-contrib/org-depend.html">org-depend</a> or
+similar.  Currently, neither of these are supported.  The former would be
+relatively straightforward to toggle by another parameter.
+</p>
+
+<p>
+With respect to other visualizations, a <a href="https://en.wikipedia.org/wiki/Burndown_chart">burndown chart</a> or even a process of
+generating <a href="https://www.joelonsoftware.com/2007/10/26/evidence-based-scheduling/">evidence based schedules</a> and velocity tables should be possible.
+Working on slow incremental changes to processes, going to start small.
+</p>
+
+<p>
+Finally, there are always more ways to improve the usage of existing metadata
+associated with the task.  Currently, the <code>SCHEDULED</code> property is not used to
+select a start date, but if it is set, it would act as a better start date than
+whatever the previous task's end date is.
+</p>
+
+<p>
+The function is available on <a href="https://github.com/kennyballou/org-dblock-gantt">GitHub</a> and <a href="https://git.sr.ht/~kennyballou/org-dblock-gantt.git">Sourcehut</a>.
+</p>
+</div>
+</div>
+</div>
+<footer id="" class="status">
+<footer>
+  <p>&copy; 2014-2022 Kenny Ballou.
+    <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Some rights
+      reserved.</a></p>
+  <p>Powered by <a href="https://gnu.org">GNU/Linux</a></p>
+</footer>
+</footer>
+</body>
+</html>
