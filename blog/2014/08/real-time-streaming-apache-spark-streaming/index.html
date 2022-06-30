@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-06-30 Thu 01:34 -->
+<!-- 2022-06-30 Thu 01:42 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Real-Time Streaming with Apache Spark Streaming</title>
@@ -302,20 +302,20 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org80169b7">About Spark</a>
+<li><a href="#orgd1f8932">About Spark</a>
 <ul>
-<li><a href="#orge640906">Resilient Distributed Datasets</a></li>
-<li><a href="#orgc2ac879">Discretized Streams</a></li>
-<li><a href="#orgab382bd">Hadoop Requirements</a></li>
-<li><a href="#orge9d6470">Running Spark Applications</a></li>
-<li><a href="#org226341a">Language Support</a></li>
-<li><a href="#orge349cf6">Initial Thoughts</a></li>
+<li><a href="#org2bb8892">Resilient Distributed Datasets</a></li>
+<li><a href="#orgd9084dd">Discretized Streams</a></li>
+<li><a href="#org0c04741">Hadoop Requirements</a></li>
+<li><a href="#org4a05398">Running Spark Applications</a></li>
+<li><a href="#org2084235">Language Support</a></li>
+<li><a href="#orgb496f96">Initial Thoughts</a></li>
 </ul>
 </li>
-<li><a href="#org606a0fb">Test Project: Twitter Stream Sentiment Analysis</a>
+<li><a href="#org193870a">Test Project: Twitter Stream Sentiment Analysis</a>
 <ul>
 <li><a href="#setup">Setup</a></li>
-<li><a href="#orgb9251ff">Application Overview</a>
+<li><a href="#orgf1d3b42">Application Overview</a>
 <ul>
 <li><a href="#kafka-receiver-stream">Kafka Receiver Stream</a></li>
 <li><a href="#twitter-data-json-parsing">Twitter Data JSON Parsing</a></li>
@@ -325,22 +325,22 @@ for the JavaScript code in this tag.
 <li><a href="#reporting-hdfs-and-http-post">Reporting: HDFS and HTTP POST</a></li>
 </ul>
 </li>
-<li><a href="#org5369eb9">Implementing the Kafka Producer</a></li>
-<li><a href="#orgdd456ee">Implementing the Spark Streaming Application</a>
+<li><a href="#orgcd406ec">Implementing the Kafka Producer</a></li>
+<li><a href="#org82454d7">Implementing the Spark Streaming Application</a>
 <ul>
-<li><a href="#org4dc6035">Creating Spark Context, Wiring Transformation Chain</a></li>
-<li><a href="#orgdeaca9b">Twitter Data Filter / Parser</a></li>
-<li><a href="#org5302a99">Text Filtering</a></li>
-<li><a href="#org01e514f">Positive and Negative Scoring</a></li>
-<li><a href="#org253f2cf">Joining</a></li>
-<li><a href="#org04484b3">Scoring: Declaring Winning Class</a></li>
-<li><a href="#org03081d4">Reporting the Results</a></li>
+<li><a href="#org3ef6209">Creating Spark Context, Wiring Transformation Chain</a></li>
+<li><a href="#org998bbd2">Twitter Data Filter / Parser</a></li>
+<li><a href="#orge6f85a4">Text Filtering</a></li>
+<li><a href="#org43c67f7">Positive and Negative Scoring</a></li>
+<li><a href="#org0725058">Joining</a></li>
+<li><a href="#org04d2259">Scoring: Declaring Winning Class</a></li>
+<li><a href="#orga669ad0">Reporting the Results</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org7438577">Summary</a></li>
-<li><a href="#orge8dceee">Related Links / References</a></li>
+<li><a href="#org440bd31">Summary</a></li>
+<li><a href="#org2c4967b">Related Links / References</a></li>
 </ul>
 </div>
 </div>
@@ -354,9 +354,9 @@ use in a real-time processing engine.  Today, we will be exploring Apache Spark
 
 </div>
 
-<div id="outline-container-org80169b7" class="outline-2">
-<h2 id="org80169b7"><a id="ID-03647905-6778-4ad2-919d-8878417ad092"></a>About Spark</h2>
-<div class="outline-text-2" id="text-org80169b7">
+<div id="outline-container-orgd1f8932" class="outline-2">
+<h2 id="orgd1f8932"><a id="ID-03647905-6778-4ad2-919d-8878417ad092"></a>About Spark</h2>
+<div class="outline-text-2" id="text-orgd1f8932">
 <p>
 <a href="https://spark.apache.org/">Apache Spark</a> is a general purpose, large-scale processing engine,
 recently fully inducted as an Apache project and is currently under very active
@@ -378,9 +378,9 @@ project provides the ability to continuously compute transformations on data.
 </p>
 </div>
 
-<div id="outline-container-orge640906" class="outline-3">
-<h3 id="orge640906"><a id="ID-b4f8ad97-133e-4ed8-bd7d-eb56c535d0cf"></a>Resilient Distributed Datasets</h3>
-<div class="outline-text-3" id="text-orge640906">
+<div id="outline-container-org2bb8892" class="outline-3">
+<h3 id="org2bb8892"><a id="ID-b4f8ad97-133e-4ed8-bd7d-eb56c535d0cf"></a>Resilient Distributed Datasets</h3>
+<div class="outline-text-3" id="text-org2bb8892">
 <p>
 Apache Spark's primitive type is the Resilient Distributed Dataset (RDD).  All
 transformations, <code>map</code>, <code>join</code>, <code>reduce</code>, etc., in Spark revolve around this
@@ -478,9 +478,9 @@ among the participating machines.
 </div>
 </div>
 
-<div id="outline-container-orgc2ac879" class="outline-3">
-<h3 id="orgc2ac879"><a id="ID-a9efe32f-69b7-414c-923a-85df12cf4575"></a>Discretized Streams</h3>
-<div class="outline-text-3" id="text-orgc2ac879">
+<div id="outline-container-orgd9084dd" class="outline-3">
+<h3 id="orgd9084dd"><a id="ID-a9efe32f-69b7-414c-923a-85df12cf4575"></a>Discretized Streams</h3>
+<div class="outline-text-3" id="text-orgd9084dd">
 <p>
 Moving to Spark Streaming, the primitive is still RDD's.  However, there is
 another type for encapsulating a continuous stream of data: Discretized Streams
@@ -548,9 +548,9 @@ et al.</a>]
 </div>
 </div>
 
-<div id="outline-container-orgab382bd" class="outline-3">
-<h3 id="orgab382bd"><a id="ID-70cb8acc-201e-4f63-a594-9c39987083d0"></a>Hadoop Requirements</h3>
-<div class="outline-text-3" id="text-orgab382bd">
+<div id="outline-container-org0c04741" class="outline-3">
+<h3 id="org0c04741"><a id="ID-70cb8acc-201e-4f63-a594-9c39987083d0"></a>Hadoop Requirements</h3>
+<div class="outline-text-3" id="text-org0c04741">
 <p>
 Technically speaking, Apache Spark does <a href="http://spark.apache.org/faq.html"><i>not</i></a> require Hadoop to
 be fully functional.  In a cluster setting, however, a means of sharing files
@@ -560,9 +560,9 @@ between tasks will need to be facilitated.  This could be accomplished through
 </div>
 </div>
 
-<div id="outline-container-orge9d6470" class="outline-3">
-<h3 id="orge9d6470"><a id="ID-bb6278e4-1d64-4902-84a3-fe4f09d4ba89"></a>Running Spark Applications</h3>
-<div class="outline-text-3" id="text-orge9d6470">
+<div id="outline-container-org4a05398" class="outline-3">
+<h3 id="org4a05398"><a id="ID-bb6278e4-1d64-4902-84a3-fe4f09d4ba89"></a>Running Spark Applications</h3>
+<div class="outline-text-3" id="text-org4a05398">
 <p>
 Apache Spark applications can run in <a href="http://spark.apache.org/docs/latest/spark-standalone.html">standalone mode</a> or
 be managed by <a href="http://hadoop.apache.org/docs/current/hadoop-yarn/hadoop-yarn-site/YARN.html">YARN</a>(<a href="http://spark.apache.org/docs/latest/running-on-yarn.html">Running Spark on YARN</a>),
@@ -575,9 +575,9 @@ cluster.
 </div>
 </div>
 
-<div id="outline-container-org226341a" class="outline-3">
-<h3 id="org226341a"><a id="ID-b42be48e-158e-4de0-91a7-e246c394b75d"></a>Language Support</h3>
-<div class="outline-text-3" id="text-org226341a">
+<div id="outline-container-org2084235" class="outline-3">
+<h3 id="org2084235"><a id="ID-b42be48e-158e-4de0-91a7-e246c394b75d"></a>Language Support</h3>
+<div class="outline-text-3" id="text-org2084235">
 <p>
 Currently, Apache Spark supports the <a href="http://www.scala-lang.org/">Scala</a>, <a href="https://en.wikipedia.org/wiki/Java_(programming_language)">Java</a>, and
 <a href="https://www.python.org/">Python</a> programming languages.  Though, this post will only be
@@ -586,9 +586,9 @@ discussing examples in <a href="https://en.wikipedia.org/wiki/Java_(programming_
 </div>
 </div>
 
-<div id="outline-container-orge349cf6" class="outline-3">
-<h3 id="orge349cf6"><a id="ID-2c81e2c8-97f8-4c5a-9838-d549c2e9bce2"></a>Initial Thoughts</h3>
-<div class="outline-text-3" id="text-orge349cf6">
+<div id="outline-container-orgb496f96" class="outline-3">
+<h3 id="orgb496f96"><a id="ID-2c81e2c8-97f8-4c5a-9838-d549c2e9bce2"></a>Initial Thoughts</h3>
+<div class="outline-text-3" id="text-orgb496f96">
 <p>
 Getting away from the idea of directed acyclic graphs (DAG's) is &#x2013; may be &#x2013;
 both a bit of a leap and a benefit.  Although it is perfectly acceptable to
@@ -631,9 +631,9 @@ caused more problems than solved.
 </div>
 </div>
 
-<div id="outline-container-org606a0fb" class="outline-2">
-<h2 id="org606a0fb"><a id="ID-61da885f-122b-4537-8fd5-3fd2aea3634e"></a>Test Project: Twitter Stream Sentiment Analysis</h2>
-<div class="outline-text-2" id="text-org606a0fb">
+<div id="outline-container-org193870a" class="outline-2">
+<h2 id="org193870a"><a id="ID-61da885f-122b-4537-8fd5-3fd2aea3634e"></a>Test Project: Twitter Stream Sentiment Analysis</h2>
+<div class="outline-text-2" id="text-org193870a">
 <p>
 To really test Spark (Streaming), a Twitter Sentiment Analysis project was
 developed.  It's almost a direct port of the <a href="https://github.com/zdata-inc/StormSampleProject">Storm
@@ -648,8 +648,8 @@ to a simple NodeJS application.
 </p>
 </div>
 
-<div id="outline-container-org56a3125" class="outline-3">
-<h3 id="setup"><a id="org56a3125"></a><a id="ID-ade07b91-1029-4193-96fe-e13b78d1c94d"></a>Setup</h3>
+<div id="outline-container-org6914ae0" class="outline-3">
+<h3 id="setup"><a id="org6914ae0"></a><a id="ID-ade07b91-1029-4193-96fe-e13b78d1c94d"></a>Setup</h3>
 <div class="outline-text-3" id="text-setup">
 <p>
 The setup is the same as
@@ -664,9 +664,9 @@ application for reporting purposes.
 </div>
 </div>
 
-<div id="outline-container-orgb9251ff" class="outline-3">
-<h3 id="orgb9251ff"><a id="ID-b6918587-24dc-422e-844f-2a63e8c42c77"></a>Application Overview</h3>
-<div class="outline-text-3" id="text-orgb9251ff">
+<div id="outline-container-orgf1d3b42" class="outline-3">
+<h3 id="orgf1d3b42"><a id="ID-b6918587-24dc-422e-844f-2a63e8c42c77"></a>Application Overview</h3>
+<div class="outline-text-3" id="text-orgf1d3b42">
 <p>
 This project follows a very similar process structure as the Storm Topology
 from last time.
@@ -690,8 +690,8 @@ system.
 </p>
 </div>
 
-<div id="outline-container-org2f80277" class="outline-4">
-<h4 id="kafka-receiver-stream"><a id="org2f80277"></a><a id="ID-07fcc612-127d-400a-9f9e-f4eb63981a56"></a>Kafka Receiver Stream</h4>
+<div id="outline-container-org27b987c" class="outline-4">
+<h4 id="kafka-receiver-stream"><a id="org27b987c"></a><a id="ID-07fcc612-127d-400a-9f9e-f4eb63981a56"></a>Kafka Receiver Stream</h4>
 <div class="outline-text-4" id="text-kafka-receiver-stream">
 <p>
 The data processed is received from a Kafka Stream and is implemented
@@ -703,7 +703,7 @@ broker(s), consuming messages from the given set of topics.
 </div>
 
 <ul class="org-ul">
-<li><a id="stripping-kafka-message-ids"></a><a id="orge6536a9"></a><a id="ID-f31e4590-46a7-44cc-852f-b722a24286ff"></a>Stripping Kafka Message IDs<br />
+<li><a id="stripping-kafka-message-ids"></a><a id="org264ca0b"></a><a id="ID-f31e4590-46a7-44cc-852f-b722a24286ff"></a>Stripping Kafka Message IDs<br />
 <div class="outline-text-5" id="text-stripping-kafka-message-ids">
 <p>
 It turns out the messages from Kafka are retuned as tuples, more
@@ -716,8 +716,8 @@ passed down the pipeline.
 </ul>
 </div>
 
-<div id="outline-container-orge99f920" class="outline-4">
-<h4 id="twitter-data-json-parsing"><a id="orge99f920"></a><a id="ID-72c2e328-c683-4318-ac30-865c55cc697d"></a>Twitter Data JSON Parsing</h4>
+<div id="outline-container-orgeb00a71" class="outline-4">
+<h4 id="twitter-data-json-parsing"><a id="orgeb00a71"></a><a id="ID-72c2e328-c683-4318-ac30-865c55cc697d"></a>Twitter Data JSON Parsing</h4>
 <div class="outline-text-4" id="text-twitter-data-json-parsing">
 <p>
 As was the case last time, the important parts (tweet ID, tweet text,
@@ -728,8 +728,8 @@ at this stage.
 </div>
 </div>
 
-<div id="outline-container-org3f97b60" class="outline-4">
-<h4 id="filtering-and-stemming"><a id="org3f97b60"></a><a id="ID-b9859559-a38d-4804-b401-671f9f442085"></a>Filtering and Stemming</h4>
+<div id="outline-container-org1118251" class="outline-4">
+<h4 id="filtering-and-stemming"><a id="org1118251"></a><a id="ID-b9859559-a38d-4804-b401-671f9f442085"></a>Filtering and Stemming</h4>
 <div class="outline-text-4" id="text-filtering-and-stemming">
 <p>
 Many tweets contain messy or otherwise unnecessary characters and
@@ -741,8 +741,8 @@ filtered.
 </div>
 </div>
 
-<div id="outline-container-orgee61a24" class="outline-4">
-<h4 id="classifiers"><a id="orgee61a24"></a><a id="ID-cf8c297f-47c0-43e8-a7a9-87ed89abf51a"></a>Classifiers</h4>
+<div id="outline-container-orgc532916" class="outline-4">
+<h4 id="classifiers"><a id="orgc532916"></a><a id="ID-cf8c297f-47c0-43e8-a7a9-87ed89abf51a"></a>Classifiers</h4>
 <div class="outline-text-4" id="text-classifiers">
 <p>
 Both the Positive classifier and the Negative classifier are in separate
@@ -752,8 +752,8 @@ Both the Positive classifier and the Negative classifier are in separate
 </div>
 </div>
 
-<div id="outline-container-org48acde0" class="outline-4">
-<h4 id="joining-and-scoring"><a id="org48acde0"></a><a id="ID-cf331690-0ff6-47f4-8799-bd050fb179e0"></a>Joining and Scoring</h4>
+<div id="outline-container-org089131b" class="outline-4">
+<h4 id="joining-and-scoring"><a id="org089131b"></a><a id="ID-cf331690-0ff6-47f4-8799-bd050fb179e0"></a>Joining and Scoring</h4>
 <div class="outline-text-4" id="text-joining-and-scoring">
 <p>
 Because the classifiers are done separately and a join is contrived, the
@@ -763,8 +763,8 @@ a winner.  It turns out this is quite trivial to do in Spark.
 </div>
 </div>
 
-<div id="outline-container-org07b3454" class="outline-4">
-<h4 id="reporting-hdfs-and-http-post"><a id="org07b3454"></a><a id="ID-baad2be3-c3f6-47e4-88e6-b1711d9a6158"></a>Reporting: HDFS and HTTP POST</h4>
+<div id="outline-container-orgb874e29" class="outline-4">
+<h4 id="reporting-hdfs-and-http-post"><a id="orgb874e29"></a><a id="ID-baad2be3-c3f6-47e4-88e6-b1711d9a6158"></a>Reporting: HDFS and HTTP POST</h4>
 <div class="outline-text-4" id="text-reporting-hdfs-and-http-post">
 <p>
 Finally, once the tweets are joined and scored, the scores need to be
@@ -781,9 +781,9 @@ inducing operations that don't necessarily transform the data.
 </div>
 </div>
 
-<div id="outline-container-org5369eb9" class="outline-3">
-<h3 id="org5369eb9"><a id="ID-9ae134c1-87b9-480e-a10c-b1f156cb1cba"></a>Implementing the Kafka Producer</h3>
-<div class="outline-text-3" id="text-org5369eb9">
+<div id="outline-container-orgcd406ec" class="outline-3">
+<h3 id="orgcd406ec"><a id="ID-9ae134c1-87b9-480e-a10c-b1f156cb1cba"></a>Implementing the Kafka Producer</h3>
+<div class="outline-text-3" id="text-orgcd406ec">
 <p>
 See the <a href="https://kennyballou.com/blog/2014/07/real-time-streaming-storm-and-kafka">post</a> from last time for the details of the
 Kafka producer; this has not changed.
@@ -791,9 +791,9 @@ Kafka producer; this has not changed.
 </div>
 </div>
 
-<div id="outline-container-orgdd456ee" class="outline-3">
-<h3 id="orgdd456ee"><a id="ID-af85b05f-05ab-48e9-96fa-803af482692c"></a>Implementing the Spark Streaming Application</h3>
-<div class="outline-text-3" id="text-orgdd456ee">
+<div id="outline-container-org82454d7" class="outline-3">
+<h3 id="org82454d7"><a id="ID-af85b05f-05ab-48e9-96fa-803af482692c"></a>Implementing the Spark Streaming Application</h3>
+<div class="outline-text-3" id="text-org82454d7">
 <p>
 Diving into the code, here are some of the primary aspects of this project.
 The full source of this test application can be found on
@@ -801,9 +801,9 @@ The full source of this test application can be found on
 </p>
 </div>
 
-<div id="outline-container-org4dc6035" class="outline-4">
-<h4 id="org4dc6035"><a id="ID-f177b8ef-777b-4646-bd3b-1cef8f120ff2"></a>Creating Spark Context, Wiring Transformation Chain</h4>
-<div class="outline-text-4" id="text-org4dc6035">
+<div id="outline-container-org3ef6209" class="outline-4">
+<h4 id="org3ef6209"><a id="ID-f177b8ef-777b-4646-bd3b-1cef8f120ff2"></a>Creating Spark Context, Wiring Transformation Chain</h4>
+<div class="outline-text-4" id="text-org3ef6209">
 <p>
 The Spark context, the data source, and the transformations need to be defined.
 Proceeding, the context needs to be started.  This is all accomplished with the
@@ -900,9 +900,9 @@ defined in their respective files.
 </div>
 </div>
 
-<div id="outline-container-orgdeaca9b" class="outline-4">
-<h4 id="orgdeaca9b"><a id="ID-31adb1aa-8b4c-402d-8004-5523a097b582"></a>Twitter Data Filter / Parser</h4>
-<div class="outline-text-4" id="text-orgdeaca9b">
+<div id="outline-container-org998bbd2" class="outline-4">
+<h4 id="org998bbd2"><a id="ID-31adb1aa-8b4c-402d-8004-5523a097b582"></a>Twitter Data Filter / Parser</h4>
+<div class="outline-text-4" id="text-org998bbd2">
 <p>
 Parsing Twitter JSON data is one of the first transformations and is
 accomplished with help of the <a href="https://github.com/FasterXML/jackson-databind">JacksonXML Databind</a>
@@ -954,9 +954,9 @@ filtered out.  Thankfully, Spark provides a simple way to accomplish this:
 </div>
 </div>
 
-<div id="outline-container-org5302a99" class="outline-4">
-<h4 id="org5302a99"><a id="ID-22771161-f84d-4383-a980-8100ab101495"></a>Text Filtering</h4>
-<div class="outline-text-4" id="text-org5302a99">
+<div id="outline-container-orge6f85a4" class="outline-4">
+<h4 id="orge6f85a4"><a id="ID-22771161-f84d-4383-a980-8100ab101495"></a>Text Filtering</h4>
+<div class="outline-text-4" id="text-orge6f85a4">
 <p>
 As mentioned before, punctuation and other symbols are simply discarded as they
 provide little to no benefit to the classifiers:
@@ -986,9 +986,9 @@ Similarly, common words should be discarded as well:
 </div>
 </div>
 
-<div id="outline-container-org01e514f" class="outline-4">
-<h4 id="org01e514f"><a id="ID-15e88c7c-d227-4a25-acbd-5b400509cf4f"></a>Positive and Negative Scoring</h4>
-<div class="outline-text-4" id="text-org01e514f">
+<div id="outline-container-org43c67f7" class="outline-4">
+<h4 id="org43c67f7"><a id="ID-15e88c7c-d227-4a25-acbd-5b400509cf4f"></a>Positive and Negative Scoring</h4>
+<div class="outline-text-4" id="text-org43c67f7">
 <p>
 Each classifier is defined in its own class.  Both classifiers are <i>very</i>
 similar in definition.
@@ -1046,9 +1046,9 @@ computed, then the next, without ever needing to join the two together.
 </div>
 </div>
 
-<div id="outline-container-org253f2cf" class="outline-4">
-<h4 id="org253f2cf"><a id="ID-67afc127-068d-4493-a682-99f257366e42"></a>Joining</h4>
-<div class="outline-text-4" id="text-org253f2cf">
+<div id="outline-container-org0725058" class="outline-4">
+<h4 id="org0725058"><a id="ID-67afc127-068d-4493-a682-99f257366e42"></a>Joining</h4>
+<div class="outline-text-4" id="text-org0725058">
 <p>
 It turns out, joining in Spark is very easy to accomplish.  So easy in fact, it
 can be handled without virtually <i>any</i> code:
@@ -1080,9 +1080,9 @@ to a 4 element tuple:
 </div>
 </div>
 
-<div id="outline-container-org04484b3" class="outline-4">
-<h4 id="org04484b3"><a id="ID-5e3dc2a2-7dda-4816-a3e3-e2901d4f25a2"></a>Scoring: Declaring Winning Class</h4>
-<div class="outline-text-4" id="text-org04484b3">
+<div id="outline-container-org04d2259" class="outline-4">
+<h4 id="org04d2259"><a id="ID-5e3dc2a2-7dda-4816-a3e3-e2901d4f25a2"></a>Scoring: Declaring Winning Class</h4>
+<div class="outline-text-4" id="text-org04d2259">
 <p>
 Declaring the winning class is a matter of a simple map, comparing each class's
 score and take the greatest:
@@ -1110,9 +1110,9 @@ very straightforward.
 </div>
 </div>
 
-<div id="outline-container-org03081d4" class="outline-4">
-<h4 id="org03081d4"><a id="ID-2b6f0270-795c-4b0e-8a4c-eb0db801f4b1"></a>Reporting the Results</h4>
-<div class="outline-text-4" id="text-org03081d4">
+<div id="outline-container-orga669ad0" class="outline-4">
+<h4 id="orga669ad0"><a id="ID-2b6f0270-795c-4b0e-8a4c-eb0db801f4b1"></a>Reporting the Results</h4>
+<div class="outline-text-4" id="text-orga669ad0">
 <p>
 Finally, the pipeline completes with writing the results to HDFS:
 </p>
@@ -1192,9 +1192,9 @@ the Spark programming style.
 </div>
 </div>
 
-<div id="outline-container-org7438577" class="outline-2">
-<h2 id="org7438577"><a id="ID-2a7fb8c6-2185-4a8b-9406-d6c828885d5b"></a>Summary</h2>
-<div class="outline-text-2" id="text-org7438577">
+<div id="outline-container-org440bd31" class="outline-2">
+<h2 id="org440bd31"><a id="ID-2a7fb8c6-2185-4a8b-9406-d6c828885d5b"></a>Summary</h2>
+<div class="outline-text-2" id="text-org440bd31">
 <p>
 Apache Spark, in combination with Apache Kafka, has some amazing potential.
 And not only in the Streaming context, but as a drop-in replacement for
@@ -1209,9 +1209,9 @@ Spark and Apache Storm.
 </div>
 </div>
 
-<div id="outline-container-orge8dceee" class="outline-2">
-<h2 id="orge8dceee"><a id="ID-c7ca743a-8366-4870-91c3-7c90f13160f2"></a>Related Links / References</h2>
-<div class="outline-text-2" id="text-orge8dceee">
+<div id="outline-container-org2c4967b" class="outline-2">
+<h2 id="org2c4967b"><a id="ID-c7ca743a-8366-4870-91c3-7c90f13160f2"></a>Related Links / References</h2>
+<div class="outline-text-2" id="text-org2c4967b">
 <ul class="org-ul">
 <li><a href="https://spark.apache.org/">Apache Spark</a></li>
 
