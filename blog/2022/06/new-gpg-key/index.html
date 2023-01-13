@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-06-30 Thu 05:10 -->
+<!-- 2023-01-13 Fri 23:47 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>GPG Key Transition</title>
@@ -161,6 +161,19 @@
   .footdef  { margin-bottom: 1em; }
   .figure { padding: 1em; }
   .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
   .inlinetask {
     padding: 10px;
     border: 2px solid gray;
@@ -203,7 +216,7 @@
 @licstart  The following is the entire license notice for the
 JavaScript code in this tag.
 
-Copyright (C) 2012-2019 Free Software Foundation, Inc.
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
 
 The JavaScript code in this tag is free software: you can
 redistribute it and/or modify it under the terms of the GNU
@@ -300,8 +313,8 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgae3a665">Verification</a></li>
-<li><a href="#org6f95035">Differences from Old Setup</a></li>
+<li><a href="#org7414824">Verification</a></li>
+<li><a href="#orgedb6094">Differences from Old Setup</a></li>
 </ul>
 </div>
 </div>
@@ -315,9 +328,9 @@ use the new key.
 
 </div>
 
-<div id="outline-container-orgae3a665" class="outline-2">
-<h2 id="orgae3a665"><a id="ID-ce2f0821-7be8-4c81-8bda-235fb6c8b958"></a>Verification</h2>
-<div class="outline-text-2" id="text-orgae3a665">
+<div id="outline-container-org7414824" class="outline-2">
+<h2 id="org7414824">Verification</h2>
+<div class="outline-text-2" id="text-org7414824">
 <p>
 This document is signed using the following command:
 </p>
@@ -373,9 +386,9 @@ gpg --verify index.org.asc
 </div>
 </div>
 
-<div id="outline-container-org6f95035" class="outline-2">
-<h2 id="org6f95035"><a id="ID-03d947d0-c70a-4fea-b700-f2041ed2f1f1"></a>Differences from Old Setup</h2>
-<div class="outline-text-2" id="text-org6f95035">
+<div id="outline-container-orgedb6094" class="outline-2">
+<h2 id="orgedb6094">Differences from Old Setup</h2>
+<div class="outline-text-2" id="text-orgedb6094">
 <p>
 Instead of using RSA keys, I have switched to using Elliptic Curve (ed25519)
 keys which should have around the same strength of RSA 4096 keys.  Furthermore,

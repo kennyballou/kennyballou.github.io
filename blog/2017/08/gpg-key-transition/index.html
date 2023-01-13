@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-06-30 Thu 05:10 -->
+<!-- 2023-01-13 Fri 23:47 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>GPG Key Transition</title>
@@ -163,6 +163,19 @@
   .footdef  { margin-bottom: 1em; }
   .figure { padding: 1em; }
   .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
   .inlinetask {
     padding: 10px;
     border: 2px solid gray;
@@ -205,7 +218,7 @@
 @licstart  The following is the entire license notice for the
 JavaScript code in this tag.
 
-Copyright (C) 2012-2019 Free Software Foundation, Inc.
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
 
 The JavaScript code in this tag is free software: you can
 redistribute it and/or modify it under the terms of the GNU
@@ -359,8 +372,8 @@ as well, provided that your signing policy permits that without
 re-authenticating me.
 </p>
 
-<div id="outline-container-org0a52f81" class="outline-2">
-<h2 id="key-verification"><a id="org0a52f81"></a><a id="ID-93519da3-32a4-4df8-a912-aa42a393c0f3"></a>Key Verification</h2>
+<div id="outline-container-org296acdf" class="outline-2">
+<h2 id="key-verification">Key Verification</h2>
 <div class="outline-text-2" id="text-key-verification">
 <p>
 Specifically, the old keys were:
@@ -462,8 +475,8 @@ gpg --armor --export 0xB0CAA28A02958308
 </div>
 </div>
 
-<div id="outline-container-orgc3cd119" class="outline-2">
-<h2 id="new-gpg-setup"><a id="orgc3cd119"></a><a id="ID-154ce9aa-58a4-4e0f-8569-47d18cd7ac00"></a>New GPG Setup</h2>
+<div id="outline-container-org80a4568" class="outline-2">
+<h2 id="new-gpg-setup">New GPG Setup</h2>
 <div class="outline-text-2" id="text-new-gpg-setup">
 <p>
 The new key/transition is brought about by a number of months of thinking about
@@ -481,8 +494,8 @@ knowledge.  To that end, I will, briefly, describe how my current setup works.
 </p>
 </div>
 
-<div id="outline-container-org1d7ad26" class="outline-3">
-<h3 id="key-generation-and-storage"><a id="org1d7ad26"></a><a id="ID-e2113a22-983d-461a-92a7-1a941bcea676"></a>Key Generation and Storage</h3>
+<div id="outline-container-org0f8ae98" class="outline-3">
+<h3 id="key-generation-and-storage">Key Generation and Storage</h3>
 <div class="outline-text-3" id="text-key-generation-and-storage">
 <p>
 This new setup follows the basic "master-key with sub-keys" approach.  I have
@@ -511,8 +524,8 @@ as many weaknesses.
 </div>
 </div>
 
-<div id="outline-container-orge992fd7" class="outline-3">
-<h3 id="multiple-identities"><a id="orge992fd7"></a><a id="ID-5715c163-d63b-4db2-a23c-fd900e03bb6f"></a>Multiple Identities</h3>
+<div id="outline-container-org18d2f6e" class="outline-3">
+<h3 id="multiple-identities">Multiple Identities</h3>
 <div class="outline-text-3" id="text-multiple-identities">
 <p>
 <a href="https://gnupg.org/">GPG</a> keys can have multiple UID's associated with them, eliminating
@@ -536,8 +549,8 @@ personal devices.
 </div>
 </div>
 
-<div id="outline-container-org8ebe553" class="outline-3">
-<h3 id="backups"><a id="org8ebe553"></a><a id="ID-3bf9cc35-a412-4429-ae32-c501e774d3d3"></a>Backups</h3>
+<div id="outline-container-orge583d24" class="outline-3">
+<h3 id="backups">Backups</h3>
 <div class="outline-text-3" id="text-backups">
 <p>
 I've created numerous copies of the encrypted USB drive, and they will be
@@ -554,8 +567,8 @@ printouts using <a href="http://www.jabberwocky.com/software/paperkey/">paperkey
 </div>
 </div>
 
-<div id="outline-container-orgfcbff4e" class="outline-3">
-<h3 id="future-work"><a id="orgfcbff4e"></a><a id="ID-ad339190-1899-465c-aa29-50d0902a7afc"></a>Future Work</h3>
+<div id="outline-container-orgc784780" class="outline-3">
+<h3 id="future-work">Future Work</h3>
 <div class="outline-text-3" id="text-future-work">
 <p>
 One aspect of the system I would like to improve at some point is that instead

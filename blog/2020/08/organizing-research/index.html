@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-06-30 Thu 05:10 -->
+<!-- 2023-01-13 Fri 23:47 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Organizing Research</title>
@@ -163,6 +163,19 @@
   .footdef  { margin-bottom: 1em; }
   .figure { padding: 1em; }
   .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
   .inlinetask {
     padding: 10px;
     border: 2px solid gray;
@@ -205,7 +218,7 @@
 @licstart  The following is the entire license notice for the
 JavaScript code in this tag.
 
-Copyright (C) 2012-2019 Free Software Foundation, Inc.
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
 
 The JavaScript code in this tag is free software: you can
 redistribute it and/or modify it under the terms of the GNU
@@ -302,20 +315,20 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org16690e7">Goals, Requirements, and Motivation</a>
+<li><a href="#org872bc08">Goals, Requirements, and Motivation</a>
 <ul>
-<li><a href="#org0b0617c">Meaningful Filenames</a></li>
-<li><a href="#org69e31e1">DOI or Referencing Material for Cross Referencing and Linking</a></li>
+<li><a href="#orgd598fb0">Meaningful Filenames</a></li>
+<li><a href="#org04fe71b">DOI or Referencing Material for Cross Referencing and Linking</a></li>
 </ul>
 </li>
-<li><a href="#org3f6a76e">Proposals</a>
+<li><a href="#org3c27d36">Proposals</a>
 <ul>
-<li><a href="#org3d78bdb">Zotero</a></li>
-<li><a href="#org919b2ef">Org Mode with Org Attach</a></li>
-<li><a href="#org30130be">Org-ref</a></li>
+<li><a href="#org37de733">Zotero</a></li>
+<li><a href="#org0d0c39e">Org Mode with Org Attach</a></li>
+<li><a href="#org02f90fd">Org-ref</a></li>
 </ul>
 </li>
-<li><a href="#orgcad4d63">Discussion</a></li>
+<li><a href="#orgd7d8c64">Discussion</a></li>
 </ul>
 </div>
 </div>
@@ -347,9 +360,9 @@ I have been debating a few approaches and would like to describe them and,
 ideally, exposit my way towards a final solution.
 </p>
 
-<div id="outline-container-org16690e7" class="outline-2">
-<h2 id="org16690e7"><a id="ID-a0b48e68-a928-4484-9774-a05739af9701"></a>Goals, Requirements, and Motivation</h2>
-<div class="outline-text-2" id="text-org16690e7">
+<div id="outline-container-org872bc08" class="outline-2">
+<h2 id="org872bc08">Goals, Requirements, and Motivation</h2>
+<div class="outline-text-2" id="text-org872bc08">
 <p>
 There are several goals and basic requirements of any organization system, here
 is no exception.  While these goals may be personal, knowing the motivation
@@ -359,9 +372,9 @@ sense.
 </p>
 </div>
 
-<div id="outline-container-org0b0617c" class="outline-3">
-<h3 id="org0b0617c"><a id="ID-c903eb12-b245-4d71-a1a5-7d007baf7c91"></a>Meaningful Filenames</h3>
-<div class="outline-text-3" id="text-org0b0617c">
+<div id="outline-container-orgd598fb0" class="outline-3">
+<h3 id="orgd598fb0">Meaningful Filenames</h3>
+<div class="outline-text-3" id="text-orgd598fb0">
 <p>
 The underlying structure and naming of files should be agnostic to any specific
 application that "manages" them.  That is, the filenames and overall directory
@@ -374,9 +387,9 @@ in the filesystem itself.
 </div>
 </div>
 
-<div id="outline-container-org69e31e1" class="outline-3">
-<h3 id="org69e31e1"><a id="ID-70e28d03-fb59-414d-adf6-127e943f630c"></a>DOI or Referencing Material for Cross Referencing and Linking</h3>
-<div class="outline-text-3" id="text-org69e31e1">
+<div id="outline-container-org04fe71b" class="outline-3">
+<h3 id="org04fe71b">DOI or Referencing Material for Cross Referencing and Linking</h3>
+<div class="outline-text-3" id="text-org04fe71b">
 <p>
 The organization system will need access to the <a href="https://www.doi.org">digital object identifier (DOI)</a>
 of the paper as it may be needed for later queries such as citations and
@@ -399,9 +412,9 @@ list of citations and derivative work.
 </div>
 </div>
 
-<div id="outline-container-org3f6a76e" class="outline-2">
-<h2 id="org3f6a76e"><a id="ID-6e2ab567-b9c3-4ca8-9f17-92d2dd34481e"></a>Proposals</h2>
-<div class="outline-text-2" id="text-org3f6a76e">
+<div id="outline-container-org3c27d36" class="outline-2">
+<h2 id="org3c27d36">Proposals</h2>
+<div class="outline-text-2" id="text-org3c27d36">
 <p>
 There are several possibilities worth investigating.
 </p>
@@ -419,9 +432,9 @@ retroactively organize everything.
 </p>
 </div>
 
-<div id="outline-container-org3d78bdb" class="outline-3">
-<h3 id="org3d78bdb"><a id="ID-26403ea3-2ed5-4f2c-8522-a924a56d769b"></a>Zotero</h3>
-<div class="outline-text-3" id="text-org3d78bdb">
+<div id="outline-container-org37de733" class="outline-3">
+<h3 id="org37de733">Zotero</h3>
+<div class="outline-text-3" id="text-org37de733">
 <p>
 <a href="https://www.zotero.org/">Zotero</a> is a free and open source platform for managing research.  It's
 available in a desktop application and a online web application.  I've only
@@ -446,9 +459,9 @@ pulling references for a new manuscript each time does not seem pleasant.
 </div>
 </div>
 
-<div id="outline-container-org919b2ef" class="outline-3">
-<h3 id="org919b2ef"><a id="ID-800392d0-bc65-4b2f-8f51-19df9cf63fa8"></a>Org Mode with Org Attach</h3>
-<div class="outline-text-3" id="text-org919b2ef">
+<div id="outline-container-org0d0c39e" class="outline-3">
+<h3 id="org0d0c39e">Org Mode with Org Attach</h3>
+<div class="outline-text-3" id="text-org0d0c39e">
 <p>
 Another approach would be to use <a href="https://orgmode.org">Org mode</a>.  Specifically, use <a href="https://orgmode.org">Org mode</a> as an
 "index" into the files, while maintaining the filesystem structure desired as
@@ -491,9 +504,9 @@ further exploration is necessary.
 </div>
 </div>
 
-<div id="outline-container-org30130be" class="outline-3">
-<h3 id="org30130be"><a id="ID-6977dc3e-a6c9-4cea-bbb5-eea9a5a2f4e0"></a>Org-ref</h3>
-<div class="outline-text-3" id="text-org30130be">
+<div id="outline-container-org02f90fd" class="outline-3">
+<h3 id="org02f90fd">Org-ref</h3>
+<div class="outline-text-3" id="text-org02f90fd">
 <p>
 <a href="https://engineering.cmu.edu/directory/bios/kitchin-john.html">John Kitchin of CMU</a> created <a href="https://github.com/jkitchin/org-ref">Org-Ref</a>, a reference system for <a href="https://orgmode.org">Org Mode</a> that
 better integrates <a href="http://www.bibtex.org/">BibTeX</a> citations than <a href="https://orgmode.org/manual/Hyperlinks.html">Org Links</a>.  Really, <a href="https://github.com/jkitchin/org-ref">Org-Ref</a> and the
@@ -517,9 +530,9 @@ nature of <a href="https://github.com/jkitchin/org-ref">Org-Ref</a>, it certainl
 </div>
 </div>
 
-<div id="outline-container-orgcad4d63" class="outline-2">
-<h2 id="orgcad4d63"><a id="ID-d27b3a9b-70ee-4954-aa69-7685b6d35190"></a>Discussion</h2>
-<div class="outline-text-2" id="text-orgcad4d63">
+<div id="outline-container-orgd7d8c64" class="outline-2">
+<h2 id="orgd7d8c64">Discussion</h2>
+<div class="outline-text-2" id="text-orgd7d8c64">
 <p>
 I'm still debating these different solutions.  I don't want to spend a ton of
 time optimizing this as there are a lot of other tasks that are more important

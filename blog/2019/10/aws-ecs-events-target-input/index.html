@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-06-30 Thu 05:10 -->
+<!-- 2023-01-13 Fri 23:47 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>AWS ECS Container Overrides for Events Targets</title>
@@ -163,6 +163,19 @@
   .footdef  { margin-bottom: 1em; }
   .figure { padding: 1em; }
   .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
   .inlinetask {
     padding: 10px;
     border: 2px solid gray;
@@ -205,7 +218,7 @@
 @licstart  The following is the entire license notice for the
 JavaScript code in this tag.
 
-Copyright (C) 2012-2019 Free Software Foundation, Inc.
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
 
 The JavaScript code in this tag is free software: you can
 redistribute it and/or modify it under the terms of the GNU
@@ -302,10 +315,10 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org8f123ac">Problem</a></li>
-<li><a href="#orgd8743a7">Exploring the Problem</a></li>
-<li><a href="#org298dd47">Solution</a></li>
-<li><a href="#org837274c">Conclusion</a></li>
+<li><a href="#orgad9e18a">Problem</a></li>
+<li><a href="#org68e0916">Exploring the Problem</a></li>
+<li><a href="#orgb96ec73">Solution</a></li>
+<li><a href="#orge29c60f">Conclusion</a></li>
 </ul>
 </div>
 </div>
@@ -334,9 +347,9 @@ When the documentation fails you, use the source.
 What to do when there isn't source (code) available?
 </p>
 
-<div id="outline-container-org8f123ac" class="outline-2">
-<h2 id="org8f123ac"><a id="ID-613963b0-e19f-4d55-bc8c-59a0b3c59810"></a>Problem</h2>
-<div class="outline-text-2" id="text-org8f123ac">
+<div id="outline-container-orgad9e18a" class="outline-2">
+<h2 id="orgad9e18a">Problem</h2>
+<div class="outline-text-2" id="text-orgad9e18a">
 <p>
 While attempting to make some infrastucture changes, I wanted to create a
 scheduled <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/WhatIsCloudWatchEvents.html">event</a> to target a specific
@@ -397,9 +410,9 @@ happens.
 </div>
 </div>
 
-<div id="outline-container-orgd8743a7" class="outline-2">
-<h2 id="orgd8743a7"><a id="ID-27fa298b-81a4-42c3-bae6-fc23c6fa5e5f"></a>Exploring the Problem</h2>
-<div class="outline-text-2" id="text-orgd8743a7">
+<div id="outline-container-org68e0916" class="outline-2">
+<h2 id="org68e0916">Exploring the Problem</h2>
+<div class="outline-text-2" id="text-org68e0916">
 <blockquote>
 <p>
 Otherwising shooting in the dark&#x2026;
@@ -476,9 +489,9 @@ hand.
 </div>
 </div>
 
-<div id="outline-container-org298dd47" class="outline-2">
-<h2 id="org298dd47"><a id="ID-1e9dd703-e4f1-4c58-931a-f1104ebb0da3"></a>Solution</h2>
-<div class="outline-text-2" id="text-org298dd47">
+<div id="outline-container-orgb96ec73" class="outline-2">
+<h2 id="orgb96ec73">Solution</h2>
+<div class="outline-text-2" id="text-orgb96ec73">
 <p>
 However, the "Input" key is a string encoded JSON structure, so the full
 solution is the following snippet:
@@ -516,9 +529,9 @@ This structure may seem familiar.  This structure is documented in the
 </div>
 </div>
 
-<div id="outline-container-org837274c" class="outline-2">
-<h2 id="org837274c"><a id="ID-0f66626c-a07c-4909-9057-48f9b08728b6"></a>Conclusion</h2>
-<div class="outline-text-2" id="text-org837274c">
+<div id="outline-container-orge29c60f" class="outline-2">
+<h2 id="orge29c60f">Conclusion</h2>
+<div class="outline-text-2" id="text-orge29c60f">
 <p>
 The connection between "Input" is a JSON encoded string and pass the
 "containerOverrides" structure is missing or not obvious at best.  Hopefully,
