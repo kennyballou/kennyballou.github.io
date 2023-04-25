@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-04-25 Tue 05:31 -->
+<!-- 2023-04-25 Tue 05:37 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Org-Mode Publishing Static Site Generation</title>
@@ -313,21 +313,21 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org7c9d3b9">Motivation</a></li>
-<li><a href="#orgb71a7c6">Some Emacs Lisp</a>
+<li><a href="#orge61eeaf">Motivation</a></li>
+<li><a href="#org6a0e89a">Some Emacs Lisp</a>
 <ul>
-<li><a href="#org9baf741">Preamble and Postamble</a></li>
-<li><a href="#orgd9e7edc">Simple CSS Preamble + Postamble</a></li>
-<li><a href="#org95258d1"><code>ox-rss</code></a></li>
+<li><a href="#org5cfd430">Preamble and Postamble</a></li>
+<li><a href="#orgd13f339">Simple CSS Preamble + Postamble</a></li>
+<li><a href="#org6cb0814"><code>ox-rss</code></a></li>
 </ul>
 </li>
-<li><a href="#orge8a71e6">Building and Publishing</a>
+<li><a href="#org220e20c">Building and Publishing</a>
 <ul>
-<li><a href="#orgd8f7fa4">Make</a></li>
-<li><a href="#org1693d06">GitHub Actions</a></li>
+<li><a href="#org32a7bcd">Make</a></li>
+<li><a href="#orgbe6dedb">GitHub Actions</a></li>
 </ul>
 </li>
-<li><a href="#org96271d6">Parting Thoughts</a></li>
+<li><a href="#orgdd61326">Parting Thoughts</a></li>
 </ul>
 </div>
 </div>
@@ -347,9 +347,9 @@ blogging with only <a href="https://orgmode.org/">Org Mode</a>.  I focus mainly 
 work here.  But first, motivation.  Why change.
 </p>
 
-<div id="outline-container-org7c9d3b9" class="outline-2">
-<h2 id="org7c9d3b9">Motivation</h2>
-<div class="outline-text-2" id="text-org7c9d3b9">
+<div id="outline-container-orge61eeaf" class="outline-2">
+<h2 id="orge61eeaf">Motivation</h2>
+<div class="outline-text-2" id="text-orge61eeaf">
 <p>
 I wanted to transition the blog into a more general purpose site and I felt my
 hand-rolled generation would not be adequate.  I did not want to go back to
@@ -370,18 +370,18 @@ broken.  <a href="https://orgmode.org/manual/Publishing.html">Publishing</a> doe
 </div>
 </div>
 
-<div id="outline-container-orgb71a7c6" class="outline-2">
-<h2 id="orgb71a7c6">Some Emacs Lisp</h2>
-<div class="outline-text-2" id="text-orgb71a7c6">
+<div id="outline-container-org6a0e89a" class="outline-2">
+<h2 id="org6a0e89a">Some Emacs Lisp</h2>
+<div class="outline-text-2" id="text-org6a0e89a">
 <p>
 Defining an <a href="https://orgmode.org/">Org</a> project is fairly straightforward, but some parameters to the
 publishing projects depend on the circumstance.
 </p>
 </div>
 
-<div id="outline-container-org9baf741" class="outline-3">
-<h3 id="org9baf741">Preamble and Postamble</h3>
-<div class="outline-text-3" id="text-org9baf741">
+<div id="outline-container-org5cfd430" class="outline-3">
+<h3 id="org5cfd430">Preamble and Postamble</h3>
+<div class="outline-text-3" id="text-org5cfd430">
 <p>
 To handle the headers and footers of the site, I defined the following function
 to read in, now modified versions of, the previous header and footer HTML
@@ -422,9 +422,9 @@ Then for each project, the following keys are set:
 </div>
 </div>
 
-<div id="outline-container-orgd9e7edc" class="outline-3">
-<h3 id="orgd9e7edc">Simple CSS Preamble + Postamble</h3>
-<div class="outline-text-3" id="text-orgd9e7edc">
+<div id="outline-container-orgd13f339" class="outline-3">
+<h3 id="orgd13f339">Simple CSS Preamble + Postamble</h3>
+<div class="outline-text-3" id="text-orgd13f339">
 <p>
 To get the preamble and postamble to be styled right by <a href="https://simplecss.org/">SimpleCSS</a>, the
 following keys were necessary:
@@ -439,9 +439,9 @@ following keys were necessary:
 </div>
 </div>
 
-<div id="outline-container-org95258d1" class="outline-3">
-<h3 id="org95258d1"><code>ox-rss</code></h3>
-<div class="outline-text-3" id="text-org95258d1">
+<div id="outline-container-org6cb0814" class="outline-3">
+<h3 id="org6cb0814"><code>ox-rss</code></h3>
+<div class="outline-text-3" id="text-org6cb0814">
 <p>
 To publish the RSS feed, I needed to copy the <a href="https://github.com/kennyballou/kennyballou.github.io/blob/31878715d1f29ab9c95c31b9d9d713db74dabfba/lisp/ox-rss.el"><code>ox-rss.el</code></a> file wholesale so that
 it was accessible during the automated publishing.
@@ -450,14 +450,14 @@ it was accessible during the automated publishing.
 </div>
 </div>
 
-<div id="outline-container-orge8a71e6" class="outline-2">
-<h2 id="orge8a71e6">Building and Publishing</h2>
-<div class="outline-text-2" id="text-orge8a71e6">
+<div id="outline-container-org220e20c" class="outline-2">
+<h2 id="org220e20c">Building and Publishing</h2>
+<div class="outline-text-2" id="text-org220e20c">
 </div>
 
-<div id="outline-container-orgd8f7fa4" class="outline-3">
-<h3 id="orgd8f7fa4">Make</h3>
-<div class="outline-text-3" id="text-orgd8f7fa4">
+<div id="outline-container-org32a7bcd" class="outline-3">
+<h3 id="org32a7bcd">Make</h3>
+<div class="outline-text-3" id="text-org32a7bcd">
 <p>
 With the <code>build-site.el</code> file defined, the <a href="https://www.gnu.org/software/make/">Make target</a> is quite simple.
 </p>
@@ -471,9 +471,9 @@ org-publish:
 </div>
 </div>
 
-<div id="outline-container-org1693d06" class="outline-3">
-<h3 id="org1693d06">GitHub Actions</h3>
-<div class="outline-text-3" id="text-org1693d06">
+<div id="outline-container-orgbe6dedb" class="outline-3">
+<h3 id="orgbe6dedb">GitHub Actions</h3>
+<div class="outline-text-3" id="text-orgbe6dedb">
 <p>
 In an earlier <a href="https://kennyballou.com/blog/2020/02/blog-deploy-code-commit-and-build/index.html">post</a>, I described using <a href="https://aws.amazon.com/codebuild/">AWS CodeBuild</a> to automatically build site
 content and copy the files to <a href="https://aws.amazon.com/s3">S3</a>.  However, after one timed-out build attempted
@@ -502,9 +502,9 @@ documentation is available from <a href="https://github.com/">GitHub</a>.
 </div>
 </div>
 
-<div id="outline-container-org96271d6" class="outline-2">
-<h2 id="org96271d6">Parting Thoughts</h2>
-<div class="outline-text-2" id="text-org96271d6">
+<div id="outline-container-orgdd61326" class="outline-2">
+<h2 id="orgdd61326">Parting Thoughts</h2>
+<div class="outline-text-2" id="text-orgdd61326">
 <p>
 Nothing is perfect, but overall, I am pleased with the result of switching to
 using <a href="https://orgmode.org/">Org Mode</a> for publishing.  There exists a learning curve&#x2013; as with all
