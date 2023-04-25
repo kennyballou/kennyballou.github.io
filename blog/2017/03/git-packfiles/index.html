@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-04-25 Tue 05:37 -->
+<!-- 2023-04-25 Tue 05:39 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Git Packfiles</title>
@@ -335,14 +335,14 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgeab41e1">Packfiles</a>
+<li><a href="#org0a87e00">Packfiles</a>
 <ul>
-<li><a href="#orgfe493a2">Packs</a></li>
-<li><a href="#org65a24f7">Indexes</a></li>
-<li><a href="#org48b10d9">Plumbing</a></li>
+<li><a href="#orgc796a66">Packs</a></li>
+<li><a href="#org1da6e03">Indexes</a></li>
+<li><a href="#orga28d055">Plumbing</a></li>
 </ul>
 </li>
-<li><a href="#org81d5278">Summary</a></li>
+<li><a href="#org0cb444f">Summary</a></li>
 </ul>
 </div>
 </div>
@@ -365,9 +365,9 @@ We're only going to discuss the high-level details of packfiles, there are
 <a href="https://git.kernel.org/cgit/git/git.git/tree/Documentation/technical/pack-format.txt">describe</a> the <a href="https://codewords.recurse.com/issues/three/unpacking-git-packfiles/">details</a> better.
 </p>
 
-<div id="outline-container-orgeab41e1" class="outline-2">
-<h2 id="orgeab41e1">Packfiles</h2>
-<div class="outline-text-2" id="text-orgeab41e1">
+<div id="outline-container-org0a87e00" class="outline-2">
+<h2 id="org0a87e00">Packfiles</h2>
+<div class="outline-text-2" id="text-org0a87e00">
 <p>
 Packfiles, like <a href="https://kennyballou.com/blog/2016/01/git-in-reverse">git objects before</a>, are an internal file
 set for storing objects in a more compressed format.  That is, instead of
@@ -405,9 +405,9 @@ We'll take a small moment to describe each in a little more detail.
 </p>
 </div>
 
-<div id="outline-container-orgfe493a2" class="outline-3">
-<h3 id="orgfe493a2">Packs</h3>
-<div class="outline-text-3" id="text-orgfe493a2">
+<div id="outline-container-orgc796a66" class="outline-3">
+<h3 id="orgc796a66">Packs</h3>
+<div class="outline-text-3" id="text-orgc796a66">
 <p>
 Packfiles are relatively straight forward, there's a 12 byte header, first four
 spell "PACK", next four provide the version, "2" as of this writing, and the
@@ -456,9 +456,9 @@ index file is created to maintain a way to peer into the packfile efficiently.
 </div>
 </div>
 
-<div id="outline-container-org65a24f7" class="outline-3">
-<h3 id="org65a24f7">Indexes</h3>
-<div class="outline-text-3" id="text-org65a24f7">
+<div id="outline-container-org1da6e03" class="outline-3">
+<h3 id="org1da6e03">Indexes</h3>
+<div class="outline-text-3" id="text-org1da6e03">
 <p>
 Packfile indexes solve the random object access efficiency problems caused by
 heavily compacting objects into a single file.
@@ -525,9 +525,9 @@ access to objects in the repository.
 </div>
 </div>
 
-<div id="outline-container-org48b10d9" class="outline-3">
-<h3 id="org48b10d9">Plumbing</h3>
-<div class="outline-text-3" id="text-org48b10d9">
+<div id="outline-container-orga28d055" class="outline-3">
+<h3 id="orga28d055">Plumbing</h3>
+<div class="outline-text-3" id="text-orga28d055">
 <p>
 Git will automatically create packfiles when synchronizing a repository (e.g.,
 pushing, pulling, cloning), but they can also be created manually with the
@@ -685,9 +685,9 @@ within a packfile.
 </div>
 </div>
 
-<div id="outline-container-org81d5278" class="outline-2">
-<h2 id="org81d5278">Summary</h2>
-<div class="outline-text-2" id="text-org81d5278">
+<div id="outline-container-org0cb444f" class="outline-2">
+<h2 id="org0cb444f">Summary</h2>
+<div class="outline-text-2" id="text-org0cb444f">
 <p>
 Hopefully, we now have a deeper knowledge of the compact object format Git
 uses, namely, packfiles.  Remember, the motivation for these files was not
@@ -702,7 +702,7 @@ efficient.
 </div>
 <footer id="" class="status">
 <footer>
-  <p>&copy; 2014-2022 Kenny Ballou.
+  <p>&copy; 2014-2023 Kenny Ballou.
     <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Some rights
       reserved.</a></p>
   <p>Powered by <a href="https://gnu.org">GNU/Linux</a></p>
