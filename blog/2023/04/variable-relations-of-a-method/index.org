@@ -1,0 +1,28 @@
+#+TITLE: Variable Relations of a Method
+#+TAGS: Static Analysis
+#+TAGS: Abstract Interpretation
+#+TAGS: Symbolic Execution
+#+DATE: 2023-04-25
+#+SLUG: variable-relations-of-a-method
+
+#+BEGIN_PREVIEW
+Here's a fun animation of how variables relate to each other within a single
+method using symbolic states.
+#+END_PREVIEW
+
+#+ATTR_HTML: :width 99%
+[[file:test.base64_10.gif]]
+
+Each frame of the animation contains a variable relation graph for each
+feasible program point which contains information more than "the variable can
+be anything", so called \(\top\) values.  If a node is present, the analysis knew something
+about the program.  Each variable is related to itself.  This is not strictly
+necessary, but makes the data-structure easier to work with.  Nodes which are
+"double" circled, are identified as /changed/ variables of the program point
+under data-flow analysis (DFA).
+
+Variables may be related to other variables within the same program, otherwise,
+why are we here.  The label of the relation is the composition of paths that
+connect the two variables.  In some cases, it might be a single expression.  In
+others, it may be many paths.  That is, the relation between variables is
+transitive.  Quickly these labels become unreadable.
