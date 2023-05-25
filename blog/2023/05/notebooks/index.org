@@ -1,0 +1,331 @@
+#+TITLE: Portable, Repeatable (, and Reproducible) Notebooks
+#+TAGS: notebooks
+#+TAGS: emacs
+#+TAGS: org-mode
+#+TAGS: babel
+#+TAGS: SLURM
+#+TAGS: Reproduciable Research
+#+TAGS: Experiments
+#+DATE: 2023-05-31
+#+SLUG: portable-repeatable-reproducible-notebooks
+#+LINK: org-mode https://orgmode.org/
+#+LINK: jupyter https://jupyter.org/
+#+LINK: livebook https://livebook.dev/
+#+LINK: sagemath https://www.sagemath.org/
+#+LINK: r-markdown https://rmarkdown.rstudio.com/
+#+LINK: pweave https://mpastell.com/pweave/
+#+LINK: git https://git-scm.com/
+#+LINK: emacs https://www.gnu.org/software/emacs/
+#+LINK: org-babel https://orgmode.org/worg/org-contrib/babel/
+#+LINK: slurm https://slurm.schedmd.com/
+#+LINK: guix https://guix.gnu.org/
+#+LINK: envrc https://github.com/purcell/envrc
+#+LINK: direnv https://direnv.net/
+#+LINK: relocatable-packs https://hpc.guix.info/blog/2020/05/faster-relocatable-packs-with-fakechroot/
+#+LINK: elisp https://www.gnu.org/software/emacs/manual/elisp.html
+#+LINK: parallel https://www.gnu.org/software/parallel/
+#+LINK: slurm-job-arrays https://slurm.schedmd.com/job_array.html
+#+LINK: joel-grus-idontlikenotebooks https://docs.google.com/presentation/d/1n2RlMdmv1p25Xy5thJUhkKGvjtV-dkAIsUXP-AL4ffI/edit#slide=id.g362da58057_0_1
+#+LINK: org-mode-meta-language https://orgmode.org/worg/org-contrib/babel/intro.html#meta-programming-language
+
+#+BEGIN_PREVIEW
+Notebooks represent an important improvement for interactive and iterative
+research.  However, they tend to lack portability, reproducibility, and
+repeatability.  In this post, I want to explore the iterations of using [[org-mode][Org
+mode]] notebooks combined with other tools to develop a (hopefully) portable,
+reproducible, and repeatable notebook for software engineering experiments.
+While the focus remains narrowed to software engineering, the tools and
+techniques described should be applicable to any study requiring these
+properties.
+#+END_PREVIEW
+
+By using a number of techniques, it is easy to create notebooks which can be
+passed along to collaborators, referees, and our future selves.  Importantly,
+this post is *NOT* an introduction to [[org-mode][Org Mode]], [[org-babel][Org Babel]], or notebooks in
+general.  The main contributions of this post is a series of techniques for [[org-mode][Org
+mode]] to make the documents easily portable and repeatable with minimal fuss.
+
+** Background
+:PROPERTIES:
+:ID:       fb50dea6-e7d5-45e0-bceb-6d845a08f1b9
+:END:
+
+There exists numerous examples of different "notebook" implementations, such as
+[[jupyter][Jupyter Notebooks]], [[sagemath][SageMath Worksheets]], [[r-markdown][R Markdown]] and [[livebook][Elixir Livebook]]; and
+some less traditional ones, such as [[org-mode][Org Mode]] and tools such as [[pweave][Pweave]].
+
+*** Notebooks
+:PROPERTIES:
+:ID:       8b5ceabd-ae73-466d-b909-dae18c0a5cd0
+:END:
+
+[[jupyter][Jupyter Notebooks]] is arguably the most common and prevalent notebook system out
+there, with many features.  It supports many features such as different
+"kernels" to execute different languages, integrated documentation and code,
+and inline plotting.  However, the underlying format is cumbersome and
+difficult to use in collaboration with other developers using traditional tools
+such as [[git][Git]].  For a larger list of issues with notebooks in general, see the
+Caveats section below.
+
+*** Org-Mode (+ Emacs)
+:PROPERTIES:
+:ID:       de6fed7b-4239-44c9-b7cf-2c8f5d6a8b9d
+:END:
+
+As an alternative, [[org-mode][Org Mode]] (with [[emacs][Emacs]]) offers all the desired features of
+notebooks, but similarly gets around some of the limitations typical notebook
+implementations impose.  For example, the notebook is manipulated directly in
+your editor of choice(™); all creature comforts included.  Moreover, [[org-babel][Org Babel]]
+offers the expected seamless integration between documentation and code blocks
+and more.  For example, the code blocks within a notebook can be "tangled" out
+and executed in a more typical command-line driven style.  Multi-kernel
+notebooks are not common outside of a few extensions, such a feature is built
+directly into [[org-mode][Org Mode's]] operation.  Moreover, computations from one snippet
+can be input to another, in a different language.  For example, see the [[org-mode-meta-language][Meta
+Programming Language]] documentation.
+
+** Caveats
+:PROPERTIES:
+:ID:       2779b02a-f896-4466-bfd0-da200ddb9767
+:END:
+
+Notebooks are susceptible to a [[joel-grus-idontlikenotebooks][number of issues]] and [[org-mode][Org mode]] notebooks are no
+exception.  These issues are not specifically addressed in this post, but they
+absolutely require attention and acknowledgment.  Notably, state management and
+"execution flow" are not straightforward concepts within notebooks since
+developers can execute snippets in any order.
+
+While not the standard way of interacting with notebooks, [[org-mode][Org mode]] provides a
+mechanism for specifying code snippet/block dependency.  Its usage, however, is
+restricted to when one block explicitly depends on the computational result of
+another.  Specifically, using named variables to pass data between source
+blocks imposes a computation dependency.  In this way, out of order execution
+problems are alleviated, making the notebook easier to comprehend, even if the
+format is not top-down.
+
+** Candidate Solution
+:PROPERTIES:
+:ID:       b093c1ad-e5ac-4a99-ae8b-b163f5319125
+:END:
+
+The following is /a/ candidate solution to this problem.  It can and should be
+refined, but it represents a decent step in the right direction.  First, we
+discuss the "reproducible" component.  Then using an example, we discuss
+portability and repeatability together.
+
+*** Reproducible
+:PROPERTIES:
+:ID:       2ba8f998-2a0c-4c7e-bfd0-7ea7fd6615fb
+:END:
+
+[[guix][GNU Guix]] provides the necessary reproducibility.  Specifically, using [[envrc][envrc]] and
+[[direnv][direnv]], a manifest is loaded and shimmed into the current environment within
+[[emacs][Emacs]].  In this way, [[emacs][Emacs]] and other shell processes are using a specific
+environment which includes the necessary tools and libraries for the project.
+The same manifest is used to create a [[relocatable-packs]["really reproducible"]] package/archive
+which is deployed to an HPC cluster.  This is all done using a channels file to
+version pin the entire dependency tree (down to the C compiler and GLibC).
+
+*** Portable and Repeatable
+:PROPERTIES:
+:ID:       7cc820d0-e198-42f5-ac56-88fa1374a4e5
+:END:
+
+For a recent conference paper, I needed to repeatedly run a few thousand
+different experiments and then the aggregation and analysis of those
+experiments.  This was accomplished with an [[org-mode][Org mode]] notebook.  The major
+techniques discovered in the process are accessible properties, named example
+blocks, and liberal use of header arguments.
+
+The following are series of exerts directly from the notebook highlighting each
+of these features.
+
+The file was structured into several different headings, each for different
+parts of the process.  The heading of the notebook had a few variables which
+are used throughout the notebook:
+
+#+begin_src org
+,* notebook
+:PROPERTIES:
+:REMOTE: borah.boisestate.edu
+:REMOTE-DIR: /bsuhome/kennyballou/scratch
+:END:
+#+end_src
+
+Everything that interacts with the HPC cluster is then relative to these two
+variables.  Another user can change these two variables and easily execute the
+notebook.  For example, the following is a batch script which is "tangled" to
+the HPC cluster.  Notice, the ~:tangle~ property uses these variables:
+
+#+begin_src org
+,#+begin_src bash :tangle (concat "/ssh:" (org-entry-get nil "REMOTE" t) ":" (org-entry-get nil "REMOTE-DIR" t) "/run-intervals-analysis.sh")
+#!/usr/bin/env bash
+
+#SBATCH -N 1
+#SBATCH -n 1
+#SBATCH -c 4
+#SBATCH --mem=64G
+#SBATCH -t 0-03:00:00
+#SBATCH -p bsudfq
+
+module purge
+
+RESULTS_PATH=${1}
+CLASS_NAME=${2}
+METHOD_ID=${3}
+
+exec ~/DFA/bin/dfa interval-numerical \
+     --classpath ~/DFA/artifacts.jar \
+     --output "${RESULTS_PATH}" \
+     "${CLASS_NAME}" \
+     "${METHOD_ID}"
+,#+end_src
+#+end_src
+
+Relative to the current notebook, we also have data files.  Many code blocks
+need to refer to these data files throughout the experimental process.  To
+accomplish this, they are named using example blocks:
+
+#+begin_src org
+,#+NAME: METHODS
+,#+begin_example
+./in/methods.txt
+,#+end_example
+
+,#+NAME: DOMAINS
+,#+begin_example
+./in/domains.txt
+,#+end_example
+
+,#+NAME: COMPARISONS
+,#+begin_example
+./in/comparisons.txt
+,#+end_example
+
+,#+NAME: REPORTS
+,#+begin_example
+./in/reports.txt
+,#+end_example
+#+end_src
+
+#+begin_quote
+To take this a step further, the contents of the files themselves could be
+included in the notebook directly and tangled out to the named paths.
+#+end_quote
+
+Finally, to uniquely identify different experiment runs, the following variable
+is generated for each invocation:
+
+#+begin_src org
+,#+begin_src bash :eval query
+echo "#+NAME: UUID"
+echo -n $(uuidgen --time)
+,#+end_src
+
+,#+RESULTS:
+:results:
+,#+NAME: UUID
+4cf8581e-e2c2-11ed-aab2-8cf8c5ed93dd
+:end:
+#+end_src
+
+Using this variable, we can create a relative path variable which is referenced
+for the experiment and analysis output:
+
+#+begin_src org
+,#+NAME: OUTPUT_PREFIX
+,#+begin_src bash :var UUID=(org-sbe UUID) :results silent
+echo -n "./out/${UUID}"
+,#+end_src
+#+end_src
+
+Using a relative path for ~OUTPUT_PREFIX~ allows for the prefix to be used on the
+remote servers and locally when processed data files are copied to the local
+machine for exploratory analysis.
+
+The =(org-sbe ...)= pattern is used frequently because it inherently removes any
+newlines that may be introduced either by the literal text or if the variable
+is computed from a previous source block.
+
+Before jobs are submitted, the remote directory tree needs to be populated:
+
+#+begin_src org
+,#+begin_src bash :session *on-borah* :dir (concat "/ssh:" (org-entry-get nil "REMOTE" t) ":" (org-entry-get nil "REMOTE-DIR" t)) :results silent
+mkdir -p ${OUTPUT_PREFIX}/{joblogs,intervals}
+,#+end_src
+#+end_src
+
+#+begin_src org
+,#+begin_src bash :results silent
+scp -q "${METHODS}" ${remote}:${remote_dir}/${OUTPUT_PREFIX}/methods.txt
+scp -q "${DOMAINS}" ${remote}:${remote_dir}/${OUTPUT_PREFIX}/domains.txt
+scp -q "${COMPARISONS}" ${remote}:${remote_dir}/${OUTPUT_PREFIX}/comparisons.txt
+scp -q "${REPORTS}" ${remote}:${remote_dir}/${OUTPUT_PREFIX}/reports.txt
+rsync --archive ExperimentData/domains ${remote}:${remote_dir}/${OUTPUT_PREFIX}/.
+,#+end_src
+#+end_src
+
+To keep the source blocks simple and reduce copying, we use ~header-args~ to
+apply certain variables to all code blocks of a particular section.  For
+example, "Job Initialization" has the following header arguments:
+
+#+begin_src org
+,**** Job Initialization
+:PROPERTIES:
+:ID:       7e8302d4-38b7-4a3b-aed4-b329c81b43ce
+:header-args:bash: :var OUTPUT_PREFIX=(org-sbe OUTPUT_PREFIX)
+:header-args:bash+: :var METHODS=(org-sbe METHODS)
+:header-args:bash+: :var DOMAINS=(org-sbe DOMAINS)
+:header-args:bash+: :var COMPARISONS=(org-sbe COMPARISONS)
+:header-args:bash+: :var REPORTS=(org-sbe REPORTS)
+:header-args:bash+: :var remote=(org-entry-get nil "REMOTE" t)
+:header-args:bash+: :var remote_dir=(org-entry-get nil "REMOTE-DIR" t)
+:END:
+#+end_src
+
+Finally, to execute a series of analyses, we use [[parallel][GNU Parallel]] to produce a
+cross-product of our input parameters and submit the jobs against the remote machine:
+
+#+begin_src org
+,#+name: intervals
+,#+begin_src bash
+parallel --colsep '\t' \
+         --shuf \
+         --jobs=25% \
+         --delay 1s \
+         ssh -q ${remote} \
+         sbatch --chdir="${remote_dir}" \
+         --job-name="intervals-{1}_{2}" \
+         --output="${OUTPUT_PREFIX}/joblogs/%x.out" \
+         --error="${OUTPUT_PREFIX}/joblogs/%x.err" \
+         run-intervals-analysis.sh "${OUTPUT_PREFIX}/intervals" "{1}" "{2}" \
+         :::: "${METHODS}"
+,#+end_src
+#+end_src
+
+Once the jobs are complete, we can download the results and begin the analysis
+process.  However, that is essentially the same set of ideas repeated.
+
+** Discussion
+:PROPERTIES:
+:ID:       61ef879d-6fc3-463e-b384-687fdd7c9142
+:END:
+
+[[org-mode][Org Mode]] is a huge tool and requires a piecemeal consumption to master.  As
+such, many examples using [[org-babel][Org Babel]], for example, do not show the full power of
+passing different arguments or using [[elisp][Elisp]] to directly manipulate and pass
+variables to different source blocks.  Hopefully, this post can help fill those
+gaps of what is possible with a meta-notebook tool like [[org-mode][Org Mode]].
+
+There are some obvious points of improvement.  First, [[guix][Guix]] and [[org-mode][Org Mode]] could
+be better integrated such that a single notebook /can/ be entirely
+self-contained.  However, projects tend to be more than one file, so this is
+not a major limitation.  More importantly, however, the process of submitting
+jobs poses several limitations and problems.  [[slurm][SLURM]] is not built for large job
+submissions, thus, the delays and limited resources provided to [[parallel][GNU parallel]],
+which ultimately tie up [[emacs][Emacs]] for several minutes.  Furthermore, it can be
+slightly problematic to have thousands of jobs waiting in SLURM's queue.  A
+better approach would be to create [[slurm-job-arrays][Job Arrays]] for each set of experiments.
+This would alleviate the pressure on [[slurm][SLURM]] and keep [[emacs][Emacs]] from locking up
+during the submission process.  Similarly, it would enable for the process to
+be tangled out and sent to the cluster independently of [[emacs][Emacs]].
