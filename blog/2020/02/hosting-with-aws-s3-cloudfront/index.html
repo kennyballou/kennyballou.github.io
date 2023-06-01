@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-05-18 Thu 16:53 -->
+<!-- 2023-06-01 Thu 05:10 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Hosting with AWS S3 and CloudFront</title>
@@ -313,20 +313,20 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org052c5ce">Introduction</a></li>
-<li><a href="#org19261cb">Overview</a></li>
-<li><a href="#orgbeee931">CloudFormation</a>
+<li><a href="#orgf30958b">Introduction</a></li>
+<li><a href="#orga7fb6b4">Overview</a></li>
+<li><a href="#org606c74d">CloudFormation</a>
 <ul>
-<li><a href="#orgf1b0267">S3 Bucket</a></li>
-<li><a href="#org4f5655f">ACM</a></li>
-<li><a href="#orgfcd19da">Route53</a></li>
-<li><a href="#org6e3b09b">Lambda@Edge</a></li>
-<li><a href="#orgc91eaf0">CloudFront</a></li>
+<li><a href="#org57f75e0">S3 Bucket</a></li>
+<li><a href="#orge8f4550">ACM</a></li>
+<li><a href="#org03a04d4">Route53</a></li>
+<li><a href="#orgb95cb90">Lambda@Edge</a></li>
+<li><a href="#org75b0232">CloudFront</a></li>
 </ul>
 </li>
-<li><a href="#org6945ce9">Future Work</a></li>
-<li><a href="#org583dfc1">Cost Considerations</a></li>
-<li><a href="#org8ec2d53">Summary</a></li>
+<li><a href="#org8675528">Future Work</a></li>
+<li><a href="#org66a3713">Cost Considerations</a></li>
+<li><a href="#org76bbbdb">Summary</a></li>
 </ul>
 </div>
 </div>
@@ -341,9 +341,9 @@ strictly not available via <a href="https://aws.amazon.com/s3/">S3</a>.
 
 </div>
 
-<div id="outline-container-org052c5ce" class="outline-2">
-<h2 id="org052c5ce">Introduction</h2>
-<div class="outline-text-2" id="text-org052c5ce">
+<div id="outline-container-orgf30958b" class="outline-2">
+<h2 id="orgf30958b">Introduction</h2>
+<div class="outline-text-2" id="text-orgf30958b">
 <p>
 There are <a href="https://vickylai.com/verbose/hosting-your-static-site-with-aws-s3-route-53-and-cloudfront/">many</a>,
 <a href="https://www.davidbaumgold.com/tutorials/host-static-site-aws-s3-cloudfront/">many</a>
@@ -363,9 +363,9 @@ via <a href="https://aws.amazon.com/cloudfront/">CloudFront</a>.
 </div>
 </div>
 
-<div id="outline-container-org19261cb" class="outline-2">
-<h2 id="org19261cb">Overview</h2>
-<div class="outline-text-2" id="text-org19261cb">
+<div id="outline-container-orga7fb6b4" class="outline-2">
+<h2 id="orga7fb6b4">Overview</h2>
+<div class="outline-text-2" id="text-orga7fb6b4">
 <p>
 There has been a particular evolution to hosting static sites via <a href="https://aws.amazon.com/">AWS</a>
 since the company and its offerings have changed themselves.  For example, a
@@ -407,18 +407,18 @@ served quickly and securely because of the configuration of
 </div>
 </div>
 
-<div id="outline-container-orgbeee931" class="outline-2">
-<h2 id="orgbeee931">CloudFormation</h2>
-<div class="outline-text-2" id="text-orgbeee931">
+<div id="outline-container-org606c74d" class="outline-2">
+<h2 id="org606c74d">CloudFormation</h2>
+<div class="outline-text-2" id="text-org606c74d">
 <p>
 We'll briefly go through the various resources needed for hosting a static site
 via <a href="https://aws.amazon.com/s3/">S3</a> and <a href="https://aws.amazon.com/cloudfront/">CloudFront</a>.
 </p>
 </div>
 
-<div id="outline-container-orgf1b0267" class="outline-3">
-<h3 id="orgf1b0267">S3 Bucket</h3>
-<div class="outline-text-3" id="text-orgf1b0267">
+<div id="outline-container-org57f75e0" class="outline-3">
+<h3 id="org57f75e0">S3 Bucket</h3>
+<div class="outline-text-3" id="text-org57f75e0">
 <p>
 Obviously, we will need a bucket to house the content.
 </p>
@@ -503,9 +503,9 @@ ID.
 </div>
 </div>
 
-<div id="outline-container-org4f5655f" class="outline-3">
-<h3 id="org4f5655f">ACM</h3>
-<div class="outline-text-3" id="text-org4f5655f">
+<div id="outline-container-orge8f4550" class="outline-3">
+<h3 id="orge8f4550">ACM</h3>
+<div class="outline-text-3" id="text-orge8f4550">
 <p>
 <a href="https://aws.amazon.com/acm/">AWS Certificate Manager</a> offers free certificates and these can be
 used with <a href="https://aws.amazon.com/cloudfront/">CloudFront</a> pretty trivially, so we will set up
@@ -529,9 +529,9 @@ tricky when done via <a href="https://aws.amazon.com/cloudformation/">CloudForma
 </div>
 </div>
 
-<div id="outline-container-orgfcd19da" class="outline-3">
-<h3 id="orgfcd19da">Route53</h3>
-<div class="outline-text-3" id="text-orgfcd19da">
+<div id="outline-container-org03a04d4" class="outline-3">
+<h3 id="org03a04d4">Route53</h3>
+<div class="outline-text-3" id="text-org03a04d4">
 <p>
 Since this blog is hosted under the "naked" domain, it's best to use
 <a href="https://aws.amazon.com/route53/">Route53</a> for mapping the alias of
@@ -574,9 +574,9 @@ distribution.
 </div>
 </div>
 
-<div id="outline-container-org6e3b09b" class="outline-3">
-<h3 id="org6e3b09b">Lambda@Edge</h3>
-<div class="outline-text-3" id="text-org6e3b09b">
+<div id="outline-container-orgb95cb90" class="outline-3">
+<h3 id="orgb95cb90">Lambda@Edge</h3>
+<div class="outline-text-3" id="text-orgb95cb90">
 <p>
 Of all the resources, this will actually be the most complicated.
 </p>
@@ -733,9 +733,9 @@ to create a "version" alias of the function.
 </div>
 </div>
 
-<div id="outline-container-orgc91eaf0" class="outline-3">
-<h3 id="orgc91eaf0">CloudFront</h3>
-<div class="outline-text-3" id="text-orgc91eaf0">
+<div id="outline-container-org75b0232" class="outline-3">
+<h3 id="org75b0232">CloudFront</h3>
+<div class="outline-text-3" id="text-org75b0232">
 <p>
 Finally, we can put everything together into the <a href="https://aws.amazon.com/cloudfront/">CloudFront</a>
 Distribution.
@@ -814,9 +814,9 @@ Distribution.
 </div>
 </div>
 
-<div id="outline-container-org6945ce9" class="outline-2">
-<h2 id="org6945ce9">Future Work</h2>
-<div class="outline-text-2" id="text-org6945ce9">
+<div id="outline-container-org8675528" class="outline-2">
+<h2 id="org8675528">Future Work</h2>
+<div class="outline-text-2" id="text-org8675528">
 <p>
 The <a href="https://aws.amazon.com/cloudformation/">CloudFormation</a> template is not perfect.  For
 example, I personally would like to have the ability to create
@@ -832,9 +832,9 @@ content to the bucket using more <a href="https://aws.amazon.com/">AWS</a> servi
 </div>
 </div>
 
-<div id="outline-container-org583dfc1" class="outline-2">
-<h2 id="org583dfc1">Cost Considerations</h2>
-<div class="outline-text-2" id="text-org583dfc1">
+<div id="outline-container-org66a3713" class="outline-2">
+<h2 id="org66a3713">Cost Considerations</h2>
+<div class="outline-text-2" id="text-org66a3713">
 <p>
 <a href="https://aws.amazon.com/">AWS</a> is not known to be inexpensive.  Arguably, their entire business
 is built around the very fact that just about every service within <a href="https://aws.amazon.com/">AWS</a>
@@ -858,9 +858,9 @@ for others.
 </div>
 </div>
 
-<div id="outline-container-org8ec2d53" class="outline-2">
-<h2 id="org8ec2d53">Summary</h2>
-<div class="outline-text-2" id="text-org8ec2d53">
+<div id="outline-container-org76bbbdb" class="outline-2">
+<h2 id="org76bbbdb">Summary</h2>
+<div class="outline-text-2" id="text-org76bbbdb">
 <p>
 It is the goal of this post to further describe how to host a static site in
 <a href="https://aws.amazon.com/">AWS</a> using a few services that can make for <span class="underline">really</span> inexpensive
