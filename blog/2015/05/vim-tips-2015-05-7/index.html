@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-06-01 Thu 05:10 -->
+<!-- 2023-06-16 Fri 00:14 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Vim Tips 2015-05-07</title>
@@ -267,6 +267,9 @@ for the JavaScript code in this tag.
  <a accesskey="H" href="https://kennyballou.com/"> HOME </a>
 </div><header id="" class="status">
 <nav>
+  <a href="/">
+    <i class="fade fas fa-home"></i>
+  </a>
   <a href="/about.html">
     <i class="fade fas fa-user-circle"></i>
   </a>
@@ -313,16 +316,16 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgf2bc4a1">Visual Mode</a>
+<li><a href="#orga5148df">Visual Mode</a>
 <ul>
-<li><a href="#orgad22ee0">Visual Mode Basics</a></li>
-<li><a href="#org760f22c">Some Examples</a></li>
+<li><a href="#org410864f">Visual Mode Basics</a></li>
+<li><a href="#org471f236">Some Examples</a></li>
 </ul>
 </li>
-<li><a href="#org6a6c128">Macros</a>
+<li><a href="#org5f5e48f">Macros</a>
 <ul>
-<li><a href="#orgc1f5a2c">Macro Basics</a></li>
-<li><a href="#org16a3d02">Some Examples</a></li>
+<li><a href="#org4ac4e20">Macro Basics</a></li>
+<li><a href="#orgb670abe">Some Examples</a></li>
 </ul>
 </li>
 </ul>
@@ -343,9 +346,9 @@ More often than not, the visual selection mode and one-off macros are a better
 choice.
 </p>
 
-<div id="outline-container-orgf2bc4a1" class="outline-2">
-<h2 id="orgf2bc4a1">Visual Mode</h2>
-<div class="outline-text-2" id="text-orgf2bc4a1">
+<div id="outline-container-orga5148df" class="outline-2">
+<h2 id="orga5148df">Visual Mode</h2>
+<div class="outline-text-2" id="text-orga5148df">
 <p>
 I won't go into all of the cool things that can be accomplished with Vim's
 visual mode, but I will showcase a few examples where the visual editor is
@@ -358,9 +361,9 @@ of changes, quickly.
 </p>
 </div>
 
-<div id="outline-container-orgad22ee0" class="outline-3">
-<h3 id="orgad22ee0">Visual Mode Basics</h3>
-<div class="outline-text-3" id="text-orgad22ee0">
+<div id="outline-container-org410864f" class="outline-3">
+<h3 id="org410864f">Visual Mode Basics</h3>
+<div class="outline-text-3" id="text-org410864f">
 <p>
 To enter visual mode, it is as simple as pressing <code>^v</code> or <code>ctrl-v</code>.  Next you
 will want to select what you want to change with your typical movement commands
@@ -373,9 +376,9 @@ a few.
 </div>
 </div>
 
-<div id="outline-container-org760f22c" class="outline-3">
-<h3 id="org760f22c">Some Examples</h3>
-<div class="outline-text-3" id="text-org760f22c">
+<div id="outline-container-org471f236" class="outline-3">
+<h3 id="org471f236">Some Examples</h3>
+<div class="outline-text-3" id="text-org471f236">
 <p>
 For (a bad) example, if you need to comment out a contiguous set of lines, you
 can easily accomplish this with the visual mode.
@@ -433,9 +436,9 @@ For more information on Visual Mode, you can check Vim's
 </div>
 </div>
 
-<div id="outline-container-org6a6c128" class="outline-2">
-<h2 id="org6a6c128">Macros</h2>
-<div class="outline-text-2" id="text-org6a6c128">
+<div id="outline-container-org5f5e48f" class="outline-2">
+<h2 id="org5f5e48f">Macros</h2>
+<div class="outline-text-2" id="text-org5f5e48f">
 <p>
 For when visual mode may not be enough or when the change is repetitive in
 operations but not in columns or what have you, it's time to bust out the
@@ -444,9 +447,9 @@ to record and store each macro.
 </p>
 </div>
 
-<div id="outline-container-orgc1f5a2c" class="outline-3">
-<h3 id="orgc1f5a2c">Macro Basics</h3>
-<div class="outline-text-3" id="text-orgc1f5a2c">
+<div id="outline-container-org4ac4e20" class="outline-3">
+<h3 id="org4ac4e20">Macro Basics</h3>
+<div class="outline-text-3" id="text-org4ac4e20">
 <p>
 To record a macro, it's as simple as <code>q&lt;register-label&gt;&lt;commands&gt;q</code>.  That is,
 press <code>q</code>, select a register (a-z1-0), enter your commands as if you were using
@@ -462,9 +465,9 @@ You can also replay the last macro with <code>@@</code>.
 </div>
 </div>
 
-<div id="outline-container-org16a3d02" class="outline-3">
-<h3 id="org16a3d02">Some Examples</h3>
-<div class="outline-text-3" id="text-org16a3d02">
+<div id="outline-container-orgb670abe" class="outline-3">
+<h3 id="orgb670abe">Some Examples</h3>
+<div class="outline-text-3" id="text-orgb670abe">
 <p>
 As a simplistic example, we can use a macro to convert it into, say, JSON (this
 example is clearly taken from the <a href="http://vim.wikia.com/wiki/Macros">Vim Wikia</a>).

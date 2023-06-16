@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-06-01 Thu 05:10 -->
+<!-- 2023-06-16 Fri 00:14 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>AWS ECS Container Overrides for Events Targets</title>
@@ -267,6 +267,9 @@ for the JavaScript code in this tag.
  <a accesskey="H" href="https://kennyballou.com/"> HOME </a>
 </div><header id="" class="status">
 <nav>
+  <a href="/">
+    <i class="fade fas fa-home"></i>
+  </a>
   <a href="/about.html">
     <i class="fade fas fa-user-circle"></i>
   </a>
@@ -313,10 +316,10 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgbd4f74f">Problem</a></li>
-<li><a href="#orgbdbece5">Exploring the Problem</a></li>
-<li><a href="#orgeb9e81b">Solution</a></li>
-<li><a href="#org73be240">Conclusion</a></li>
+<li><a href="#org5f0b9cb">Problem</a></li>
+<li><a href="#org988be28">Exploring the Problem</a></li>
+<li><a href="#orgf7b9bea">Solution</a></li>
+<li><a href="#orgf8f069e">Conclusion</a></li>
 </ul>
 </div>
 </div>
@@ -345,9 +348,9 @@ When the documentation fails you, use the source.
 What to do when there isn't source (code) available?
 </p>
 
-<div id="outline-container-orgbd4f74f" class="outline-2">
-<h2 id="orgbd4f74f">Problem</h2>
-<div class="outline-text-2" id="text-orgbd4f74f">
+<div id="outline-container-org5f0b9cb" class="outline-2">
+<h2 id="org5f0b9cb">Problem</h2>
+<div class="outline-text-2" id="text-org5f0b9cb">
 <p>
 While attempting to make some infrastucture changes, I wanted to create a
 scheduled <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/WhatIsCloudWatchEvents.html">event</a> to target a specific
@@ -408,9 +411,9 @@ happens.
 </div>
 </div>
 
-<div id="outline-container-orgbdbece5" class="outline-2">
-<h2 id="orgbdbece5">Exploring the Problem</h2>
-<div class="outline-text-2" id="text-orgbdbece5">
+<div id="outline-container-org988be28" class="outline-2">
+<h2 id="org988be28">Exploring the Problem</h2>
+<div class="outline-text-2" id="text-org988be28">
 <blockquote>
 <p>
 Otherwising shooting in the dark&#x2026;
@@ -487,9 +490,9 @@ hand.
 </div>
 </div>
 
-<div id="outline-container-orgeb9e81b" class="outline-2">
-<h2 id="orgeb9e81b">Solution</h2>
-<div class="outline-text-2" id="text-orgeb9e81b">
+<div id="outline-container-orgf7b9bea" class="outline-2">
+<h2 id="orgf7b9bea">Solution</h2>
+<div class="outline-text-2" id="text-orgf7b9bea">
 <p>
 However, the "Input" key is a string encoded JSON structure, so the full
 solution is the following snippet:
@@ -527,9 +530,9 @@ This structure may seem familiar.  This structure is documented in the
 </div>
 </div>
 
-<div id="outline-container-org73be240" class="outline-2">
-<h2 id="org73be240">Conclusion</h2>
-<div class="outline-text-2" id="text-org73be240">
+<div id="outline-container-orgf8f069e" class="outline-2">
+<h2 id="orgf8f069e">Conclusion</h2>
+<div class="outline-text-2" id="text-orgf8f069e">
 <p>
 The connection between "Input" is a JSON encoded string and pass the
 "containerOverrides" structure is missing or not obvious at best.  Hopefully,
