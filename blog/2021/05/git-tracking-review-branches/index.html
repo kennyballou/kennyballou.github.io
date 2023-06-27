@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-06-27 Tue 19:11 -->
+<!-- 2023-06-27 Tue 19:14 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Tracking Review Branches with Git</title>
@@ -316,13 +316,13 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org35446a2">GitHub</a></li>
-<li><a href="#org992dbf3">GitLab</a></li>
-<li><a href="#org13f9912">Local Branch Prefix</a></li>
-<li><a href="#org884b2f5">Branch Discovery</a></li>
-<li><a href="#orge22647a">Manual Checkout</a></li>
-<li><a href="#orgbdaaa2e">Repositories with Many Pull Requests</a></li>
-<li><a href="#org42b4d57">tl;dr:</a></li>
+<li><a href="#orgbfe4915">GitHub</a></li>
+<li><a href="#orgb2990f1">GitLab</a></li>
+<li><a href="#orgf493e1b">Local Branch Prefix</a></li>
+<li><a href="#orgfe44129">Branch Discovery</a></li>
+<li><a href="#org9a1e476">Manual Checkout</a></li>
+<li><a href="#org69b4cb9">Repositories with Many Pull Requests</a></li>
+<li><a href="#org18f0d39">tl;dr:</a></li>
 </ul>
 </div>
 </div>
@@ -346,9 +346,9 @@ kernel development etiquette, what <a href="https://git-scm.com/">https://git-sc
 </p>
 </blockquote>
 
-<div id="outline-container-org35446a2" class="outline-2">
-<h2 id="org35446a2">GitHub</h2>
-<div class="outline-text-2" id="text-org35446a2">
+<div id="outline-container-orgbfe4915" class="outline-2">
+<h2 id="orgbfe4915">GitHub</h2>
+<div class="outline-text-2" id="text-orgbfe4915">
 <p>
 If we are working with a <a href="https://github.com">GitHub</a> repository, we can run the following command,
 assuming <code>origin</code> is the remote where pull requests are submitted:
@@ -379,9 +379,9 @@ The full <code>remote.origin</code> section should look similar to the following
 </div>
 </div>
 
-<div id="outline-container-org992dbf3" class="outline-2">
-<h2 id="org992dbf3">GitLab</h2>
-<div class="outline-text-2" id="text-org992dbf3">
+<div id="outline-container-orgb2990f1" class="outline-2">
+<h2 id="orgb2990f1">GitLab</h2>
+<div class="outline-text-2" id="text-orgb2990f1">
 <p>
 Similarly, if we are working with <a href="https://gitlab.com">GitLab</a> repositories, we can use a similar
 command to accomplish the same result, again assuming <code>origin</code> as the remote:
@@ -407,9 +407,9 @@ following:
 </div>
 </div>
 
-<div id="outline-container-org13f9912" class="outline-2">
-<h2 id="org13f9912">Local Branch Prefix</h2>
-<div class="outline-text-2" id="text-org13f9912">
+<div id="outline-container-orgf493e1b" class="outline-2">
+<h2 id="orgf493e1b">Local Branch Prefix</h2>
+<div class="outline-text-2" id="text-orgf493e1b">
 <p>
 The local branch prefix can be set to any value that is desired.  Don't like
 <code>origin/pull/${pr}</code>?  Change it.  A <a href="https://gist.github.com/piscisaureus/3342247">common option</a> is to use <code>origin/pr</code> instead.
@@ -437,9 +437,9 @@ these references are ambiguous.
 </div>
 </div>
 
-<div id="outline-container-org884b2f5" class="outline-2">
-<h2 id="org884b2f5">Branch Discovery</h2>
-<div class="outline-text-2" id="text-org884b2f5">
+<div id="outline-container-orgfe44129" class="outline-2">
+<h2 id="orgfe44129">Branch Discovery</h2>
+<div class="outline-text-2" id="text-orgfe44129">
 <p>
 When using a different forge than <a href="https://github.com">GitHub</a> or <a href="https://gitlab.com">GitLab</a>, it may be possible to
 discover the appropriate pattern for references to pull requests.
@@ -497,9 +497,9 @@ path.
 </div>
 </div>
 
-<div id="outline-container-orge22647a" class="outline-2">
-<h2 id="orge22647a">Manual Checkout</h2>
-<div class="outline-text-2" id="text-orge22647a">
+<div id="outline-container-org9a1e476" class="outline-2">
+<h2 id="org9a1e476">Manual Checkout</h2>
+<div class="outline-text-2" id="text-org9a1e476">
 <p>
 Without downloading and keeping track of <i>all</i> pull request branches, individual
 pull requests can be checked out as well.  However, doing so requires an extra
@@ -527,9 +527,9 @@ git checkout -b pr/${<span style="font-weight: bold; font-style: italic;">pr</sp
 </div>
 </div>
 
-<div id="outline-container-orgbdaaa2e" class="outline-2">
-<h2 id="orgbdaaa2e">Repositories with Many Pull Requests</h2>
-<div class="outline-text-2" id="text-orgbdaaa2e">
+<div id="outline-container-org69b4cb9" class="outline-2">
+<h2 id="org69b4cb9">Repositories with Many Pull Requests</h2>
+<div class="outline-text-2" id="text-org69b4cb9">
 <p>
 While adding the extra fetch and branch prefix is a nice way to automatically
 track pull requests against a repository, the repository may have more pull
@@ -573,9 +573,9 @@ same fetch trick as above.
 </div>
 </div>
 
-<div id="outline-container-org42b4d57" class="outline-2">
-<h2 id="org42b4d57">tl;dr:</h2>
-<div class="outline-text-2" id="text-org42b4d57">
+<div id="outline-container-org18f0d39" class="outline-2">
+<h2 id="org18f0d39">tl;dr:</h2>
+<div class="outline-text-2" id="text-org18f0d39">
 <p>
 To automatically fetch pull requests from <a href="https://github.com">GitHub</a> repositories, run the
 following command, assuming <code>upstream</code> is the remote where pull requests are
