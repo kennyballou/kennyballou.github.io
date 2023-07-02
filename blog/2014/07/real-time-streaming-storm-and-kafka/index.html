@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-06-27 Tue 19:14 -->
+<!-- 2023-07-02 Sun 01:36 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Real-Time Streaming with Apache Storm and Apache Kafka</title>
@@ -316,47 +316,47 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgd398849">About Kafka</a>
+<li><a href="#orgc0d2415">About Kafka</a>
 <ul>
-<li><a href="#orgba52ad3">Initial Thoughts</a></li>
+<li><a href="#org95a2d7e">Initial Thoughts</a></li>
 </ul>
 </li>
-<li><a href="#orgc37c443">About Storm</a>
+<li><a href="#orgb8f0239">About Storm</a>
 <ul>
-<li><a href="#org3db4ab3">Why Storm</a></li>
-<li><a href="#orge6f2e3f">Integration</a></li>
-<li><a href="#org0a4534d">Initial Thoughts</a></li>
+<li><a href="#org9dda447">Why Storm</a></li>
+<li><a href="#org72abe20">Integration</a></li>
+<li><a href="#orge572499">Initial Thoughts</a></li>
 </ul>
 </li>
-<li><a href="#org1d6433f">Test Project: Twitter Stream Sentiment Analysis</a>
+<li><a href="#org53c2c0f">Test Project: Twitter Stream Sentiment Analysis</a>
 <ul>
-<li><a href="#org2a1e659">Setup</a></li>
-<li><a href="#orgd94519b">Overview</a>
+<li><a href="#org64a896a">Setup</a></li>
+<li><a href="#orgbbeb930">Overview</a>
 <ul>
-<li><a href="#orgac00ad3">Spout</a></li>
-<li><a href="#org44c8efd">Twitter Data JSON Parsing</a></li>
-<li><a href="#org65f48fd">Filtering and Stemming</a></li>
-<li><a href="#org80bcc6c">Classifiers</a></li>
-<li><a href="#orgad2ec67">Join and Scoring</a></li>
-<li><a href="#org25ade93">Reporting: HDFS and HTTP POST</a></li>
+<li><a href="#orge3b009c">Spout</a></li>
+<li><a href="#org8d86c2f">Twitter Data JSON Parsing</a></li>
+<li><a href="#org663d731">Filtering and Stemming</a></li>
+<li><a href="#org2504a33">Classifiers</a></li>
+<li><a href="#orga7e13ec">Join and Scoring</a></li>
+<li><a href="#orgeb20e1a">Reporting: HDFS and HTTP POST</a></li>
 </ul>
 </li>
-<li><a href="#org9a1044a">Implementing the Kafka Producer</a></li>
-<li><a href="#org8eaf251">Implementing the Storm Topology</a>
+<li><a href="#orge577c23">Implementing the Kafka Producer</a></li>
+<li><a href="#orgc1d2a06">Implementing the Storm Topology</a>
 <ul>
 <li><a href="#topology-definition">Topology Definition</a></li>
-<li><a href="#orgf1d68de">Twitter Data Filter / Parser</a></li>
-<li><a href="#org992062e">Text Filtering</a></li>
-<li><a href="#orgda84fea">Positive and Negative Scoring</a></li>
-<li><a href="#orgb357aac">Joining Scores</a></li>
-<li><a href="#org5b9266d">Deciding the Winning Class</a></li>
-<li><a href="#orgfcb9392">Report the Results</a></li>
+<li><a href="#org4736afc">Twitter Data Filter / Parser</a></li>
+<li><a href="#org355b0b2">Text Filtering</a></li>
+<li><a href="#org79f0d0d">Positive and Negative Scoring</a></li>
+<li><a href="#org10e8ec1">Joining Scores</a></li>
+<li><a href="#orgb417999">Deciding the Winning Class</a></li>
+<li><a href="#org94147b3">Report the Results</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org2b68ceb">Summary</a></li>
-<li><a href="#orgfccd718">Related Links / References</a></li>
+<li><a href="#orga9493ac">Summary</a></li>
+<li><a href="#org3c3a49a">Related Links / References</a></li>
 </ul>
 </div>
 </div>
@@ -371,9 +371,9 @@ performant.
 
 </div>
 
-<div id="outline-container-orgd398849" class="outline-2">
-<h2 id="orgd398849">About Kafka</h2>
-<div class="outline-text-2" id="text-orgd398849">
+<div id="outline-container-orgc0d2415" class="outline-2">
+<h2 id="orgc0d2415">About Kafka</h2>
+<div class="outline-text-2" id="text-orgc0d2415">
 <p>
 <a href="http://kafka.apache.org/">Apache Kafka</a> is a message queue rethought as a distributed commit
 log.  It follows the publish-subscribe messaging style, with speed and
@@ -397,9 +397,9 @@ ingest data faster.  For more information about Kafka's performance see
 </p>
 </div>
 
-<div id="outline-container-orgba52ad3" class="outline-3">
-<h3 id="orgba52ad3">Initial Thoughts</h3>
-<div class="outline-text-3" id="text-orgba52ad3">
+<div id="outline-container-org95a2d7e" class="outline-3">
+<h3 id="org95a2d7e">Initial Thoughts</h3>
+<div class="outline-text-3" id="text-org95a2d7e">
 <p>
 Kafka is a very promising project, with astounding throughput and one of the
 easiest pieces of software I have had the joy of installing and configuring.
@@ -410,9 +410,9 @@ its way.
 </div>
 </div>
 
-<div id="outline-container-orgc37c443" class="outline-2">
-<h2 id="orgc37c443">About Storm</h2>
-<div class="outline-text-2" id="text-orgc37c443">
+<div id="outline-container-orgb8f0239" class="outline-2">
+<h2 id="orgb8f0239">About Storm</h2>
+<div class="outline-text-2" id="text-orgb8f0239">
 <p>
 <a href="https://storm.apache.org/">Apache Storm</a>, currently in incubation, is a real-time computational
 engine made available under the free and open-source Apache version 2.0
@@ -425,9 +425,9 @@ documentation.
 </p>
 </div>
 
-<div id="outline-container-org3db4ab3" class="outline-3">
-<h3 id="org3db4ab3">Why Storm</h3>
-<div class="outline-text-3" id="text-org3db4ab3">
+<div id="outline-container-org9dda447" class="outline-3">
+<h3 id="org9dda447">Why Storm</h3>
+<div class="outline-text-3" id="text-org9dda447">
 <p>
 Quoting from the project site:
 </p>
@@ -445,9 +445,9 @@ processed, and is easy to set up and operate.
 </div>
 </div>
 
-<div id="outline-container-orge6f2e3f" class="outline-3">
-<h3 id="orge6f2e3f">Integration</h3>
-<div class="outline-text-3" id="text-orge6f2e3f">
+<div id="outline-container-org72abe20" class="outline-3">
+<h3 id="org72abe20">Integration</h3>
+<div class="outline-text-3" id="text-org72abe20">
 <p>
 Storm can integrate with any queuing and any database system.  In fact, there
 are already quite a few existing projects for use to integrate Storm with other
@@ -456,9 +456,9 @@ projects, like <a href="https://storm.apache.org/about/integrates.html">kestrel 
 </div>
 </div>
 
-<div id="outline-container-org0a4534d" class="outline-3">
-<h3 id="org0a4534d">Initial Thoughts</h3>
-<div class="outline-text-3" id="text-org0a4534d">
+<div id="outline-container-orge572499" class="outline-3">
+<h3 id="orge572499">Initial Thoughts</h3>
+<div class="outline-text-3" id="text-orge572499">
 <p>
 I found Storm's verbiage around the computational pipeline to fit my mental
 model very well, thinking about streaming computational processes as directed
@@ -475,9 +475,9 @@ common patterns emerging that should be adaptable to about any
 </div>
 </div>
 
-<div id="outline-container-org1d6433f" class="outline-2">
-<h2 id="org1d6433f">Test Project: Twitter Stream Sentiment Analysis</h2>
-<div class="outline-text-2" id="text-org1d6433f">
+<div id="outline-container-org53c2c0f" class="outline-2">
+<h2 id="org53c2c0f">Test Project: Twitter Stream Sentiment Analysis</h2>
+<div class="outline-text-2" id="text-org53c2c0f">
 <p>
 To really give Storm a try, something a little more involved than just a simple
 word counter is needed.  Therefore, I have put together a Twitter Sentiment
@@ -487,9 +487,9 @@ overly simple.
 </p>
 </div>
 
-<div id="outline-container-org2a1e659" class="outline-3">
-<h3 id="org2a1e659">Setup</h3>
-<div class="outline-text-3" id="text-org2a1e659">
+<div id="outline-container-org64a896a" class="outline-3">
+<h3 id="org64a896a">Setup</h3>
+<div class="outline-text-3" id="text-org64a896a">
 <p>
 The setup used for this demo is a 5 node Vagrant virtual cluster.  Each node is
 running 64 bit CentOS 6.5, given 1 core, and 1024MB of RAM.  Every node is
@@ -504,9 +504,9 @@ cluster.
 </div>
 </div>
 
-<div id="outline-container-orgd94519b" class="outline-3">
-<h3 id="orgd94519b">Overview</h3>
-<div class="outline-text-3" id="text-orgd94519b">
+<div id="outline-container-orgbbeb930" class="outline-3">
+<h3 id="orgbbeb930">Overview</h3>
+<div class="outline-text-3" id="text-orgbbeb930">
 
 <div class="figure">
 <p><img src="../../../../media/SentimentAnalysisTopology.png" alt="SentimentAnalysisTopology.png" />
@@ -520,9 +520,9 @@ opening a stream to Twitter.
 </p>
 </div>
 
-<div id="outline-container-orgac00ad3" class="outline-4">
-<h4 id="orgac00ad3">Spout</h4>
-<div class="outline-text-4" id="text-orgac00ad3">
+<div id="outline-container-orge3b009c" class="outline-4">
+<h4 id="orge3b009c">Spout</h4>
+<div class="outline-text-4" id="text-orge3b009c">
 <p>
 The orange node from the picture is our
 <a href="https://github.com/apache/incubator-storm/tree/master/external/storm-kafka"><code>KafkaSpout</code></a> that will be consuming incoming
@@ -531,9 +531,9 @@ messages from the Kafka brokers.
 </div>
 </div>
 
-<div id="outline-container-org44c8efd" class="outline-4">
-<h4 id="org44c8efd">Twitter Data JSON Parsing</h4>
-<div class="outline-text-4" id="text-org44c8efd">
+<div id="outline-container-org8d86c2f" class="outline-4">
+<h4 id="org8d86c2f">Twitter Data JSON Parsing</h4>
+<div class="outline-text-4" id="text-org8d86c2f">
 <p>
 The first bolt, <code>2</code> in the image, attempts to parse the Twitter JSON data and
 emits <code>tweet_id</code> and <code>tweet_text</code>.  This implementation only processes English
@@ -543,9 +543,9 @@ code down and create different scoring bolts for each language.
 </div>
 </div>
 
-<div id="outline-container-org65f48fd" class="outline-4">
-<h4 id="org65f48fd">Filtering and Stemming</h4>
-<div class="outline-text-4" id="text-org65f48fd">
+<div id="outline-container-org663d731" class="outline-4">
+<h4 id="org663d731">Filtering and Stemming</h4>
+<div class="outline-text-4" id="text-org663d731">
 <p>
 This next bolt, <code>3</code>, performs first-round data sanitization.  That is, it
 removes all non-alpha characters.
@@ -564,9 +564,9 @@ match the root, could also be performed here, or in another, later bolt.
 </div>
 </div>
 
-<div id="outline-container-org80bcc6c" class="outline-4">
-<h4 id="org80bcc6c">Classifiers</h4>
-<div class="outline-text-4" id="text-org80bcc6c">
+<div id="outline-container-org2504a33" class="outline-4">
+<h4 id="org2504a33">Classifiers</h4>
+<div class="outline-text-4" id="text-org2504a33">
 <p>
 Each classifier is defined by its own bolt.  One classifier for the positive
 class, <code>5</code>, and another for the negative class, <code>6</code>.
@@ -579,9 +579,9 @@ The implementation of the classifiers follows the
 </div>
 </div>
 
-<div id="outline-container-orgad2ec67" class="outline-4">
-<h4 id="orgad2ec67">Join and Scoring</h4>
-<div class="outline-text-4" id="text-orgad2ec67">
+<div id="outline-container-orga7e13ec" class="outline-4">
+<h4 id="orga7e13ec">Join and Scoring</h4>
+<div class="outline-text-4" id="text-orga7e13ec">
 <p>
 Next, bolt <code>7</code> joins the scores from the two previous classifiers.  The
 implementation of this bolt isn't perfect.  For example, message transaction is
@@ -595,9 +595,9 @@ declares the class accordingly.
 </div>
 </div>
 
-<div id="outline-container-org25ade93" class="outline-4">
-<h4 id="org25ade93">Reporting: HDFS and HTTP POST</h4>
-<div class="outline-text-4" id="text-org25ade93">
+<div id="outline-container-orgeb20e1a" class="outline-4">
+<h4 id="orgeb20e1a">Reporting: HDFS and HTTP POST</h4>
+<div class="outline-text-4" id="text-orgeb20e1a">
 <p>
 Finally, the scoring bolt broadcasts off the results to a HDFS file writer
 bolt, <code>9</code>, and a NodeJS notifier bolt, <code>10</code>.  The HDFS bolt fills a list until
@@ -612,9 +612,9 @@ demonstration purposes only.
 </div>
 </div>
 
-<div id="outline-container-org9a1044a" class="outline-3">
-<h3 id="org9a1044a">Implementing the Kafka Producer</h3>
-<div class="outline-text-3" id="text-org9a1044a">
+<div id="outline-container-orge577c23" class="outline-3">
+<h3 id="orge577c23">Implementing the Kafka Producer</h3>
+<div class="outline-text-3" id="text-orge577c23">
 <p>
 Here, the main portions of the code for the Kafka producer that was used to
 test our cluster are defined.
@@ -685,12 +685,12 @@ tunable by the size of the buffer.
 </div>
 </div>
 
-<div id="outline-container-org8eaf251" class="outline-3">
-<h3 id="org8eaf251">Implementing the Storm Topology</h3>
-<div class="outline-text-3" id="text-org8eaf251">
+<div id="outline-container-orgc1d2a06" class="outline-3">
+<h3 id="orgc1d2a06">Implementing the Storm Topology</h3>
+<div class="outline-text-3" id="text-orgc1d2a06">
 </div>
 
-<div id="outline-container-org700447b" class="outline-4">
+<div id="outline-container-org4f62fa3" class="outline-4">
 <h4 id="topology-definition">Topology Definition</h4>
 <div class="outline-text-4" id="text-topology-definition">
 <p>
@@ -740,9 +740,9 @@ joining bolt.  To read more about stream groupings, visit the
 </div>
 </div>
 
-<div id="outline-container-orgf1d68de" class="outline-4">
-<h4 id="orgf1d68de">Twitter Data Filter / Parser</h4>
-<div class="outline-text-4" id="text-orgf1d68de">
+<div id="outline-container-org4736afc" class="outline-4">
+<h4 id="org4736afc">Twitter Data Filter / Parser</h4>
+<div class="outline-text-4" id="text-org4736afc">
 <p>
 Parsing the Twitter JSON data is one of the first things that needs to be done.
 This is accomplished with the use of the <a href="https://github.com/FasterXML/jackson-databind">JacksonXML
@@ -786,9 +786,9 @@ and <code>tweet_text</code>.
 </div>
 </div>
 
-<div id="outline-container-org992062e" class="outline-4">
-<h4 id="org992062e">Text Filtering</h4>
-<div class="outline-text-4" id="text-org992062e">
+<div id="outline-container-org355b0b2" class="outline-4">
+<h4 id="org355b0b2">Text Filtering</h4>
+<div class="outline-text-4" id="text-org355b0b2">
 <p>
 As previously mentioned, punctuation and other symbols are removed because they
 are just noise to the classifiers:
@@ -826,9 +826,9 @@ omit.
 </div>
 </div>
 
-<div id="outline-container-orgda84fea" class="outline-4">
-<h4 id="orgda84fea">Positive and Negative Scoring</h4>
-<div class="outline-text-4" id="text-orgda84fea">
+<div id="outline-container-org79f0d0d" class="outline-4">
+<h4 id="org79f0d0d">Positive and Negative Scoring</h4>
+<div class="outline-text-4" id="text-org79f0d0d">
 <p>
 Since the approach for scoring is based on a very limited
 <a href="http://en.wikipedia.org/wiki/Bag-of-words_model">Bag-of-words</a> model, Each class is put into its own bolt;
@@ -882,9 +882,9 @@ maintaining lists of positive and negative words, respectively.
 </div>
 </div>
 
-<div id="outline-container-orgb357aac" class="outline-4">
-<h4 id="orgb357aac">Joining Scores</h4>
-<div class="outline-text-4" id="text-orgb357aac">
+<div id="outline-container-org10e8ec1" class="outline-4">
+<h4 id="org10e8ec1">Joining Scores</h4>
+<div class="outline-text-4" id="text-org10e8ec1">
 <p>
 Joining in Storm isn't the most straight forward process to implement, although
 the process may be made simpler with the use of the
@@ -961,9 +961,9 @@ Where <code>emit</code> is defined simply by:
 </div>
 </div>
 
-<div id="outline-container-org5b9266d" class="outline-4">
-<h4 id="org5b9266d">Deciding the Winning Class</h4>
-<div class="outline-text-4" id="text-org5b9266d">
+<div id="outline-container-orgb417999" class="outline-4">
+<h4 id="orgb417999">Deciding the Winning Class</h4>
+<div class="outline-text-4" id="text-orgb417999">
 <p>
 To ensure the <a href="http://en.wikipedia.org/wiki/Single_responsibility_principle">Single responsibility principle</a> is not violated,
 joining and scoring are split into separate bolts, though the class of the
@@ -987,9 +987,9 @@ automatically handed to the negative class.
 </div>
 </div>
 
-<div id="outline-container-orgfcb9392" class="outline-4">
-<h4 id="orgfcb9392">Report the Results</h4>
-<div class="outline-text-4" id="text-orgfcb9392">
+<div id="outline-container-org94147b3" class="outline-4">
+<h4 id="org94147b3">Report the Results</h4>
+<div class="outline-text-4" id="text-org94147b3">
 <p>
 Finally, there are two bolts that will yield results: one that writes data to
 HDFS, and another to send the data to a web server.
@@ -1084,9 +1084,9 @@ servers to handle the increase in posts, and/ or a better batching process.
 </div>
 </div>
 
-<div id="outline-container-org2b68ceb" class="outline-2">
-<h2 id="org2b68ceb">Summary</h2>
-<div class="outline-text-2" id="text-org2b68ceb">
+<div id="outline-container-orga9493ac" class="outline-2">
+<h2 id="orga9493ac">Summary</h2>
+<div class="outline-text-2" id="text-orga9493ac">
 <p>
 The full source of this test application can be found on
 <a href="https://github.com/zdata-inc/StormSampleProject">Github</a>.
@@ -1105,9 +1105,9 @@ Streaming with Apache Spark.
 </div>
 </div>
 
-<div id="outline-container-orgfccd718" class="outline-2">
-<h2 id="orgfccd718">Related Links / References</h2>
-<div class="outline-text-2" id="text-orgfccd718">
+<div id="outline-container-org3c3a49a" class="outline-2">
+<h2 id="org3c3a49a">Related Links / References</h2>
+<div class="outline-text-2" id="text-org3c3a49a">
 <ul class="org-ul">
 <li><a href="https://storm.apache.org/">Apache Storm Project Page</a></li>
 
