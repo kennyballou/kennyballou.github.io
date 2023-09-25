@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-07-06 Thu 08:59 -->
+<!-- 2023-09-25 Mon 23:03 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>NixOS Setup and Configuration</title>
@@ -316,23 +316,23 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org315e531">NixOS</a></li>
-<li><a href="#org988ef77">System Installation and Configuration</a>
+<li><a href="#org18f6a0b">NixOS</a></li>
+<li><a href="#orgf721bfd">System Installation and Configuration</a>
 <ul>
-<li><a href="#org0ebac9b">Laptop</a>
+<li><a href="#org62a0f64">Laptop</a>
 <ul>
-<li><a href="#org9c9e905">Disk Preparation</a></li>
+<li><a href="#org48dcad4">Disk Preparation</a></li>
 </ul>
 </li>
-<li><a href="#org526e537">Desktop</a>
+<li><a href="#org77dd8f1">Desktop</a>
 <ul>
-<li><a href="#org433494a">Disk Preparation</a></li>
+<li><a href="#orgd27567f">Disk Preparation</a></li>
 </ul>
 </li>
-<li><a href="#org7e0b42e">NixOS Configuration and Installation</a>
+<li><a href="#org01c692a">NixOS Configuration and Installation</a>
 <ul>
-<li><a href="#orgb76c918">UEFI Notes</a></li>
-<li><a href="#org2cf6b03">Docker, <code>nftables</code>, and NixOS Notes</a></li>
+<li><a href="#org1b30c6b">UEFI Notes</a></li>
+<li><a href="#org039b138">Docker, <code>nftables</code>, and NixOS Notes</a></li>
 </ul>
 </li>
 </ul>
@@ -350,9 +350,9 @@ system from configuration.
 
 </div>
 
-<div id="outline-container-org315e531" class="outline-2">
-<h2 id="org315e531">NixOS</h2>
-<div class="outline-text-2" id="text-org315e531">
+<div id="outline-container-org18f6a0b" class="outline-2">
+<h2 id="org18f6a0b">NixOS</h2>
+<div class="outline-text-2" id="text-org18f6a0b">
 <p>
 <a href="https://kennyballou.com/blog/2019/07/nixos">Previously</a>, we introduced the concepts and ideas behind
 <a href="https://nixos.org/">NixOS</a> and by extension <a href="https://nixos.org/nix/">nix</a>, the package manager.  We,
@@ -361,9 +361,9 @@ therefore, will not be reiterating the discussion here.
 </div>
 </div>
 
-<div id="outline-container-org988ef77" class="outline-2">
-<h2 id="org988ef77">System Installation and Configuration</h2>
-<div class="outline-text-2" id="text-org988ef77">
+<div id="outline-container-orgf721bfd" class="outline-2">
+<h2 id="orgf721bfd">System Installation and Configuration</h2>
+<div class="outline-text-2" id="text-orgf721bfd">
 <p>
 Installing <a href="https://nixos.org/">NixOS</a> is fairly straight forward.  However, that is a
 relative term.  My experience is with <a href="https://www.archlinux.org/">Arch Linux</a> and more
@@ -397,14 +397,14 @@ I am assuming the use of the <a href="https://nixos.org/">NixOS</a> live-install
 </blockquote>
 </div>
 
-<div id="outline-container-org0ebac9b" class="outline-3">
-<h3 id="org0ebac9b">Laptop</h3>
-<div class="outline-text-3" id="text-org0ebac9b">
+<div id="outline-container-org62a0f64" class="outline-3">
+<h3 id="org62a0f64">Laptop</h3>
+<div class="outline-text-3" id="text-org62a0f64">
 </div>
 
-<div id="outline-container-org9c9e905" class="outline-4">
-<h4 id="org9c9e905">Disk Preparation</h4>
-<div class="outline-text-4" id="text-org9c9e905">
+<div id="outline-container-org48dcad4" class="outline-4">
+<h4 id="org48dcad4">Disk Preparation</h4>
+<div class="outline-text-4" id="text-org48dcad4">
 <blockquote>
 <p>
 I am assuming the use of the <a href="https://nixos.org/">NixOS</a> live installation medium.
@@ -618,9 +618,9 @@ installation, creating the folder trees as necessary to mount:
 </div>
 </div>
 
-<div id="outline-container-org526e537" class="outline-3">
-<h3 id="org526e537">Desktop</h3>
-<div class="outline-text-3" id="text-org526e537">
+<div id="outline-container-org77dd8f1" class="outline-3">
+<h3 id="org77dd8f1">Desktop</h3>
+<div class="outline-text-3" id="text-org77dd8f1">
 <p>
 The desktop preparation and configuration are very similar to the laptop.
 However, as noted above, the complication comes from the fact that instead of a
@@ -629,9 +629,9 @@ essentially the same.
 </p>
 </div>
 
-<div id="outline-container-org433494a" class="outline-4">
-<h4 id="org433494a">Disk Preparation</h4>
-<div class="outline-text-4" id="text-org433494a">
+<div id="outline-container-orgd27567f" class="outline-4">
+<h4 id="orgd27567f">Disk Preparation</h4>
+<div class="outline-text-4" id="text-orgd27567f">
 <p>
 We first start by securely erasing all the devices:
 </p>
@@ -843,9 +843,9 @@ desired path:
 </div>
 </div>
 
-<div id="outline-container-org7e0b42e" class="outline-3">
-<h3 id="org7e0b42e">NixOS Configuration and Installation</h3>
-<div class="outline-text-3" id="text-org7e0b42e">
+<div id="outline-container-org01c692a" class="outline-3">
+<h3 id="org01c692a">NixOS Configuration and Installation</h3>
+<div class="outline-text-3" id="text-org01c692a">
 <p>
 Once the disk preparation is complete, we can follow the steps from the
 <a href="https://nixos.org/nixos/manual/index.html">NixOS Manual</a> to create the initial configuration:
@@ -899,9 +899,9 @@ as if it was always there.
 </p>
 </div>
 
-<div id="outline-container-orgb76c918" class="outline-4">
-<h4 id="orgb76c918">UEFI Notes</h4>
-<div class="outline-text-4" id="text-orgb76c918">
+<div id="outline-container-org1b30c6b" class="outline-4">
+<h4 id="org1b30c6b">UEFI Notes</h4>
+<div class="outline-text-4" id="text-org1b30c6b">
 <p>
 Aside from learning about the <code>mdadm</code> metadata placement being an issue for
 <a href="https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface">UEFI</a> systems to boot, I also had played around with the various
@@ -978,9 +978,9 @@ search location for the motherboard, consulted before the NVRAM settings.
 </div>
 </div>
 
-<div id="outline-container-org2cf6b03" class="outline-4">
-<h4 id="org2cf6b03">Docker, <code>nftables</code>, and NixOS Notes</h4>
-<div class="outline-text-4" id="text-org2cf6b03">
+<div id="outline-container-org039b138" class="outline-4">
+<h4 id="org039b138">Docker, <code>nftables</code>, and NixOS Notes</h4>
+<div class="outline-text-4" id="text-org039b138">
 <p>
 In developing the system configuration, I came across some issues with respect
 to <a href="https://www.docker.com/">Docker</a> and <a href="https://wiki.nftables.org/wiki-nftables/index.php/Main_Page"><code>nftables</code></a>.  The
