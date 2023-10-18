@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-10-02 Mon 16:36 -->
+<!-- 2023-10-18 Wed 17:39 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>The Art of Manually Editing Hunks</title>
@@ -209,7 +209,7 @@
 <link rel="stylesheet" href="/css/simple.css" />
 <link rel="stylesheet" href="/css/simple.add.css" />
 <link rel="stylesheet" href="/css/katex.css" />
-<link rel="stylesheet" href="/css/fa-all.css" />
+<link rel="stylesheet" href="/css/all.min.css" />
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <script defer type="text/javascript" src="/js/katex.js"></script>
 <script defer type="text/javascript" src="/js/katex-render.js"></script>
@@ -288,6 +288,11 @@ for the JavaScript code in this tag.
      rel="noopener noreferrer">
     <i class="fade fab fa-bitbucket fa-1x"></i>
   </a>
+  <a href="https://orcid.org/0000-0002-6032-474X"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-orcid"></i>
+  </a>
   <a href="https://linkedin.com/in/kennyballou"
      target="_blank"
      rel="noopener noreferrer">
@@ -296,7 +301,7 @@ for the JavaScript code in this tag.
   <a href="/support.html">
     <i class="fade fas fa-heart fa-1x"></i>
   </a>
-  <a href="/resume.pdf"
+  <a href="/cv.pdf"
      target="_blank">
     <i class="fade far fa-file-pdf"></i>
   </a>
@@ -316,9 +321,9 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org1d3300f">Short Introduction to Unified Diff</a></li>
-<li><a href="#org88aa024">Motivation</a></li>
-<li><a href="#org6d67bfa">Hunk Editing Example</a></li>
+<li><a href="#org47fc3df">Short Introduction to Unified Diff</a></li>
+<li><a href="#orgc05738d">Motivation</a></li>
+<li><a href="#org8c8897d">Hunk Editing Example</a></li>
 </ul>
 </div>
 </div>
@@ -339,9 +344,9 @@ or <a href="https://www.kernel.org/pub/software/scm/git/docs/git-diff.html">git-
 <code>vimdiff</code>, etc.
 </p>
 
-<div id="outline-container-org1d3300f" class="outline-2">
-<h2 id="org1d3300f">Short Introduction to Unified Diff</h2>
-<div class="outline-text-2" id="text-org1d3300f">
+<div id="outline-container-org47fc3df" class="outline-2">
+<h2 id="org47fc3df">Short Introduction to Unified Diff</h2>
+<div class="outline-text-2" id="text-org47fc3df">
 <p>
 A unified diff may look something similar to (freely copied from the
 <code>diffutils</code> manual):
@@ -415,9 +420,9 @@ applied.
 </div>
 </div>
 
-<div id="outline-container-org88aa024" class="outline-2">
-<h2 id="org88aa024">Motivation</h2>
-<div class="outline-text-2" id="text-org88aa024">
+<div id="outline-container-orgc05738d" class="outline-2">
+<h2 id="orgc05738d">Motivation</h2>
+<div class="outline-text-2" id="text-orgc05738d">
 <p>
 What might be the motivation for even wanting to edit hunk files? The biggest I
 see is when using <code>git-add --patch</code>.  Particularly when the changes run
@@ -449,9 +454,9 @@ no changes are lost.
 </div>
 </div>
 
-<div id="outline-container-org6d67bfa" class="outline-2">
-<h2 id="org6d67bfa">Hunk Editing Example</h2>
-<div class="outline-text-2" id="text-org6d67bfa">
+<div id="outline-container-org8c8897d" class="outline-2">
+<h2 id="org8c8897d">Hunk Editing Example</h2>
+<div class="outline-text-2" id="text-org8c8897d">
 <p>
 Let's walk through an example of staging some changes, and manually editing a
 hunk to stage them into the patches we want.

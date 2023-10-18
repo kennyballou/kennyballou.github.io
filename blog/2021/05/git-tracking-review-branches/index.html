@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-10-02 Mon 16:36 -->
+<!-- 2023-10-18 Wed 17:39 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Tracking Review Branches with Git</title>
@@ -209,7 +209,7 @@
 <link rel="stylesheet" href="/css/simple.css" />
 <link rel="stylesheet" href="/css/simple.add.css" />
 <link rel="stylesheet" href="/css/katex.css" />
-<link rel="stylesheet" href="/css/fa-all.css" />
+<link rel="stylesheet" href="/css/all.min.css" />
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <script defer type="text/javascript" src="/js/katex.js"></script>
 <script defer type="text/javascript" src="/js/katex-render.js"></script>
@@ -288,6 +288,11 @@ for the JavaScript code in this tag.
      rel="noopener noreferrer">
     <i class="fade fab fa-bitbucket fa-1x"></i>
   </a>
+  <a href="https://orcid.org/0000-0002-6032-474X"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-orcid"></i>
+  </a>
   <a href="https://linkedin.com/in/kennyballou"
      target="_blank"
      rel="noopener noreferrer">
@@ -296,7 +301,7 @@ for the JavaScript code in this tag.
   <a href="/support.html">
     <i class="fade fas fa-heart fa-1x"></i>
   </a>
-  <a href="/resume.pdf"
+  <a href="/cv.pdf"
      target="_blank">
     <i class="fade far fa-file-pdf"></i>
   </a>
@@ -316,13 +321,13 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org802b1a4">GitHub</a></li>
-<li><a href="#orgcdf90a2">GitLab</a></li>
-<li><a href="#org3463c6c">Local Branch Prefix</a></li>
-<li><a href="#org6ce680e">Branch Discovery</a></li>
-<li><a href="#orgafe5724">Manual Checkout</a></li>
-<li><a href="#orga72a73b">Repositories with Many Pull Requests</a></li>
-<li><a href="#org96dc21d">tl;dr:</a></li>
+<li><a href="#org12e8ee1">GitHub</a></li>
+<li><a href="#org28d9099">GitLab</a></li>
+<li><a href="#orgce02352">Local Branch Prefix</a></li>
+<li><a href="#org4c18598">Branch Discovery</a></li>
+<li><a href="#org124954d">Manual Checkout</a></li>
+<li><a href="#orgac853f6">Repositories with Many Pull Requests</a></li>
+<li><a href="#org4c46fee">tl;dr:</a></li>
 </ul>
 </div>
 </div>
@@ -346,9 +351,9 @@ kernel development etiquette, what <a href="https://git-scm.com/">https://git-sc
 </p>
 </blockquote>
 
-<div id="outline-container-org802b1a4" class="outline-2">
-<h2 id="org802b1a4">GitHub</h2>
-<div class="outline-text-2" id="text-org802b1a4">
+<div id="outline-container-org12e8ee1" class="outline-2">
+<h2 id="org12e8ee1">GitHub</h2>
+<div class="outline-text-2" id="text-org12e8ee1">
 <p>
 If we are working with a <a href="https://github.com">GitHub</a> repository, we can run the following command,
 assuming <code>origin</code> is the remote where pull requests are submitted:
@@ -379,9 +384,9 @@ The full <code>remote.origin</code> section should look similar to the following
 </div>
 </div>
 
-<div id="outline-container-orgcdf90a2" class="outline-2">
-<h2 id="orgcdf90a2">GitLab</h2>
-<div class="outline-text-2" id="text-orgcdf90a2">
+<div id="outline-container-org28d9099" class="outline-2">
+<h2 id="org28d9099">GitLab</h2>
+<div class="outline-text-2" id="text-org28d9099">
 <p>
 Similarly, if we are working with <a href="https://gitlab.com">GitLab</a> repositories, we can use a similar
 command to accomplish the same result, again assuming <code>origin</code> as the remote:
@@ -407,9 +412,9 @@ following:
 </div>
 </div>
 
-<div id="outline-container-org3463c6c" class="outline-2">
-<h2 id="org3463c6c">Local Branch Prefix</h2>
-<div class="outline-text-2" id="text-org3463c6c">
+<div id="outline-container-orgce02352" class="outline-2">
+<h2 id="orgce02352">Local Branch Prefix</h2>
+<div class="outline-text-2" id="text-orgce02352">
 <p>
 The local branch prefix can be set to any value that is desired.  Don't like
 <code>origin/pull/${pr}</code>?  Change it.  A <a href="https://gist.github.com/piscisaureus/3342247">common option</a> is to use <code>origin/pr</code> instead.
@@ -437,9 +442,9 @@ these references are ambiguous.
 </div>
 </div>
 
-<div id="outline-container-org6ce680e" class="outline-2">
-<h2 id="org6ce680e">Branch Discovery</h2>
-<div class="outline-text-2" id="text-org6ce680e">
+<div id="outline-container-org4c18598" class="outline-2">
+<h2 id="org4c18598">Branch Discovery</h2>
+<div class="outline-text-2" id="text-org4c18598">
 <p>
 When using a different forge than <a href="https://github.com">GitHub</a> or <a href="https://gitlab.com">GitLab</a>, it may be possible to
 discover the appropriate pattern for references to pull requests.
@@ -497,9 +502,9 @@ path.
 </div>
 </div>
 
-<div id="outline-container-orgafe5724" class="outline-2">
-<h2 id="orgafe5724">Manual Checkout</h2>
-<div class="outline-text-2" id="text-orgafe5724">
+<div id="outline-container-org124954d" class="outline-2">
+<h2 id="org124954d">Manual Checkout</h2>
+<div class="outline-text-2" id="text-org124954d">
 <p>
 Without downloading and keeping track of <i>all</i> pull request branches, individual
 pull requests can be checked out as well.  However, doing so requires an extra
@@ -527,9 +532,9 @@ git checkout -b pr/${<span style="font-weight: bold; font-style: italic;">pr</sp
 </div>
 </div>
 
-<div id="outline-container-orga72a73b" class="outline-2">
-<h2 id="orga72a73b">Repositories with Many Pull Requests</h2>
-<div class="outline-text-2" id="text-orga72a73b">
+<div id="outline-container-orgac853f6" class="outline-2">
+<h2 id="orgac853f6">Repositories with Many Pull Requests</h2>
+<div class="outline-text-2" id="text-orgac853f6">
 <p>
 While adding the extra fetch and branch prefix is a nice way to automatically
 track pull requests against a repository, the repository may have more pull
@@ -573,9 +578,9 @@ same fetch trick as above.
 </div>
 </div>
 
-<div id="outline-container-org96dc21d" class="outline-2">
-<h2 id="org96dc21d">tl;dr:</h2>
-<div class="outline-text-2" id="text-org96dc21d">
+<div id="outline-container-org4c46fee" class="outline-2">
+<h2 id="org4c46fee">tl;dr:</h2>
+<div class="outline-text-2" id="text-org4c46fee">
 <p>
 To automatically fetch pull requests from <a href="https://github.com">GitHub</a> repositories, run the
 following command, assuming <code>upstream</code> is the remote where pull requests are

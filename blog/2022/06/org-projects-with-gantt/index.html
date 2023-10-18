@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-10-02 Mon 16:36 -->
+<!-- 2023-10-18 Wed 17:39 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Org Projects with Gantt Charts</title>
@@ -207,7 +207,7 @@
 <link rel="stylesheet" href="/css/simple.css" />
 <link rel="stylesheet" href="/css/simple.add.css" />
 <link rel="stylesheet" href="/css/katex.css" />
-<link rel="stylesheet" href="/css/fa-all.css" />
+<link rel="stylesheet" href="/css/all.min.css" />
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <script defer type="text/javascript" src="/js/katex.js"></script>
 <script defer type="text/javascript" src="/js/katex-render.js"></script>
@@ -308,6 +308,11 @@ for the JavaScript code in this tag.
      rel="noopener noreferrer">
     <i class="fade fab fa-bitbucket fa-1x"></i>
   </a>
+  <a href="https://orcid.org/0000-0002-6032-474X"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-orcid"></i>
+  </a>
   <a href="https://linkedin.com/in/kennyballou"
      target="_blank"
      rel="noopener noreferrer">
@@ -316,7 +321,7 @@ for the JavaScript code in this tag.
   <a href="/support.html">
     <i class="fade fas fa-heart fa-1x"></i>
   </a>
-  <a href="/resume.pdf"
+  <a href="/cv.pdf"
      target="_blank">
     <i class="fade far fa-file-pdf"></i>
   </a>
@@ -336,17 +341,17 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org3b7d68a">Background</a>
+<li><a href="#orgf875555">Background</a>
 <ul>
-<li><a href="#orgb9c8c2d">Prior Art</a></li>
-<li><a href="#org3c71a00">Rationale</a></li>
+<li><a href="#orgf3802f6">Prior Art</a></li>
+<li><a href="#org75a2a56">Rationale</a></li>
 </ul>
 </li>
-<li><a href="#orgf612029">Implementation</a></li>
-<li><a href="#org20379f8">Usage</a></li>
-<li><a href="#org8c3abe4">Examples</a></li>
-<li><a href="#org00c9960">Limitations</a></li>
-<li><a href="#org5a49b25">Future Work/Improvements</a></li>
+<li><a href="#orge12246e">Implementation</a></li>
+<li><a href="#orgc26b7da">Usage</a></li>
+<li><a href="#orgf25c9c6">Examples</a></li>
+<li><a href="#org957009a">Limitations</a></li>
+<li><a href="#org67bb03f">Future Work/Improvements</a></li>
 </ul>
 </div>
 </div>
@@ -376,9 +381,9 @@ breakdown, but the point remains, some amount of tasks left over as a whole do
 not communicate the holistic progress and prediction towards completion.
 </p>
 
-<div id="outline-container-org3b7d68a" class="outline-2">
-<h2 id="org3b7d68a">Background</h2>
-<div class="outline-text-2" id="text-org3b7d68a">
+<div id="outline-container-orgf875555" class="outline-2">
+<h2 id="orgf875555">Background</h2>
+<div class="outline-text-2" id="text-orgf875555">
 <p>
 <a href="https://en.wikipedia.org/wiki/Gantt_chart">Gantt charts</a> model project schedules as a sort of bar chart.  Dependencies and
 links can be shown to draw the critical path of the project and the timeline of
@@ -394,9 +399,9 @@ some chosen granularity of time units such as days, months, or years.
 </p>
 </div>
 
-<div id="outline-container-orgb9c8c2d" class="outline-3">
-<h3 id="orgb9c8c2d">Prior Art</h3>
-<div class="outline-text-3" id="text-orgb9c8c2d">
+<div id="outline-container-orgf3802f6" class="outline-3">
+<h3 id="orgf3802f6">Prior Art</h3>
+<div class="outline-text-3" id="text-orgf3802f6">
 <p>
 There are several existing projects which attempt to generate <a href="https://en.wikipedia.org/wiki/Gantt_chart">Gantt charts</a> from
 <a href="https://orgmode.org/">Org TODO entries</a>.  Specifically, <a href="https://orgmode.org/">Org mode</a> supports exporting directly to
@@ -406,9 +411,9 @@ third-party packages such as <a href="https://github.com/legalnonsense/elgantt/"
 </div>
 </div>
 
-<div id="outline-container-org3c71a00" class="outline-3">
-<h3 id="org3c71a00">Rationale</h3>
-<div class="outline-text-3" id="text-org3c71a00">
+<div id="outline-container-org75a2a56" class="outline-3">
+<h3 id="org75a2a56">Rationale</h3>
+<div class="outline-text-3" id="text-org75a2a56">
 <p>
 Given that there are existing solutions to generating <a href="https://en.wikipedia.org/wiki/Gantt_chart">Gantt charts</a> from <a href="https://orgmode.org/">Org
 mode</a> entries, why create another one?  The other solutions require either the
@@ -420,9 +425,9 @@ information already present entries to generate the charts.
 </div>
 </div>
 
-<div id="outline-container-orgf612029" class="outline-2">
-<h2 id="orgf612029">Implementation</h2>
-<div class="outline-text-2" id="text-orgf612029">
+<div id="outline-container-orge12246e" class="outline-2">
+<h2 id="orge12246e">Implementation</h2>
+<div class="outline-text-2" id="text-orge12246e">
 <blockquote>
 <p>
 Currently, the implementation is not packaged, but that may change at a future
@@ -582,9 +587,9 @@ no duration to the tasks.
 </div>
 </div>
 
-<div id="outline-container-org20379f8" class="outline-2">
-<h2 id="org20379f8">Usage</h2>
-<div class="outline-text-2" id="text-org20379f8">
+<div id="outline-container-orgc26b7da" class="outline-2">
+<h2 id="orgc26b7da">Usage</h2>
+<div class="outline-text-2" id="text-orgc26b7da">
 <p>
 Add the following block to the subtree of entries.
 </p>
@@ -606,9 +611,9 @@ either be "days" or "months".
 </div>
 </div>
 
-<div id="outline-container-org8c3abe4" class="outline-2">
-<h2 id="org8c3abe4">Examples</h2>
-<div class="outline-text-2" id="text-org8c3abe4">
+<div id="outline-container-orgf25c9c6" class="outline-2">
+<h2 id="orgf25c9c6">Examples</h2>
+<div class="outline-text-2" id="text-orgf25c9c6">
 <p>
 To highlight how this function works, we consider the following example <a href="https://orgmode.org/">Org</a>
 <a href="https://kennyballou.com/blog/2022/06/org-projects-with-gantt/example.org">file</a>.  At the top level, there is an entry for all projects.  Because this is
@@ -741,9 +746,9 @@ Sorry, your browser does not support SVG.</object>
 </div>
 </div>
 
-<div id="outline-container-org00c9960" class="outline-2">
-<h2 id="org00c9960">Limitations</h2>
-<div class="outline-text-2" id="text-org00c9960">
+<div id="outline-container-org957009a" class="outline-2">
+<h2 id="org957009a">Limitations</h2>
+<div class="outline-text-2" id="text-org957009a">
 <p>
 This process is currently pretty limited, see future work for improvements.
 One notable limitation, however, to make the charts fit on the page, the titles
@@ -755,9 +760,9 @@ improved.
 </div>
 </div>
 
-<div id="outline-container-org5a49b25" class="outline-2">
-<h2 id="org5a49b25">Future Work/Improvements</h2>
-<div class="outline-text-2" id="text-org5a49b25">
+<div id="outline-container-org67bb03f" class="outline-2">
+<h2 id="org67bb03f">Future Work/Improvements</h2>
+<div class="outline-text-2" id="text-org67bb03f">
 <p>
 The tasks can be automatically linked via <code>\ganttlinkedbar</code> and this would be
 natively supported by <a href="https://orgmode.org/manual/TODO-dependencies.html#TODO-dependencies">TODO dependencies</a>.  Alternatively, adding links could be

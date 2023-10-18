@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-10-02 Mon 16:36 -->
+<!-- 2023-10-18 Wed 17:39 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Vim Tips 2015-05-07</title>
@@ -209,7 +209,7 @@
 <link rel="stylesheet" href="/css/simple.css" />
 <link rel="stylesheet" href="/css/simple.add.css" />
 <link rel="stylesheet" href="/css/katex.css" />
-<link rel="stylesheet" href="/css/fa-all.css" />
+<link rel="stylesheet" href="/css/all.min.css" />
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <script defer type="text/javascript" src="/js/katex.js"></script>
 <script defer type="text/javascript" src="/js/katex-render.js"></script>
@@ -288,6 +288,11 @@ for the JavaScript code in this tag.
      rel="noopener noreferrer">
     <i class="fade fab fa-bitbucket fa-1x"></i>
   </a>
+  <a href="https://orcid.org/0000-0002-6032-474X"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-orcid"></i>
+  </a>
   <a href="https://linkedin.com/in/kennyballou"
      target="_blank"
      rel="noopener noreferrer">
@@ -296,7 +301,7 @@ for the JavaScript code in this tag.
   <a href="/support.html">
     <i class="fade fas fa-heart fa-1x"></i>
   </a>
-  <a href="/resume.pdf"
+  <a href="/cv.pdf"
      target="_blank">
     <i class="fade far fa-file-pdf"></i>
   </a>
@@ -316,16 +321,16 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org68dde10">Visual Mode</a>
+<li><a href="#org1e70918">Visual Mode</a>
 <ul>
-<li><a href="#orgd6b5092">Visual Mode Basics</a></li>
-<li><a href="#orgf85ce36">Some Examples</a></li>
+<li><a href="#org80dd784">Visual Mode Basics</a></li>
+<li><a href="#org1c02a50">Some Examples</a></li>
 </ul>
 </li>
-<li><a href="#orgd7d1e0a">Macros</a>
+<li><a href="#org15e42be">Macros</a>
 <ul>
-<li><a href="#orgf65264a">Macro Basics</a></li>
-<li><a href="#org49325a9">Some Examples</a></li>
+<li><a href="#org14c3342">Macro Basics</a></li>
+<li><a href="#orgfc6a08d">Some Examples</a></li>
 </ul>
 </li>
 </ul>
@@ -346,9 +351,9 @@ More often than not, the visual selection mode and one-off macros are a better
 choice.
 </p>
 
-<div id="outline-container-org68dde10" class="outline-2">
-<h2 id="org68dde10">Visual Mode</h2>
-<div class="outline-text-2" id="text-org68dde10">
+<div id="outline-container-org1e70918" class="outline-2">
+<h2 id="org1e70918">Visual Mode</h2>
+<div class="outline-text-2" id="text-org1e70918">
 <p>
 I won't go into all of the cool things that can be accomplished with Vim's
 visual mode, but I will showcase a few examples where the visual editor is
@@ -361,9 +366,9 @@ of changes, quickly.
 </p>
 </div>
 
-<div id="outline-container-orgd6b5092" class="outline-3">
-<h3 id="orgd6b5092">Visual Mode Basics</h3>
-<div class="outline-text-3" id="text-orgd6b5092">
+<div id="outline-container-org80dd784" class="outline-3">
+<h3 id="org80dd784">Visual Mode Basics</h3>
+<div class="outline-text-3" id="text-org80dd784">
 <p>
 To enter visual mode, it is as simple as pressing <code>^v</code> or <code>ctrl-v</code>.  Next you
 will want to select what you want to change with your typical movement commands
@@ -376,9 +381,9 @@ a few.
 </div>
 </div>
 
-<div id="outline-container-orgf85ce36" class="outline-3">
-<h3 id="orgf85ce36">Some Examples</h3>
-<div class="outline-text-3" id="text-orgf85ce36">
+<div id="outline-container-org1c02a50" class="outline-3">
+<h3 id="org1c02a50">Some Examples</h3>
+<div class="outline-text-3" id="text-org1c02a50">
 <p>
 For (a bad) example, if you need to comment out a contiguous set of lines, you
 can easily accomplish this with the visual mode.
@@ -436,9 +441,9 @@ For more information on Visual Mode, you can check Vim's
 </div>
 </div>
 
-<div id="outline-container-orgd7d1e0a" class="outline-2">
-<h2 id="orgd7d1e0a">Macros</h2>
-<div class="outline-text-2" id="text-orgd7d1e0a">
+<div id="outline-container-org15e42be" class="outline-2">
+<h2 id="org15e42be">Macros</h2>
+<div class="outline-text-2" id="text-org15e42be">
 <p>
 For when visual mode may not be enough or when the change is repetitive in
 operations but not in columns or what have you, it's time to bust out the
@@ -447,9 +452,9 @@ to record and store each macro.
 </p>
 </div>
 
-<div id="outline-container-orgf65264a" class="outline-3">
-<h3 id="orgf65264a">Macro Basics</h3>
-<div class="outline-text-3" id="text-orgf65264a">
+<div id="outline-container-org14c3342" class="outline-3">
+<h3 id="org14c3342">Macro Basics</h3>
+<div class="outline-text-3" id="text-org14c3342">
 <p>
 To record a macro, it's as simple as <code>q&lt;register-label&gt;&lt;commands&gt;q</code>.  That is,
 press <code>q</code>, select a register (a-z1-0), enter your commands as if you were using
@@ -465,9 +470,9 @@ You can also replay the last macro with <code>@@</code>.
 </div>
 </div>
 
-<div id="outline-container-org49325a9" class="outline-3">
-<h3 id="org49325a9">Some Examples</h3>
-<div class="outline-text-3" id="text-org49325a9">
+<div id="outline-container-orgfc6a08d" class="outline-3">
+<h3 id="orgfc6a08d">Some Examples</h3>
+<div class="outline-text-3" id="text-orgfc6a08d">
 <p>
 As a simplistic example, we can use a macro to convert it into, say, JSON (this
 example is clearly taken from the <a href="http://vim.wikia.com/wiki/Macros">Vim Wikia</a>).

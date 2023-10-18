@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-10-02 Mon 16:36 -->
+<!-- 2023-10-18 Wed 17:39 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>AWS ECS Container Overrides for Events Targets</title>
@@ -209,7 +209,7 @@
 <link rel="stylesheet" href="/css/simple.css" />
 <link rel="stylesheet" href="/css/simple.add.css" />
 <link rel="stylesheet" href="/css/katex.css" />
-<link rel="stylesheet" href="/css/fa-all.css" />
+<link rel="stylesheet" href="/css/all.min.css" />
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <script defer type="text/javascript" src="/js/katex.js"></script>
 <script defer type="text/javascript" src="/js/katex-render.js"></script>
@@ -288,6 +288,11 @@ for the JavaScript code in this tag.
      rel="noopener noreferrer">
     <i class="fade fab fa-bitbucket fa-1x"></i>
   </a>
+  <a href="https://orcid.org/0000-0002-6032-474X"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-orcid"></i>
+  </a>
   <a href="https://linkedin.com/in/kennyballou"
      target="_blank"
      rel="noopener noreferrer">
@@ -296,7 +301,7 @@ for the JavaScript code in this tag.
   <a href="/support.html">
     <i class="fade fas fa-heart fa-1x"></i>
   </a>
-  <a href="/resume.pdf"
+  <a href="/cv.pdf"
      target="_blank">
     <i class="fade far fa-file-pdf"></i>
   </a>
@@ -316,10 +321,10 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org6dacc16">Problem</a></li>
-<li><a href="#org2940e00">Exploring the Problem</a></li>
-<li><a href="#org569f885">Solution</a></li>
-<li><a href="#orgee599c2">Conclusion</a></li>
+<li><a href="#org6221aa0">Problem</a></li>
+<li><a href="#org9a74ca6">Exploring the Problem</a></li>
+<li><a href="#org7e0ed07">Solution</a></li>
+<li><a href="#orgc41b093">Conclusion</a></li>
 </ul>
 </div>
 </div>
@@ -348,9 +353,9 @@ When the documentation fails you, use the source.
 What to do when there isn't source (code) available?
 </p>
 
-<div id="outline-container-org6dacc16" class="outline-2">
-<h2 id="org6dacc16">Problem</h2>
-<div class="outline-text-2" id="text-org6dacc16">
+<div id="outline-container-org6221aa0" class="outline-2">
+<h2 id="org6221aa0">Problem</h2>
+<div class="outline-text-2" id="text-org6221aa0">
 <p>
 While attempting to make some infrastucture changes, I wanted to create a
 scheduled <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/WhatIsCloudWatchEvents.html">event</a> to target a specific
@@ -411,9 +416,9 @@ happens.
 </div>
 </div>
 
-<div id="outline-container-org2940e00" class="outline-2">
-<h2 id="org2940e00">Exploring the Problem</h2>
-<div class="outline-text-2" id="text-org2940e00">
+<div id="outline-container-org9a74ca6" class="outline-2">
+<h2 id="org9a74ca6">Exploring the Problem</h2>
+<div class="outline-text-2" id="text-org9a74ca6">
 <blockquote>
 <p>
 Otherwising shooting in the dark&#x2026;
@@ -490,9 +495,9 @@ hand.
 </div>
 </div>
 
-<div id="outline-container-org569f885" class="outline-2">
-<h2 id="org569f885">Solution</h2>
-<div class="outline-text-2" id="text-org569f885">
+<div id="outline-container-org7e0ed07" class="outline-2">
+<h2 id="org7e0ed07">Solution</h2>
+<div class="outline-text-2" id="text-org7e0ed07">
 <p>
 However, the "Input" key is a string encoded JSON structure, so the full
 solution is the following snippet:
@@ -530,9 +535,9 @@ This structure may seem familiar.  This structure is documented in the
 </div>
 </div>
 
-<div id="outline-container-orgee599c2" class="outline-2">
-<h2 id="orgee599c2">Conclusion</h2>
-<div class="outline-text-2" id="text-orgee599c2">
+<div id="outline-container-orgc41b093" class="outline-2">
+<h2 id="orgc41b093">Conclusion</h2>
+<div class="outline-text-2" id="text-orgc41b093">
 <p>
 The connection between "Input" is a JSON encoded string and pass the
 "containerOverrides" structure is missing or not obvious at best.  Hopefully,
