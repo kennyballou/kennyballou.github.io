@@ -6,11 +6,9 @@
 <!-- 2023-12-28 Thu 20:21 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Emacs Debugging with Default Drop Firewall Policies and IPv6</title>
+<title>Passive Mail Server Fingerprinting with DNS</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="kb" />
-<meta name="description" content="A rambling in self-inflicted suffering with Java, Emacs, DAP, and Firewalls!"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -316,157 +314,119 @@ for the JavaScript code in this tag.
 </nav>
 </header>
 <div id="main">
-<h1 class="title">Emacs Debugging with Default Drop Firewall Policies and IPv6</h1>
+<h1 class="title">Passive Mail Server Fingerprinting with DNS</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgdd7e0dc">Confluence of Issues</a></li>
-<li><a href="#orga842c3b">IPv6+4</a></li>
-<li><a href="#orgd21ca47">TL;DR:</a></li>
+<li><a href="#orgd9ea256">Paranoid Queries</a></li>
+<li><a href="#org5ab3fee">Legal Caveats and Caution</a></li>
 </ul>
 </div>
 </div>
 <div class="PREVIEW">
 <p>
-Debugging <a href="https://www.oracle.com/java/">Java</a> programs in <a href="https://www.gnu.org/software/emacs/">Emacs</a> has been a goal and overall feature I have
-wanted for some time.  However, every time I've reached for it, <code>dap-java-debug</code>
-demonstrated an unbearably slow startup.  So much so, that it was often faster
-and more productive to launch <a href="https://www.jetbrains.com/idea/">IntelliJ</a>, fight <a href="https://nixos.org/">Nix</a> and <a href="https://www.jetbrains.com/idea/">IntelliJ</a> to load the
-project correctly, and launch the debugger from <a href="https://www.jetbrains.com/idea/">IntelliJ</a>.
-</p>
-
-<p>
-No more.  The pain is gone, forced on by fighting <a href="https://www.jetbrains.com/idea/">IntelliJ</a> to load one too many
-times.
-</p>
-
-<p>
-tl;dr: self-inflicted pain is a strange way to deeply learn.
+We can easily identify mail servers with <a href="https://www.wikiwand.com/en/MX_record">MX records</a>.  Given only a server name
+for a particular organization, we can passively fingerprint the email server
+with a simple DNS query.
 </p>
 
 </div>
 
 <p>
-Before programming took over, I wanted to be a security expert/red
-team/hacker.  This lead me to some strange places, one of which is the desire
-to <del>put hot glue in my Ethernet ports and disable WiFi</del> have strict firewall
-rules.  Specifically, default policy drop on all tables, including outbound.
-</p>
-
-<p>
-As a result of my current research, I've been predominately in <a href="https://www.oracle.com/java/">Java</a> land.  I'm
-using <a href="https://www.gnu.org/software/emacs/">Emacs</a> with <a href="https://langserver.org/">LSP</a> as my full-time <a href="https://www.oracle.com/java/">Java</a> editor and it has not been without
-issue.  Although, it's been far more comfortable and reliable than the other
-two big IDE choices that exist (likely as a result of recursive suffering).
-That said, debugging <a href="https://www.oracle.com/java/">Java</a> programs has been a non-starter with <a href="https://www.gnu.org/software/emacs/">Emacs</a> and <a href="https://microsoft.github.io/debug-adapter-protocol/">DAP</a>.
-I could not explain why it would take more than 2 minutes to launch and connect
-to a debugging session facilitated by <a href="https://microsoft.github.io/debug-adapter-protocol/">DAP</a>.
-</p>
-
-<div id="outline-container-orgdd7e0dc" class="outline-2">
-<h2 id="orgdd7e0dc">Confluence of Issues</h2>
-<div class="outline-text-2" id="text-orgdd7e0dc">
-<p>
-Before using <a href="https://langserver.org/">LSP</a>, I configured <a href="https://github.com/mpdel/mpdel">mpdel</a> to control mpd from within <a href="https://www.gnu.org/software/emacs/">Emacs</a>.  It was
-fantastic except that initial connection.  The connection would take several
-minutes and lockup <a href="https://www.gnu.org/software/emacs/">Emacs</a> entirely.  I submitted a <a href="https://github.com/mpdel/libmpdel/commit/124e72daf489fd46217236d2ada5c6963eb2cb65">patch</a> to <a href="https://github.com/mpdel/libmpdel">libmdel</a> to always
-use the <a href="https://www.gnu.org/software/emacs/">Emacs</a> <code>make-network-process</code> (implemented in C) over <code>open-network-stream</code>
-(implemented in Elisp).  I had concluded that the performance issues were
-entirely Elisp's fault, and therefore moved to replace it.  It worked.  But I
-couldn't exactly explain why other than the intuition that C is faster than
-Elisp (likely a sound assumption, but is not necessarily the culprit of bad
-performance).
-</p>
-
-<p>
-Needing to debug some code and unable to use <a href="https://www.jetbrains.com/idea/">IntelliJ</a>, I reluctantly attempted
-to use <code>dap-java-debug-test</code>.  It was slow.  Each iteration of stopping and
-starting causing more delays and fragmented thinking.  It would eventually
-work, but it was impeding progress.
-</p>
-
-<p>
-To resolve the issue, I thought perhaps, I needed to patch <a href="https://langserver.org/">LSP</a> and/or <a href="https://microsoft.github.io/debug-adapter-protocol/">DAP</a> to
-use <code>make-network-process</code> over their current usage of <code>open-network-stream</code>
-similar to <a href="https://github.com/mpdel/libmpdel">libmpdel</a>.  Then, I re-read my commit message for <a href="https://github.com/mpdel/libmpdel/commit/124e72daf489fd46217236d2ada5c6963eb2cb65">libmpdel</a>.
-</p>
-
-<blockquote>
-<p>
-Always use make-network-process
-</p>
-
-<p>
-When making a connection to MPD, whether via local UNIX socket, or TCP
-stream, `make-network-process` tends to be faster at establishing the
-connection.  In my limited testing, `make-network-process` tends to be
-dramatically faster than the `open-network-stream` function.  Of course,
-without passing `:family 'ipv4` to `make-network-process`, the two
-functions exhibit similar performance, so it's not as simple as "one is
-written in C and the other is written in ELisp."
-</p>
-</blockquote>
-
-<p>
-There it was, staring me in the face.  <code>:family 'ipv4</code>.  The issue isn't C versus
-Elisp, as noted, it's the family of the connection.
-</p>
-</div>
-</div>
-
-<div id="outline-container-orga842c3b" class="outline-2">
-<h2 id="orga842c3b">IPv6+4</h2>
-<div class="outline-text-2" id="text-orga842c3b">
-<p>
-Having not been bitten by the IPv6 shark in a while, I've neglected any attempt
-to disable it or fiddle with it.  It simply hasn't been relevant to my regular
-development activities.  But re-reading the commit message reminded me, the
-issue may be a result of IPv6 being enabled on my machine.  I first thought to
-disable IPv6 to see if that would resolve the issue.  But ultimately I had
-rechecked my firewall rules instead.
-</p>
-
-<p>
-In the output chain, there was a lonely IPv4 rule:
+In the quiet part of information gathering phase for security research, it is
+important to gather as much information as possible <b>without</b> contacting the
+organization, or its servers.  Since email is such an important part of any
+organization's operation, we may want to know who or what is operating their
+mail servers, and where those server(s) might be.  Furthermore, since many
+people now outsource email hosting, we can trivially identify the hosting
+provider for most organizations using a simple DNS query:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-nft">ip daddr 127.0.0.0/8 counter accept
+<pre class="src src-bash">guix shell bind:utils -- dig MX kennyballou.com
+</pre>
+</div>
+
+<pre class="example">
+
+; &lt;&lt;&gt;&gt; DiG 9.16.38 &lt;&lt;&gt;&gt; MX kennyballou.com
+;; global options: +cmd
+;; Got answer:
+;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 58490
+;; flags: qr rd ra; QUERY: 1, ANSWER: 5, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 4096
+;; QUESTION SECTION:
+;kennyballou.com.		IN	MX
+
+;; ANSWER SECTION:
+kennyballou.com.	86400	IN	MX	1 aspmx.l.google.com.
+kennyballou.com.	86400	IN	MX	5 alt1.aspmx.l.google.com.
+kennyballou.com.	86400	IN	MX	5 alt2.aspmx.l.google.com.
+kennyballou.com.	86400	IN	MX	10 alt3.aspmx.l.google.com.
+kennyballou.com.	86400	IN	MX	10 alt4.aspmx.l.google.com.
+
+;; Query time: 48 msec
+...
+</pre>
+
+<p>
+From the output, we can easily identify that Google is the mail provider for
+this blog's domain.  Microsoft hosted mail will be identified by subdomains
+such as <code>outlook.com</code> or <code>office365.us</code> or similar.
+</p>
+
+<p>
+As you can see, it is really not that difficult.
+</p>
+
+<div id="outline-container-orgd9ea256" class="outline-2">
+<h2 id="orgd9ea256">Paranoid Queries</h2>
+<div class="outline-text-2" id="text-orgd9ea256">
+<p>
+Historically, and still for the most part today, DNS operates over a clear,
+readable data gram, UDP port 53.  As a result, if performing these queries
+within an environment that may have some amount surveillance over these queries
+(employer's resources, university networks, etc.), this may not be sufficiently
+passive query.  For example, my university does not allow DNS queries through
+anything other than their own servers.  DNS over HTTPS (DoH) still works since
+blocking HTTPS wholesale would be a non-starter.
+</p>
+
+<p>
+Therefore, to run a more paranoid query, we can use a DoH server to perform the
+query without completely leaking our questions:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">curl -H <span style="font-style: italic;">'accept: application/json'</span> <span style="font-style: italic;">'https://1.1.1.1/dns-query?name=nsa.gov&amp;type=MX'</span> | jq .
 </pre>
 </div>
 
 <p>
-Since the default policy is to drop, any local bound IPv6 traffic was being
-dropped.
-</p>
-
-<p>
-Easy enough, insert a new rule:
-</p>
-
-<div class="org-src-container">
-<pre class="src src-nft">ip6 daddr ::1 counter accept
-</pre>
-</div>
-
-<p>
-<a href="https://www.gnu.org/software/emacs/">Emacs</a>, <a href="https://microsoft.github.io/debug-adapter-protocol/">DAP</a>, and <a href="https://www.oracle.com/java/">Java</a> debugging worked instantly.  No more waiting for
-everything to timeout and fall back to previous versions.  No more locked up
-<a href="https://www.gnu.org/software/emacs/">Emacs</a> and fragmented thoughts.  Debugging in <a href="https://www.gnu.org/software/emacs/">Emacs</a> was as fast, if not faster,
-than <a href="https://www.jetbrains.com/idea/">IntelliJ</a>.
+Your level of paranoia may differ, but depending on the "target", even querying
+Cloudflare with such questions may be "dangerous".
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgd21ca47" class="outline-2">
-<h2 id="orgd21ca47">TL;DR:</h2>
-<div class="outline-text-2" id="text-orgd21ca47">
+<div id="outline-container-org5ab3fee" class="outline-2">
+<h2 id="org5ab3fee">Legal Caveats and Caution</h2>
+<div class="outline-text-2" id="text-org5ab3fee">
 <p>
-Debugging <a href="https://www.oracle.com/java/">Java</a> programs in <a href="https://www.gnu.org/software/emacs/">Emacs</a> using <a href="https://microsoft.github.io/debug-adapter-protocol/">DAP</a> was problematic because of firewall
-rules I imposed onto myself.  Allowing the appropriate traffic vanquished the
-problem.  Security is hard and it is far too easy to simply flush tables and
-move on.
+While I am certainly not a lawyer, we must of course discuss the legality of
+such queries.  Within the United States, the <a href="https://en.wikipedia.org/wiki/Computer_Fraud_and_Abuse_Act">Computer Abuse and Fraud Act</a> is
+broadly written and may be used against such queries if the information was
+later used for more explicit purposes of attacking such computer systems.
+However, the queries themselves are otherwise normal executions of operating a
+computer and emailing someone within the organization.  The important
+distinction for criminal law, is <i>usually</i> intention.  If the intention is to
+commit fraud, then what would otherwise be legal stops being legal.  However,
+if the aims are more benign, then there should be nothing to worry about.  To
+reiterate, this is not legal advice, I am not a lawyer, jurisdiction
+differences may apply.
 </p>
 </div>
 </div>

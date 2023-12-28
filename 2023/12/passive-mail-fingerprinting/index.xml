@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/"
+     xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+     xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+     xmlns:georss="http://www.georss.org/georss"
+     xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+     xmlns:media="http://search.yahoo.com/mrss/"><channel>
+  <title>(Passive Mail Server Fingerprinting with DNS)</title>
+  <atom:link href="https://kennyballou.com/index.xml" rel="self" type="application/rss+xml" />
+  <link>https://kennyballou.com</link>
+  <description><![CDATA[]]></description>
+  <language>en</language>
+  <pubDate>Thu, 28 Dec 2023 20:21:13 +0000</pubDate>
+  <lastBuildDate>Thu, 28 Dec 2023 20:21:13 +0000</lastBuildDate>
+  <generator>Emacs 27.1 Org-mode 9.3</generator>
+  <webMaster>kb@devnulllabs.io (kb)</webMaster>
+  <image>
+    <url>http://orgmode.org/img/org-mode-unicorn-logo.png</url>
+    <title>(Passive Mail Server Fingerprinting with DNS)</title>
+    <link>https://kennyballou.com</link>
+  </image>
+
+  <div class="PREVIEW">
+    <p>
+      We can easily identify mail servers with <a href="https://www.wikiwand.com/en/MX_record">MX records</a>.  Given only a server name
+      for a particular organization, we can passively fingerprint the email server
+      with a simple DNS query.
+    </p>
+
+  </div>
+
+  <p>
+    In the quiet part of information gathering phase for security research, it is
+    important to gather as much information as possible <b>without</b> contacting the
+    organization, or its servers.  Since email is such an important part of any
+    organization's operation, we may want to know who or what is operating their
+    mail servers, and where those server(s) might be.  Furthermore, since many
+    people now outsource email hosting, we can trivially identify the hosting
+    provider for most organizations using a simple DNS query:
+  </p>
+
+  <div class="org-src-container">
+    <pre class="src src-bash">guix shell bind:utils -- dig MX kennyballou.com
+    </pre>
+  </div>
+
+  <pre class="example">
+
+    ; &lt;&lt;&gt;&gt; DiG 9.16.38 &lt;&lt;&gt;&gt; MX kennyballou.com
+    ;; global options: +cmd
+    ;; Got answer:
+    ;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 58490
+    ;; flags: qr rd ra; QUERY: 1, ANSWER: 5, AUTHORITY: 0, ADDITIONAL: 1
+
+    ;; OPT PSEUDOSECTION:
+    ; EDNS: version: 0, flags:; udp: 4096
+    ;; QUESTION SECTION:
+    ;kennyballou.com.		IN	MX
+
+    ;; ANSWER SECTION:
+    kennyballou.com.	86400	IN	MX	1 aspmx.l.google.com.
+    kennyballou.com.	86400	IN	MX	5 alt1.aspmx.l.google.com.
+    kennyballou.com.	86400	IN	MX	5 alt2.aspmx.l.google.com.
+    kennyballou.com.	86400	IN	MX	10 alt3.aspmx.l.google.com.
+    kennyballou.com.	86400	IN	MX	10 alt4.aspmx.l.google.com.
+
+    ;; Query time: 48 msec
+    ...
+  </pre>
+
+  <p>
+    From the output, we can easily identify that Google is the mail provider for
+    this blog's domain.  Microsoft hosted mail will be identified by subdomains
+    such as <code>outlook.com</code> or <code>office365.us</code> or similar.
+  </p>
+
+  <p>
+    As you can see, it is really not that difficult.
+  </p>
+</channel>
+</rss>
