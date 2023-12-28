@@ -1,0 +1,97 @@
+#+TITLE: Passive Mail Server Fingerprinting with DNS
+#+TAGS: DNS
+#+TAGS: Security
+#+TAGS: Privacy
+#+TAGS: Information Gathering
+#+DATE: 2023-12-28
+#+SLUG: passive-mail-fingerprinting
+#+LINK: CFAA https://en.wikipedia.org/wiki/Computer_Fraud_and_Abuse_Act
+#+LINK: MX-records https://www.wikiwand.com/en/MX_record
+
+#+BEGIN_PREVIEW
+We can easily identify mail servers with [[MX-records][MX records]].  Given only a server name
+for a particular organization, we can passively fingerprint the email server
+with a simple DNS query.
+#+END_PREVIEW
+
+In the quiet part of information gathering phase for security research, it is
+important to gather as much information as possible *without* contacting the
+organization, or its servers.  Since email is such an important part of any
+organization's operation, we may want to know who or what is operating their
+mail servers, and where those server(s) might be.  Furthermore, since many
+people now outsource email hosting, we can trivially identify the hosting
+provider for most organizations using a simple DNS query:
+
+#+begin_src bash
+guix shell bind:utils -- dig MX kennyballou.com
+#+end_src
+
+#+begin_example
+
+; <<>> DiG 9.16.38 <<>> MX kennyballou.com
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 58490
+;; flags: qr rd ra; QUERY: 1, ANSWER: 5, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 4096
+;; QUESTION SECTION:
+;kennyballou.com.		IN	MX
+
+;; ANSWER SECTION:
+kennyballou.com.	86400	IN	MX	1 aspmx.l.google.com.
+kennyballou.com.	86400	IN	MX	5 alt1.aspmx.l.google.com.
+kennyballou.com.	86400	IN	MX	5 alt2.aspmx.l.google.com.
+kennyballou.com.	86400	IN	MX	10 alt3.aspmx.l.google.com.
+kennyballou.com.	86400	IN	MX	10 alt4.aspmx.l.google.com.
+
+;; Query time: 48 msec
+...
+#+end_example
+
+From the output, we can easily identify that Google is the mail provider for
+this blog's domain.  Microsoft hosted mail will be identified by subdomains
+such as ~outlook.com~ or ~office365.us~ or similar.
+
+As you can see, it is really not that difficult.
+
+** Paranoid Queries
+:PROPERTIES:
+:ID:       6df387db-b98c-46b1-a11d-30682fc1e4bb
+:END:
+
+Historically, and still for the most part today, DNS operates over a clear,
+readable data gram, UDP port 53.  As a result, if performing these queries
+within an environment that may have some amount surveillance over these queries
+(employer's resources, university networks, etc.), this may not be sufficiently
+passive query.  For example, my university does not allow DNS queries through
+anything other than their own servers.  DNS over HTTPS (DoH) still works since
+blocking HTTPS wholesale would be a non-starter.
+
+Therefore, to run a more paranoid query, we can use a DoH server to perform the
+query without completely leaking our questions:
+
+#+begin_src bash
+curl -H 'accept: application/json' 'https://1.1.1.1/dns-query?name=nsa.gov&type=MX' | jq .
+#+end_src
+
+Your level of paranoia may differ, but depending on the "target", even querying
+Cloudflare with such questions may be "dangerous".
+
+** Legal Caveats and Caution
+:PROPERTIES:
+:ID:       65d41ac6-6dfc-4243-9f04-8312aae328d2
+:END:
+
+While I am certainly not a lawyer, we must of course discuss the legality of
+such queries.  Within the United States, the [[CFAA][Computer Abuse and Fraud Act]] is
+broadly written and may be used against such queries if the information was
+later used for more explicit purposes of attacking such computer systems.
+However, the queries themselves are otherwise normal executions of operating a
+computer and emailing someone within the organization.  The important
+distinction for criminal law, is /usually/ intention.  If the intention is to
+commit fraud, then what would otherwise be legal stops being legal.  However,
+if the aims are more benign, then there should be nothing to worry about.  To
+reiterate, this is not legal advice, I am not a lawyer, jurisdiction
+differences may apply.
