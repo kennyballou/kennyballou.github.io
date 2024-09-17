@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2024-04-26 Fri 15:26 -->
+<!-- 2024-09-17 Tue 00:05 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Releasing Elixir/OTP applications to the World</title>
@@ -321,17 +321,17 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org3dde9f8">Problem</a>
+<li><a href="#orgabb5a3b">Problem</a>
 <ul>
-<li><a href="#orgcd05497">Shared Objects</a></li>
-<li><a href="#orgf4ab252">Erlang Libraries</a></li>
-<li><a href="#orgb8b8c13">Docker or Virtualization</a></li>
-<li><a href="#org0d097eb">OTP as Project Dependency</a></li>
+<li><a href="#org97c2040">Shared Objects</a></li>
+<li><a href="#orge1d8de3">Erlang Libraries</a></li>
+<li><a href="#org72d5901">Docker or Virtualization</a></li>
+<li><a href="#org7411b7b">OTP as Project Dependency</a></li>
 </ul>
 </li>
-<li><a href="#org5186374">Non-Solution Solutions</a></li>
-<li><a href="#org3444f84">Solutions(?)</a></li>
-<li><a href="#org50416d3">Moving Forward</a></li>
+<li><a href="#orgc2bc888">Non-Solution Solutions</a></li>
+<li><a href="#org25324da">Solutions(?)</a></li>
+<li><a href="#org079bd60">Moving Forward</a></li>
 </ul>
 </div>
 </div>
@@ -385,9 +385,9 @@ and Erlang/Elixir stack on the production system is slightly unnerving for it's
 own set of reasons.
 </p>
 
-<div id="outline-container-org3dde9f8" class="outline-2">
-<h2 id="org3dde9f8">Problem</h2>
-<div class="outline-text-2" id="text-org3dde9f8">
+<div id="outline-container-orgabb5a3b" class="outline-2">
+<h2 id="orgabb5a3b">Problem</h2>
+<div class="outline-text-2" id="text-orgabb5a3b">
 <p>
 Here are some selected quotes; I'm not trying to pick on anyone in particular
 or the community at large, but I'm trying to show a representation of why this
@@ -438,9 +438,9 @@ machines are running the <code>AMD64</code> instruction sets, the architectures 
 </p>
 </div>
 
-<div id="outline-container-orgcd05497" class="outline-3">
-<h3 id="orgcd05497">Shared Objects</h3>
-<div class="outline-text-3" id="text-orgcd05497">
+<div id="outline-container-org97c2040" class="outline-3">
+<h3 id="org97c2040">Shared Objects</h3>
+<div class="outline-text-3" id="text-org97c2040">
 <p>
 Let's start with the most simplistic issue, different versions of shared
 objects.
@@ -470,9 +470,9 @@ was built or what features the deployed application needs.
 </div>
 </div>
 
-<div id="outline-container-orgf4ab252" class="outline-3">
-<h3 id="orgf4ab252">Erlang Libraries</h3>
-<div class="outline-text-3" id="text-orgf4ab252">
+<div id="outline-container-orge1d8de3" class="outline-3">
+<h3 id="orge1d8de3">Erlang Libraries</h3>
+<div class="outline-text-3" id="text-orge1d8de3">
 <p>
 We may try to resolve this issue by adding a particular <code>rel/relx.config</code> file
 to our Elixir project.  Specifically, we will <i>not</i> bundle ERTS, opting to use
@@ -524,9 +524,9 @@ We are left to attempt more solutions.
 </div>
 </div>
 
-<div id="outline-container-orgb8b8c13" class="outline-3">
-<h3 id="orgb8b8c13">Docker or Virtualization</h3>
-<div class="outline-text-3" id="text-orgb8b8c13">
+<div id="outline-container-org72d5901" class="outline-3">
+<h3 id="org72d5901">Docker or Virtualization</h3>
+<div class="outline-text-3" id="text-org72d5901">
 <p>
 Next, since we do want to ultimately get our build running in a CI/CD
 environment, we may look toward virutalization/containerization.  Being
@@ -562,9 +562,9 @@ That's not going to work.
 </div>
 </div>
 
-<div id="outline-container-org0d097eb" class="outline-3">
-<h3 id="org0d097eb">OTP as Project Dependency</h3>
-<div class="outline-text-3" id="text-org0d097eb">
+<div id="outline-container-org7411b7b" class="outline-3">
+<h3 id="org7411b7b">OTP as Project Dependency</h3>
+<div class="outline-text-3" id="text-org7411b7b">
 <p>
 Another option we might try is make Erlang a build dependency of our Elixir
 application, this <i>could</i> be achieved via the following structure:
@@ -632,9 +632,9 @@ about it as well.
 </div>
 </div>
 
-<div id="outline-container-org5186374" class="outline-2">
-<h2 id="org5186374">Non-Solution Solutions</h2>
-<div class="outline-text-2" id="text-org5186374">
+<div id="outline-container-orgc2bc888" class="outline-2">
+<h2 id="orgc2bc888">Non-Solution Solutions</h2>
+<div class="outline-text-2" id="text-orgc2bc888">
 <p>
 Of course, all of these above issues can be solved by "just building on the
 target machine" or by simply using <code>mix run</code> on the target instead.  However, I
@@ -658,9 +658,9 @@ upgrading can continue.
 </div>
 </div>
 
-<div id="outline-container-org3444f84" class="outline-2">
-<h2 id="org3444f84">Solutions(?)</h2>
-<div class="outline-text-2" id="text-org3444f84">
+<div id="outline-container-org25324da" class="outline-2">
+<h2 id="org25324da">Solutions(?)</h2>
+<div class="outline-text-2" id="text-org25324da">
 <p>
 What are we to do? How are we to build Erlang/Elixir/OTP applications as part
 of our CI/CD pipeline? Particularly, how are we to build our applications on a
@@ -709,9 +709,9 @@ on the production farm itself.
 </div>
 </div>
 
-<div id="outline-container-org50416d3" class="outline-2">
-<h2 id="org50416d3">Moving Forward</h2>
-<div class="outline-text-2" id="text-org50416d3">
+<div id="outline-container-org079bd60" class="outline-2">
+<h2 id="org079bd60">Moving Forward</h2>
+<div class="outline-text-2" id="text-org079bd60">
 <p>
 Releasing software isn't in a particularly hard class of problems, but it does
 have its challenges.  Some languages attempt to solve this challenge in its
