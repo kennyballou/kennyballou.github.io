@@ -3,14 +3,14 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2024-09-17 Tue 00:05 -->
+<!-- 2025-01-28 Tue 04:46 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Org Projects with Gantt Charts</title>
-<meta name="generator" content="Org mode" />
 <meta name="author" content="kb" />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -31,8 +31,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -40,22 +41,22 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
-    padding-top: 1.2em;
+    overflow: auto;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -190,8 +191,7 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <meta charset="utf-8">
 
@@ -211,74 +211,58 @@
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <script defer type="text/javascript" src="/js/katex.js"></script>
 <script defer type="text/javascript" src="/js/katex-render.js"></script>
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
 </script>
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        displayAlign: "center",
-        displayIndent: "0em",
-
-        "HTML-CSS": { scale: 100,
-                        linebreaks: { automatic: "false" },
-                        webFont: "TeX"
-                       },
-        SVG: {scale: 100,
-              linebreaks: { automatic: "false" },
-              font: "TeX"},
-        NativeMML: {scale: 100},
-        TeX: { equationNumbers: {autoNumber: "AMS"},
-               MultLineWidth: "85%",
-               TagSide: "right",
-               TagIndent: ".8em"
-             }
-});
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
 </script>
-<script type="text/javascript"
-        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
 </head>
 <body>
 <div id="org-div-home-and-up">
@@ -335,27 +319,27 @@ for the JavaScript code in this tag.
   </a>
 </nav>
 </header>
-<div id="main">
+<div id="main" class="content">
 <h1 class="title">Org Projects with Gantt Charts</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgbd507ce">Background</a>
+<li><a href="#org23f1dbf">Background</a>
 <ul>
-<li><a href="#org844db29">Prior Art</a></li>
-<li><a href="#org9645d49">Rationale</a></li>
+<li><a href="#orge3ae5a2">Prior Art</a></li>
+<li><a href="#org6731e73">Rationale</a></li>
 </ul>
 </li>
-<li><a href="#orga7da34e">Implementation</a></li>
-<li><a href="#org7159dd9">Usage</a></li>
-<li><a href="#org22303b8">Examples</a></li>
-<li><a href="#org48c0c1f">Limitations</a></li>
-<li><a href="#orgd051c95">Future Work/Improvements</a></li>
+<li><a href="#org3365537">Implementation</a></li>
+<li><a href="#orgfc59fbd">Usage</a></li>
+<li><a href="#orgcfe650c">Examples</a></li>
+<li><a href="#org6f9f4a7">Limitations</a></li>
+<li><a href="#orgae31715">Future Work/Improvements</a></li>
 </ul>
 </div>
 </div>
-<div class="PREVIEW">
+<div class="PREVIEW" id="orgb0a7f95">
 <p>
 <a href="https://orgmode.org/">Org-Mode</a> is a great way to store <code>TODO</code> items, store notes, and keep track of
 projects.  However, possibly due to ignorance of what is available, getting a
@@ -381,9 +365,9 @@ breakdown, but the point remains, some amount of tasks left over as a whole do
 not communicate the holistic progress and prediction towards completion.
 </p>
 
-<div id="outline-container-orgbd507ce" class="outline-2">
-<h2 id="orgbd507ce">Background</h2>
-<div class="outline-text-2" id="text-orgbd507ce">
+<div id="outline-container-org23f1dbf" class="outline-2">
+<h2 id="org23f1dbf">Background</h2>
+<div class="outline-text-2" id="text-org23f1dbf">
 <p>
 <a href="https://en.wikipedia.org/wiki/Gantt_chart">Gantt charts</a> model project schedules as a sort of bar chart.  Dependencies and
 links can be shown to draw the critical path of the project and the timeline of
@@ -399,9 +383,9 @@ some chosen granularity of time units such as days, months, or years.
 </p>
 </div>
 
-<div id="outline-container-org844db29" class="outline-3">
-<h3 id="org844db29">Prior Art</h3>
-<div class="outline-text-3" id="text-org844db29">
+<div id="outline-container-orge3ae5a2" class="outline-3">
+<h3 id="orge3ae5a2">Prior Art</h3>
+<div class="outline-text-3" id="text-orge3ae5a2">
 <p>
 There are several existing projects which attempt to generate <a href="https://en.wikipedia.org/wiki/Gantt_chart">Gantt charts</a> from
 <a href="https://orgmode.org/">Org TODO entries</a>.  Specifically, <a href="https://orgmode.org/">Org mode</a> supports exporting directly to
@@ -411,9 +395,9 @@ third-party packages such as <a href="https://github.com/legalnonsense/elgantt/"
 </div>
 </div>
 
-<div id="outline-container-org9645d49" class="outline-3">
-<h3 id="org9645d49">Rationale</h3>
-<div class="outline-text-3" id="text-org9645d49">
+<div id="outline-container-org6731e73" class="outline-3">
+<h3 id="org6731e73">Rationale</h3>
+<div class="outline-text-3" id="text-org6731e73">
 <p>
 Given that there are existing solutions to generating <a href="https://en.wikipedia.org/wiki/Gantt_chart">Gantt charts</a> from <a href="https://orgmode.org/">Org
 mode</a> entries, why create another one?  The other solutions require either the
@@ -425,9 +409,9 @@ information already present entries to generate the charts.
 </div>
 </div>
 
-<div id="outline-container-orga7da34e" class="outline-2">
-<h2 id="orga7da34e">Implementation</h2>
-<div class="outline-text-2" id="text-orga7da34e">
+<div id="outline-container-org3365537" class="outline-2">
+<h2 id="org3365537">Implementation</h2>
+<div class="outline-text-2" id="text-org3365537">
 <blockquote>
 <p>
 Currently, the implementation is not packaged, but that may change at a future
@@ -587,9 +571,9 @@ no duration to the tasks.
 </div>
 </div>
 
-<div id="outline-container-org7159dd9" class="outline-2">
-<h2 id="org7159dd9">Usage</h2>
-<div class="outline-text-2" id="text-org7159dd9">
+<div id="outline-container-orgfc59fbd" class="outline-2">
+<h2 id="orgfc59fbd">Usage</h2>
+<div class="outline-text-2" id="text-orgfc59fbd">
 <p>
 Add the following block to the subtree of entries.
 </p>
@@ -611,9 +595,9 @@ either be "days" or "months".
 </div>
 </div>
 
-<div id="outline-container-org22303b8" class="outline-2">
-<h2 id="org22303b8">Examples</h2>
-<div class="outline-text-2" id="text-org22303b8">
+<div id="outline-container-orgcfe650c" class="outline-2">
+<h2 id="orgcfe650c">Examples</h2>
+<div class="outline-text-2" id="text-orgcfe650c">
 <p>
 To highlight how this function works, we consider the following example <a href="https://orgmode.org/">Org</a>
 <a href="https://kennyballou.com/blog/2022/06/org-projects-with-gantt/example.org">file</a>.  At the top level, there is an entry for all projects.  Because this is
@@ -639,14 +623,14 @@ dark mode.
 <span style="font-weight: bold;">:PROPERTIES:</span>
 <span style="font-weight: bold;">:ID:</span>       92c26e6f-327c-4517-ab73-000ab6b3794e
 <span style="font-weight: bold;">:END:</span>
-<span style="font-weight: bold; font-style: italic;">** </span><span style="font-weight: bold;">[2/5]</span><span style="font-weight: bold; font-style: italic;"> Major Project</span>
+<span style="font-weight: bold; font-style: italic;">** </span><span style="font-weight: bold; font-style: italic;">[2/5]</span><span style="font-weight: bold; font-style: italic;"> Major Project</span>
 <span style="font-weight: bold;">DEADLINE:</span> <span style="text-decoration: underline;">&lt;2022-08-21 Sun&gt;</span>
 <span style="font-weight: bold;">:PROPERTIES:</span>
 <span style="font-weight: bold;">:ID:</span>       bd0c7101-6df8-4fd3-838d-3b03a0d84677
 <span style="font-weight: bold;">:END:</span>
 <span style="font-weight: bold; font-style: italic;">#+begin: gantt :tstart "&lt;today&gt;" :tend "&lt;2022-08-21&gt;" :tunit "month"</span>
 <span style="font-weight: bold; font-style: italic;">#+end:</span>
-<span style="font-weight: bold;">*** </span><span style="font-weight: bold;">DONE</span><span style="font-weight: bold;"> Activity 1</span>
+<span style="font-weight: bold;">*** </span><span style="font-weight: bold;">DONE</span><span style="font-weight: bold;"> </span><span style="font-weight: bold;">Activity 1</span>
 <span style="font-weight: bold;">CLOSED:</span> <span style="text-decoration: underline;">[2022-06-28 Tue 18:29]</span>
 <span style="font-weight: bold;">:PROPERTIES:</span>
 <span style="font-weight: bold;">:ID:</span>       1ba87343-1926-49c3-8dc9-f01ffde95d05
@@ -654,7 +638,7 @@ dark mode.
 <span style="font-weight: bold;">:LOGBOOK:</span>
 - State "DONE"       from "TODO"       <span style="text-decoration: underline;">[2022-06-28 Tue 18:29]</span>
 <span style="font-weight: bold;">:END:</span>
-<span style="font-weight: bold; font-style: italic;">**** </span><span style="font-weight: bold;">DONE</span><span style="font-weight: bold; font-style: italic;"> Task 1</span>
+<span style="font-weight: bold; font-style: italic;">**** </span><span style="font-weight: bold; font-style: italic;">DONE</span><span style="font-weight: bold; font-style: italic;"> </span><span style="font-weight: bold; font-style: italic;">Task 1</span>
 <span style="font-weight: bold;">CLOSED:</span> <span style="text-decoration: underline;">[2022-06-28 Tue 18:32]</span>
 <span style="font-weight: bold;">:PROPERTIES:</span>
 <span style="font-weight: bold;">:ID:</span>       6436a4d7-cc68-45fc-b46c-c10395b951a0
@@ -662,7 +646,7 @@ dark mode.
 <span style="font-weight: bold;">:LOGBOOK:</span>
 - State "DONE"       from "TODO"       <span style="text-decoration: underline;">[2022-06-28 Tue 18:32]</span>
 <span style="font-weight: bold;">:END:</span>
-<span style="font-weight: bold; font-style: italic;">**** </span><span style="font-weight: bold;">DONE</span><span style="font-weight: bold; font-style: italic;"> Task 2</span>
+<span style="font-weight: bold; font-style: italic;">**** </span><span style="font-weight: bold; font-style: italic;">DONE</span><span style="font-weight: bold; font-style: italic;"> </span><span style="font-weight: bold; font-style: italic;">Task 2</span>
 <span style="font-weight: bold;">CLOSED:</span> <span style="text-decoration: underline;">[2022-06-28 Tue 18:32]</span>
 <span style="font-weight: bold;">:PROPERTIES:</span>
 <span style="font-weight: bold;">:ID:</span>       cb294f7f-2e8d-49fc-9f53-b9fbdebd3f31
@@ -670,7 +654,7 @@ dark mode.
 <span style="font-weight: bold;">:LOGBOOK:</span>
 - State "DONE"       from "TODO"       <span style="text-decoration: underline;">[2022-06-28 Tue 18:32]</span>
 <span style="font-weight: bold;">:END:</span>
-<span style="font-weight: bold; font-style: italic;">**** </span><span style="font-weight: bold;">DONE</span><span style="font-weight: bold; font-style: italic;"> Task 3</span>
+<span style="font-weight: bold; font-style: italic;">**** </span><span style="font-weight: bold; font-style: italic;">DONE</span><span style="font-weight: bold; font-style: italic;"> </span><span style="font-weight: bold; font-style: italic;">Task 3</span>
 <span style="font-weight: bold;">CLOSED:</span> <span style="text-decoration: underline;">[2022-06-28 Tue 18:32]</span>
 <span style="font-weight: bold;">:PROPERTIES:</span>
 <span style="font-weight: bold;">:ID:</span>       824d2572-830c-493c-bedc-b4cdcc8ce307
@@ -678,7 +662,7 @@ dark mode.
 <span style="font-weight: bold;">:LOGBOOK:</span>
 - State "DONE"       from "TODO"       <span style="text-decoration: underline;">[2022-06-28 Tue 18:32]</span>
 <span style="font-weight: bold;">:END:</span>
-<span style="font-weight: bold;">*** </span><span style="font-weight: bold;">DONE</span><span style="font-weight: bold;"> Activity 2</span>
+<span style="font-weight: bold;">*** </span><span style="font-weight: bold;">DONE</span><span style="font-weight: bold;"> </span><span style="font-weight: bold;">Activity 2</span>
 <span style="font-weight: bold;">CLOSED:</span> <span style="text-decoration: underline;">[2022-06-28 Tue 18:29]</span>
 <span style="font-weight: bold;">:PROPERTIES:</span>
 <span style="font-weight: bold;">:ID:</span>       81fb1423-447d-4fa3-92e4-cbba9d3aa7c8
@@ -696,22 +680,22 @@ dark mode.
 <span style="font-weight: bold; font-style: italic;">#+begin: gantt :tstart "&lt;today&gt;" :tend "&lt;2022-07-28&gt;" :tunit "day"</span>
 <span style="font-weight: bold; font-style: italic;">#+end:</span>
 
-<span style="font-weight: bold; font-style: italic;">**** </span><span style="font-weight: bold;">TODO</span><span style="font-weight: bold; font-style: italic;"> Task 1</span>
+<span style="font-weight: bold; font-style: italic;">**** </span><span style="font-weight: bold; font-style: italic;">TODO</span><span style="font-weight: bold; font-style: italic;"> Task 1</span>
 <span style="font-weight: bold;">:PROPERTIES:</span>
 <span style="font-weight: bold;">:ID:</span>       f41e0083-7642-44a8-b653-f13124a1bcb9
 <span style="font-weight: bold;">:Effort:</span>   5d
 <span style="font-weight: bold;">:END:</span>
-<span style="font-weight: bold; font-style: italic;">**** </span><span style="font-weight: bold;">TODO</span><span style="font-weight: bold; font-style: italic;"> Task 2</span>
+<span style="font-weight: bold; font-style: italic;">**** </span><span style="font-weight: bold; font-style: italic;">TODO</span><span style="font-weight: bold; font-style: italic;"> Task 2</span>
 <span style="font-weight: bold;">:PROPERTIES:</span>
 <span style="font-weight: bold;">:ID:</span>       e22aca56-18d9-4b43-b754-d11eadd73a97
 <span style="font-weight: bold;">:Effort:</span>   7d
 <span style="font-weight: bold;">:END:</span>
-<span style="font-weight: bold; font-style: italic;">**** </span><span style="font-weight: bold;">TODO</span><span style="font-weight: bold; font-style: italic;"> Task 3</span>
+<span style="font-weight: bold; font-style: italic;">**** </span><span style="font-weight: bold; font-style: italic;">TODO</span><span style="font-weight: bold; font-style: italic;"> Task 3</span>
 <span style="font-weight: bold;">:PROPERTIES:</span>
 <span style="font-weight: bold;">:ID:</span>       c6bd2a10-dfcc-4e26-aa57-6629b6aa047c
 <span style="font-weight: bold;">:Effort:</span>   14d
 <span style="font-weight: bold;">:END:</span>
-<span style="font-weight: bold; font-style: italic;">**** </span><span style="font-weight: bold;">TODO</span><span style="font-weight: bold; font-style: italic;"> Task 4</span>
+<span style="font-weight: bold; font-style: italic;">**** </span><span style="font-weight: bold; font-style: italic;">TODO</span><span style="font-weight: bold; font-style: italic;"> Task 4</span>
 <span style="font-weight: bold;">:PROPERTIES:</span>
 <span style="font-weight: bold;">:ID:</span>       78c88e86-da8a-41ba-991d-acfad713d4d1
 <span style="font-weight: bold;">:Effort:</span>   4d
@@ -731,24 +715,22 @@ dark mode.
 </div>
 
 
-<div class="figure">
-<p><object type="image/svg+xml" data="../../../../blog/2022/06/org-projects-with-gantt/gantt-1.svg" class="org-svg">
-Sorry, your browser does not support SVG.</object>
+<div id="org360be23" class="figure">
+<p><img src="../../../../blog/2022/06/org-projects-with-gantt/gantt-1.svg" alt="gantt-1.svg" class="org-svg" />
 </p>
 </div>
 
 
-<div class="figure">
-<p><object type="image/svg+xml" data="../../../../blog/2022/06/org-projects-with-gantt/gantt-2.svg" class="org-svg">
-Sorry, your browser does not support SVG.</object>
+<div id="orgc6179c2" class="figure">
+<p><img src="../../../../blog/2022/06/org-projects-with-gantt/gantt-2.svg" alt="gantt-2.svg" class="org-svg" />
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org48c0c1f" class="outline-2">
-<h2 id="org48c0c1f">Limitations</h2>
-<div class="outline-text-2" id="text-org48c0c1f">
+<div id="outline-container-org6f9f4a7" class="outline-2">
+<h2 id="org6f9f4a7">Limitations</h2>
+<div class="outline-text-2" id="text-org6f9f4a7">
 <p>
 This process is currently pretty limited, see future work for improvements.
 One notable limitation, however, to make the charts fit on the page, the titles
@@ -760,9 +742,9 @@ improved.
 </div>
 </div>
 
-<div id="outline-container-orgd051c95" class="outline-2">
-<h2 id="orgd051c95">Future Work/Improvements</h2>
-<div class="outline-text-2" id="text-orgd051c95">
+<div id="outline-container-orgae31715" class="outline-2">
+<h2 id="orgae31715">Future Work/Improvements</h2>
+<div class="outline-text-2" id="text-orgae31715">
 <p>
 The tasks can be automatically linked via <code>\ganttlinkedbar</code> and this would be
 natively supported by <a href="https://orgmode.org/manual/TODO-dependencies.html#TODO-dependencies">TODO dependencies</a>.  Alternatively, adding links could be

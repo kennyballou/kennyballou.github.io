@@ -3,16 +3,15 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2024-09-17 Tue 00:05 -->
+<!-- 2025-01-28 Tue 04:46 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Hosting with AWS S3 and CloudFront</title>
-<meta name="generator" content="Org mode" />
 <meta name="author" content="kb" />
-<meta name="description" content="Static Site Hosting with Amazon"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="description" content="Static Site Hosting with Amazon" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -33,8 +32,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -42,22 +42,22 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
-    padding-top: 1.2em;
+    overflow: auto;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -192,8 +192,7 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <meta charset="utf-8">
 
@@ -213,51 +212,25 @@
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <script defer type="text/javascript" src="/js/katex.js"></script>
 <script defer type="text/javascript" src="/js/katex-render.js"></script>
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
 </script>
 </head>
 <body>
@@ -315,30 +288,30 @@ for the JavaScript code in this tag.
   </a>
 </nav>
 </header>
-<div id="main">
+<div id="main" class="content">
 <h1 class="title">Hosting with AWS S3 and CloudFront</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org5abfb8c">Introduction</a></li>
-<li><a href="#org8fdaac6">Overview</a></li>
-<li><a href="#org22fdbdd">CloudFormation</a>
+<li><a href="#org85197ab">Introduction</a></li>
+<li><a href="#orgabff00d">Overview</a></li>
+<li><a href="#org3bc8f21">CloudFormation</a>
 <ul>
-<li><a href="#org259efad">S3 Bucket</a></li>
-<li><a href="#orgde7473c">ACM</a></li>
-<li><a href="#org24e0037">Route53</a></li>
-<li><a href="#orgffff9f2">Lambda@Edge</a></li>
-<li><a href="#org37cdcae">CloudFront</a></li>
+<li><a href="#org9becaeb">S3 Bucket</a></li>
+<li><a href="#orgff7d64d">ACM</a></li>
+<li><a href="#org2f27054">Route53</a></li>
+<li><a href="#org8bcf65e">Lambda@Edge</a></li>
+<li><a href="#org8787bb8">CloudFront</a></li>
 </ul>
 </li>
-<li><a href="#org2015d81">Future Work</a></li>
-<li><a href="#org6e02fc2">Cost Considerations</a></li>
-<li><a href="#orge851356">Summary</a></li>
+<li><a href="#org8d02233">Future Work</a></li>
+<li><a href="#org8be53c8">Cost Considerations</a></li>
+<li><a href="#org1f3176c">Summary</a></li>
 </ul>
 </div>
 </div>
-<div class="PREVIEW">
+<div class="PREVIEW" id="org6e837a5">
 <p>
 There are many posts already out about how to host static sites in <a href="https://aws.amazon.com/s3/">S3</a> and
 <a href="https://aws.amazon.com/cloudfront/">CloudFront</a>.  However, I would like to add to the discussion a small
@@ -349,9 +322,9 @@ strictly not available via <a href="https://aws.amazon.com/s3/">S3</a>.
 
 </div>
 
-<div id="outline-container-org5abfb8c" class="outline-2">
-<h2 id="org5abfb8c">Introduction</h2>
-<div class="outline-text-2" id="text-org5abfb8c">
+<div id="outline-container-org85197ab" class="outline-2">
+<h2 id="org85197ab">Introduction</h2>
+<div class="outline-text-2" id="text-org85197ab">
 <p>
 There are <a href="https://vickylai.com/verbose/hosting-your-static-site-with-aws-s3-route-53-and-cloudfront/">many</a>,
 <a href="https://www.davidbaumgold.com/tutorials/host-static-site-aws-s3-cloudfront/">many</a>
@@ -371,9 +344,9 @@ via <a href="https://aws.amazon.com/cloudfront/">CloudFront</a>.
 </div>
 </div>
 
-<div id="outline-container-org8fdaac6" class="outline-2">
-<h2 id="org8fdaac6">Overview</h2>
-<div class="outline-text-2" id="text-org8fdaac6">
+<div id="outline-container-orgabff00d" class="outline-2">
+<h2 id="orgabff00d">Overview</h2>
+<div class="outline-text-2" id="text-orgabff00d">
 <p>
 There has been a particular evolution to hosting static sites via <a href="https://aws.amazon.com/">AWS</a>
 since the company and its offerings have changed themselves.  For example, a
@@ -415,18 +388,18 @@ served quickly and securely because of the configuration of
 </div>
 </div>
 
-<div id="outline-container-org22fdbdd" class="outline-2">
-<h2 id="org22fdbdd">CloudFormation</h2>
-<div class="outline-text-2" id="text-org22fdbdd">
+<div id="outline-container-org3bc8f21" class="outline-2">
+<h2 id="org3bc8f21">CloudFormation</h2>
+<div class="outline-text-2" id="text-org3bc8f21">
 <p>
 We'll briefly go through the various resources needed for hosting a static site
 via <a href="https://aws.amazon.com/s3/">S3</a> and <a href="https://aws.amazon.com/cloudfront/">CloudFront</a>.
 </p>
 </div>
 
-<div id="outline-container-org259efad" class="outline-3">
-<h3 id="org259efad">S3 Bucket</h3>
-<div class="outline-text-3" id="text-org259efad">
+<div id="outline-container-org9becaeb" class="outline-3">
+<h3 id="org9becaeb">S3 Bucket</h3>
+<div class="outline-text-3" id="text-org9becaeb">
 <p>
 Obviously, we will need a bucket to house the content.
 </p>
@@ -511,9 +484,9 @@ ID.
 </div>
 </div>
 
-<div id="outline-container-orgde7473c" class="outline-3">
-<h3 id="orgde7473c">ACM</h3>
-<div class="outline-text-3" id="text-orgde7473c">
+<div id="outline-container-orgff7d64d" class="outline-3">
+<h3 id="orgff7d64d">ACM</h3>
+<div class="outline-text-3" id="text-orgff7d64d">
 <p>
 <a href="https://aws.amazon.com/acm/">AWS Certificate Manager</a> offers free certificates and these can be
 used with <a href="https://aws.amazon.com/cloudfront/">CloudFront</a> pretty trivially, so we will set up
@@ -537,9 +510,9 @@ tricky when done via <a href="https://aws.amazon.com/cloudformation/">CloudForma
 </div>
 </div>
 
-<div id="outline-container-org24e0037" class="outline-3">
-<h3 id="org24e0037">Route53</h3>
-<div class="outline-text-3" id="text-org24e0037">
+<div id="outline-container-org2f27054" class="outline-3">
+<h3 id="org2f27054">Route53</h3>
+<div class="outline-text-3" id="text-org2f27054">
 <p>
 Since this blog is hosted under the "naked" domain, it's best to use
 <a href="https://aws.amazon.com/route53/">Route53</a> for mapping the alias of
@@ -582,9 +555,9 @@ distribution.
 </div>
 </div>
 
-<div id="outline-container-orgffff9f2" class="outline-3">
-<h3 id="orgffff9f2">Lambda@Edge</h3>
-<div class="outline-text-3" id="text-orgffff9f2">
+<div id="outline-container-org8bcf65e" class="outline-3">
+<h3 id="org8bcf65e">Lambda@Edge</h3>
+<div class="outline-text-3" id="text-org8bcf65e">
 <p>
 Of all the resources, this will actually be the most complicated.
 </p>
@@ -741,9 +714,9 @@ to create a "version" alias of the function.
 </div>
 </div>
 
-<div id="outline-container-org37cdcae" class="outline-3">
-<h3 id="org37cdcae">CloudFront</h3>
-<div class="outline-text-3" id="text-org37cdcae">
+<div id="outline-container-org8787bb8" class="outline-3">
+<h3 id="org8787bb8">CloudFront</h3>
+<div class="outline-text-3" id="text-org8787bb8">
 <p>
 Finally, we can put everything together into the <a href="https://aws.amazon.com/cloudfront/">CloudFront</a>
 Distribution.
@@ -822,9 +795,9 @@ Distribution.
 </div>
 </div>
 
-<div id="outline-container-org2015d81" class="outline-2">
-<h2 id="org2015d81">Future Work</h2>
-<div class="outline-text-2" id="text-org2015d81">
+<div id="outline-container-org8d02233" class="outline-2">
+<h2 id="org8d02233">Future Work</h2>
+<div class="outline-text-2" id="text-org8d02233">
 <p>
 The <a href="https://aws.amazon.com/cloudformation/">CloudFormation</a> template is not perfect.  For
 example, I personally would like to have the ability to create
@@ -840,9 +813,9 @@ content to the bucket using more <a href="https://aws.amazon.com/">AWS</a> servi
 </div>
 </div>
 
-<div id="outline-container-org6e02fc2" class="outline-2">
-<h2 id="org6e02fc2">Cost Considerations</h2>
-<div class="outline-text-2" id="text-org6e02fc2">
+<div id="outline-container-org8be53c8" class="outline-2">
+<h2 id="org8be53c8">Cost Considerations</h2>
+<div class="outline-text-2" id="text-org8be53c8">
 <p>
 <a href="https://aws.amazon.com/">AWS</a> is not known to be inexpensive.  Arguably, their entire business
 is built around the very fact that just about every service within <a href="https://aws.amazon.com/">AWS</a>
@@ -866,9 +839,9 @@ for others.
 </div>
 </div>
 
-<div id="outline-container-orge851356" class="outline-2">
-<h2 id="orge851356">Summary</h2>
-<div class="outline-text-2" id="text-orge851356">
+<div id="outline-container-org1f3176c" class="outline-2">
+<h2 id="org1f3176c">Summary</h2>
+<div class="outline-text-2" id="text-org1f3176c">
 <p>
 It is the goal of this post to further describe how to host a static site in
 <a href="https://aws.amazon.com/">AWS</a> using a few services that can make for <span class="underline">really</span> inexpensive

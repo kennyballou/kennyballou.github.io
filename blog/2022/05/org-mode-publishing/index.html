@@ -3,16 +3,15 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2024-09-17 Tue 00:05 -->
+<!-- 2025-01-28 Tue 04:46 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Org-Mode Publishing Static Site Generation</title>
-<meta name="generator" content="Org mode" />
 <meta name="author" content="kb" />
-<meta name="description" content="New New Static site generation with Org-Mode Publishing"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="description" content="New New Static site generation with Org-Mode Publishing" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -33,8 +32,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -42,22 +42,22 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
-    padding-top: 1.2em;
+    overflow: auto;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -192,8 +192,7 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <meta charset="utf-8">
 
@@ -213,51 +212,25 @@
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <script defer type="text/javascript" src="/js/katex.js"></script>
 <script defer type="text/javascript" src="/js/katex-render.js"></script>
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
 </script>
 </head>
 <body>
@@ -315,31 +288,31 @@ for the JavaScript code in this tag.
   </a>
 </nav>
 </header>
-<div id="main">
+<div id="main" class="content">
 <h1 class="title">Org-Mode Publishing Static Site Generation</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orge9dd2ea">Motivation</a></li>
-<li><a href="#org18ee9fb">Some Emacs Lisp</a>
+<li><a href="#org6300569">Motivation</a></li>
+<li><a href="#org8073421">Some Emacs Lisp</a>
 <ul>
-<li><a href="#orgced3406">Preamble and Postamble</a></li>
-<li><a href="#org2c37fd6">Simple CSS Preamble + Postamble</a></li>
-<li><a href="#org08c2e14"><code>ox-rss</code></a></li>
+<li><a href="#orgfeaeba7">Preamble and Postamble</a></li>
+<li><a href="#org57a9d17">Simple CSS Preamble + Postamble</a></li>
+<li><a href="#orgded6d9c"><code>ox-rss</code></a></li>
 </ul>
 </li>
-<li><a href="#orgddb4348">Building and Publishing</a>
+<li><a href="#org8f2e51c">Building and Publishing</a>
 <ul>
-<li><a href="#orgd20e438">Make</a></li>
-<li><a href="#orgf5c4adf">GitHub Actions</a></li>
+<li><a href="#orga757f02">Make</a></li>
+<li><a href="#orgc2aac7b">GitHub Actions</a></li>
 </ul>
 </li>
-<li><a href="#org7427bf4">Parting Thoughts</a></li>
+<li><a href="#org6400a2b">Parting Thoughts</a></li>
 </ul>
 </div>
 </div>
-<div class="preview">
+<div class="preview" id="orgf60f4bf">
 <p>
 <a href="https://kennyballou.com/blog/2019/03/static-site-generation/index.html">Previously</a>, I discussed changing the generation of this site.  Specifically,
 using <a href="https://orgmode.org/">Org-Mode</a> files with <a href="https://pandoc.org/">Pandoc</a> and some <a href="https://www.gnu.org/software/bash/">Bash</a> scripts to generate the site.
@@ -355,9 +328,9 @@ blogging with only <a href="https://orgmode.org/">Org Mode</a>.  I focus mainly 
 work here.  But first, motivation.  Why change.
 </p>
 
-<div id="outline-container-orge9dd2ea" class="outline-2">
-<h2 id="orge9dd2ea">Motivation</h2>
-<div class="outline-text-2" id="text-orge9dd2ea">
+<div id="outline-container-org6300569" class="outline-2">
+<h2 id="org6300569">Motivation</h2>
+<div class="outline-text-2" id="text-org6300569">
 <p>
 I wanted to transition the blog into a more general purpose site and I felt my
 hand-rolled generation would not be adequate.  I did not want to go back to
@@ -378,18 +351,18 @@ broken.  <a href="https://orgmode.org/manual/Publishing.html">Publishing</a> doe
 </div>
 </div>
 
-<div id="outline-container-org18ee9fb" class="outline-2">
-<h2 id="org18ee9fb">Some Emacs Lisp</h2>
-<div class="outline-text-2" id="text-org18ee9fb">
+<div id="outline-container-org8073421" class="outline-2">
+<h2 id="org8073421">Some Emacs Lisp</h2>
+<div class="outline-text-2" id="text-org8073421">
 <p>
 Defining an <a href="https://orgmode.org/">Org</a> project is fairly straightforward, but some parameters to the
 publishing projects depend on the circumstance.
 </p>
 </div>
 
-<div id="outline-container-orgced3406" class="outline-3">
-<h3 id="orgced3406">Preamble and Postamble</h3>
-<div class="outline-text-3" id="text-orgced3406">
+<div id="outline-container-orgfeaeba7" class="outline-3">
+<h3 id="orgfeaeba7">Preamble and Postamble</h3>
+<div class="outline-text-3" id="text-orgfeaeba7">
 <p>
 To handle the headers and footers of the site, I defined the following function
 to read in, now modified versions of, the previous header and footer HTML
@@ -430,9 +403,9 @@ Then for each project, the following keys are set:
 </div>
 </div>
 
-<div id="outline-container-org2c37fd6" class="outline-3">
-<h3 id="org2c37fd6">Simple CSS Preamble + Postamble</h3>
-<div class="outline-text-3" id="text-org2c37fd6">
+<div id="outline-container-org57a9d17" class="outline-3">
+<h3 id="org57a9d17">Simple CSS Preamble + Postamble</h3>
+<div class="outline-text-3" id="text-org57a9d17">
 <p>
 To get the preamble and postamble to be styled right by <a href="https://simplecss.org/">SimpleCSS</a>, the
 following keys were necessary:
@@ -447,9 +420,9 @@ following keys were necessary:
 </div>
 </div>
 
-<div id="outline-container-org08c2e14" class="outline-3">
-<h3 id="org08c2e14"><code>ox-rss</code></h3>
-<div class="outline-text-3" id="text-org08c2e14">
+<div id="outline-container-orgded6d9c" class="outline-3">
+<h3 id="orgded6d9c"><code>ox-rss</code></h3>
+<div class="outline-text-3" id="text-orgded6d9c">
 <p>
 To publish the RSS feed, I needed to copy the <a href="https://github.com/kennyballou/kennyballou.github.io/blob/31878715d1f29ab9c95c31b9d9d713db74dabfba/lisp/ox-rss.el"><code>ox-rss.el</code></a> file wholesale so that
 it was accessible during the automated publishing.
@@ -458,14 +431,14 @@ it was accessible during the automated publishing.
 </div>
 </div>
 
-<div id="outline-container-orgddb4348" class="outline-2">
-<h2 id="orgddb4348">Building and Publishing</h2>
-<div class="outline-text-2" id="text-orgddb4348">
+<div id="outline-container-org8f2e51c" class="outline-2">
+<h2 id="org8f2e51c">Building and Publishing</h2>
+<div class="outline-text-2" id="text-org8f2e51c">
 </div>
 
-<div id="outline-container-orgd20e438" class="outline-3">
-<h3 id="orgd20e438">Make</h3>
-<div class="outline-text-3" id="text-orgd20e438">
+<div id="outline-container-orga757f02" class="outline-3">
+<h3 id="orga757f02">Make</h3>
+<div class="outline-text-3" id="text-orga757f02">
 <p>
 With the <code>build-site.el</code> file defined, the <a href="https://www.gnu.org/software/make/">Make target</a> is quite simple.
 </p>
@@ -479,9 +452,9 @@ org-publish:
 </div>
 </div>
 
-<div id="outline-container-orgf5c4adf" class="outline-3">
-<h3 id="orgf5c4adf">GitHub Actions</h3>
-<div class="outline-text-3" id="text-orgf5c4adf">
+<div id="outline-container-orgc2aac7b" class="outline-3">
+<h3 id="orgc2aac7b">GitHub Actions</h3>
+<div class="outline-text-3" id="text-orgc2aac7b">
 <p>
 In an earlier <a href="https://kennyballou.com/blog/2020/02/blog-deploy-code-commit-and-build/index.html">post</a>, I described using <a href="https://aws.amazon.com/codebuild/">AWS CodeBuild</a> to automatically build site
 content and copy the files to <a href="https://aws.amazon.com/s3">S3</a>.  However, after one timed-out build attempted
@@ -510,9 +483,9 @@ documentation is available from <a href="https://github.com/">GitHub</a>.
 </div>
 </div>
 
-<div id="outline-container-org7427bf4" class="outline-2">
-<h2 id="org7427bf4">Parting Thoughts</h2>
-<div class="outline-text-2" id="text-org7427bf4">
+<div id="outline-container-org6400a2b" class="outline-2">
+<h2 id="org6400a2b">Parting Thoughts</h2>
+<div class="outline-text-2" id="text-org6400a2b">
 <p>
 Nothing is perfect, but overall, I am pleased with the result of switching to
 using <a href="https://orgmode.org/">Org Mode</a> for publishing.  There exists a learning curve&#x2013; as with all

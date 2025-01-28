@@ -3,16 +3,15 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2024-09-17 Tue 00:05 -->
+<!-- 2025-01-28 Tue 04:46 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Apache Storm and Apache Spark Streaming</title>
-<meta name="generator" content="Org mode" />
 <meta name="author" content="kb" />
-<meta name="description" content="Comparison of Apache Storm and Apache Spark Streaming"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="description" content="Comparison of Apache Storm and Apache Spark Streaming" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -33,8 +32,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -42,22 +42,22 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
-    padding-top: 1.2em;
+    overflow: auto;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -192,8 +192,7 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <meta charset="utf-8">
 
@@ -213,51 +212,25 @@
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <script defer type="text/javascript" src="/js/katex.js"></script>
 <script defer type="text/javascript" src="/js/katex-render.js"></script>
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
 </script>
 </head>
 <body>
@@ -315,69 +288,69 @@ for the JavaScript code in this tag.
   </a>
 </nav>
 </header>
-<div id="main">
+<div id="main" class="content">
 <h1 class="title">Apache Storm and Apache Spark Streaming</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org4a6aff7">Apache Storm</a></li>
-<li><a href="#org33d7179">Apache Spark (Streaming)</a></li>
-<li><a href="#org36ec1de">Development</a>
+<li><a href="#org0be2dc2">Apache Storm</a></li>
+<li><a href="#org4a272e6">Apache Spark (Streaming)</a></li>
+<li><a href="#org654580f">Development</a>
 <ul>
-<li><a href="#org66df784">Implementation Language</a>
+<li><a href="#org1c2ba40">Implementation Language</a>
 <ul>
-<li><a href="#orge8c3854">Message Passing Layer</a></li>
+<li><a href="#orgdd7f07b">Message Passing Layer</a></li>
 </ul>
 </li>
-<li><a href="#org349cd02">Commit Velocity</a>
+<li><a href="#org965ea8e">Commit Velocity</a>
 <ul>
-<li><a href="#org879f8e4">Spark Commit Velocity</a></li>
-<li><a href="#org2ee0f4b">Storm Commit Velocity</a></li>
+<li><a href="#org47808e2">Spark Commit Velocity</a></li>
+<li><a href="#orgc9bc02b">Storm Commit Velocity</a></li>
 </ul>
 </li>
-<li><a href="#org5bf91e1">Issue Velocity</a></li>
-<li><a href="#org7f1b649">Contributor/ Community Size</a>
+<li><a href="#org9a88af8">Issue Velocity</a></li>
+<li><a href="#org61bdfa2">Contributor/ Community Size</a>
 <ul>
-<li><a href="#org088a7f8">Storm Contributor Size</a></li>
-<li><a href="#org531030e">Spark Contributor Size</a></li>
+<li><a href="#org11dc2b9">Storm Contributor Size</a></li>
+<li><a href="#org380973d">Spark Contributor Size</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org95aa4f2">Development Friendliness</a>
+<li><a href="#orgd3ce102">Development Friendliness</a>
 <ul>
-<li><a href="#orgc76c06e">Developing for Storm</a></li>
-<li><a href="#org03d5bf4">Developing for Spark</a></li>
+<li><a href="#org775a7b2">Developing for Storm</a></li>
+<li><a href="#org1d53b6e">Developing for Spark</a></li>
 </ul>
 </li>
-<li><a href="#org75b6080">Installation / Administration</a></li>
-<li><a href="#org712ec65">Processing Models</a>
+<li><a href="#orgea43ada">Installation / Administration</a></li>
+<li><a href="#org57d015c">Processing Models</a>
 <ul>
-<li><a href="#org1e6ba2f">Batch Processing</a></li>
-<li><a href="#org198e867">Event-Stream Processing</a></li>
-<li><a href="#org5fcae1b">Micro-Batching</a></li>
+<li><a href="#org01924c3">Batch Processing</a></li>
+<li><a href="#org84c8234">Event-Stream Processing</a></li>
+<li><a href="#orgbc1a16a">Micro-Batching</a></li>
 </ul>
 </li>
-<li><a href="#org928e456">Fault-Tolerance / Message Guarantees</a>
+<li><a href="#org7f09168">Fault-Tolerance / Message Guarantees</a>
 <ul>
-<li><a href="#org49bd631">Delivery Semantics</a></li>
-<li><a href="#orgfac36e6">Apache Storm</a></li>
-<li><a href="#orgf095ce4">Apache Spark Streaming</a></li>
+<li><a href="#org91a9d67">Delivery Semantics</a></li>
+<li><a href="#orgc819bce">Apache Storm</a></li>
+<li><a href="#orga42e3de">Apache Spark Streaming</a></li>
 </ul>
 </li>
-<li><a href="#org7eaff70">Applicability</a>
+<li><a href="#orgadf3a61">Applicability</a>
 <ul>
-<li><a href="#orgd5371df">Apache Storm</a></li>
-<li><a href="#orgdc67751">Apache Spark Streaming</a></li>
+<li><a href="#orgfa4ccfc">Apache Storm</a></li>
+<li><a href="#org1e1b32a">Apache Spark Streaming</a></li>
 </ul>
 </li>
-<li><a href="#orgaa18f0f">Final Thoughts</a></li>
-<li><a href="#org09a6494">References</a></li>
+<li><a href="#orgdd9f734">Final Thoughts</a></li>
+<li><a href="#orga1f956f">References</a></li>
 </ul>
 </div>
 </div>
-<div class="PREVIEW">
+<div class="PREVIEW" id="orgff8e910">
 <p>
 This is the last post in the series on real-time systems.  In the
 <a href="https://kennyballou.com/blog/2014/07/real-time-streaming-storm-and-kafka">first post</a> we discussed <a href="https://storm.apache.org/">Apache Storm</a> and
@@ -396,9 +369,9 @@ not, are mistakes in exposition and/or organization and are not actual
 endorsements of either project.
 </p>
 
-<div id="outline-container-org4a6aff7" class="outline-2">
-<h2 id="org4a6aff7">Apache Storm</h2>
-<div class="outline-text-2" id="text-org4a6aff7">
+<div id="outline-container-org0be2dc2" class="outline-2">
+<h2 id="org0be2dc2">Apache Storm</h2>
+<div class="outline-text-2" id="text-org0be2dc2">
 <p>
 "Storm is a distributed real-time computation system" <a href="https://storm.apache.org/">Storm</a>.  Apache
 Storm is a <a href="http://en.wikipedia.org/wiki/Task_parallelism">task parallel</a> continuous computational
@@ -426,9 +399,9 @@ write files to HDFS.
 </div>
 </div>
 
-<div id="outline-container-org33d7179" class="outline-2">
-<h2 id="org33d7179">Apache Spark (Streaming)</h2>
-<div class="outline-text-2" id="text-org33d7179">
+<div id="outline-container-org4a272e6" class="outline-2">
+<h2 id="org4a272e6">Apache Spark (Streaming)</h2>
+<div class="outline-text-2" id="text-org4a272e6">
 <p>
 "Apache Spark is a fast and general purpose engine for large-scale data
 processing" <a href="https://spark.apache.org/">Spark</a>.  <a href="https://spark.apache.org/">Apache Spark</a> is a
@@ -456,9 +429,9 @@ clusters.
 </div>
 </div>
 
-<div id="outline-container-org36ec1de" class="outline-2">
-<h2 id="org36ec1de">Development</h2>
-<div class="outline-text-2" id="text-org36ec1de">
+<div id="outline-container-org654580f" class="outline-2">
+<h2 id="org654580f">Development</h2>
+<div class="outline-text-2" id="text-org654580f">
 <p>
 As of this writing, Apache Spark is a full, top level Apache project.  Whereas
 Apache Storm is currently undergoing incubation.  Moreover, the latest stable
@@ -479,9 +452,9 @@ in production for many different companies</a>.
 </p>
 </div>
 
-<div id="outline-container-org66df784" class="outline-3">
-<h3 id="org66df784">Implementation Language</h3>
-<div class="outline-text-3" id="text-org66df784">
+<div id="outline-container-org1c2ba40" class="outline-3">
+<h3 id="org1c2ba40">Implementation Language</h3>
+<div class="outline-text-3" id="text-org1c2ba40">
 <p>
 Both <a href="https://spark.apache.org/">Apache Spark</a> and <a href="https://storm.apache.org/">Apache Storm</a> are implemented in JVM
 based languages: <a href="http://www.scala-lang.org/">Scala</a> and <a href="http://clojure.org/">Clojure</a>, respectively.
@@ -504,9 +477,9 @@ safe.
 </p>
 </div>
 
-<div id="outline-container-orge8c3854" class="outline-4">
-<h4 id="orge8c3854">Message Passing Layer</h4>
-<div class="outline-text-4" id="text-orge8c3854">
+<div id="outline-container-orgdd7f07b" class="outline-4">
+<h4 id="orgdd7f07b">Message Passing Layer</h4>
+<div class="outline-text-4" id="text-orgdd7f07b">
 <p>
 Until version <code>0.9.x</code>, Storm was using the Java library <a href="https://github.com/zeromq/jzmq">JZMQ</a> for
 <a href="http://zeromq.org/">ZeroMQ</a> messages.  However, Storm has since moved the default
@@ -524,9 +497,9 @@ Spark, on the other hand, uses a combination of <a href="http://netty.io/">Netty
 </div>
 </div>
 
-<div id="outline-container-org349cd02" class="outline-3">
-<h3 id="org349cd02">Commit Velocity</h3>
-<div class="outline-text-3" id="text-org349cd02">
+<div id="outline-container-org965ea8e" class="outline-3">
+<h3 id="org965ea8e">Commit Velocity</h3>
+<div class="outline-text-3" id="text-org965ea8e">
 <p>
 As a reminder, these data are included not to cast judgment on one project or
 the other, but rather to exposit the fluidness of each project.  The continuum
@@ -541,9 +514,9 @@ Source of the following statistics were taken from the graphs at
 </p>
 </div>
 
-<div id="outline-container-org879f8e4" class="outline-4">
-<h4 id="org879f8e4">Spark Commit Velocity</h4>
-<div class="outline-text-4" id="text-org879f8e4">
+<div id="outline-container-org47808e2" class="outline-4">
+<h4 id="org47808e2">Spark Commit Velocity</h4>
+<div class="outline-text-4" id="text-org47808e2">
 <p>
 Examining the graphs from <a href="https://github.com/apache/spark/graphs/commit-activity">GitHub</a>, over the last
 month (as of this writing), there have been over 330 commits.  The previous
@@ -552,9 +525,9 @@ month had about 340.
 </div>
 </div>
 
-<div id="outline-container-org2ee0f4b" class="outline-4">
-<h4 id="org2ee0f4b">Storm Commit Velocity</h4>
-<div class="outline-text-4" id="text-org2ee0f4b">
+<div id="outline-container-orgc9bc02b" class="outline-4">
+<h4 id="orgc9bc02b">Storm Commit Velocity</h4>
+<div class="outline-text-4" id="text-orgc9bc02b">
 <p>
 Again examining the commit graphs from <a href="https://github.com/apache/incubator-storm/graphs/commit-activity">GitHub</a>, over
 the last month (as of this writing), there have been over 70 commits.  The
@@ -564,9 +537,9 @@ month prior had over 130.
 </div>
 </div>
 
-<div id="outline-container-org5bf91e1" class="outline-3">
-<h3 id="org5bf91e1">Issue Velocity</h3>
-<div class="outline-text-3" id="text-org5bf91e1">
+<div id="outline-container-org9a88af8" class="outline-3">
+<h3 id="org9a88af8">Issue Velocity</h3>
+<div class="outline-text-3" id="text-org9a88af8">
 <p>
 Sourcing the summary charts from JIRA, we can see that clearly Spark has a huge
 volume of issues reported and closed in the last 30 days.  Storm, roughly, an
@@ -577,9 +550,9 @@ order of magnitude less.
 Spark Open and Closed JIRA Issues (last 30 days):
 </p>
 
-<div align="center" class="figure">
+<div align="center" class="figure" id="org5c32e39">
 
-<div id="org33a0ebc" class="figure">
+<div id="orgbdda066" class="figure">
 <p><img src="../../../../media/spark_issues_chart.png" alt="spark_issues_chart.png" />
 </p>
 </div>
@@ -590,9 +563,9 @@ Spark Open and Closed JIRA Issues (last 30 days):
 Storm Open and Closed JIRA Issues (last 30 days):
 </p>
 
-<div align="center" class="figure">
+<div align="center" class="figure" id="org235d92d">
 
-<div id="orgafeb5bc" class="figure">
+<div id="org472055d" class="figure">
 <p><img src="../../../../media/storm_issues_chart.png" alt="storm_issues_chart.png" />
 </p>
 </div>
@@ -601,14 +574,14 @@ Storm Open and Closed JIRA Issues (last 30 days):
 </div>
 </div>
 
-<div id="outline-container-org7f1b649" class="outline-3">
-<h3 id="org7f1b649">Contributor/ Community Size</h3>
-<div class="outline-text-3" id="text-org7f1b649">
+<div id="outline-container-org61bdfa2" class="outline-3">
+<h3 id="org61bdfa2">Contributor/ Community Size</h3>
+<div class="outline-text-3" id="text-org61bdfa2">
 </div>
 
-<div id="outline-container-org088a7f8" class="outline-4">
-<h4 id="org088a7f8">Storm Contributor Size</h4>
-<div class="outline-text-4" id="text-org088a7f8">
+<div id="outline-container-org11dc2b9" class="outline-4">
+<h4 id="org11dc2b9">Storm Contributor Size</h4>
+<div class="outline-text-4" id="text-org11dc2b9">
 <p>
 Sourcing the reports from <a href="https://github.com/apache/incubator-storm/graphs/contributors">GitHub</a>, Storm has over
 a 100 contributors.  This number, though, is just the unique number of people
@@ -622,9 +595,9 @@ last 30.
 </div>
 </div>
 
-<div id="outline-container-org531030e" class="outline-4">
-<h4 id="org531030e">Spark Contributor Size</h4>
-<div class="outline-text-4" id="text-org531030e">
+<div id="outline-container-org380973d" class="outline-4">
+<h4 id="org380973d">Spark Contributor Size</h4>
+<div class="outline-text-4" id="text-org380973d">
 <p>
 Similarly sourcing the reports from <a href="https://github.com/apache/spark">GitHub</a>, Spark has roughly
 280 contributors.  A similar note as before must be made about this number:
@@ -640,14 +613,14 @@ the last 30 days.
 </div>
 </div>
 
-<div id="outline-container-org95aa4f2" class="outline-2">
-<h2 id="org95aa4f2">Development Friendliness</h2>
-<div class="outline-text-2" id="text-org95aa4f2">
+<div id="outline-container-orgd3ce102" class="outline-2">
+<h2 id="orgd3ce102">Development Friendliness</h2>
+<div class="outline-text-2" id="text-orgd3ce102">
 </div>
 
-<div id="outline-container-orgc76c06e" class="outline-3">
-<h3 id="orgc76c06e">Developing for Storm</h3>
-<div class="outline-text-3" id="text-orgc76c06e">
+<div id="outline-container-org775a7b2" class="outline-3">
+<h3 id="org775a7b2">Developing for Storm</h3>
+<div class="outline-text-3" id="text-org775a7b2">
 <ul class="org-ul">
 <li>Describing the process structure with DAG's feels natural to the
 <a href="http://en.wikipedia.org/wiki/Task_parallelism">processing model</a>.  Each node in the graph will
@@ -660,9 +633,9 @@ interface.  However, this comes at a cost to compile-time type safety.</li>
 </div>
 </div>
 
-<div id="outline-container-org03d5bf4" class="outline-3">
-<h3 id="org03d5bf4">Developing for Spark</h3>
-<div class="outline-text-3" id="text-org03d5bf4">
+<div id="outline-container-org1d53b6e" class="outline-3">
+<h3 id="org1d53b6e">Developing for Spark</h3>
+<div class="outline-text-3" id="text-org1d53b6e">
 <ul class="org-ul">
 <li>Spark's monadic expression of transformations over the data similarly feels
 natural in this <a href="http://en.wikipedia.org/wiki/Data_parallelism">processing model</a>; this falls in
@@ -683,9 +656,9 @@ awkwardness does come with the benefit of compile-time type checks.
 </div>
 </div>
 
-<div id="outline-container-org75b6080" class="outline-2">
-<h2 id="org75b6080">Installation / Administration</h2>
-<div class="outline-text-2" id="text-org75b6080">
+<div id="outline-container-orgea43ada" class="outline-2">
+<h2 id="orgea43ada">Installation / Administration</h2>
+<div class="outline-text-2" id="text-orgea43ada">
 <p>
 Installation of both Apache Spark and Apache Storm are relatively straight
 forward.  Spark may be simpler in some regards, however, since it technically
@@ -709,9 +682,9 @@ scope and have no impact on the installation of either Storm or Spark.
 </div>
 </div>
 
-<div id="outline-container-org712ec65" class="outline-2">
-<h2 id="org712ec65">Processing Models</h2>
-<div class="outline-text-2" id="text-org712ec65">
+<div id="outline-container-org57d015c" class="outline-2">
+<h2 id="org57d015c">Processing Models</h2>
+<div class="outline-text-2" id="text-org57d015c">
 <p>
 Comparing Apache Storm and Apache Spark's Streaming, turns out to be a bit
 challenging.  One is a true stream processing engine that can do
@@ -722,9 +695,9 @@ fundamentally different computing ideas.
 </p>
 </div>
 
-<div id="outline-container-org1e6ba2f" class="outline-3">
-<h3 id="org1e6ba2f">Batch Processing</h3>
-<div class="outline-text-3" id="text-org1e6ba2f">
+<div id="outline-container-org01924c3" class="outline-3">
+<h3 id="org01924c3">Batch Processing</h3>
+<div class="outline-text-3" id="text-org01924c3">
 <p>
 <a href="http://en.wikipedia.org/wiki/Batch_processing">Batch processing</a> is the familiar concept of
 processing data en masse.  The batch size could be small or very large.  This
@@ -739,9 +712,9 @@ incoming data.
 </div>
 </div>
 
-<div id="outline-container-org198e867" class="outline-3">
-<h3 id="org198e867">Event-Stream Processing</h3>
-<div class="outline-text-3" id="text-org198e867">
+<div id="outline-container-org84c8234" class="outline-3">
+<h3 id="org84c8234">Event-Stream Processing</h3>
+<div class="outline-text-3" id="text-org84c8234">
 <p>
 <a href="http://en.wikipedia.org/wiki/Event_stream_processing">Stream processing</a> is a <i>one-at-a-time</i> processing
 model; a datum is processed as it arrives.  The core Storm library follows this
@@ -756,9 +729,9 @@ difficult to process stable data efficiently.
 </div>
 </div>
 
-<div id="outline-container-org5fcae1b" class="outline-3">
-<h3 id="org5fcae1b">Micro-Batching</h3>
-<div class="outline-text-3" id="text-org5fcae1b">
+<div id="outline-container-orgbc1a16a" class="outline-3">
+<h3 id="orgbc1a16a">Micro-Batching</h3>
+<div class="outline-text-3" id="text-orgbc1a16a">
 <p>
 Micro-batching is a special case of batch processing where the batch size is
 orders smaller.  Spark Streaming operates in this manner as does the Storm
@@ -776,18 +749,18 @@ trivially gives stateful computation, making
 </div>
 </div>
 
-<div id="outline-container-org928e456" class="outline-2">
-<h2 id="org928e456">Fault-Tolerance / Message Guarantees</h2>
-<div class="outline-text-2" id="text-org928e456">
+<div id="outline-container-org7f09168" class="outline-2">
+<h2 id="org7f09168">Fault-Tolerance / Message Guarantees</h2>
+<div class="outline-text-2" id="text-org7f09168">
 <p>
 As a result of each project's fundamentally different processing models, the
 fault-tolerance and message guarantees are handled differently.
 </p>
 </div>
 
-<div id="outline-container-org49bd631" class="outline-3">
-<h3 id="org49bd631">Delivery Semantics</h3>
-<div class="outline-text-3" id="text-org49bd631">
+<div id="outline-container-org91a9d67" class="outline-3">
+<h3 id="org91a9d67">Delivery Semantics</h3>
+<div class="outline-text-3" id="text-org91a9d67">
 <p>
 Before diving into each project's fault-tolerance and message guarantees, here
 are the common delivery semantics:
@@ -804,9 +777,9 @@ delivery.</li>
 </div>
 </div>
 
-<div id="outline-container-orgfac36e6" class="outline-3">
-<h3 id="orgfac36e6">Apache Storm</h3>
-<div class="outline-text-3" id="text-orgfac36e6">
+<div id="outline-container-orgc819bce" class="outline-3">
+<h3 id="orgc819bce">Apache Storm</h3>
+<div class="outline-text-3" id="text-orgc819bce">
 <p>
 To provide fault-tolerant messaging, Storm has to keep track of each and every
 record.  By default, this is done with at least once delivery semantics.  Storm
@@ -817,9 +790,9 @@ is acceptable, at most once delivery will improve performance.
 </div>
 </div>
 
-<div id="outline-container-orgf095ce4" class="outline-3">
-<h3 id="orgf095ce4">Apache Spark Streaming</h3>
-<div class="outline-text-3" id="text-orgf095ce4">
+<div id="outline-container-orga42e3de" class="outline-3">
+<h3 id="orga42e3de">Apache Spark Streaming</h3>
+<div class="outline-text-3" id="text-orga42e3de">
 <p>
 The resiliency built into Spark RDD's and the micro-batching yields a trivial
 mechanism for providing fault-tolerance and message delivery guarantees.  That
@@ -832,14 +805,14 @@ to at least once delivery.
 </div>
 </div>
 
-<div id="outline-container-org7eaff70" class="outline-2">
-<h2 id="org7eaff70">Applicability</h2>
-<div class="outline-text-2" id="text-org7eaff70">
+<div id="outline-container-orgadf3a61" class="outline-2">
+<h2 id="orgadf3a61">Applicability</h2>
+<div class="outline-text-2" id="text-orgadf3a61">
 </div>
 
-<div id="outline-container-orgd5371df" class="outline-3">
-<h3 id="orgd5371df">Apache Storm</h3>
-<div class="outline-text-3" id="text-orgd5371df">
+<div id="outline-container-orgfa4ccfc" class="outline-3">
+<h3 id="orgfa4ccfc">Apache Storm</h3>
+<div class="outline-text-3" id="text-orgfa4ccfc">
 <p>
 Some areas where Storm excels include: near real-time analytics, natural
 language processing, data normalization and <a href="http://en.wikipedia.org/wiki/Extract,_transform,_load">ETL</a> transformations.
@@ -850,9 +823,9 @@ processing topologies.
 </div>
 </div>
 
-<div id="outline-container-orgdc67751" class="outline-3">
-<h3 id="orgdc67751">Apache Spark Streaming</h3>
-<div class="outline-text-3" id="text-orgdc67751">
+<div id="outline-container-org1e1b32a" class="outline-3">
+<h3 id="org1e1b32a">Apache Spark Streaming</h3>
+<div class="outline-text-3" id="text-org1e1b32a">
 <p>
 Spark has an excellent model for performing iterative machine learning and
 interactive analytics.  But Spark also excels in some similar areas of Storm
@@ -862,9 +835,9 @@ including near real-time analytics, ingestion.
 </div>
 </div>
 
-<div id="outline-container-orgaa18f0f" class="outline-2">
-<h2 id="orgaa18f0f">Final Thoughts</h2>
-<div class="outline-text-2" id="text-orgaa18f0f">
+<div id="outline-container-orgdd9f734" class="outline-2">
+<h2 id="orgdd9f734">Final Thoughts</h2>
+<div class="outline-text-2" id="text-orgdd9f734">
 <p>
 Generally, the requirements will dictate the choice.  However, here are some
 major points to consider when choosing the right tool:
@@ -915,9 +888,9 @@ matter of answering the above questions.
 </div>
 </div>
 
-<div id="outline-container-org09a6494" class="outline-2">
-<h2 id="org09a6494">References</h2>
-<div class="outline-text-2" id="text-org09a6494">
+<div id="outline-container-orga1f956f" class="outline-2">
+<h2 id="orga1f956f">References</h2>
+<div class="outline-text-2" id="text-orga1f956f">
 <ul class="org-ul">
 <li><a href="https://storm.apache.org/">Apache Storm Home Page</a></li>
 

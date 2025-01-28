@@ -3,16 +3,15 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2024-09-17 Tue 00:05 -->
+<!-- 2025-01-28 Tue 04:46 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Organizing Source</title>
-<meta name="generator" content="Org mode" />
 <meta name="author" content="kb" />
-<meta name="description" content="Organizing Workspace/Source Code"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="description" content="Organizing Workspace/Source Code" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -33,8 +32,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -42,22 +42,22 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
-    padding-top: 1.2em;
+    overflow: auto;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -192,8 +192,7 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <meta charset="utf-8">
 
@@ -213,51 +212,25 @@
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <script defer type="text/javascript" src="/js/katex.js"></script>
 <script defer type="text/javascript" src="/js/katex-render.js"></script>
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
 </script>
 </head>
 <body>
@@ -315,30 +288,30 @@ for the JavaScript code in this tag.
   </a>
 </nav>
 </header>
-<div id="main">
+<div id="main" class="content">
 <h1 class="title">Organizing Source</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgf0d5644">Why this Discussion</a></li>
-<li><a href="#org9957b3b">Path to Organization</a>
+<li><a href="#orgbd920ef">Why this Discussion</a></li>
+<li><a href="#org000ec6e">Path to Organization</a>
 <ul>
-<li><a href="#org518cedc">Before University</a></li>
-<li><a href="#orga2ac4b7">Eclipse</a></li>
-<li><a href="#orgff29d26">Maven</a></li>
-<li><a href="#org722c1d3">Golang</a></li>
-<li><a href="#org62ef23e">Personal Projects, Professional Development, and Contracting</a></li>
-<li><a href="#org8e63f7a">Forges, Platforms, and Working in Public</a></li>
+<li><a href="#org394a87a">Before University</a></li>
+<li><a href="#orgd1c9803">Eclipse</a></li>
+<li><a href="#org093f05f">Maven</a></li>
+<li><a href="#orgdf40381">Golang</a></li>
+<li><a href="#org5155301">Personal Projects, Professional Development, and Contracting</a></li>
+<li><a href="#orgaf54a39">Forges, Platforms, and Working in Public</a></li>
 </ul>
 </li>
-<li><a href="#orgcb3fe73">Organizing Source</a></li>
-<li><a href="#orgb1bc7d0">tl;dr:</a></li>
-<li><a href="#org27479ba">Parting Thoughts</a></li>
+<li><a href="#org842ad75">Organizing Source</a></li>
+<li><a href="#org6974129">tl;dr:</a></li>
+<li><a href="#org091bc2d">Parting Thoughts</a></li>
 </ul>
 </div>
 </div>
-<div class="PREVIEW">
+<div class="PREVIEW" id="org17b4bbe">
 <p>
 Another brief digression into organizing source code and projects.  Described
 here is my current ideal, subject to change, that has evolved over the years of
@@ -347,9 +320,9 @@ being a student, a professional, a contractor, and now a student again.
 
 </div>
 
-<div id="outline-container-orgf0d5644" class="outline-2">
-<h2 id="orgf0d5644">Why this Discussion</h2>
-<div class="outline-text-2" id="text-orgf0d5644">
+<div id="outline-container-orgbd920ef" class="outline-2">
+<h2 id="orgbd920ef">Why this Discussion</h2>
+<div class="outline-text-2" id="text-orgbd920ef">
 <p>
 <a href="https://kennyballou.com/blog/2020/08/organizing-research">Previously</a>, we discussed how to organize research papers and related metadata.
 Today, I want to discuss how <i>I</i> personally organize my source code.  I write
@@ -387,9 +360,9 @@ another.  Finally, I will discuss the current organization method.
 </div>
 </div>
 
-<div id="outline-container-org9957b3b" class="outline-2">
-<h2 id="org9957b3b">Path to Organization</h2>
-<div class="outline-text-2" id="text-org9957b3b">
+<div id="outline-container-org000ec6e" class="outline-2">
+<h2 id="org000ec6e">Path to Organization</h2>
+<div class="outline-text-2" id="text-org000ec6e">
 <p>
 The madness of my organization is derivable through a series of tools and
 stages in my development career.  Certainly, there is some <a href="https://en.wikipedia.org/wiki/Historical_revisionism">revisionism</a> here,
@@ -397,9 +370,9 @@ nothing is ever as clean as we may make it.
 </p>
 </div>
 
-<div id="outline-container-org518cedc" class="outline-3">
-<h3 id="org518cedc">Before University</h3>
-<div class="outline-text-3" id="text-org518cedc">
+<div id="outline-container-org394a87a" class="outline-3">
+<h3 id="org394a87a">Before University</h3>
+<div class="outline-text-3" id="text-org394a87a">
 <p>
 When learning some programming in high-school, there was <b>NO</b> organization.
 Projects were loosely collected under whatever folder made sense in the moment,
@@ -437,9 +410,9 @@ projects.
 </div>
 </div>
 
-<div id="outline-container-orga2ac4b7" class="outline-3">
-<h3 id="orga2ac4b7">Eclipse</h3>
-<div class="outline-text-3" id="text-orga2ac4b7">
+<div id="outline-container-orgd1c9803" class="outline-3">
+<h3 id="orgd1c9803">Eclipse</h3>
+<div class="outline-text-3" id="text-orgd1c9803">
 <p>
 Starting university, our first tool was <a href="https://www.eclipse.org/">Eclipse</a>.  Being relatively spoiled by
 <a href="https://visualstudio.microsoft.com/">Visual Studio</a>, <a href="https://www.eclipse.org/">Eclipse</a> seemed archaic.  But something that stuck out is the
@@ -463,9 +436,9 @@ organization after this.
 </div>
 </div>
 
-<div id="outline-container-orgff29d26" class="outline-3">
-<h3 id="orgff29d26">Maven</h3>
-<div class="outline-text-3" id="text-orgff29d26">
+<div id="outline-container-org093f05f" class="outline-3">
+<h3 id="org093f05f">Maven</h3>
+<div class="outline-text-3" id="text-org093f05f">
 <p>
 As typical for editor envy, the desire to ditch <a href="https://www.eclipse.org/">Eclipse</a> for <a href="https://www.vim.org\">Vim</a> became more and
 more apparent, finding appropriate tooling for managing projects quickly became
@@ -489,9 +462,9 @@ would use <code>com.example</code> as a root folder for all <code>example.com</c
 </div>
 </div>
 
-<div id="outline-container-org722c1d3" class="outline-3">
-<h3 id="org722c1d3">Golang</h3>
-<div class="outline-text-3" id="text-org722c1d3">
+<div id="outline-container-orgdf40381" class="outline-3">
+<h3 id="orgdf40381">Golang</h3>
+<div class="outline-text-3" id="text-orgdf40381">
 <p>
 Prior to 1.12 and Go modules, <a href="https://golang.org/">Golang</a> imposed its own project structuring.  I
 have had conflicting thoughts about this.  On one hand, the imposed homogeneity
@@ -521,9 +494,9 @@ interested in the owning or overarching organization behind the code.
 </div>
 </div>
 
-<div id="outline-container-org62ef23e" class="outline-3">
-<h3 id="org62ef23e">Personal Projects, Professional Development, and Contracting</h3>
-<div class="outline-text-3" id="text-org62ef23e">
+<div id="outline-container-org5155301" class="outline-3">
+<h3 id="org5155301">Personal Projects, Professional Development, and Contracting</h3>
+<div class="outline-text-3" id="text-org5155301">
 <p>
 As a developer, hobbyist or professional, there is a need to have a clear
 delineation between projects.  This comes both for personal desires to be
@@ -561,9 +534,9 @@ to achieve separation.
 </div>
 </div>
 
-<div id="outline-container-org8e63f7a" class="outline-3">
-<h3 id="org8e63f7a">Forges, Platforms, and Working in Public</h3>
-<div class="outline-text-3" id="text-org8e63f7a">
+<div id="outline-container-orgaf54a39" class="outline-3">
+<h3 id="orgaf54a39">Forges, Platforms, and Working in Public</h3>
+<div class="outline-text-3" id="text-orgaf54a39">
 <blockquote>
 <p>
 Notice, this <span class="underline">is</span> different than the mono-repository vs. poly-repository
@@ -603,9 +576,9 @@ same cloned version of the project.
 </div>
 </div>
 
-<div id="outline-container-orgcb3fe73" class="outline-2">
-<h2 id="orgcb3fe73">Organizing Source</h2>
-<div class="outline-text-2" id="text-orgcb3fe73">
+<div id="outline-container-org842ad75" class="outline-2">
+<h2 id="org842ad75">Organizing Source</h2>
+<div class="outline-text-2" id="text-org842ad75">
 <p>
 While the historical context may not be complete enough to allow someone to
 perfectly derive my own organization, I do hope it serves as a solid foundation
@@ -623,15 +596,15 @@ Under each of these parent structures is the actual project folders.
 </div>
 </div>
 
-<div id="outline-container-orgb1bc7d0" class="outline-2">
-<h2 id="orgb1bc7d0">tl;dr:</h2>
-<div class="outline-text-2" id="text-orgb1bc7d0">
+<div id="outline-container-org6974129" class="outline-2">
+<h2 id="org6974129">tl;dr:</h2>
+<div class="outline-text-2" id="text-org6974129">
 <div class="org-src-container">
 <pre class="src src-bash">tree -L 3 ~/workspace
 </pre>
 </div>
 
-<pre class="example">
+<pre class="example" id="orgd4e93b2">
 workspace
 └── src
     ├── com
@@ -659,9 +632,9 @@ workspace
 </div>
 </div>
 
-<div id="outline-container-org27479ba" class="outline-2">
-<h2 id="org27479ba">Parting Thoughts</h2>
-<div class="outline-text-2" id="text-org27479ba">
+<div id="outline-container-org091bc2d" class="outline-2">
+<h2 id="org091bc2d">Parting Thoughts</h2>
+<div class="outline-text-2" id="text-org091bc2d">
 <p>
 Now that it's all written, I'm not sure this discussion truly warranted its own
 post.  I've wanted to read something like this from others before, but in

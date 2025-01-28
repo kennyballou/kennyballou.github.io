@@ -3,16 +3,15 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2024-09-17 Tue 00:05 -->
+<!-- 2025-01-28 Tue 04:46 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Tracking Review Branches with Git</title>
-<meta name="generator" content="Org mode" />
 <meta name="author" content="kb" />
-<meta name="description" content="Automatically pulling pull-request branches"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="description" content="Automatically pulling pull-request branches" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -33,8 +32,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -42,22 +42,22 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
-    padding-top: 1.2em;
+    overflow: auto;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -192,8 +192,7 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <meta charset="utf-8">
 
@@ -213,51 +212,25 @@
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <script defer type="text/javascript" src="/js/katex.js"></script>
 <script defer type="text/javascript" src="/js/katex-render.js"></script>
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
 </script>
 </head>
 <body>
@@ -315,23 +288,23 @@ for the JavaScript code in this tag.
   </a>
 </nav>
 </header>
-<div id="main">
+<div id="main" class="content">
 <h1 class="title">Tracking Review Branches with Git</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org4ece15f">GitHub</a></li>
-<li><a href="#org1c7bb4e">GitLab</a></li>
-<li><a href="#org487e357">Local Branch Prefix</a></li>
-<li><a href="#org8c1f6ba">Branch Discovery</a></li>
-<li><a href="#orge0f2463">Manual Checkout</a></li>
-<li><a href="#orgc1be8d8">Repositories with Many Pull Requests</a></li>
-<li><a href="#orgc3bc1eb">tl;dr:</a></li>
+<li><a href="#org94e5a7c">GitHub</a></li>
+<li><a href="#orga7adbca">GitLab</a></li>
+<li><a href="#org0875d76">Local Branch Prefix</a></li>
+<li><a href="#org64c6b42">Branch Discovery</a></li>
+<li><a href="#org6e03ae0">Manual Checkout</a></li>
+<li><a href="#org3917d7e">Repositories with Many Pull Requests</a></li>
+<li><a href="#orgec55e4a">tl;dr:</a></li>
 </ul>
 </div>
 </div>
-<div class="PREVIEW">
+<div class="PREVIEW" id="org1e37bdb">
 <p>
 When reviewing code, it's often necessary to pull the changes under review.
 There are ad-hoc ways of doing this.  But there are also more automatic ways as
@@ -351,9 +324,9 @@ kernel development etiquette, what <a href="https://git-scm.com/">https://git-sc
 </p>
 </blockquote>
 
-<div id="outline-container-org4ece15f" class="outline-2">
-<h2 id="org4ece15f">GitHub</h2>
-<div class="outline-text-2" id="text-org4ece15f">
+<div id="outline-container-org94e5a7c" class="outline-2">
+<h2 id="org94e5a7c">GitHub</h2>
+<div class="outline-text-2" id="text-org94e5a7c">
 <p>
 If we are working with a <a href="https://github.com">GitHub</a> repository, we can run the following command,
 assuming <code>origin</code> is the remote where pull requests are submitted:
@@ -384,9 +357,9 @@ The full <code>remote.origin</code> section should look similar to the following
 </div>
 </div>
 
-<div id="outline-container-org1c7bb4e" class="outline-2">
-<h2 id="org1c7bb4e">GitLab</h2>
-<div class="outline-text-2" id="text-org1c7bb4e">
+<div id="outline-container-orga7adbca" class="outline-2">
+<h2 id="orga7adbca">GitLab</h2>
+<div class="outline-text-2" id="text-orga7adbca">
 <p>
 Similarly, if we are working with <a href="https://gitlab.com">GitLab</a> repositories, we can use a similar
 command to accomplish the same result, again assuming <code>origin</code> as the remote:
@@ -412,9 +385,9 @@ following:
 </div>
 </div>
 
-<div id="outline-container-org487e357" class="outline-2">
-<h2 id="org487e357">Local Branch Prefix</h2>
-<div class="outline-text-2" id="text-org487e357">
+<div id="outline-container-org0875d76" class="outline-2">
+<h2 id="org0875d76">Local Branch Prefix</h2>
+<div class="outline-text-2" id="text-org0875d76">
 <p>
 The local branch prefix can be set to any value that is desired.  Don't like
 <code>origin/pull/${pr}</code>?  Change it.  A <a href="https://gist.github.com/piscisaureus/3342247">common option</a> is to use <code>origin/pr</code> instead.
@@ -442,9 +415,9 @@ these references are ambiguous.
 </div>
 </div>
 
-<div id="outline-container-org8c1f6ba" class="outline-2">
-<h2 id="org8c1f6ba">Branch Discovery</h2>
-<div class="outline-text-2" id="text-org8c1f6ba">
+<div id="outline-container-org64c6b42" class="outline-2">
+<h2 id="org64c6b42">Branch Discovery</h2>
+<div class="outline-text-2" id="text-org64c6b42">
 <p>
 When using a different forge than <a href="https://github.com">GitHub</a> or <a href="https://gitlab.com">GitLab</a>, it may be possible to
 discover the appropriate pattern for references to pull requests.
@@ -475,7 +448,7 @@ pull requests for the repository.
 The following is an example listing from <a href="https://github.com/nix-community/emacs-overlay">nix-community/emacs-overlay</a>:
 </p>
 
-<pre class="example">
+<pre class="example" id="org58ca93f">
 c30763fa3d800911ee57c4cdaf558b416e4c5780	HEAD
 5b9f3a8258c4b42c9c3dfcb77bde5d2e3abbc6eb	refs/heads/elpa
 6cce77a7865731bd64f12b0ade938c0082f869c6	refs/heads/expect
@@ -502,9 +475,9 @@ path.
 </div>
 </div>
 
-<div id="outline-container-orge0f2463" class="outline-2">
-<h2 id="orge0f2463">Manual Checkout</h2>
-<div class="outline-text-2" id="text-orge0f2463">
+<div id="outline-container-org6e03ae0" class="outline-2">
+<h2 id="org6e03ae0">Manual Checkout</h2>
+<div class="outline-text-2" id="text-org6e03ae0">
 <p>
 Without downloading and keeping track of <i>all</i> pull request branches, individual
 pull requests can be checked out as well.  However, doing so requires an extra
@@ -532,9 +505,9 @@ git checkout -b pr/${<span style="font-weight: bold; font-style: italic;">pr</sp
 </div>
 </div>
 
-<div id="outline-container-orgc1be8d8" class="outline-2">
-<h2 id="orgc1be8d8">Repositories with Many Pull Requests</h2>
-<div class="outline-text-2" id="text-orgc1be8d8">
+<div id="outline-container-org3917d7e" class="outline-2">
+<h2 id="org3917d7e">Repositories with Many Pull Requests</h2>
+<div class="outline-text-2" id="text-org3917d7e">
 <p>
 While adding the extra fetch and branch prefix is a nice way to automatically
 track pull requests against a repository, the repository may have more pull
@@ -578,9 +551,9 @@ same fetch trick as above.
 </div>
 </div>
 
-<div id="outline-container-orgc3bc1eb" class="outline-2">
-<h2 id="orgc3bc1eb">tl;dr:</h2>
-<div class="outline-text-2" id="text-orgc3bc1eb">
+<div id="outline-container-orgec55e4a" class="outline-2">
+<h2 id="orgec55e4a">tl;dr:</h2>
+<div class="outline-text-2" id="text-orgec55e4a">
 <p>
 To automatically fetch pull requests from <a href="https://github.com">GitHub</a> repositories, run the
 following command, assuming <code>upstream</code> is the remote where pull requests are

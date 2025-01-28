@@ -3,14 +3,14 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2024-09-17 Tue 00:05 -->
+<!-- 2025-01-28 Tue 04:46 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Portable, Repeatable (, and Reproducible) Notebooks</title>
-<meta name="generator" content="Org mode" />
 <meta name="author" content="kb" />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -31,8 +31,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -40,22 +41,22 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
-    padding-top: 1.2em;
+    overflow: auto;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -190,8 +191,7 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <meta charset="utf-8">
 
@@ -211,51 +211,25 @@
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <script defer type="text/javascript" src="/js/katex.js"></script>
 <script defer type="text/javascript" src="/js/katex-render.js"></script>
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
 </script>
 </head>
 <body>
@@ -313,30 +287,30 @@ for the JavaScript code in this tag.
   </a>
 </nav>
 </header>
-<div id="main">
+<div id="main" class="content">
 <h1 class="title">Portable, Repeatable (, and Reproducible) Notebooks</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgc5274cc">Background</a>
+<li><a href="#org130ced6">Background</a>
 <ul>
-<li><a href="#orgffb63c7">Notebooks</a></li>
-<li><a href="#org1b7247a">Org-Mode (+ Emacs)</a></li>
+<li><a href="#org058e661">Notebooks</a></li>
+<li><a href="#orgcc2c589">Org-Mode (+ Emacs)</a></li>
 </ul>
 </li>
-<li><a href="#orgfb18dd9">Caveats</a></li>
-<li><a href="#org7c69a06">Candidate Solution</a>
+<li><a href="#org3d4378c">Caveats</a></li>
+<li><a href="#org520b718">Candidate Solution</a>
 <ul>
-<li><a href="#org7041031">Reproducible</a></li>
-<li><a href="#org2784c78">Portable and Repeatable</a></li>
+<li><a href="#org6289337">Reproducible</a></li>
+<li><a href="#org0f82b7d">Portable and Repeatable</a></li>
 </ul>
 </li>
-<li><a href="#orgd6dd314">Discussion</a></li>
+<li><a href="#org42cafea">Discussion</a></li>
 </ul>
 </div>
 </div>
-<div class="PREVIEW">
+<div class="PREVIEW" id="org9bacd84">
 <p>
 Notebooks represent an important improvement for interactive and iterative
 research.  However, they tend to lack portability, reproducibility, and
@@ -358,9 +332,9 @@ general.  The main contributions of this post is a series of techniques for <a h
 mode</a> to make the documents easily portable and repeatable with minimal fuss.
 </p>
 
-<div id="outline-container-orgc5274cc" class="outline-2">
-<h2 id="orgc5274cc">Background</h2>
-<div class="outline-text-2" id="text-orgc5274cc">
+<div id="outline-container-org130ced6" class="outline-2">
+<h2 id="org130ced6">Background</h2>
+<div class="outline-text-2" id="text-org130ced6">
 <p>
 There exists numerous examples of different "notebook" implementations, such as
 <a href="https://jupyter.org/">Jupyter Notebooks</a>, <a href="https://www.sagemath.org/">SageMath Worksheets</a>, <a href="https://rmarkdown.rstudio.com/">R Markdown</a> and <a href="https://livebook.dev/">Elixir Livebook</a>; and
@@ -368,9 +342,9 @@ some less traditional ones, such as <a href="https://orgmode.org/">Org Mode</a> 
 </p>
 </div>
 
-<div id="outline-container-orgffb63c7" class="outline-3">
-<h3 id="orgffb63c7">Notebooks</h3>
-<div class="outline-text-3" id="text-orgffb63c7">
+<div id="outline-container-org058e661" class="outline-3">
+<h3 id="org058e661">Notebooks</h3>
+<div class="outline-text-3" id="text-org058e661">
 <p>
 <a href="https://jupyter.org/">Jupyter Notebooks</a> is arguably the most common and prevalent notebook system out
 there, with many features.  It supports many features such as different
@@ -383,9 +357,9 @@ Caveats section below.
 </div>
 </div>
 
-<div id="outline-container-org1b7247a" class="outline-3">
-<h3 id="org1b7247a">Org-Mode (+ Emacs)</h3>
-<div class="outline-text-3" id="text-org1b7247a">
+<div id="outline-container-orgcc2c589" class="outline-3">
+<h3 id="orgcc2c589">Org-Mode (+ Emacs)</h3>
+<div class="outline-text-3" id="text-orgcc2c589">
 <p>
 As an alternative, <a href="https://orgmode.org/">Org Mode</a> (with <a href="https://www.gnu.org/software/emacs/">Emacs</a>) offers all the desired features of
 notebooks, but similarly gets around some of the limitations typical notebook
@@ -403,9 +377,9 @@ Programming Language</a> documentation.
 </div>
 </div>
 
-<div id="outline-container-orgfb18dd9" class="outline-2">
-<h2 id="orgfb18dd9">Caveats</h2>
-<div class="outline-text-2" id="text-orgfb18dd9">
+<div id="outline-container-org3d4378c" class="outline-2">
+<h2 id="org3d4378c">Caveats</h2>
+<div class="outline-text-2" id="text-org3d4378c">
 <p>
 Notebooks are susceptible to a <a href="https://docs.google.com/presentation/d/1n2RlMdmv1p25Xy5thJUhkKGvjtV-dkAIsUXP-AL4ffI/edit#slide=id.g362da58057_0_1">number of issues</a> and <a href="https://orgmode.org/">Org mode</a> notebooks are no
 exception.  These issues are not specifically addressed in this post, but they
@@ -426,9 +400,9 @@ format is not top-down.
 </div>
 </div>
 
-<div id="outline-container-org7c69a06" class="outline-2">
-<h2 id="org7c69a06">Candidate Solution</h2>
-<div class="outline-text-2" id="text-org7c69a06">
+<div id="outline-container-org520b718" class="outline-2">
+<h2 id="org520b718">Candidate Solution</h2>
+<div class="outline-text-2" id="text-org520b718">
 <p>
 The following is <i>a</i> candidate solution to this problem.  It can and should be
 refined, but it represents a decent step in the right direction.  First, we
@@ -437,9 +411,9 @@ portability and repeatability together.
 </p>
 </div>
 
-<div id="outline-container-org7041031" class="outline-3">
-<h3 id="org7041031">Reproducible</h3>
-<div class="outline-text-3" id="text-org7041031">
+<div id="outline-container-org6289337" class="outline-3">
+<h3 id="org6289337">Reproducible</h3>
+<div class="outline-text-3" id="text-org6289337">
 <p>
 <a href="https://guix.gnu.org/">GNU Guix</a> provides the necessary reproducibility.  Specifically, using <a href="https://github.com/purcell/envrc">envrc</a> and
 <a href="https://direnv.net/">direnv</a>, a manifest is loaded and shimmed into the current environment within
@@ -452,9 +426,9 @@ version pin the entire dependency tree (down to the C compiler and GLibC).
 </div>
 </div>
 
-<div id="outline-container-org2784c78" class="outline-3">
-<h3 id="org2784c78">Portable and Repeatable</h3>
-<div class="outline-text-3" id="text-org2784c78">
+<div id="outline-container-org0f82b7d" class="outline-3">
+<h3 id="org0f82b7d">Portable and Repeatable</h3>
+<div class="outline-text-3" id="text-org0f82b7d">
 <p>
 For a recent conference paper, I needed to repeatedly run a few thousand
 different experiments and then the aggregation and analysis of those
@@ -670,9 +644,9 @@ process.  However, that is essentially the same set of ideas repeated.
 </div>
 </div>
 
-<div id="outline-container-orgd6dd314" class="outline-2">
-<h2 id="orgd6dd314">Discussion</h2>
-<div class="outline-text-2" id="text-orgd6dd314">
+<div id="outline-container-org42cafea" class="outline-2">
+<h2 id="org42cafea">Discussion</h2>
+<div class="outline-text-2" id="text-org42cafea">
 <p>
 <a href="https://orgmode.org/">Org Mode</a> is a huge tool and requires a piecemeal consumption to master.  As
 such, many examples using <a href="https://orgmode.org/worg/org-contrib/babel/">Org Babel</a>, for example, do not show the full power of

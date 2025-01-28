@@ -3,11 +3,10 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2024-09-17 Tue 00:05 -->
+<!-- 2025-01-28 Tue 04:46 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Blog</title>
-<meta name="generator" content="Org mode" />
 <meta name="author" content="kb" />
 <meta name="description" content="New New Static site generation with Org-Mode Publishing
 A rambling in self-inflicted suffering with Java, Emacs, DAP, and Firewalls!
@@ -36,10 +35,10 @@ My own list of links, articles, paper, etc. I enjoyed reading about distributed 
 First vim tip post of a series of unknown size
 Comparison of Apache Storm and Apache Spark Streaming
 Overview of Apache Spark and a sample Twitter Sentiment Analysis
-Overview of Apache Storm and sample Twitter Sentiment Analysis"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+Overview of Apache Storm and sample Twitter Sentiment Analysis" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -60,8 +59,9 @@ Overview of Apache Storm and sample Twitter Sentiment Analysis"
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -69,22 +69,22 @@ Overview of Apache Storm and sample Twitter Sentiment Analysis"
   }
   pre.src {
     position: relative;
-    overflow: visible;
-    padding-top: 1.2em;
+    overflow: auto;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -219,8 +219,7 @@ Overview of Apache Storm and sample Twitter Sentiment Analysis"
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <meta charset="utf-8">
 
@@ -240,51 +239,25 @@ Overview of Apache Storm and sample Twitter Sentiment Analysis"
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <script defer type="text/javascript" src="/js/katex.js"></script>
 <script defer type="text/javascript" src="/js/katex-render.js"></script>
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
 </script>
 </head>
 <body>
@@ -342,14 +315,14 @@ for the JavaScript code in this tag.
   </a>
 </nav>
 </header>
-<div id="main">
+<div id="main" class="content">
 <h1 class="title">Blog</h1>
 
-<div id="outline-container-org6e1d70e" class="outline-2">
-<h2 id="org6e1d70e"><a href="../blog/2023/12/passive-mail-fingerprinting/index.html">Passive Mail Server Fingerprinting with DNS</a></h2>
-<div class="outline-text-2" id="text-org6e1d70e">
+<div id="outline-container-org55e50f6" class="outline-2">
+<h2 id="org55e50f6"><a href="../blog/2023/12/passive-mail-fingerprinting/index.html">Passive Mail Server Fingerprinting with DNS</a></h2>
+<div class="outline-text-2" id="text-org55e50f6">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="org5fb2d03">
 <p>
 We can easily identify mail servers with <a href="https://www.wikiwand.com/en/MX_record">MX records</a>.  Given only a server name
 for a particular organization, we can passively fingerprint the email server
@@ -361,15 +334,15 @@ with a simple DNS query.
 </div>
 </div>
 
-<div id="outline-container-org78b3ad5" class="outline-2">
-<h2 id="org78b3ad5"><a href="./2023/05/notebooks/index.html">Portable, Repeatable (, and Reproducible) Notebooks</a></h2>
-<div class="outline-text-2" id="text-org78b3ad5">
+<div id="outline-container-org2669ec5" class="outline-2">
+<h2 id="org2669ec5"><a href="./2023/05/notebooks/index.html">Portable, Repeatable (, and Reproducible) Notebooks</a></h2>
+<div class="outline-text-2" id="text-org2669ec5">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="org7ec21ae">
 <p>
 Notebooks represent an important improvement for interactive and iterative
 research.  However, they tend to lack portability, reproducibility, and
-repeatability.  In this post, I want to explore the iterations of using <a href="https://orgmode.org/">Org
+repeatability.  In this post, I want to explore the iterations of using <a href="https://org-mode.org">Org
 mode</a> notebooks combined with other tools to develop a (hopefully) portable,
 reproducible, and repeatable notebook for software engineering experiments.
 While the focus remains narrowed to software engineering, the tools and
@@ -382,11 +355,11 @@ properties.
 </div>
 </div>
 
-<div id="outline-container-org090ccc7" class="outline-2">
-<h2 id="org090ccc7"><a href="./2023/05/today-in-bad-plots/index.html">Today in Bad Plots</a></h2>
-<div class="outline-text-2" id="text-org090ccc7">
+<div id="outline-container-orga429663" class="outline-2">
+<h2 id="orga429663"><a href="./2023/05/today-in-bad-plots/index.html">Today in Bad Plots</a></h2>
+<div class="outline-text-2" id="text-orga429663">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="orgb030174">
 <p>
 Here are some terrible plots that tell little about data, very little.
 </p>
@@ -396,11 +369,11 @@ Here are some terrible plots that tell little about data, very little.
 </div>
 </div>
 
-<div id="outline-container-orgb12e625" class="outline-2">
-<h2 id="orgb12e625"><a href="./2023/04/variable-relations-of-a-method/index.html">Variable Relations of a Method</a></h2>
-<div class="outline-text-2" id="text-orgb12e625">
+<div id="outline-container-org152f1ae" class="outline-2">
+<h2 id="org152f1ae"><a href="./2023/04/variable-relations-of-a-method/index.html">Variable Relations of a Method</a></h2>
+<div class="outline-text-2" id="text-org152f1ae">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="org6074721">
 <p>
 Here's a fun animation of how variables relate to each other within a single
 method using symbolic states.
@@ -411,13 +384,13 @@ method using symbolic states.
 </div>
 </div>
 
-<div id="outline-container-org5bd7a7a" class="outline-2">
-<h2 id="org5bd7a7a"><a href="./2022/06/org-projects-with-gantt/index.html">Org Projects with Gantt Charts</a></h2>
-<div class="outline-text-2" id="text-org5bd7a7a">
+<div id="outline-container-org6691abd" class="outline-2">
+<h2 id="org6691abd"><a href="./2022/06/org-projects-with-gantt/index.html">Org Projects with Gantt Charts</a></h2>
+<div class="outline-text-2" id="text-org6691abd">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="orgc3ef10b">
 <p>
-<a href="https://orgmode.org/">Org-Mode</a> is a great way to store <code>TODO</code> items, store notes, and keep track of
+<a href="https://org-mode.org">Org-Mode</a> is a great way to store <code>TODO</code> items, store notes, and keep track of
 projects.  However, possibly due to ignorance of what is available, getting a
 concrete high-level view of a project is difficult.  There are numerous
 different visualizations that can be created to see the state of a project.
@@ -432,11 +405,11 @@ visualizations.
 </div>
 </div>
 
-<div id="outline-container-org33148e7" class="outline-2">
-<h2 id="org33148e7"><a href="./2022/06/new-gpg-key/index.html">GPG Key Transition</a></h2>
-<div class="outline-text-2" id="text-org33148e7">
+<div id="outline-container-org35083f4" class="outline-2">
+<h2 id="org35083f4"><a href="./2022/06/new-gpg-key/index.html">GPG Key Transition</a></h2>
+<div class="outline-text-2" id="text-org35083f4">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="org5cc7123">
 <p>
 Once again, it is time to announce a new GPG key.  This document is signed with
 the old and new key to establish authenticity.  However, I forgot the password
@@ -449,32 +422,32 @@ use the new key.
 </div>
 </div>
 
-<div id="outline-container-orga2b26b0" class="outline-2">
-<h2 id="orga2b26b0"><a href="./2022/05/org-mode-publishing/index.html">Org Mode Publishing Static Site Generation</a></h2>
-<div class="outline-text-2" id="text-orga2b26b0">
+<div id="outline-container-orgb404f5b" class="outline-2">
+<h2 id="orgb404f5b"><a href="./2022/05/org-mode-publishing/index.html">Org Mode Publishing Static Site Generation</a></h2>
+<div class="outline-text-2" id="text-orgb404f5b">
 <blockquote>
-<div class="preview">
+<div class="preview" id="org8a68108">
 <p>
 <a href="https://kennyballou.com/blog/2019/03/static-site-generation/index.html">Previously</a>, I discussed changing the generation of this site.  Specifically,
-using <a href="https://orgmode.org/">Org-Mode</a> files with <a href="https://pandoc.org/">Pandoc</a> and some <a href="https://www.gnu.org/software/bash/">Bash</a> scripts to generate the site.
+using <a href="https://org-mode.org">Org-Mode</a> files with <a href="https://pandoc.org">Pandoc</a> and some <a href="https://www.gnu.org/software/bash/">Bash</a> scripts to generate the site.
 However, today, I have changed the site again.  Now, the site is generated
-entirely using <a href="https://orgmode.org/">Org-Mode</a>.
+entirely using <a href="https://org-mode.org">Org-Mode</a>.
 </p>
 
 </div>
 </blockquote>
 </div>
 </div>
-<div id="outline-container-org997500f" class="outline-2">
-<h2 id="org997500f"><a href="./2021/07/default-drop-ipv6-self-inflicted-pain/index.html">Default Drop IPv6 - Self-Inflicted Pain</a></h2>
-<div class="outline-text-2" id="text-org997500f">
+<div id="outline-container-orgf0311eb" class="outline-2">
+<h2 id="orgf0311eb"><a href="./2021/07/default-drop-ipv6-self-inflicted-pain/index.html">Default Drop IPv6 - Self-Inflicted Pain</a></h2>
+<div class="outline-text-2" id="text-orgf0311eb">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="org43de5a3">
 <p>
 Debugging <a href="https://www.oracle.com/java/">Java</a> programs in <a href="https://www.gnu.org/software/emacs/">Emacs</a> has been a goal and overall feature I have
 wanted for some time.  However, every time I've reached for it, <code>dap-java-debug</code>
 demonstrated an unbearably slow startup.  So much so, that it was often faster
-and more productive to launch <a href="https://www.jetbrains.com/idea/">IntelliJ</a>, fight <a href="https://nixos.org/">Nix</a> and <a href="https://www.jetbrains.com/idea/">IntelliJ</a> to load the
+and more productive to launch <a href="https://www.jetbrains.com/idea/">IntelliJ</a>, fight <a href="https://nixos.org/nix/">Nix</a> and <a href="https://www.jetbrains.com/idea/">IntelliJ</a> to load the
 project correctly, and launch the debugger from <a href="https://www.jetbrains.com/idea/">IntelliJ</a>.
 </p>
 
@@ -496,16 +469,16 @@ tl;dr: self-inflicted pain is a strange way to deeply learn.
 </div>
 </div>
 
-<div id="outline-container-org78fc67b" class="outline-2">
-<h2 id="org78fc67b"><a href="./2021/05/git-tracking-review-branches/index.html">Git: Tracking Review Branches</a></h2>
-<div class="outline-text-2" id="text-org78fc67b">
+<div id="outline-container-org3623127" class="outline-2">
+<h2 id="org3623127"><a href="./2021/05/git-tracking-review-branches/index.html">Git: Tracking Review Branches</a></h2>
+<div class="outline-text-2" id="text-org3623127">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="orgbbcab4d">
 <p>
 When reviewing code, it's often necessary to pull the changes under review.
 There are ad-hoc ways of doing this.  But there are also more automatic ways as
 well.  In this post, we discuss the more automatic approaches for <a href="https://github.com/">GitHub</a> and
-<a href="https://gitlab.com">GitLab</a>.  Other forges may have the ability to use this trick, we discuss how to
+<a href="https://gitlab.com/">GitLab</a>.  Other forges may have the ability to use this trick, we discuss how to
 discover the remote references, if they are available.
 </p>
 
@@ -518,11 +491,11 @@ discover the remote references, if they are available.
 </div>
 </div>
 
-<div id="outline-container-org19a9e15" class="outline-2">
-<h2 id="org19a9e15"><a href="./2021/03/commit-granularity/index.html">Commit Granularity</a></h2>
-<div class="outline-text-2" id="text-org19a9e15">
+<div id="outline-container-org40ddccc" class="outline-2">
+<h2 id="org40ddccc"><a href="./2021/03/commit-granularity/index.html">Commit Granularity</a></h2>
+<div class="outline-text-2" id="text-org40ddccc">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="org90c0b89">
 <p>
 There are <a href="https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html">many</a> <a href="https://chris.beams.io/posts/git-commit/">blog</a> <a href="https://medium.com/@joshuatauberer/write-joyous-git-commit-messages-2f98891114c4">posts</a> which extol the foundations of writing good,
 communicative commit messages.  These same posts, however, tend to otherwise
@@ -539,11 +512,11 @@ granularity.  The answer is, of course, it depends.
 </div>
 </div>
 
-<div id="outline-container-orge95bc0c" class="outline-2">
-<h2 id="orge95bc0c"><a href="./2020/08/organizing-source/index.html">Organizing Source</a></h2>
-<div class="outline-text-2" id="text-orge95bc0c">
+<div id="outline-container-org03a910e" class="outline-2">
+<h2 id="org03a910e"><a href="./2020/08/organizing-source/index.html">Organizing Source</a></h2>
+<div class="outline-text-2" id="text-org03a910e">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="orgc249e96">
 <p>
 Another brief digression into organizing source code and projects.  Described
 here is my current ideal, subject to change, that has evolved over the years of
@@ -559,11 +532,11 @@ being a student, a professional, a contractor, and now a student again.
 </div>
 </div>
 
-<div id="outline-container-org2549143" class="outline-2">
-<h2 id="org2549143"><a href="./2020/08/organizing-research/index.html">Organizing Research</a></h2>
-<div class="outline-text-2" id="text-org2549143">
+<div id="outline-container-orge7b3e83" class="outline-2">
+<h2 id="orge7b3e83"><a href="./2020/08/organizing-research/index.html">Organizing Research</a></h2>
+<div class="outline-text-2" id="text-orge7b3e83">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="orgbc2d223">
 <p>
 Small tangent into the basic, how to organize research papers and related
 artifacts.  I have a few ideas for how to best handle this, but nothing
@@ -585,11 +558,11 @@ off in the long term?
 </div>
 </div>
 
-<div id="outline-container-orgb3d904d" class="outline-2">
-<h2 id="orgb3d904d"><a href="./2020/08/yesterday-you-said-tomorrow/index.html">Yesterday You Said Tomorrow</a></h2>
-<div class="outline-text-2" id="text-orgb3d904d">
+<div id="outline-container-orgf539707" class="outline-2">
+<h2 id="orgf539707"><a href="./2020/08/yesterday-you-said-tomorrow/index.html">Yesterday You Said Tomorrow</a></h2>
+<div class="outline-text-2" id="text-orgf539707">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="orgfcbf824">
 <p>
 <a href="https://www.youtube.com/watch?v=iAg4yMangmY">"Yesterday, you said tomorrow."</a>  Entering the first week of being a full-time
 graduate assistant, I want to start a more earnest attempt to share more of the
@@ -606,11 +579,11 @@ the worthier part, the ends only a different way to spell "beginning".
 </div>
 </div>
 
-<div id="outline-container-orgd1648dc" class="outline-2">
-<h2 id="orgd1648dc"><a href="./2020/02/blog-deploy-code-commit-and-build/index.html">Blog Content Deploy with AWS Code Commit and Code Build</a></h2>
-<div class="outline-text-2" id="text-orgd1648dc">
+<div id="outline-container-orgcd22d21" class="outline-2">
+<h2 id="orgcd22d21"><a href="./2020/02/blog-deploy-code-commit-and-build/index.html">Blog Content Deploy with AWS Code Commit and Code Build</a></h2>
+<div class="outline-text-2" id="text-orgcd22d21">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="org92c4392">
 <p>
 In a previous post, I discussed a new <a href="https://kennyballou.com/blog/2019/03/static-site-generation">static site
 generation</a> process being used for this <a href="https://kennyballou.com">blog</a>.  More recently, I
@@ -628,17 +601,17 @@ want to briefly discuss how it's now, finally, being auto deployed via
 </div>
 </div>
 
-<div id="outline-container-orga85233c" class="outline-2">
-<h2 id="orga85233c"><a href="./2020/02/hosting-with-aws-s3-cloudfront/index.html">Hosting with AWS S3 and CloudFront</a></h2>
-<div class="outline-text-2" id="text-orga85233c">
+<div id="outline-container-orgda117f7" class="outline-2">
+<h2 id="orgda117f7"><a href="./2020/02/hosting-with-aws-s3-cloudfront/index.html">Hosting with AWS S3 and CloudFront</a></h2>
+<div class="outline-text-2" id="text-orgda117f7">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="org9e6668e">
 <p>
-There are many posts already out about how to host static sites in <a href="https://aws.amazon.com/s3">S3</a> and
-<a href="https://aws.amazon.com/cloudfront">CloudFront</a>.  However, I would like to add to the discussion a small
+There are many posts already out about how to host static sites in <a href="http://aws.amazon.com/s3/">S3</a> and
+<a href="https://aws.amazon.com/cloudfront/">CloudFront</a>.  However, I would like to add to the discussion a small
 contribution of how to do this by creating the resources in <a href="https://aws.amazon.com/cloudformation/">CloudFormation</a>, and
-specifically, how to ensure all content is served <span class="underline">via</span> <a href="https://aws.amazon.com/cloudfront">CloudFront</a> and is
-strictly not available via <a href="https://aws.amazon.com/s3">S3</a>.
+specifically, how to ensure all content is served <span class="underline">via</span> <a href="https://aws.amazon.com/cloudfront/">CloudFront</a> and is
+strictly not available via <a href="http://aws.amazon.com/s3/">S3</a>.
 </p>
 
 </div>
@@ -650,13 +623,13 @@ strictly not available via <a href="https://aws.amazon.com/s3">S3</a>.
 </div>
 </div>
 
-<div id="outline-container-orgfe842d7" class="outline-2">
-<h2 id="orgfe842d7"><a href="./2019/10/aws-ecs-events-target-input/index.html">AWS ECS Container Overrides  for Event Targets</a></h2>
-<div class="outline-text-2" id="text-orgfe842d7">
+<div id="outline-container-org37fdad4" class="outline-2">
+<h2 id="org37fdad4"><a href="./2019/10/aws-ecs-events-target-input/index.html">AWS ECS Container Overrides  for Event Targets</a></h2>
+<div class="outline-text-2" id="text-org37fdad4">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="orgb13b056">
 <p>
-Using <a href="https://aws.amazon.com/cloudformation/">AWS CloudFormation</a> to configure <a href="https://aws.amazon.com/cloudwatch/">AWS CloudWatch Events</a> to target <a href="https://aws.amazon.com/ecs/">ECS</a> is
+Using <a href="https://aws.amazon.com/cloudformation/">AWS CloudFormation</a> to configure <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/WhatIsCloudWatchEvents.html">AWS CloudWatch Events</a> to target <a href="https://aws.amazon.com/ecs/">ECS</a> is
 not as well documented as it should be.  Here, we walk-through a highly
 specific use case where the documentation was not here to help, how the
 solution was found, and possibly some insight when facing similar issues in the
@@ -676,11 +649,11 @@ In a previous <a href="https://kennyballou.com/blog/2017/10/conky-maildirs-confi
 </div>
 </div>
 
-<div id="outline-container-orgdc49913" class="outline-2">
-<h2 id="orgdc49913"><a href="./2019/07/nixos-md-luks-lvm-setup/index.html">NixOS Setup and Configuration</a></h2>
-<div class="outline-text-2" id="text-orgdc49913">
+<div id="outline-container-orgd7bfc03" class="outline-2">
+<h2 id="orgd7bfc03"><a href="./2019/07/nixos-md-luks-lvm-setup/index.html">NixOS Setup and Configuration</a></h2>
+<div class="outline-text-2" id="text-orgd7bfc03">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="org020eeb9">
 <p>
 A brief overview (read instructions) on setting up a new <a href="https://nixos.org/">NixOS</a> system with <a href="https://www.sourceware.org/lvm2/">LVM</a>
 on <a href="https://gitlab.com/cryptsetup/cryptsetup/blob/master/README.md">LUKS</a> on <a href="http://neil.brown.name/blog/mdadm">md</a>.  We go through drive preparation, basic <a href="https://nixos.org/">NixOS</a> installation
@@ -697,11 +670,11 @@ system from configuration.
 </div>
 </div>
 
-<div id="outline-container-orgce5194a" class="outline-2">
-<h2 id="orgce5194a"><a href="./2019/07/nixos/index.html">NixOS</a></h2>
-<div class="outline-text-2" id="text-orgce5194a">
+<div id="outline-container-org50df3a7" class="outline-2">
+<h2 id="org50df3a7"><a href="./2019/07/nixos/index.html">NixOS</a></h2>
+<div class="outline-text-2" id="text-org50df3a7">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="org91d8642">
 <p>
 <a href="https://nixos.org/">NixOS</a> is a new kind of <a href="https://www.gnu.org">GNU</a>/<a href="https://www.kernel.org/">Linux</a> distribution, borrowing the ideas of
 functional programming languages to bring about a revolution of how we think
@@ -717,11 +690,11 @@ about operating systems and software development.
 </div>
 </div>
 
-<div id="outline-container-org25962fc" class="outline-2">
-<h2 id="org25962fc"><a href="./2019/03/static-site-generation/index.html">(New) Static Site Generation</a></h2>
-<div class="outline-text-2" id="text-org25962fc">
+<div id="outline-container-orgd58d2ca" class="outline-2">
+<h2 id="orgd58d2ca"><a href="./2019/03/static-site-generation/index.html">(New) Static Site Generation</a></h2>
+<div class="outline-text-2" id="text-orgd58d2ca">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="org9e198c6">
 <p>
 For a few years, I've been using <a href="https://gohugo.io/">Hugo</a> for blog generation.  Recently,
 I've decided I wanted to take static site generation into a different
@@ -738,11 +711,11 @@ wanted to write my own tool set for generating the actual HTML.
 </div>
 </div>
 
-<div id="outline-container-org0be9da1" class="outline-2">
-<h2 id="org0be9da1"><a href="./2017/10/conky-maildirs-config/index.html">Conky Mail Notifications using Maildirs</a></h2>
-<div class="outline-text-2" id="text-org0be9da1">
+<div id="outline-container-orga87048b" class="outline-2">
+<h2 id="orga87048b"><a href="./2017/10/conky-maildirs-config/index.html">Conky Mail Notifications using Maildirs</a></h2>
+<div class="outline-text-2" id="text-orga87048b">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="orgc202544">
 <p>
 Configuring <a href="https://github.com/brndnmtthws/conky"><code>conky</code></a> to display a count and symbol of new mail turned out to be
 more tricky than I had originally anticipated.  This small post quickly
@@ -759,11 +732,11 @@ configuration and a better understanding of <a href="https://en.wikipedia.org/wi
 </div>
 </div>
 
-<div id="outline-container-orgbd6d206" class="outline-2">
-<h2 id="orgbd6d206"><a href="./2017/08/gpg-key-transition/index.html">GPG Key Transition</a></h2>
-<div class="outline-text-2" id="text-orgbd6d206">
+<div id="outline-container-orgcc65ca4" class="outline-2">
+<h2 id="orgcc65ca4"><a href="./2017/08/gpg-key-transition/index.html">GPG Key Transition</a></h2>
+<div class="outline-text-2" id="text-orgcc65ca4">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="orgae17521">
 <p>
 Today I'm announcing my <a href="https://gnupg.org/">GPG</a> transition from my old, and now expired, <a href="https://gnupg.org/">GPG</a> key:
 <a href="https://pgp.mit.edu/pks/lookup?op=get&amp;search=0x1066BA71A5F56C58">DAEE96513758BF6337F71E491066BA71A5F56C58</a> and
@@ -782,11 +755,11 @@ my new key.
 </div>
 </div>
 
-<div id="outline-container-orged43faf" class="outline-2">
-<h2 id="orged43faf"><a href="./2017/03/git-packfiles/index.html">Git Packfiles</a></h2>
-<div class="outline-text-2" id="text-orged43faf">
+<div id="outline-container-orgfe5d3cd" class="outline-2">
+<h2 id="orgfe5d3cd"><a href="./2017/03/git-packfiles/index.html">Git Packfiles</a></h2>
+<div class="outline-text-2" id="text-orgfe5d3cd">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="org77faaa7">
 <p>
 Previously, in <a href="https://kennyballou.com/blog/2016/01/git-in-reverse">Git in Reverse</a>, we learned about <a href="https://git-scm.com/">Git</a> and how it internally
 stores information.  Namely, we went over the <a href="http://stackoverflow.com/questions/5709687/what-are-the-loose-objects-that-the-git-gui-refers-to#5710039">"loose" object</a> format that Git
@@ -806,11 +779,11 @@ space for storing repository contents.
 </div>
 </div>
 
-<div id="outline-container-orga9d1912" class="outline-2">
-<h2 id="orga9d1912"><a href="./2017/01/coreboot-x230/index.html">Coreboot for x230</a></h2>
-<div class="outline-text-2" id="text-orga9d1912">
+<div id="outline-container-orgfb2187b" class="outline-2">
+<h2 id="orgfb2187b"><a href="./2017/01/coreboot-x230/index.html">Coreboot for x230</a></h2>
+<div class="outline-text-2" id="text-orgfb2187b">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="org5e2b4fc">
 <p>
 In this post, we will go through the steps to get <a href="https://www.coreboot.org">coreboot</a> compiled and
 installed on a <a href="http://shop.lenovo.com/us/en/laptops/thinkpad/x-series/x230/">Lenovo x230</a> laptop.  This is a somewhat lengthy and involved
@@ -828,11 +801,11 @@ You have been warned.
 </div>
 </div>
 
-<div id="outline-container-org0a2ee9f" class="outline-2">
-<h2 id="org0a2ee9f"><a href="./2016/12/elixir-hot-swapping/index.html">Elixir/Erlang Hot Swapping Code</a></h2>
-<div class="outline-text-2" id="text-org0a2ee9f">
+<div id="outline-container-org028925c" class="outline-2">
+<h2 id="org028925c"><a href="./2016/12/elixir-hot-swapping/index.html">Elixir/Erlang Hot Swapping Code</a></h2>
+<div class="outline-text-2" id="text-org028925c">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="orgd636dc8">
 <p>
 One of the untold benefits of having a runtime is the ability for that runtime
 to enable loading and unloading code while the runtime is active.  Since the
@@ -850,11 +823,11 @@ processes and code similar to how "real" operating systems do.
 </div>
 </div>
 
-<div id="outline-container-orga1e9a82" class="outline-2">
-<h2 id="orga1e9a82"><a href="./2016/09/git-resurrecting-history/index.html">Git Resurrecting History</a></h2>
-<div class="outline-text-2" id="text-orga1e9a82">
+<div id="outline-container-org212a2c5" class="outline-2">
+<h2 id="org212a2c5"><a href="./2016/09/git-resurrecting-history/index.html">Git Resurrecting History</a></h2>
+<div class="outline-text-2" id="text-org212a2c5">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="org55a64fb">
 <p>
 We all make mistakes.  They are inevitable.  We must accept that we make them
 and move on.  But making mistakes in Git seems to be overly complex to resolve
@@ -873,11 +846,11 @@ resolve, especially so once the necessary tools are known.
 </div>
 </div>
 
-<div id="outline-container-org741fca0" class="outline-2">
-<h2 id="org741fca0"><a href="./2016/05/elixir-otp-releases/index.html">Releasing Elixir/OTP Applications to the World</a></h2>
-<div class="outline-text-2" id="text-org741fca0">
+<div id="outline-container-org35c26ec" class="outline-2">
+<h2 id="org35c26ec"><a href="./2016/05/elixir-otp-releases/index.html">Releasing Elixir/OTP Applications to the World</a></h2>
+<div class="outline-text-2" id="text-org35c26ec">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="orgec8373d">
 <p>
 Developing Elixir/OTP applications is an enlightening, mind-boggling, and
 ultimately enjoyable experience.  There are so many features of the language
@@ -896,11 +869,11 @@ revolution that has been slowly boiling under our feet.
 </div>
 </div>
 
-<div id="outline-container-orgd6b0464" class="outline-2">
-<h2 id="orgd6b0464"><a href="./2016/01/git-in-reverse/index.html">Learning Git in Reverse</a></h2>
-<div class="outline-text-2" id="text-orgd6b0464">
+<div id="outline-container-org145ac8f" class="outline-2">
+<h2 id="org145ac8f"><a href="./2016/01/git-in-reverse/index.html">Learning Git in Reverse</a></h2>
+<div class="outline-text-2" id="text-org145ac8f">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="org833183b">
 <p>
 It is certainly counter-intuitive to learn to drive by first going backwards,
 so why learn how to use Git in reverse? The short answer is: knowing the
@@ -917,11 +890,11 @@ accessible and understandable.
 </div>
 </div>
 
-<div id="outline-container-org30489aa" class="outline-2">
-<h2 id="org30489aa"><a href="./2015/10/art-manually-edit-hunks/index.html">The Art of Manually Editing Hunks</a></h2>
-<div class="outline-text-2" id="text-org30489aa">
+<div id="outline-container-orga199fb7" class="outline-2">
+<h2 id="orga199fb7"><a href="./2015/10/art-manually-edit-hunks/index.html">The Art of Manually Editing Hunks</a></h2>
+<div class="outline-text-2" id="text-orga199fb7">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="orgf25984f">
 <p>
 There's a certain art to editing hunks, seemingly arcane.  Hunks are blocks of
 changes typically found in unified diff patch files, or, more commonly today,
@@ -937,11 +910,11 @@ found in Git patches.
 </div>
 </div>
 
-<div id="outline-container-org3b73397" class="outline-2">
-<h2 id="org3b73397"><a href="./2015/05/vim-tips-2015-05-7/index.html">Vim Tips 2015-05-07</a></h2>
-<div class="outline-text-2" id="text-org3b73397">
+<div id="outline-container-org312750b" class="outline-2">
+<h2 id="org312750b"><a href="./2015/05/vim-tips-2015-05-7/index.html">Vim Tips 2015-05-07</a></h2>
+<div class="outline-text-2" id="text-org312750b">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="org79f01be">
 <p>
 Many Vim users may have, accidentally or not, discovered the dot (<code>.</code>) command
 in Vim.  It's a main stay for a lot of Vim users and is clearly one of those
@@ -958,11 +931,11 @@ the job.
 </div>
 </div>
 
-<div id="outline-container-org14646ea" class="outline-2">
-<h2 id="org14646ea"><a href="./2015/05/readings-in-distributed-systems/index.html">Readings in Distributed Systems</a></h2>
-<div class="outline-text-2" id="text-org14646ea">
+<div id="outline-container-org7567042" class="outline-2">
+<h2 id="org7567042"><a href="./2015/05/readings-in-distributed-systems/index.html">Readings in Distributed Systems</a></h2>
+<div class="outline-text-2" id="text-org7567042">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="orgf21e488">
 <p>
 This page is dedicated to general discussion of distributed systems, references
 to general overviews and the like. Distributed systems are difficult and even
@@ -982,11 +955,11 @@ all that out and figure out what <i>really</i> happens to distributed systems.
 </div>
 </div>
 
-<div id="outline-container-orgd665fd0" class="outline-2">
-<h2 id="orgd665fd0"><a href="./2015/03/vim-tips-2015-03-17/index.html">Vim Tips 2015-03-17</a></h2>
-<div class="outline-text-2" id="text-orgd665fd0">
+<div id="outline-container-orgcfb34e6" class="outline-2">
+<h2 id="orgcfb34e6"><a href="./2015/03/vim-tips-2015-03-17/index.html">Vim Tips 2015-03-17</a></h2>
+<div class="outline-text-2" id="text-orgcfb34e6">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="orgda8802f">
 <p>
 This is the start of a series of posts about better Vim usage.  It's yet to be
 determined how often and how frequent this will run, but expect more than just
@@ -1002,15 +975,15 @@ this first post.
 </div>
 </div>
 
-<div id="outline-container-org5ae2532" class="outline-2">
-<h2 id="org5ae2532"><a href="./2014/09/apache-storm-vs-apache-spark/index.html">Apache Storm vs Apache Spark</a></h2>
-<div class="outline-text-2" id="text-org5ae2532">
+<div id="outline-container-org48e9d2f" class="outline-2">
+<h2 id="org48e9d2f"><a href="./2014/09/apache-storm-vs-apache-spark/index.html">Apache Storm vs Apache Spark</a></h2>
+<div class="outline-text-2" id="text-org48e9d2f">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="orgb3f9a48">
 <p>
 This is the last post in the series on real-time systems.  In the
 <a href="https://kennyballou.com/blog/2014/07/real-time-streaming-storm-and-kafka">first post</a> we discussed <a href="https://storm.apache.org/">Apache Storm</a> and
-<a href="https://kafka.apache.org/">Apache Kafka</a>.  In the <a href="https://kennyballou.com/blog/2014/08/real-time-streaming-apache-spark-streaming">second post</a> we discussed
+<a href="http://kafka.apache.org/">Apache Kafka</a>.  In the <a href="https://kennyballou.com/blog/2014/08/real-time-streaming-apache-spark-streaming">second post</a> we discussed
 <a href="https://spark.apache.org/">Apache Spark (Streaming)</a>.  In both posts we examined a small Twitter
 Sentiment Analysis program.  Today, we will be reviewing both systems: how they
 compare and how they contrast.
@@ -1025,14 +998,14 @@ compare and how they contrast.
 </div>
 </div>
 
-<div id="outline-container-orge942991" class="outline-2">
-<h2 id="orge942991"><a href="./2014/08/real-time-streaming-apache-spark-streaming/index.html">Real-time Streaming with Apache Spark</a></h2>
-<div class="outline-text-2" id="text-orge942991">
+<div id="outline-container-org866c0bc" class="outline-2">
+<h2 id="org866c0bc"><a href="./2014/08/real-time-streaming-apache-spark-streaming/index.html">Real-time Streaming with Apache Spark</a></h2>
+<div class="outline-text-2" id="text-org866c0bc">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="org0ca7430">
 <p>
 This is the second post in a series on real-time systems tangential to the
-Hadoop ecosystem. <a href="https://kennyballou.com/blog/2014/07/real-time-streaming-storm-and-kafka/">Last time</a>, we talked about <a href="https://kafka.apache.org/">Apache Kafka</a> and Apache Storm for
+Hadoop ecosystem. <a href="https://kennyballou.com/blog/2014/07/real-time-streaming-storm-and-kafka/">Last time</a>, we talked about <a href="http://kafka.apache.org/">Apache Kafka</a> and Apache Storm for
 use in a real-time processing engine.  Today, we will be exploring Apache Spark
 (Streaming) as part of a real-time processing engine.
 </p>
@@ -1046,11 +1019,11 @@ use in a real-time processing engine.  Today, we will be exploring Apache Spark
 </div>
 </div>
 
-<div id="outline-container-orgc7b43df" class="outline-2">
-<h2 id="orgc7b43df"><a href="./2014/07/real-time-streaming-storm-and-kafka/index.html">Real-time Streaming with Apache Storm</a></h2>
-<div class="outline-text-2" id="text-orgc7b43df">
+<div id="outline-container-org6e8635b" class="outline-2">
+<h2 id="org6e8635b"><a href="./2014/07/real-time-streaming-storm-and-kafka/index.html">Real-time Streaming with Apache Storm</a></h2>
+<div class="outline-text-2" id="text-org6e8635b">
 <blockquote>
-<div class="PREVIEW">
+<div class="PREVIEW" id="orgea34752">
 <p>
 The following post is one in the series of real-time systems tangential to the
 Hadoop ecosystem.  First, exploring both Apache Storm and Apache Kafka as a

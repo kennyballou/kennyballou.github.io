@@ -3,16 +3,15 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2024-09-17 Tue 00:05 -->
+<!-- 2025-01-28 Tue 04:46 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>GPG Key Transition</title>
-<meta name="generator" content="Org mode" />
 <meta name="author" content="kb" />
-<meta name="description" content="Key transition statement and verification steps"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="description" content="Key transition statement and verification steps" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -33,8 +32,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -42,22 +42,22 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
-    padding-top: 1.2em;
+    overflow: auto;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -192,8 +192,7 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <meta charset="utf-8">
 
@@ -213,74 +212,58 @@
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <script defer type="text/javascript" src="/js/katex.js"></script>
 <script defer type="text/javascript" src="/js/katex-render.js"></script>
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
 </script>
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        displayAlign: "center",
-        displayIndent: "0em",
-
-        "HTML-CSS": { scale: 100,
-                        linebreaks: { automatic: "false" },
-                        webFont: "TeX"
-                       },
-        SVG: {scale: 100,
-              linebreaks: { automatic: "false" },
-              font: "TeX"},
-        NativeMML: {scale: 100},
-        TeX: { equationNumbers: {autoNumber: "AMS"},
-               MultLineWidth: "85%",
-               TagSide: "right",
-               TagIndent: ".8em"
-             }
-});
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
 </script>
-<script type="text/javascript"
-        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
 </head>
 <body>
 <div id="org-div-home-and-up">
@@ -337,11 +320,11 @@ for the JavaScript code in this tag.
   </a>
 </nav>
 </header>
-<div id="main">
+<div id="main" class="content">
 <h1 class="title">GPG Key Transition</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
 <li><a href="#key-verification">Key Verification</a></li>
 <li><a href="#new-gpg-setup">New GPG Setup</a>
@@ -355,7 +338,7 @@ for the JavaScript code in this tag.
 </ul>
 </div>
 </div>
-<div class="PREVIEW">
+<div class="PREVIEW" id="org2390dc2">
 <p>
 Today I'm announcing my <a href="https://gnupg.org/">GPG</a> transition from my old, and now expired, <a href="https://gnupg.org/">GPG</a> key:
 <a href="https://pgp.mit.edu/pks/lookup?op=get&amp;search=0x1066BA71A5F56C58">DAEE96513758BF6337F71E491066BA71A5F56C58</a> and
@@ -378,14 +361,14 @@ as well, provided that your signing policy permits that without
 re-authenticating me.
 </p>
 
-<div id="outline-container-org1a8e478" class="outline-2">
+<div id="outline-container-key-verification" class="outline-2">
 <h2 id="key-verification">Key Verification</h2>
 <div class="outline-text-2" id="text-key-verification">
 <p>
 Specifically, the old keys were:
 </p>
 
-<pre class="example">
+<pre class="example" id="orgd5a9157">
 pub   rsa4096 2014-06-12 [expired: 2017-06-27]
 DAEE 9651 3758 BF63 37F7 1E49 1066 BA71 A5F5 6C58
 </pre>
@@ -394,7 +377,7 @@ DAEE 9651 3758 BF63 37F7 1E49 1066 BA71 A5F5 6C58
 and,
 </p>
 
-<pre class="example">
+<pre class="example" id="orgd36f279">
 pub   rsa4096 2015-01-30 [expires: 2018-01-30]
 8FCA F4F0 CBB0 BB9C 590C 8ED1 1CFA 8A9C D949 D956
 </pre>
@@ -403,7 +386,7 @@ pub   rsa4096 2015-01-30 [expires: 2018-01-30]
 The new key is:
 </p>
 
-<pre class="example">
+<pre class="example" id="orgc5a0bfd">
 pub   rsa4096 2017-06-27 [expires: 2022-06-26]
 932F 3E8E 1C0F 4A98 95D7 B8B8 B0CA A28A 0295 8308
 </pre>
@@ -412,7 +395,7 @@ pub   rsa4096 2017-06-27 [expires: 2022-06-26]
 To fetch my new key from a key server, use the following:
 </p>
 
-<pre class="example">
+<pre class="example" id="org1fcd096">
 gpg --keyserver pool.sks-keyservers.net --recv-key 0xB0CAA28A02958308
 </pre>
 
@@ -421,7 +404,7 @@ Or, if you prefer, you may also download the new key from
 <a href="https://kennyballou.com/kballou.pub.asc">this blog</a>:
 </p>
 
-<pre class="example">
+<pre class="example" id="org1d31253">
 curl -fsL https://kennyballou.com/kballou.asc -O
 </pre>
 
@@ -429,7 +412,7 @@ curl -fsL https://kennyballou.com/kballou.asc -O
 The new key can be verified with the old key:
 </p>
 
-<pre class="example">
+<pre class="example" id="orgfc59ebc">
 gpg --check-sigs 0xB0CAA28A02958308
 </pre>
 
@@ -438,7 +421,7 @@ If you do not have the old key, or would like to double check, the fingerprint
 can be verified against the one above:
 </p>
 
-<pre class="example">
+<pre class="example" id="org5759ea8">
 gpg --fingerprint 0xB0CAA28A02958308
 </pre>
 
@@ -447,7 +430,7 @@ If you have all of the keys, <a href="https://kennyballou.com/blog/2017/08/gpg-k
 verified to be signed by all keys:
 </p>
 
-<pre class="example">
+<pre class="example" id="orgebfed70">
 gpg --verify gpg-transition.org.asc
 </pre>
 
@@ -457,7 +440,7 @@ it's compatible with your key signing policy, I would greatly appreciate it if
 you would sign my key:
 </p>
 
-<pre class="example">
+<pre class="example" id="orgd0698fd">
 gpg --sign-key 0xB0CAA28A02958308
 </pre>
 
@@ -466,7 +449,7 @@ Finally, if you could upload these signatures, I would appreciate it.  You can
 either upload the signatures to a public key server directly:
 </p>
 
-<pre class="example">
+<pre class="example" id="org6657b63">
 gpg --keyserver pool.sks-keyservers.net \
     --send-key 0xB0CAA28A02958308
 </pre>
@@ -475,13 +458,13 @@ gpg --keyserver pool.sks-keyservers.net \
 Or you can send me an email with the new signatures:
 </p>
 
-<pre class="example">
+<pre class="example" id="org5360b0c">
 gpg --armor --export 0xB0CAA28A02958308
 </pre>
 </div>
 </div>
 
-<div id="outline-container-orgb44cf0c" class="outline-2">
+<div id="outline-container-new-gpg-setup" class="outline-2">
 <h2 id="new-gpg-setup">New GPG Setup</h2>
 <div class="outline-text-2" id="text-new-gpg-setup">
 <p>
@@ -500,7 +483,7 @@ knowledge.  To that end, I will, briefly, describe how my current setup works.
 </p>
 </div>
 
-<div id="outline-container-org5e23f41" class="outline-3">
+<div id="outline-container-key-generation-and-storage" class="outline-3">
 <h3 id="key-generation-and-storage">Key Generation and Storage</h3>
 <div class="outline-text-3" id="text-key-generation-and-storage">
 <p>
@@ -530,7 +513,7 @@ as many weaknesses.
 </div>
 </div>
 
-<div id="outline-container-orgfd3b1cc" class="outline-3">
+<div id="outline-container-multiple-identities" class="outline-3">
 <h3 id="multiple-identities">Multiple Identities</h3>
 <div class="outline-text-3" id="text-multiple-identities">
 <p>
@@ -555,7 +538,7 @@ personal devices.
 </div>
 </div>
 
-<div id="outline-container-org4e67542" class="outline-3">
+<div id="outline-container-backups" class="outline-3">
 <h3 id="backups">Backups</h3>
 <div class="outline-text-3" id="text-backups">
 <p>
@@ -573,7 +556,7 @@ printouts using <a href="http://www.jabberwocky.com/software/paperkey/">paperkey
 </div>
 </div>
 
-<div id="outline-container-org541001d" class="outline-3">
+<div id="outline-container-future-work" class="outline-3">
 <h3 id="future-work">Future Work</h3>
 <div class="outline-text-3" id="text-future-work">
 <p>
