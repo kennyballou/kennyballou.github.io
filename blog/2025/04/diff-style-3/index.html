@@ -6,8 +6,9 @@
 <!-- 2025-04-09 Wed 21:32 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>&lrm;</title>
+<title>Use Diff Conflict Style 3</title>
 <meta name="author" content="kb" />
+<meta name="description" content="Please just use diff style 3." />
 <meta name="generator" content="Org Mode" />
 <style>
   #content { max-width: 60em; margin: auto; }
@@ -234,7 +235,7 @@
 </head>
 <body>
 <div id="org-div-home-and-up">
- <a accesskey="h" href="https://kennyballou.com/"> UP </a>
+ <a accesskey="h" href="https://kennyballou.com/blog"> UP </a>
  |
  <a accesskey="H" href="https://kennyballou.com/"> HOME </a>
 </div><header id="" class="status">
@@ -288,89 +289,154 @@
 </nav>
 </header>
 <div id="main" class="content">
-
-<div id="outline-container-org4e037c3" class="outline-2">
-<h2 id="org4e037c3">Select Publications</h2>
-<div class="outline-text-2" id="text-org4e037c3">
-</div>
-
-<div id="outline-container-org48c94ed" class="outline-3">
-<h3 id="org48c94ed">Papers</h3>
-<div class="outline-text-3" id="text-org48c94ed">
-</div>
-
-<div id="outline-container-orgedf2e82" class="outline-4">
-<h4 id="orgedf2e82"><a href="https://doi.org/10.1007/978-3-031-45332-8_8">Minimally Comparing Relational Abstract Domains</a></h4>
-<div class="outline-text-4" id="text-orgedf2e82">
-<blockquote>
-<p>
-Full paper presented at the 21st International Symposium on Automated
-Technology for Verification and Analysis.
-</p>
-</blockquote>
-
-<ul class="org-ul">
-<li><a href="../papers/ballou-2023-minim-compar.pdf">Author Generated Copy</a></li>
+<h1 class="title">Use Diff Conflict Style 3</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org08ddea8">Context</a></li>
+<li><a href="#orgc04ed3b">diff3</a></li>
+<li><a href="#org88d57d2">Using this conflict resolution style in Git</a></li>
+<li><a href="#org8423c00">Zealous Diff3</a></li>
+<li><a href="#orgfcf7329">More options to consider</a></li>
 </ul>
 </div>
 </div>
+<div class="preview" id="org486c802">
+<p>
+Please, just turn on diff style 3.  Thank me later.  I do not know the
+historical reason this setting is not the default, but if you ask me to help
+you with some crazy merge conflict, I am going to immediately ask you to
+configure this setting.
+</p>
 
-<div id="outline-container-orgd8aa114" class="outline-4">
-<h4 id="orgd8aa114"><a href="https://link.springer.com/chapter/10.1007/978-3-031-35257-7_13">Identifying Minimal Changes in the Zones Abstract Domain</a></h4>
-<div class="outline-text-4" id="text-orgd8aa114">
+</div>
+
+<div id="outline-container-org08ddea8" class="outline-2">
+<h2 id="org08ddea8">Context</h2>
+<div class="outline-text-2" id="text-org08ddea8">
+<p>
+When dealing with conflicts, merge or otherwise, one of the options for your
+VCS is to modify the files with "conflict markers".  These are those crazy
+alligators that infect the code when receiving conflicts.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><span style="font-weight: bold; text-decoration: underline;">long</span> <span style="font-weight: bold;">fib</span>(<span style="font-weight: bold; text-decoration: underline;">long</span> <span style="font-weight: bold; font-style: italic;">n</span>) {
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+                <span style="font-weight: bold; text-decoration: underline;">long</span> sol = 1;
+                <span style="font-weight: bold;">for</span> (; n &gt; 0; n--) {
+                                sol *= n;
+                }
+                <span style="font-weight: bold;">return</span> sol;
+=======
+                <span style="font-weight: bold;">if</span> (n &lt;= 0) {
+                                <span style="font-weight: bold;">return</span> 1;
+                } <span style="font-weight: bold;">else</span> {
+                                <span style="font-weight: bold;">return</span> n * fib(n - 1);
+                }
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; MERGE_HEAD
+}
+</pre>
+</div>
+
+<p>
+While this may correctly point out the differences between the two branches,
+this output says nothing of the shared context from whence they came.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc04ed3b" class="outline-2">
+<h2 id="orgc04ed3b">diff3</h2>
+<div class="outline-text-2" id="text-orgc04ed3b">
+<p>
+Instead, by using <code>diff3</code>, the base context is provided along with the
+conflicting differences:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><span style="font-weight: bold; text-decoration: underline;">long</span> <span style="font-weight: bold;">fib</span>(<span style="font-weight: bold; text-decoration: underline;">long</span> <span style="font-weight: bold; font-style: italic;">n</span>) {
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+                <span style="font-weight: bold; text-decoration: underline;">long</span> sol = 1;
+                <span style="font-weight: bold;">for</span> (; n &gt; 0; n--) {
+                                sol *= n;
+                }
+                <span style="font-weight: bold;">return</span> sol;
+||||||| Parent
+                <span style="font-weight: bold;">return</span> -1;
+=======
+                <span style="font-weight: bold;">if</span> (n &lt;= 0) {
+                                <span style="font-weight: bold;">return</span> 1;
+                } <span style="font-weight: bold;">else</span> {
+                                <span style="font-weight: bold;">return</span> n * fib(n - 1);
+                }
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; MERGE_HEAD
+}
+</pre>
+</div>
+
+<p>
+Now, in this contrived example, we can tell that two different developers
+implemented a version of Fibonacci function, replacing the stub of <code>-1</code>.
+</p>
+
 <blockquote>
 <p>
-Full paper presented at Theoretical Aspects of Software Engineering 2023.
+Notice, if they each individually arrived at the <i>same</i> solution, it would still
+result in a conflict.
 </p>
 </blockquote>
-
-<ul class="org-ul">
-<li><a href="../papers/ballou-2023-ident-minim.pdf">Author Generated Copy</a></li>
-</ul>
 </div>
 </div>
 
-<div id="outline-container-org119e9a2" class="outline-4">
-<h4 id="org119e9a2"><a href="https://doi.org/10.1007/978-3-031-06773-0_43">Incremental Transitive Closure for Zonal Abstract Domain</a></h4>
-<div class="outline-text-4" id="text-org119e9a2">
-<blockquote>
+<div id="outline-container-org88d57d2" class="outline-2">
+<h2 id="org88d57d2">Using this conflict resolution style in Git</h2>
+<div class="outline-text-2" id="text-org88d57d2">
 <p>
-Short paper accepted at NASA Formal Methods 2022.
+Use the following <a href="https://git-scm.com/docs/git-config">command</a> to use this style of conflict resolution within <a href="https://www.git-scm.org/">Git</a>:
 </p>
-</blockquote>
 
-<ul class="org-ul">
-<li><a href="../papers/ballou-2022-increm-trans.pdf">Author Generated Copy</a></li>
-</ul>
-</div>
-</div>
-</div>
-<div id="outline-container-org4652a42" class="outline-3">
-<h3 id="org4652a42">Books and Such</h3>
-<div class="outline-text-3" id="text-org4652a42">
+<div class="org-src-container">
+<pre class="src src-bash">git config --global set merge.conflictstyle diff3
+</pre>
 </div>
 
-<div id="outline-container-org3a08d19" class="outline-4">
-<h4 id="org3a08d19"><a href="https://www.packtpub.com/product/learning-elixir/9781785881749">Learning Elixir</a></h4>
-<div class="outline-text-4" id="text-org3a08d19">
-<blockquote>
 <p>
-Introductory text into Elixir/OTP Application Development.
+Or copy the following into your <code>~/.git/config</code>:
 </p>
-</blockquote>
+
+<div class="org-src-container">
+<pre class="src src-conf">[<span style="font-weight: bold; text-decoration: underline;">merge</span>]
+        <span style="font-weight: bold; font-style: italic;">conflictstyle</span> = diff3
+</pre>
+</div>
 </div>
 </div>
 
-<div id="outline-container-org2a5cf3a" class="outline-4">
-<h4 id="org2a5cf3a"><a href="https://www.packtpub.com/product/elixir-scalable-and-efficient-application-development/9781788294805">Elixir: Scalable and Efficient Application Development</a></h4>
-<div class="outline-text-4" id="text-org2a5cf3a">
-<blockquote>
+<div id="outline-container-org8423c00" class="outline-2">
+<h2 id="org8423c00">Zealous Diff3</h2>
+<div class="outline-text-2" id="text-org8423c00">
 <p>
-Video course developed using the text of <a href="https://www.packtpub.com/product/learning-elixir/9781785881749">Learning Elixir</a>.
+Since <a href="https://www.git-scm.org/">Git</a> Version 2.35.0, there exists a new conflict style, <code>zdiff3</code> for Zealous
+diff3 style.  This style <a href="https://stackoverflow.com/questions/71252026/how-do-i-use-zealous-diff3-with-git-and-what-are-the-pros-and-cons">attempts</a> to create better/easier resolutions, which I
+may adopt going forward.
 </p>
-</blockquote>
+
+<p>
+There are a <a href="https://neg4n.dev/blog/understanding-zealous-diff3-style-git-conflict-markers">number</a> of <a href="https://jvns.ca/blog/2024/02/16/popular-git-config-options/#merge-conflictstyle-zdiff3">blog</a> posts that explain it, check those out to learn
+more.
+</p>
 </div>
 </div>
+
+<div id="outline-container-orgfcf7329" class="outline-2">
+<h2 id="orgfcf7329">More options to consider</h2>
+<div class="outline-text-2" id="text-orgfcf7329">
+<p>
+<a href="https://jvns.ca/">Julia Evans</a> has an excellent <a href="https://jvns.ca/blog/2024/02/16/popular-git-config-options/">post</a> summarizing popular configuration options for
+<a href="https://www.git-scm.org/">Git</a> which you should check out.
+</p>
 </div>
 </div>
 </div>
