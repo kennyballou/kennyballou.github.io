@@ -1,0 +1,129 @@
+#+TITLE: Use Diff Conflict Style 3
+#+DESCRIPTION: Please just use diff style 3.
+#+TAGS: git
+#+TAGS: merge conflicts
+#+TAGS: rebase
+#+TAGS: conflict markers
+#+DATE: 2025-04-09
+#+SLUG: diff-style-3
+#+LINK: git https://www.git-scm.org/
+#+LINK: udiff https://www.gnu.org/software/diffutils/manual/html_node/Unified-Format.html
+#+LINK: git-show https://www.kernel.org/pub/software/scm/git/docs/git-show.html
+#+LINK: git-diff https://www.kernel.org/pub/software/scm/git/docs/git-diff.html
+#+LINK: git-config https://git-scm.com/docs/git-config
+#+LINK: zdiff3 https://neg4n.dev/blog/understanding-zealous-diff3-style-git-conflict-markers
+#+LINK: @b0rk https://jvns.ca/
+#+LINK: jvn-popular-git-options https://jvns.ca/blog/2024/02/16/popular-git-config-options/
+#+LINK: jvn-zdiff3 https://jvns.ca/blog/2024/02/16/popular-git-config-options/#merge-conflictstyle-zdiff3
+#+LINK: so-zdiff https://stackoverflow.com/questions/71252026/how-do-i-use-zealous-diff3-with-git-and-what-are-the-pros-and-cons
+
+#+begin_preview
+Please, just turn on diff style 3.  Thank me later.  I do not know the
+historical reason this setting is not the default, but if you ask me to help
+you with some crazy merge conflict, I am going to immediately ask you to
+configure this setting.
+#+end_preview
+
+** Context
+:PROPERTIES:
+:ID:       aaa8fc2c-240b-40ff-a7b2-f31572926c03
+:END:
+
+When dealing with conflicts, merge or otherwise, one of the options for your
+VCS is to modify the files with "conflict markers".  These are those crazy
+alligators that infect the code when receiving conflicts.
+
+#+begin_src c
+long fib(long n) {
+<<<<<<< HEAD
+		long sol = 1;
+		for (; n > 0; n--) {
+				sol *= n;
+		}
+		return sol;
+=======
+		if (n <= 0) {
+				return 1;
+		} else {
+				return n * fib(n - 1);
+		}
+>>>>>>> MERGE_HEAD
+}
+#+end_src
+
+While this may correctly point out the differences between the two branches,
+this output says nothing of the shared context from whence they came.
+
+** diff3
+:PROPERTIES:
+:ID:       87d8ad95-db6b-4f8a-90e8-41e031f7a6dc
+:END:
+
+Instead, by using ~diff3~, the base context is provided along with the
+conflicting differences:
+
+#+begin_src c
+long fib(long n) {
+<<<<<<< HEAD
+		long sol = 1;
+		for (; n > 0; n--) {
+				sol *= n;
+		}
+		return sol;
+||||||| Parent
+		return -1;
+=======
+		if (n <= 0) {
+				return 1;
+		} else {
+				return n * fib(n - 1);
+		}
+>>>>>>> MERGE_HEAD
+}
+#+end_src
+
+Now, in this contrived example, we can tell that two different developers
+implemented a version of Fibonacci function, replacing the stub of =-1=.
+
+#+begin_quote
+Notice, if they each individually arrived at the /same/ solution, it would still
+result in a conflict.
+#+end_quote
+
+** Using this conflict resolution style in Git
+:PROPERTIES:
+:ID:       bcb167e4-a36c-4058-88c0-16b8748894a3
+:END:
+
+Use the following [[git-config][command]] to use this style of conflict resolution within [[git][Git]]:
+
+#+begin_src bash
+git config --global set merge.conflictstyle diff3
+#+end_src
+
+Or copy the following into your =~/.git/config=:
+
+#+begin_src conf
+[merge]
+	conflictstyle = diff3
+#+end_src
+
+** Zealous Diff3
+:PROPERTIES:
+:ID:       6c506186-83c1-40a5-afb8-9e88a374c438
+:END:
+
+Since [[git][Git]] Version 2.35.0, there exists a new conflict style, ~zdiff3~ for Zealous
+diff3 style.  This style [[so-zdiff][attempts]] to create better/easier resolutions, which I
+may adopt going forward.
+
+There are a [[zdiff3][number]] of [[jvn-zdiff3][blog]] posts that explain it, check those out to learn
+more.
+
+** More options to consider
+:PROPERTIES:
+:ID:       0a0142eb-6d58-4092-85b2-6b941253ef71
+:END:
+
+[[@b0rk][Julia Evans]] has an excellent [[jvn-popular-git-options][post]] summarizing popular configuration options for
+[[git][Git]] which you should check out.
