@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2025-04-09 Wed 21:32 -->
+<!-- 2025-04-28 Mon 17:56 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Git Packfiles</title>
@@ -326,18 +326,18 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org4701d74">Packfiles</a>
+<li><a href="#org58911e3">Packfiles</a>
 <ul>
-<li><a href="#org2d99b2e">Packs</a></li>
-<li><a href="#orga81e703">Indexes</a></li>
-<li><a href="#org94b8021">Plumbing</a></li>
+<li><a href="#org7d03300">Packs</a></li>
+<li><a href="#org6ada7c8">Indexes</a></li>
+<li><a href="#orgb7eba5a">Plumbing</a></li>
 </ul>
 </li>
-<li><a href="#org245d6da">Summary</a></li>
+<li><a href="#org6b4b505">Summary</a></li>
 </ul>
 </div>
 </div>
-<div class="PREVIEW" id="org89598fe">
+<div class="PREVIEW" id="orgf253644">
 <p>
 Previously, in <a href="https://kennyballou.com/blog/2016/01/git-in-reverse">Git in Reverse</a>, we learned about <a href="https://git-scm.com/">Git</a> and how it internally
 stores information.  Namely, we went over the <a href="http://stackoverflow.com/questions/5709687/what-are-the-loose-objects-that-the-git-gui-refers-to#5710039">"loose" object</a> format that Git
@@ -356,9 +356,9 @@ We're only going to discuss the high-level details of packfiles, there are
 <a href="https://git.kernel.org/cgit/git/git.git/tree/Documentation/technical/pack-format.txt">describe</a> the <a href="https://codewords.recurse.com/issues/three/unpacking-git-packfiles/">details</a> better.
 </p>
 
-<div id="outline-container-org4701d74" class="outline-2">
-<h2 id="org4701d74">Packfiles</h2>
-<div class="outline-text-2" id="text-org4701d74">
+<div id="outline-container-org58911e3" class="outline-2">
+<h2 id="org58911e3">Packfiles</h2>
+<div class="outline-text-2" id="text-org58911e3">
 <p>
 Packfiles, like <a href="https://kennyballou.com/blog/2016/01/git-in-reverse">git objects before</a>, are an internal file
 set for storing objects in a more compressed format.  That is, instead of
@@ -378,7 +378,7 @@ repository and there are both pack, <code>.pack</code>, files and index, <code>.
 Here is the packfile that contains this repository (as of this writing):
 </p>
 
-<pre class="example" id="org0af3fc5">
+<pre class="example" id="orgb1620b9">
 ± find .git/objects/pack -type f
 .git/objects/pack/pack-31966bc41ef450ccfecdfb5ef6cd98f7097eea38.pack
 .git/objects/pack/pack-31966bc41ef450ccfecdfb5ef6cd98f7097eea38.idx
@@ -396,9 +396,9 @@ We'll take a small moment to describe each in a little more detail.
 </p>
 </div>
 
-<div id="outline-container-org2d99b2e" class="outline-3">
-<h3 id="org2d99b2e">Packs</h3>
-<div class="outline-text-3" id="text-org2d99b2e">
+<div id="outline-container-org7d03300" class="outline-3">
+<h3 id="org7d03300">Packs</h3>
+<div class="outline-text-3" id="text-org7d03300">
 <p>
 Packfiles are relatively straight forward, there's a 12 byte header, first four
 spell "PACK", next four provide the version, "2" as of this writing, and the
@@ -447,9 +447,9 @@ index file is created to maintain a way to peer into the packfile efficiently.
 </div>
 </div>
 
-<div id="outline-container-orga81e703" class="outline-3">
-<h3 id="orga81e703">Indexes</h3>
-<div class="outline-text-3" id="text-orga81e703">
+<div id="outline-container-org6ada7c8" class="outline-3">
+<h3 id="org6ada7c8">Indexes</h3>
+<div class="outline-text-3" id="text-org6ada7c8">
 <p>
 Packfile indexes solve the random object access efficiency problems caused by
 heavily compacting objects into a single file.
@@ -516,9 +516,9 @@ access to objects in the repository.
 </div>
 </div>
 
-<div id="outline-container-org94b8021" class="outline-3">
-<h3 id="org94b8021">Plumbing</h3>
-<div class="outline-text-3" id="text-org94b8021">
+<div id="outline-container-orgb7eba5a" class="outline-3">
+<h3 id="orgb7eba5a">Plumbing</h3>
+<div class="outline-text-3" id="text-orgb7eba5a">
 <p>
 Git will automatically create packfiles when synchronizing a repository (e.g.,
 pushing, pulling, cloning), but they can also be created manually with the
@@ -526,7 +526,7 @@ pushing, pulling, cloning), but they can also be created manually with the
 current repository.
 </p>
 
-<pre class="example" id="org14d5af1">
+<pre class="example" id="orgc401049">
 ± find .git/objects -type f
 .git/objects/f2/e90bed364168fcca0893437fb569d762cdbbce
 .git/objects/f4/2946046ed0926d5c7b34772642478390a696c9
@@ -568,7 +568,7 @@ Of course, we can also examine the packfile with the
 <a href="https://git-scm.com/docs/git-verify-pack"><code>git-verify-pack</code></a> command:
 </p>
 
-<pre class="example" id="orgc078b14">
+<pre class="example" id="org10f3105">
 ± git verify-pack -v .git/objects/pack/pack-1fc05518e49da3867792b704561b68d5b00e6317.idx
 f2e90bed364168fcca0893437fb569d762cdbbce commit 225 153 12
 d12254d273712af99e0585e7dd9dfea2106d5692 commit 220 145 165
@@ -607,7 +607,7 @@ This output also tells us the pack contains no deltified objects.  Let's see
 what this would look like with deltified objects:
 </p>
 
-<pre class="example" id="orgd7dd8fe">
+<pre class="example" id="orgd35c45c">
 ± git gc
 Counting objects: 17, done.
 Delta compression using up to 4 threads.
@@ -676,9 +676,9 @@ within a packfile.
 </div>
 </div>
 
-<div id="outline-container-org245d6da" class="outline-2">
-<h2 id="org245d6da">Summary</h2>
-<div class="outline-text-2" id="text-org245d6da">
+<div id="outline-container-org6b4b505" class="outline-2">
+<h2 id="org6b4b505">Summary</h2>
+<div class="outline-text-2" id="text-org6b4b505">
 <p>
 Hopefully, we now have a deeper knowledge of the compact object format Git
 uses, namely, packfiles.  Remember, the motivation for these files was not
@@ -693,7 +693,7 @@ efficient.
 </div>
 <footer id="" class="status">
 <footer>
-  <p>&copy; 2014-2024 Kenny Ballou.
+  <p>&copy; 2014-2025 Kenny Ballou.
     <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Some rights
       reserved.</a></p>
   <p>Powered by <a href="https://gnu.org">GNU/Linux</a></p>

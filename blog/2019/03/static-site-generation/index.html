@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2025-04-09 Wed 21:32 -->
+<!-- 2025-04-28 Mon 17:56 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>(New) Static Site Generation</title>
@@ -294,21 +294,21 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgd8f6ffb">Motivation</a></li>
-<li><a href="#orgd1bdb1d">High-Level Implementation</a></li>
-<li><a href="#org73c454e">Detailed Implementation</a>
+<li><a href="#org2cb3756">Motivation</a></li>
+<li><a href="#org3a0857f">High-Level Implementation</a></li>
+<li><a href="#org14ae35e">Detailed Implementation</a>
 <ul>
-<li><a href="#org2105a15">Post Content Generation</a></li>
-<li><a href="#org26adcab">Summary Page Generation</a></li>
-<li><a href="#org3aefff2">RSS/XML Generation</a></li>
+<li><a href="#org4b71632">Post Content Generation</a></li>
+<li><a href="#org8142fcf">Summary Page Generation</a></li>
+<li><a href="#org94b58ce">RSS/XML Generation</a></li>
 </ul>
 </li>
-<li><a href="#orgbb8dee6">Future Work</a></li>
-<li><a href="#org3e55342">Parting Thoughts</a></li>
+<li><a href="#org52d9de0">Future Work</a></li>
+<li><a href="#org0b51d3c">Parting Thoughts</a></li>
 </ul>
 </div>
 </div>
-<div class="PREVIEW" id="org170cd15">
+<div class="PREVIEW" id="org63379f8">
 <p>
 For a few years, I've been using <a href="https://gohugo.io/">Hugo</a> for blog generation.  Recently,
 I've decided I wanted to take static site generation into a different
@@ -324,9 +324,9 @@ format and changing the generation process into a completely custom set of
 scripts.
 </p>
 
-<div id="outline-container-orgd8f6ffb" class="outline-2">
-<h2 id="orgd8f6ffb">Motivation</h2>
-<div class="outline-text-2" id="text-orgd8f6ffb">
+<div id="outline-container-org2cb3756" class="outline-2">
+<h2 id="org2cb3756">Motivation</h2>
+<div class="outline-text-2" id="text-org2cb3756">
 <p>
 When I first set down to build a blog 5 years ago, I had a pretty basic set of
 requirements.
@@ -413,9 +413,9 @@ invocations to <a href="https://pandoc.org">Pandoc</a>.
 </div>
 </div>
 
-<div id="outline-container-orgd1bdb1d" class="outline-2">
-<h2 id="orgd1bdb1d">High-Level Implementation</h2>
-<div class="outline-text-2" id="text-orgd1bdb1d">
+<div id="outline-container-org3a0857f" class="outline-2">
+<h2 id="org3a0857f">High-Level Implementation</h2>
+<div class="outline-text-2" id="text-org3a0857f">
 <p>
 The core of the implementation of the new site generation is blog posts written
 in <a href="https://org-mode.org">Org-mode</a>, processed by several shell scripts, using
@@ -443,9 +443,9 @@ the new version to break existing links.
 </div>
 </div>
 
-<div id="outline-container-org73c454e" class="outline-2">
-<h2 id="org73c454e">Detailed Implementation</h2>
-<div class="outline-text-2" id="text-org73c454e">
+<div id="outline-container-org14ae35e" class="outline-2">
+<h2 id="org14ae35e">Detailed Implementation</h2>
+<div class="outline-text-2" id="text-org14ae35e">
 <p>
 The easy part is generating each post.  This is simply an <code>index.html</code> in the
 correct folder.  The majority of the complexities stem from the summaries and
@@ -453,9 +453,9 @@ main <code>index</code> page.
 </p>
 </div>
 
-<div id="outline-container-org2105a15" class="outline-3">
-<h3 id="org2105a15">Post Content Generation</h3>
-<div class="outline-text-3" id="text-org2105a15">
+<div id="outline-container-org4b71632" class="outline-3">
+<h3 id="org4b71632">Post Content Generation</h3>
+<div class="outline-text-3" id="text-org4b71632">
 <p>
 To generate a blog post's <code>index.html</code> page, we consider the following <code>make</code>
 target:
@@ -554,9 +554,9 @@ otherwise largely duplicated content.
 </div>
 </div>
 
-<div id="outline-container-org26adcab" class="outline-3">
-<h3 id="org26adcab">Summary Page Generation</h3>
-<div class="outline-text-3" id="text-org26adcab">
+<div id="outline-container-org8142fcf" class="outline-3">
+<h3 id="org8142fcf">Summary Page Generation</h3>
+<div class="outline-text-3" id="text-org8142fcf">
 <p>
 The summary page is a bit more involved to generate.  A few questions had to be
 answered before it was possible: how to generate the summary text? And how
@@ -693,9 +693,9 @@ post summaries onto the <code>index.html</code> page.
 </div>
 </div>
 
-<div id="outline-container-org3aefff2" class="outline-3">
-<h3 id="org3aefff2">RSS/XML Generation</h3>
-<div class="outline-text-3" id="text-org3aefff2">
+<div id="outline-container-org94b58ce" class="outline-3">
+<h3 id="org94b58ce">RSS/XML Generation</h3>
+<div class="outline-text-3" id="text-org94b58ce">
 <p>
 I also wanted to keep the RSS/XML feeds going.  However, as it turns out,
 generating the RSS feed was achieved by performing essentially the same steps
@@ -705,9 +705,9 @@ used for generating the summary <code>index.html</code> page.
 </div>
 </div>
 
-<div id="outline-container-orgbb8dee6" class="outline-2">
-<h2 id="orgbb8dee6">Future Work</h2>
-<div class="outline-text-2" id="text-orgbb8dee6">
+<div id="outline-container-org52d9de0" class="outline-2">
+<h2 id="org52d9de0">Future Work</h2>
+<div class="outline-text-2" id="text-org52d9de0">
 <p>
 There is a fairly obvious limitation of the summary page generation, but only
 really obvious if I write more content.  There was and is no current archive
@@ -719,9 +719,9 @@ is generated using <a href="https://gohugo.io/">Hugo</a> or generated via the ne
 </div>
 </div>
 
-<div id="outline-container-org3e55342" class="outline-2">
-<h2 id="org3e55342">Parting Thoughts</h2>
-<div class="outline-text-2" id="text-org3e55342">
+<div id="outline-container-org0b51d3c" class="outline-2">
+<h2 id="org0b51d3c">Parting Thoughts</h2>
+<div class="outline-text-2" id="text-org0b51d3c">
 <p>
 Like many projects, this was started because I personally was dissatisfied with
 the current state of options.  However, that said, I did not write these
@@ -741,7 +741,7 @@ If you have questions or comments, feel free to reach out to me.
 </div>
 <footer id="" class="status">
 <footer>
-  <p>&copy; 2014-2024 Kenny Ballou.
+  <p>&copy; 2014-2025 Kenny Ballou.
     <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Some rights
       reserved.</a></p>
   <p>Powered by <a href="https://gnu.org">GNU/Linux</a></p>

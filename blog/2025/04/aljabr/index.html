@@ -1,0 +1,1536 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2025-04-28 Mon 17:56 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>alJabr: An example interpreter project using Maven and ANTLR</title>
+<meta name="author" content="kb" />
+<meta name="description" content="Walkthrough of implementing an interpreter over different algebras using ANTLR and Maven" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<meta charset="utf-8">
+
+<meta name="author" content="Kenny Ballou">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<title>~kb</title>
+
+<link rel="canonical" href="/" />
+<link href="/index.xml" rel="alternate" type="application/rss+xml"
+      title="~kb/blog" />
+
+<link rel="stylesheet" href="/css/simple.css" />
+<link rel="stylesheet" href="/css/simple.add.css" />
+<link rel="stylesheet" href="/css/katex.css" />
+<link rel="stylesheet" href="/css/all.min.css" />
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<script defer type="text/javascript" src="/js/katex.js"></script>
+<script defer type="text/javascript" src="/js/katex-render.js"></script>
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
+</script>
+
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://kennyballou.com/blog"> UP </a>
+ |
+ <a accesskey="H" href="https://kennyballou.com/"> HOME </a>
+</div><header id="" class="status">
+<nav>
+  <a href="/">
+    <i class="fade fas fa-home"></i>
+  </a>
+  <a href="/about.html">
+    <i class="fade fas fa-user-circle"></i>
+  </a>
+  <a href="https://git.sr.ht/~kennyballou/"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade far fa-circle fa-1x"></i>
+  </a>
+  <a href="https://github.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-github fa-1x"></i>
+  </a>
+  <a href="https://bitbucket.org/kballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-bitbucket fa-1x"></i>
+  </a>
+  <a href="https://orcid.org/0000-0002-6032-474X"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-orcid"></i>
+  </a>
+  <a href="https://linkedin.com/in/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-linkedin-in fa-1x"></i>
+  </a>
+  <a href="/support.html">
+    <i class="fade fas fa-heart fa-1x"></i>
+  </a>
+  <a href="/cv.pdf"
+     target="_blank">
+    <i class="fade far fa-file-pdf"></i>
+  </a>
+  <a href="/B74CC4B41148C3DB364BC21182D94B35744E1B34.asc"
+     target="_blank">
+    <i class="fade fas fa-key"></i>
+  </a>
+  <a href="/index.xml" rel="alternate"
+     type="application/rss+xml">
+    <i class="fade fas fa-rss fa-1x"></i>
+  </a>
+</nav>
+</header>
+<div id="main" class="content">
+<h1 class="title">alJabr: An example interpreter project using Maven and ANTLR</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgf06ef2f">Introduction</a></li>
+<li><a href="#org8d35eaa">Maven Quickstart</a>
+<ul>
+<li><a href="#org3dda4cc">Maven phases and build lifecycles</a></li>
+<li><a href="#orge8b3419">POM Changes</a></li>
+</ul>
+</li>
+<li><a href="#orgbf3320b">Boolean expressions</a></li>
+<li><a href="#org5ffb9a9">ANTLR quickstart</a></li>
+<li><a href="#org9ff2247">Specifying our boolean language</a></li>
+<li><a href="#orge17d78c">Integrating with Maven</a></li>
+<li><a href="#org962eab8">Representing expressions</a></li>
+<li><a href="#orgdbd840f">Translating between ANTLR and our internal representation</a></li>
+<li><a href="#orgfe15612">Testing the parsing machinery</a></li>
+<li><a href="#orgd825f06">Creating the REPL</a></li>
+<li><a href="#org87d6b47">Implementing our boolean reducer</a></li>
+<li><a href="#org7b091a1">Modify the REPL to use the new reducer</a></li>
+<li><a href="#orgd6d9242">Future work and extensions</a></li>
+</ul>
+</div>
+</div>
+<div class="preview" id="org9ebb95f">
+<p>
+In this post, we build an interpreter over boolean expressions using <a href="https://www.antlr.org/">ANTLR</a> and
+<a href="https://maven.apache.org/">Maven</a>.  The code for the project is hosted on <a href="https://github.com/fmsea/alJabr/tree/0c4e8daefdbdbb5289ba3b12fb6e72314e55eb5c">GitHub</a>, released under the <a href="https://www.gnu.org/licenses/gpl-3.0">GPL</a>
+version 3.0 license.  While the project contains a <code>manifest.scm</code> file to create
+a development environment via <a href="https://guix.gnu.org/">Guix</a>, this post assumes you know how to install
+various necessary software dependencies and tools for your choice operating
+system.
+</p>
+
+</div>
+
+<div id="outline-container-orgf06ef2f" class="outline-2">
+<h2 id="orgf06ef2f">Introduction</h2>
+<div class="outline-text-2" id="text-orgf06ef2f">
+<p>
+Often in software projects, a common problem involves parsing and processing
+different input files or formats to accomplish different tasks.  Many software
+developers, for a myriad of reasons implement custom, hand crafted parsers for
+these problems.  In this post, we demonstrate a different approach for creating
+parsing machinery for a small invented language over boolean expressions.
+Specifically, we'll use "ANother Tool for Language Recognition" (<a href="https://www.antlr.org/">ANTLR</a>) to
+generate all the parsing machinery for us.  We add a few additional pieces,
+specifically a visitor, to translate the models from <a href="https://www.antlr.org/">ANTLR</a> into our own
+representation.  Finally, we implement a processor that reduces our boolean
+expressions down to a single boolean value.  We close with some interesting
+extensions or exercises to extend the interpreter into a, perhaps, more useful
+tool.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8d35eaa" class="outline-2">
+<h2 id="org8d35eaa">Maven Quickstart</h2>
+<div class="outline-text-2" id="text-org8d35eaa">
+<p>
+We begin with a new Java project.  <a href="https://maven.apache.org/">Maven</a> is an established and venerable tool
+for working with Java or <a href="https://en.wikipedia.org/wiki/Java_virtual_machine">JVM</a> hosted projects.  We opt for choosing a tool like
+<a href="https://maven.apache.org/">Maven</a> because it captures the steps for building our project declaratively
+within its "Project Object Model" or POM, and we can use that anywhere we have
+an appropriate version of Java and Maven.  For example, the <a href="https://github.com/fmsea/alJabr/tree/0c4e8daefdbdbb5289ba3b12fb6e72314e55eb5c">final source code</a>
+uses <a href="https://maven.apache.org/">Maven</a> within <a href="https://docs.github.com/en/actions">GitHub Actions</a>, a <a href="https://en.wikipedia.org/wiki/Continuous_integration">continuous integration</a> environment hosted
+and available on <a href="https://github.com/">GitHub</a>, to build and test the project.
+</p>
+
+<p>
+<a href="https://maven.apache.org/">Maven</a> can generate the initial project structure using the following command:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">mvn archetype:generate <span style="font-style: italic;">\</span>
+    -DgroupId=dev.fmsea.aljabr <span style="font-style: italic;">\</span>
+    -DartifactId=alJabr <span style="font-style: italic;">\</span>
+    -DarchetypeArtifactId=maven-archetype-quickstart <span style="font-style: italic;">\</span>
+    -DarchetypeVersion=1.5 <span style="font-style: italic;">\</span>
+    -DinteractiveMode=false
+</pre>
+</div>
+
+<p>
+This generates the following directory structure:
+</p>
+
+<pre class="example" id="org211e846">
+aljabr
+|-- pom.xml
+`-- src
+    |-- main
+    |   `-- java
+    |       `-- dev
+    |           `-- fmsea
+    |               `-- aljabr
+    |                   `-- App.java
+    `-- test
+        `-- java
+            `-- dev
+                `-- fmsea
+                    `-- aljabr
+                        `-- AppTest.java
+</pre>
+
+<p>
+The <code>main</code> subtree contains our project code, and the <code>test</code> subtree contains our,
+unimaginatively named, test code.
+</p>
+
+<p>
+As a result of our newly generated project, we should be able to compile and
+test this code using the following <a href="https://maven.apache.org/">Maven</a> command:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">mvn test
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org3dda4cc" class="outline-3">
+<h3 id="org3dda4cc">Maven phases and build lifecycles</h3>
+<div class="outline-text-3" id="text-org3dda4cc">
+<p>
+Unlike tools like <a href="https://ant.apache.org/">Ant</a> or <a href="https://www.gnu.org/software/make/">Make</a>, <a href="https://maven.apache.org/">Maven</a> comes with a predefined set of phases or
+"targets" to use the former parlance.  These phases help construct a project
+from dependency resolution, classpath modification, and the necessary flags to
+compile, test, package, and install or deploy the project.  Here is a short
+list of standard phases:
+</p>
+
+<ul class="org-ul">
+<li><code>validate</code></li>
+
+<li><code>compile</code></li>
+
+<li><code>test</code></li>
+
+<li><code>package</code></li>
+
+<li><code>verify</code></li>
+
+<li><code>install</code></li>
+
+<li><code>deploy</code></li>
+</ul>
+
+<p>
+See the <a href="https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.htm">documentation</a> to learn more about <a href="https://maven.apache.org/">Maven</a> Lifecycles.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge8b3419" class="outline-3">
+<h3 id="orge8b3419">POM Changes</h3>
+<div class="outline-text-3" id="text-orge8b3419">
+<p>
+While the above command does indeed generate a lot of the necessary <code>pom.xml</code>
+file, there are a few changes that may be necessary to make the project work.
+Specifically, the archetype generates a POM with <code>build</code> -&gt; <code>pluginManagement</code>.
+This may be a misunderstanding on my part, but in my experience, I need to lift
+the plugins under <code>pluginManagement</code> to have everything work as desired.
+Afterwards, I remove the now empty <code>pluginManagement</code> portion of the file.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbf3320b" class="outline-2">
+<h2 id="orgbf3320b">Boolean expressions</h2>
+<div class="outline-text-2" id="text-orgbf3320b">
+<p>
+The language we use for this demonstration is simply the boolean expressions we
+are used to within most programming languages.  We have logical or,
+disjunctions; logical and, conjunctions, and logical negation.  The truth
+tables for each are given below.
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption class="t-above"><span class="table-number">Table 1:</span> Truth table for Negation</caption>
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">A</th>
+<th scope="col" class="org-left">\(\lnot A\)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">T</td>
+<td class="org-left">F</td>
+</tr>
+
+<tr>
+<td class="org-left">F</td>
+<td class="org-left">T</td>
+</tr>
+</tbody>
+</table>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption class="t-above"><span class="table-number">Table 2:</span> Truth table for Disjunction</caption>
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">A</td>
+<td class="org-left">B</td>
+<td class="org-left">\(A \lor B\)</td>
+</tr>
+
+<tr>
+<td class="org-left">T</td>
+<td class="org-left">T</td>
+<td class="org-left">T</td>
+</tr>
+
+<tr>
+<td class="org-left">T</td>
+<td class="org-left">F</td>
+<td class="org-left">T</td>
+</tr>
+
+<tr>
+<td class="org-left">F</td>
+<td class="org-left">T</td>
+<td class="org-left">T</td>
+</tr>
+
+<tr>
+<td class="org-left">F</td>
+<td class="org-left">F</td>
+<td class="org-left">F</td>
+</tr>
+</tbody>
+</table>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption class="t-above"><span class="table-number">Table 3:</span> Truth table for Conjunction</caption>
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">A</td>
+<td class="org-left">B</td>
+<td class="org-left">\(A \land B\)</td>
+</tr>
+
+<tr>
+<td class="org-left">T</td>
+<td class="org-left">T</td>
+<td class="org-left">T</td>
+</tr>
+
+<tr>
+<td class="org-left">T</td>
+<td class="org-left">F</td>
+<td class="org-left">F</td>
+</tr>
+
+<tr>
+<td class="org-left">F</td>
+<td class="org-left">T</td>
+<td class="org-left">F</td>
+</tr>
+
+<tr>
+<td class="org-left">F</td>
+<td class="org-left">F</td>
+<td class="org-left">F</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+While it may seem pedantic to list these out, we want to be sure of their
+values as we implement our "interperter" over these values.  Moreover,
+depending on how far we take these ideas, we may want to demonstrate and add
+additional operators, e.g., inference, distribution, equality tests between
+expressions, etc.  This is all great, but we need to define our actual
+language.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5ffb9a9" class="outline-2">
+<h2 id="org5ffb9a9">ANTLR quickstart</h2>
+<div class="outline-text-2" id="text-org5ffb9a9">
+<p>
+As mentioned in the introduction, <a href="https://www.antlr.org/">ANTLR</a> is a parser generator which we can use
+to build the machinery for parsing our boolean expression language and creating
+the initial steps of our interpreter.  <a href="https://www.antlr.org/">ANTLR</a> uses a <a href="https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form">BNF</a>-like syntax to specify
+our input language, which <a href="https://www.antlr.org/">ANTLR</a> consumes to generate the parser and its
+representation of our language.  The following image is an example from the
+<a href="https://www.antlr.org/">ANTLR</a> website:
+</p>
+
+
+<div id="org31a92c0" class="figure">
+<p><img src="../../../../media/antlr.png" alt="&quot;Example from the ANTLR website&quot;" />
+</p>
+</div>
+
+<p>
+A full introduction to <a href="https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form">BNF</a> and language grammars is out of scope for this post.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9ff2247" class="outline-2">
+<h2 id="org9ff2247">Specifying our boolean language</h2>
+<div class="outline-text-2" id="text-org9ff2247">
+<p>
+Before we can construct even a handcrafted parser, we need to know what our
+language looks like.  Since our initial language goals are pretty
+straightforward, let's simply define a few typical expressions our language
+should contain:
+</p>
+
+<p>
+At the bare minimum, we need a way to express literal boolean values, true, and
+false.  For literals, we could simply use <code>0</code> and <code>1</code>, or <code>f</code> and <code>t</code>, or an uppercase
+alternative.  However, to both demonstrate the capabilities of <a href="https://www.antlr.org/">ANTLR</a> and since
+we may want to extend our language to support variable binding, for this
+language we opt for the unconventional choice of <code>#f</code> and <code>#t</code> to represent false
+and true, respectively.
+</p>
+
+<p>
+Next, we need to decide on our representation of logical negation.  For this,
+we shall use a simple <code>not</code> which accepts a single operand.
+</p>
+
+<p>
+Similarly, we need to decide on our representation of connectives.  While it
+would be fun to use the literal UTF-8 characters mathematical symbols for
+conjunctions and disjunctions, e.g., ∧ and ∨, these characters are a little
+painful to type.  Therefore, we choose a more friendly syntax: <code>and</code> and <code>or</code>.
+Both of these operators are binary connectives which only take two operands
+each.
+</p>
+
+<p>
+Finally, we need to sort out the "tightness" or the precedence of the
+operators.  While I am certainly inclined to just make it a LISP and not worry
+about it, we shall not do that in this case.
+</p>
+
+<p>
+Typically, we have the following for the preorder of operator precedence:
+\(\text{not} \sqsupset \text{and} \sqsupset \text{or}\).  That is, our negation
+operator has the highest precedence, conjunction medium precedence, and
+disjunctions have the lowest.  We shall continue with this typical ordering.
+</p>
+
+<blockquote>
+<p>
+As an exercise, modify the grammar to flip the ordering of precedence.
+</p>
+</blockquote>
+
+<p>
+Therefore, the grammar for our language looks something like the following:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bnf">bterm
+: '#f'
+| '#t'
+bexpr
+: 'not' bexpr
+| bexpr 'and' bexpr
+| bexpr 'or' bexpr
+| bterm
+</pre>
+</div>
+
+<p>
+We can translate this into <a href="https://www.antlr.org/">ANTLR</a>'s syntax:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-antlr"><span style="font-weight: bold;">grammar</span> <span style="font-weight: bold; text-decoration: underline;">BoolExpr</span><span style="font-weight: bold; text-decoration: underline;">;</span>
+
+<span style="font-weight: bold;">WS</span>
+    <span style="font-weight: bold; text-decoration: underline;">:</span> [ \t\n]+ -&gt; <span style="font-weight: bold; text-decoration: underline;">skip</span>
+    <span style="font-weight: bold; text-decoration: underline;">;</span>
+
+<span style="font-weight: bold;">NotOp</span> <span style="font-weight: bold; text-decoration: underline;">:</span> <span style="font-weight: bold;">'</span><span style="font-weight: bold; text-decoration: underline;">not</span><span style="font-weight: bold;">'</span> <span style="font-weight: bold; text-decoration: underline;">;</span>
+
+<span style="font-weight: bold;">AndOp</span> <span style="font-weight: bold; text-decoration: underline;">:</span> <span style="font-weight: bold;">'</span><span style="font-weight: bold; text-decoration: underline;">and</span><span style="font-weight: bold;">'</span> <span style="font-weight: bold; text-decoration: underline;">;</span>
+
+<span style="font-weight: bold;">OrOp</span> <span style="font-weight: bold; text-decoration: underline;">:</span> <span style="font-weight: bold;">'</span><span style="font-weight: bold; text-decoration: underline;">or</span><span style="font-weight: bold;">'</span> <span style="font-weight: bold; text-decoration: underline;">;</span>
+
+<span style="font-weight: bold;">BoolTerm</span>
+    <span style="font-weight: bold; text-decoration: underline;">:</span> <span style="font-weight: bold;">'</span>#<span style="font-weight: bold; text-decoration: underline;">f</span><span style="font-weight: bold;">'</span>
+    <span style="font-weight: bold; text-decoration: underline;">|</span> <span style="font-weight: bold;">'</span>#<span style="font-weight: bold; text-decoration: underline;">t</span><span style="font-weight: bold;">'</span>
+    <span style="font-weight: bold; text-decoration: underline;">;</span>
+
+<span style="font-weight: bold;">bexpr</span>
+    <span style="font-weight: bold; text-decoration: underline;">:</span> <span style="font-weight: bold; text-decoration: underline;">NotOp</span> <span style="font-weight: bold; text-decoration: underline;">bexpr</span> # <span style="font-weight: bold; text-decoration: underline;">Negation</span>
+    <span style="font-weight: bold; text-decoration: underline;">|</span> <span style="font-weight: bold; text-decoration: underline;">bexpr</span> <span style="font-weight: bold; text-decoration: underline;">AndOp</span> <span style="font-weight: bold; text-decoration: underline;">bexpr</span> # <span style="font-weight: bold; text-decoration: underline;">AndExpr</span>
+    <span style="font-weight: bold; text-decoration: underline;">|</span> <span style="font-weight: bold; text-decoration: underline;">bexpr</span> <span style="font-weight: bold; text-decoration: underline;">OrOp</span> <span style="font-weight: bold; text-decoration: underline;">bexpr</span> # <span style="font-weight: bold; text-decoration: underline;">OrExpr</span>
+    <span style="font-weight: bold; text-decoration: underline;">|</span> <span style="font-weight: bold; text-decoration: underline;">BoolTerm</span> # <span style="font-weight: bold; text-decoration: underline;">BoolTerm</span>
+    <span style="font-weight: bold; text-decoration: underline;">;</span>
+
+<span style="font-weight: bold;">expr</span> <span style="font-weight: bold; text-decoration: underline;">:</span> <span style="font-weight: bold; text-decoration: underline;">bexpr</span>* <span style="font-weight: bold; text-decoration: underline;">EOF</span> <span style="font-weight: bold; text-decoration: underline;">;</span>
+</pre>
+</div>
+
+<p>
+The first line provides a name for the root of the language expressions.  The
+next rule provides a "skip" rule for different whitespace characters that do
+not contribute to our language.  The next three rules describe the different
+operators.  The next rule describes our literal boolean terms.  The <code>bexpr</code> rule
+provides the production rules for each of the types of expressions our
+interpreter parses.  Moreover, the "# Negation" bits at the end "name" the
+production rule; we use these later when creating our representation of the
+language.  Finally, the <code>expr</code> rule provides a "root" rule we use to ensure <a href="https://www.antlr.org/">ANTLR</a>
+handles the end of input gracefully.  Notice, we are currently only interested
+in the <code>bexpr</code> productions.
+</p>
+
+<p>
+Add the contents of the grammar to the following file within the root of the
+project: <code>src/main/antlr4/dev/fmsea/aljabr/BoolExpr.g4</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge17d78c" class="outline-2">
+<h2 id="orge17d78c">Integrating with Maven</h2>
+<div class="outline-text-2" id="text-orge17d78c">
+<p>
+We need to add a few dependencies to our project so that we can compile against
+the generated <a href="https://www.antlr.org/">ANTLR</a> code:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-xml">&lt;<span style="font-weight: bold;">dependency</span>&gt;
+  &lt;<span style="font-weight: bold;">groupId</span>&gt;org.antlr&lt;/<span style="font-weight: bold;">groupId</span>&gt;
+  &lt;<span style="font-weight: bold;">artifactId</span>&gt;antlr4&lt;/<span style="font-weight: bold;">artifactId</span>&gt;
+  &lt;<span style="font-weight: bold;">version</span>&gt;4.13.2&lt;/<span style="font-weight: bold;">version</span>&gt;
+&lt;/<span style="font-weight: bold;">dependency</span>&gt;
+&lt;<span style="font-weight: bold;">dependency</span>&gt;
+  &lt;<span style="font-weight: bold;">groupId</span>&gt;org.antlr&lt;/<span style="font-weight: bold;">groupId</span>&gt;
+  &lt;<span style="font-weight: bold;">artifactId</span>&gt;antlr4-runtime&lt;/<span style="font-weight: bold;">artifactId</span>&gt;
+  &lt;<span style="font-weight: bold;">version</span>&gt;4.13.2&lt;/<span style="font-weight: bold;">version</span>&gt;
+&lt;/<span style="font-weight: bold;">dependency</span>&gt;
+</pre>
+</div>
+
+<p>
+To wire in the process of generating Java code from the <a href="https://www.antlr.org/">ANTLR</a> grammar and add
+the generated code to our compilation targets, we need to add some plugins to
+the <code>pom.xml</code> file of our project.  Specifically, we need the following plugin in
+the <code>build</code> -&gt; <code>plugins</code> portion of the <code>pom.xml</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-xml">&lt;<span style="font-weight: bold;">plugin</span>&gt;
+  &lt;<span style="font-weight: bold;">groupId</span>&gt;org.codehaus.mojo&lt;/<span style="font-weight: bold;">groupId</span>&gt;
+  &lt;<span style="font-weight: bold;">artifactId</span>&gt;build-helper-maven-plugin&lt;/<span style="font-weight: bold;">artifactId</span>&gt;
+  &lt;<span style="font-weight: bold;">version</span>&gt;1.7&lt;/<span style="font-weight: bold;">version</span>&gt;
+  &lt;<span style="font-weight: bold;">executions</span>&gt;
+    &lt;<span style="font-weight: bold;">execution</span>&gt;
+      &lt;<span style="font-weight: bold;">id</span>&gt;add-source&lt;/<span style="font-weight: bold;">id</span>&gt;
+      &lt;<span style="font-weight: bold;">phase</span>&gt;generate-sources&lt;/<span style="font-weight: bold;">phase</span>&gt;
+      &lt;<span style="font-weight: bold;">goals</span>&gt;
+        &lt;<span style="font-weight: bold;">goal</span>&gt;add-source&lt;/<span style="font-weight: bold;">goal</span>&gt;
+      &lt;/<span style="font-weight: bold;">goals</span>&gt;
+      &lt;<span style="font-weight: bold;">configuration</span>&gt;
+        &lt;<span style="font-weight: bold;">sources</span>&gt;
+          &lt;<span style="font-weight: bold;">source</span>&gt;src/main/java&lt;/<span style="font-weight: bold;">source</span>&gt;
+        &lt;/<span style="font-weight: bold;">sources</span>&gt;
+      &lt;/<span style="font-weight: bold;">configuration</span>&gt;
+    &lt;/<span style="font-weight: bold;">execution</span>&gt;
+  &lt;/<span style="font-weight: bold;">executions</span>&gt;
+&lt;/<span style="font-weight: bold;">plugin</span>&gt;
+</pre>
+</div>
+
+<p>
+This plugin adds generated sources into our compilation target tree.  Next, we
+need the <a href="https://www.antlr.org/">ANTLR</a> plugin for generating the parsing machinery.  Add the following
+plugin to the same section of the <code>pom.xml</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-xml">&lt;<span style="font-weight: bold;">plugin</span>&gt;
+  &lt;<span style="font-weight: bold;">groupId</span>&gt;org.antlr&lt;/<span style="font-weight: bold;">groupId</span>&gt;
+  &lt;<span style="font-weight: bold;">artifactId</span>&gt;antlr4-maven-plugin&lt;/<span style="font-weight: bold;">artifactId</span>&gt;
+  &lt;<span style="font-weight: bold;">version</span>&gt;4.13.2&lt;/<span style="font-weight: bold;">version</span>&gt;
+  &lt;<span style="font-weight: bold;">configuration</span>&gt;
+    &lt;<span style="font-weight: bold;">visitor</span>&gt;true&lt;/<span style="font-weight: bold;">visitor</span>&gt;
+    &lt;<span style="font-weight: bold;">listener</span>&gt;true&lt;/<span style="font-weight: bold;">listener</span>&gt;
+  &lt;/<span style="font-weight: bold;">configuration</span>&gt;
+  &lt;<span style="font-weight: bold;">executions</span>&gt;
+    &lt;<span style="font-weight: bold;">execution</span>&gt;
+      &lt;<span style="font-weight: bold;">goals</span>&gt;
+        &lt;<span style="font-weight: bold;">goal</span>&gt;antlr4&lt;/<span style="font-weight: bold;">goal</span>&gt;
+      &lt;/<span style="font-weight: bold;">goals</span>&gt;
+    &lt;/<span style="font-weight: bold;">execution</span>&gt;
+  &lt;/<span style="font-weight: bold;">executions</span>&gt;
+&lt;/<span style="font-weight: bold;">plugin</span>&gt;
+</pre>
+</div>
+
+<p>
+With these changes, we should be able to test our compilation process.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">mvn clean compile
+</pre>
+</div>
+
+<p>
+Notice, that in the compilation process, <a href="https://maven.apache.org/">Maven</a> comments about compiling <i>seven</i>
+source files, while our project only <i>actually</i> has one.  If this is not the
+case, stop here and make sure the process is working.  The additional six
+source files should be found in the following folder after compilation:
+<code>target/generated-sources/antlr4/dev/fmsea/aljabr/</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org962eab8" class="outline-2">
+<h2 id="org962eab8">Representing expressions</h2>
+<div class="outline-text-2" id="text-org962eab8">
+<p>
+While we could directly use <a href="https://www.antlr.org/">ANTLR</a>'s representation for our objects, it is often
+better to create our own internal representation.
+</p>
+
+<p>
+We start with the abstract base class that is essentially the representation of
+the final rule which represents the "root" of all expressions.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold;">package</span> dev.fmsea.<span style="font-weight: bold; text-decoration: underline;">aljabr</span>;
+
+<span style="font-weight: bold;">public</span> <span style="font-weight: bold;">abstract</span> <span style="font-weight: bold;">class</span> <span style="font-weight: bold; text-decoration: underline;">BoolExpr</span> {
+    <span style="font-weight: bold;">public</span> <span style="font-weight: bold;">interface</span> <span style="font-weight: bold; text-decoration: underline;">Visitor</span>&lt;<span style="font-weight: bold; text-decoration: underline;">R</span>&gt; {
+    }
+
+    <span style="font-weight: bold;">public</span> <span style="font-weight: bold;">abstract</span> &lt;<span style="font-weight: bold; text-decoration: underline;">R</span>&gt; <span style="font-weight: bold; text-decoration: underline;">R</span> <span style="font-weight: bold;">accept</span>(<span style="font-weight: bold; text-decoration: underline;">Visitor</span>&lt;<span style="font-weight: bold; text-decoration: underline;">R</span>&gt; <span style="font-weight: bold; font-style: italic;">visitor</span>);
+}
+</pre>
+</div>
+
+<p>
+The first thing we add is an empty <a href="https://refactoring.guru/design-patterns/visitor">Visitor</a> interface which is used for
+processing expressions; we shall add to it later.
+</p>
+
+<p>
+Let's create an initial visitor which translates expressions back into their
+string representation.  Under a new package called <code>visitors</code>, create the
+following class:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold;">package</span> dev.fmsea.aljabr.<span style="font-weight: bold; text-decoration: underline;">visitors</span>;
+
+<span style="font-weight: bold;">import</span> <span style="font-weight: bold; text-decoration: underline;">dev</span>.<span style="font-weight: bold; text-decoration: underline;">fmsea</span>.<span style="font-weight: bold; text-decoration: underline;">aljabr</span>.<span style="font-weight: bold; text-decoration: underline;">BoolExpr</span>;
+
+<span style="font-weight: bold;">public</span> <span style="font-weight: bold;">class</span> <span style="font-weight: bold; text-decoration: underline;">StringReprVisitor</span> <span style="font-weight: bold;">implements</span> <span style="font-weight: bold; text-decoration: underline;">BoolExpr</span>.<span style="font-weight: bold; text-decoration: underline;">Visitor</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>&gt; {
+}
+</pre>
+</div>
+
+<p>
+Now, we can add an override method for <code>toString</code> in our <code>BoolExpr</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold; text-decoration: underline;">@Override</span>
+<span style="font-weight: bold;">public</span> <span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold;">toString</span>() {
+    <span style="font-weight: bold;">return</span> <span style="font-weight: bold;">this</span>.accept(<span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">StringReprVisitor</span>());
+}
+</pre>
+</div>
+
+<p>
+Now, we need to create representations for each of our different major
+expression types, <code>Negation</code>, <code>AndExpr</code>, <code>OrExpr</code>, and our literal values.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold;">package</span> dev.fmsea.<span style="font-weight: bold; text-decoration: underline;">aljabr</span>;
+
+<span style="font-weight: bold;">public</span> <span style="font-weight: bold;">class</span> <span style="font-weight: bold; text-decoration: underline;">NegationExpr</span> <span style="font-weight: bold;">extends</span> <span style="font-weight: bold; text-decoration: underline;">BoolExpr</span> {
+    <span style="font-weight: bold;">public</span> <span style="font-weight: bold;">final</span> <span style="font-weight: bold; text-decoration: underline;">BoolExpr</span> <span style="font-weight: bold; font-style: italic;">inner</span>;
+
+    <span style="font-weight: bold;">public</span> NegationExpr(BoolExpr inner) {
+        <span style="font-weight: bold;">this</span>.inner = inner;
+    }
+
+    <span style="font-weight: bold;">public</span> &lt;<span style="font-weight: bold; text-decoration: underline;">R</span>&gt; <span style="font-weight: bold; text-decoration: underline;">R</span> <span style="font-weight: bold;">accept</span>(<span style="font-weight: bold; text-decoration: underline;">BoolExpr</span>.<span style="font-weight: bold; text-decoration: underline;">Visitor</span>&lt;<span style="font-weight: bold; text-decoration: underline;">R</span>&gt; <span style="font-weight: bold; font-style: italic;">visitor</span>) {
+        <span style="font-weight: bold;">return</span> visitor.visitNegation(<span style="font-weight: bold;">this</span>);
+    }
+}
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold;">package</span> dev.fmsea.<span style="font-weight: bold; text-decoration: underline;">aljabr</span>;
+
+<span style="font-weight: bold;">public</span> <span style="font-weight: bold;">class</span> <span style="font-weight: bold; text-decoration: underline;">AndExpr</span> <span style="font-weight: bold;">extends</span> <span style="font-weight: bold; text-decoration: underline;">BoolExpr</span> {
+    <span style="font-weight: bold;">public</span> <span style="font-weight: bold;">final</span> <span style="font-weight: bold; text-decoration: underline;">BoolExpr</span> <span style="font-weight: bold; font-style: italic;">left</span>;
+    <span style="font-weight: bold;">public</span> <span style="font-weight: bold;">final</span> <span style="font-weight: bold; text-decoration: underline;">BoolExpr</span> <span style="font-weight: bold; font-style: italic;">right</span>;
+
+    <span style="font-weight: bold;">public</span> AndExpr(<span style="font-weight: bold; text-decoration: underline;">BoolExpr</span> <span style="font-weight: bold; font-style: italic;">left</span>, BoolExpr right) {
+        <span style="font-weight: bold;">this</span>.left = left;
+        <span style="font-weight: bold;">this</span>.right = right;
+    }
+
+    <span style="font-weight: bold;">public</span> &lt;<span style="font-weight: bold; text-decoration: underline;">R</span>&gt; <span style="font-weight: bold; text-decoration: underline;">R</span> <span style="font-weight: bold;">accept</span>(<span style="font-weight: bold; text-decoration: underline;">BoolExpr</span>.<span style="font-weight: bold; text-decoration: underline;">Visitor</span>&lt;<span style="font-weight: bold; text-decoration: underline;">R</span>&gt; <span style="font-weight: bold; font-style: italic;">visitor</span>) {
+        <span style="font-weight: bold;">return</span> visitor.visitAnd(<span style="font-weight: bold;">this</span>);
+    }
+}
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold;">package</span> dev.fmsea.<span style="font-weight: bold; text-decoration: underline;">aljabr</span>;
+
+<span style="font-weight: bold;">public</span> <span style="font-weight: bold;">class</span> <span style="font-weight: bold; text-decoration: underline;">OrExpr</span> <span style="font-weight: bold;">extends</span> <span style="font-weight: bold; text-decoration: underline;">BoolExpr</span> {
+    <span style="font-weight: bold;">public</span> <span style="font-weight: bold;">final</span> <span style="font-weight: bold; text-decoration: underline;">BoolExpr</span> <span style="font-weight: bold; font-style: italic;">left</span>;
+    <span style="font-weight: bold;">public</span> <span style="font-weight: bold;">final</span> <span style="font-weight: bold; text-decoration: underline;">BoolExpr</span> <span style="font-weight: bold; font-style: italic;">right</span>;
+
+    <span style="font-weight: bold;">public</span> OrExpr(<span style="font-weight: bold; text-decoration: underline;">BoolExpr</span> <span style="font-weight: bold; font-style: italic;">left</span>, BoolExpr right) {
+        <span style="font-weight: bold;">this</span>.left = left;
+        <span style="font-weight: bold;">this</span>.right = right;
+    }
+
+    <span style="font-weight: bold;">public</span> &lt;<span style="font-weight: bold; text-decoration: underline;">R</span>&gt; <span style="font-weight: bold; text-decoration: underline;">R</span> <span style="font-weight: bold;">accept</span>(<span style="font-weight: bold; text-decoration: underline;">BoolExpr</span>.<span style="font-weight: bold; text-decoration: underline;">Visitor</span>&lt;<span style="font-weight: bold; text-decoration: underline;">R</span>&gt; <span style="font-weight: bold; font-style: italic;">visitor</span>) {
+        <span style="font-weight: bold;">return</span> visitor.visitOr(<span style="font-weight: bold;">this</span>);
+    }
+}
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold;">package</span> dev.fmsea.<span style="font-weight: bold; text-decoration: underline;">aljabr</span>;
+
+<span style="font-weight: bold;">public</span> <span style="font-weight: bold;">abstract</span> <span style="font-weight: bold;">class</span> <span style="font-weight: bold; text-decoration: underline;">BoolTerm</span> <span style="font-weight: bold;">extends</span> <span style="font-weight: bold; text-decoration: underline;">BoolExpr</span> {
+    <span style="font-weight: bold;">public</span> <span style="font-weight: bold;">final</span> <span style="font-weight: bold; text-decoration: underline;">boolean</span> <span style="font-weight: bold; font-style: italic;">value</span>;
+
+    <span style="font-weight: bold;">public</span> BoolTerm(<span style="font-weight: bold; text-decoration: underline;">boolean</span> <span style="font-weight: bold; font-style: italic;">value</span>) {
+        <span style="font-weight: bold;">this</span>.value = value;
+    }
+}
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold;">package</span> dev.fmsea.<span style="font-weight: bold; text-decoration: underline;">aljabr</span>;
+
+<span style="font-weight: bold;">public</span> <span style="font-weight: bold;">class</span> <span style="font-weight: bold; text-decoration: underline;">FalseValue</span> <span style="font-weight: bold;">extends</span> <span style="font-weight: bold; text-decoration: underline;">BoolTerm</span> {
+
+    <span style="font-weight: bold;">public</span> FalseValue() {
+        <span style="font-weight: bold;">super</span>(<span style="font-weight: bold; text-decoration: underline;">false</span>);
+    }
+
+    <span style="font-weight: bold;">public</span> &lt;<span style="font-weight: bold; text-decoration: underline;">R</span>&gt; <span style="font-weight: bold; text-decoration: underline;">R</span> <span style="font-weight: bold;">accept</span>(<span style="font-weight: bold; text-decoration: underline;">BoolExpr</span>.<span style="font-weight: bold; text-decoration: underline;">Visitor</span>&lt;<span style="font-weight: bold; text-decoration: underline;">R</span>&gt; <span style="font-weight: bold; font-style: italic;">visitor</span>) {
+        <span style="font-weight: bold;">return</span> visitor.visitFalse(<span style="font-weight: bold;">this</span>);
+    }
+}
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold;">package</span> dev.fmsea.<span style="font-weight: bold; text-decoration: underline;">aljabr</span>;
+
+<span style="font-weight: bold;">public</span> <span style="font-weight: bold;">class</span> <span style="font-weight: bold; text-decoration: underline;">TrueValue</span> <span style="font-weight: bold;">extends</span> <span style="font-weight: bold; text-decoration: underline;">BoolTerm</span> {
+
+    <span style="font-weight: bold;">public</span> TrueValue() {
+        <span style="font-weight: bold;">super</span>(<span style="font-weight: bold; text-decoration: underline;">true</span>);
+    }
+
+    <span style="font-weight: bold;">public</span> &lt;<span style="font-weight: bold; text-decoration: underline;">R</span>&gt; <span style="font-weight: bold; text-decoration: underline;">R</span> <span style="font-weight: bold;">accept</span>(<span style="font-weight: bold; text-decoration: underline;">BoolExpr</span>.<span style="font-weight: bold; text-decoration: underline;">Visitor</span>&lt;<span style="font-weight: bold; text-decoration: underline;">R</span>&gt; <span style="font-weight: bold; font-style: italic;">visitor</span>) {
+        <span style="font-weight: bold;">return</span> visitor.visitTrue(<span style="font-weight: bold;">this</span>);
+    }
+}
+</pre>
+</div>
+
+<p>
+Now that we have some elements of our tree, we must update the visitor
+interface and our string representation visitor to ensure everything is
+implemented.  Add the following signatures to the visitor interface of the
+<code>BoolExpr</code> class.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold;">public</span> <span style="font-weight: bold;">interface</span> <span style="font-weight: bold; text-decoration: underline;">Visitor</span>&lt;<span style="font-weight: bold; text-decoration: underline;">R</span>&gt; {
+    <span style="font-weight: bold; text-decoration: underline;">R</span> <span style="font-weight: bold;">visitTrue</span>(<span style="font-weight: bold; text-decoration: underline;">TrueValue</span> <span style="font-weight: bold; font-style: italic;">trueValue</span>);
+    <span style="font-weight: bold; text-decoration: underline;">R</span> <span style="font-weight: bold;">visitFalse</span>(<span style="font-weight: bold; text-decoration: underline;">FalseValue</span> <span style="font-weight: bold; font-style: italic;">falseValue</span>);
+    <span style="font-weight: bold; text-decoration: underline;">R</span> <span style="font-weight: bold;">visitNegation</span>(<span style="font-weight: bold; text-decoration: underline;">NegationExpr</span> <span style="font-weight: bold; font-style: italic;">negation</span>);
+    <span style="font-weight: bold; text-decoration: underline;">R</span> <span style="font-weight: bold;">visitAnd</span>(<span style="font-weight: bold; text-decoration: underline;">AndExpr</span> <span style="font-weight: bold; font-style: italic;">and</span>);
+    <span style="font-weight: bold; text-decoration: underline;">R</span> <span style="font-weight: bold;">visitOr</span>(<span style="font-weight: bold; text-decoration: underline;">OrExpr</span> <span style="font-weight: bold; font-style: italic;">or</span>);
+}
+</pre>
+</div>
+
+<p>
+Now, modify the <code>StringReprVisitor</code> to implement each of these methods.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold;">package</span> dev.fmsea.aljabr.<span style="font-weight: bold; text-decoration: underline;">visitors</span>;
+
+<span style="font-weight: bold;">import</span> <span style="font-weight: bold; text-decoration: underline;">dev</span>.<span style="font-weight: bold; text-decoration: underline;">fmsea</span>.<span style="font-weight: bold; text-decoration: underline;">aljabr</span>.<span style="font-weight: bold; text-decoration: underline;">AndExpr</span>;
+<span style="font-weight: bold;">import</span> <span style="font-weight: bold; text-decoration: underline;">dev</span>.<span style="font-weight: bold; text-decoration: underline;">fmsea</span>.<span style="font-weight: bold; text-decoration: underline;">aljabr</span>.<span style="font-weight: bold; text-decoration: underline;">BoolExpr</span>;
+<span style="font-weight: bold;">import</span> <span style="font-weight: bold; text-decoration: underline;">dev</span>.<span style="font-weight: bold; text-decoration: underline;">fmsea</span>.<span style="font-weight: bold; text-decoration: underline;">aljabr</span>.<span style="font-weight: bold; text-decoration: underline;">FalseValue</span>;
+<span style="font-weight: bold;">import</span> <span style="font-weight: bold; text-decoration: underline;">dev</span>.<span style="font-weight: bold; text-decoration: underline;">fmsea</span>.<span style="font-weight: bold; text-decoration: underline;">aljabr</span>.<span style="font-weight: bold; text-decoration: underline;">NegationExpr</span>;
+<span style="font-weight: bold;">import</span> <span style="font-weight: bold; text-decoration: underline;">dev</span>.<span style="font-weight: bold; text-decoration: underline;">fmsea</span>.<span style="font-weight: bold; text-decoration: underline;">aljabr</span>.<span style="font-weight: bold; text-decoration: underline;">OrExpr</span>;
+<span style="font-weight: bold;">import</span> <span style="font-weight: bold; text-decoration: underline;">dev</span>.<span style="font-weight: bold; text-decoration: underline;">fmsea</span>.<span style="font-weight: bold; text-decoration: underline;">aljabr</span>.<span style="font-weight: bold; text-decoration: underline;">TrueValue</span>;
+
+<span style="font-weight: bold;">public</span> <span style="font-weight: bold;">class</span> <span style="font-weight: bold; text-decoration: underline;">StringReprVisitor</span> <span style="font-weight: bold;">implements</span> <span style="font-weight: bold; text-decoration: underline;">BoolExpr</span>.<span style="font-weight: bold; text-decoration: underline;">Visitor</span>&lt;<span style="font-weight: bold; text-decoration: underline;">String</span>&gt; {
+
+    <span style="font-weight: bold;">public</span> <span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold;">visitTrue</span>(<span style="font-weight: bold; text-decoration: underline;">TrueValue</span> <span style="font-weight: bold; font-style: italic;">trueValue</span>) {
+        <span style="font-weight: bold;">return</span> <span style="font-style: italic;">"#t"</span>;
+    }
+
+    <span style="font-weight: bold;">public</span> <span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold;">visitFalse</span>(<span style="font-weight: bold; text-decoration: underline;">FalseValue</span> <span style="font-weight: bold; font-style: italic;">falseValue</span>) {
+        <span style="font-weight: bold;">return</span> <span style="font-style: italic;">"#f"</span>;
+    }
+
+    <span style="font-weight: bold;">public</span> <span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold;">visitNegation</span>(<span style="font-weight: bold; text-decoration: underline;">NegationExpr</span> <span style="font-weight: bold; font-style: italic;">negation</span>) {
+        <span style="font-weight: bold;">return</span> String.format(<span style="font-style: italic;">"not %s"</span>, negation.inner.accept(<span style="font-weight: bold;">this</span>));
+    }
+
+    <span style="font-weight: bold;">public</span> <span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold;">visitAnd</span>(<span style="font-weight: bold; text-decoration: underline;">AndExpr</span> <span style="font-weight: bold; font-style: italic;">and</span>) {
+        <span style="font-weight: bold;">return</span> String.format(<span style="font-style: italic;">"%s and %s"</span>,
+            and.left.accept(<span style="font-weight: bold;">this</span>),
+            and.right.accept(<span style="font-weight: bold;">this</span>));
+    }
+
+    <span style="font-weight: bold;">public</span> <span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold;">visitOr</span>(<span style="font-weight: bold; text-decoration: underline;">OrExpr</span> <span style="font-weight: bold; font-style: italic;">or</span>) {
+        <span style="font-weight: bold;">return</span> String.format(<span style="font-style: italic;">"%s or %s"</span>,
+            or.left.accept(<span style="font-weight: bold;">this</span>),
+            or.right.accept(<span style="font-weight: bold;">this</span>));
+    }
+}
+</pre>
+</div>
+
+<p>
+Finally, personally, I like to add some convenience methods to the <code>BoolExpr</code>
+class to make constructing new expressions easier.  Add the following to the
+<code>BoolExpr</code> class:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold;">public</span> <span style="font-weight: bold;">static</span> <span style="font-weight: bold; text-decoration: underline;">TrueValue</span> <span style="font-weight: bold;">newTrue</span>() {
+    <span style="font-weight: bold;">return</span> <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">TrueValue</span>();
+                                  }
+
+<span style="font-weight: bold;">public</span> <span style="font-weight: bold;">static</span> <span style="font-weight: bold; text-decoration: underline;">FalseValue</span> <span style="font-weight: bold;">newFalse</span>() {
+    <span style="font-weight: bold;">return</span> <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">FalseValue</span>();
+}
+
+<span style="font-weight: bold;">public</span> <span style="font-weight: bold;">static</span> <span style="font-weight: bold; text-decoration: underline;">NegationExpr</span> <span style="font-weight: bold;">newNegation</span>(<span style="font-weight: bold; text-decoration: underline;">BoolExpr</span> <span style="font-weight: bold; font-style: italic;">inner</span>) {
+    <span style="font-weight: bold;">return</span> <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">NegationExpr</span>(inner);
+}
+
+<span style="font-weight: bold;">public</span> <span style="font-weight: bold;">static</span> <span style="font-weight: bold; text-decoration: underline;">AndExpr</span> <span style="font-weight: bold;">newAnd</span>(<span style="font-weight: bold; text-decoration: underline;">BoolExpr</span> <span style="font-weight: bold; font-style: italic;">left</span>, <span style="font-weight: bold; text-decoration: underline;">BoolExpr</span> <span style="font-weight: bold; font-style: italic;">right</span>) {
+    <span style="font-weight: bold;">return</span> <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">AndExpr</span>(left, right);
+}
+
+<span style="font-weight: bold;">public</span> <span style="font-weight: bold;">static</span> <span style="font-weight: bold; text-decoration: underline;">OrExpr</span> <span style="font-weight: bold;">newOr</span>(<span style="font-weight: bold; text-decoration: underline;">BoolExpr</span> <span style="font-weight: bold; font-style: italic;">left</span>, <span style="font-weight: bold; text-decoration: underline;">BoolExpr</span> <span style="font-weight: bold; font-style: italic;">right</span>) {
+    <span style="font-weight: bold;">return</span> <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">OrExpr</span>(left, right);
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdbd840f" class="outline-2">
+<h2 id="orgdbd840f">Translating between ANTLR and our internal representation</h2>
+<div class="outline-text-2" id="text-orgdbd840f">
+<p>
+Now that we have our own internal representation for our boolean expressions,
+we need to implement a translator that rewrites terms in the <a href="https://www.antlr.org/">ANTLR</a>
+representation into our internal representation.  Fortunately, this is quite
+straightforward using the generated visitors from <a href="https://www.antlr.org/">ANTLR</a>.
+</p>
+
+<p>
+Let's create a new class called <code>BoolExprInstantiator</code>; it extends the generated
+base visitor, and it returns <code>BoolExpr</code>'s.  The names of methods available within
+the <code>ctx</code> parameter are derived from the grammar and the type of the token.  If
+in doubt, refer to the inner classes of the generated parser object.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold;">package</span> dev.fmsea.<span style="font-weight: bold; text-decoration: underline;">aljabr</span>;
+
+<span style="font-weight: bold;">public</span> <span style="font-weight: bold;">class</span> <span style="font-weight: bold; text-decoration: underline;">BoolExprInstantiator</span> <span style="font-weight: bold;">extends</span> <span style="font-weight: bold; text-decoration: underline;">BoolExprBaseVisitor</span>&lt;<span style="font-weight: bold; text-decoration: underline;">BoolExpr</span>&gt; {
+
+    <span style="font-weight: bold; text-decoration: underline;">@Override</span>
+    <span style="font-weight: bold;">public</span> <span style="font-weight: bold; text-decoration: underline;">BoolExpr</span> <span style="font-weight: bold;">visitBoolTerm</span>(<span style="font-weight: bold; text-decoration: underline;">BoolExprParser</span>.<span style="font-weight: bold; text-decoration: underline;">BoolTermContext</span> <span style="font-weight: bold; font-style: italic;">ctx</span>) {
+        <span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">term</span> = ctx.getText();
+        <span style="font-weight: bold;">if</span> (term.equals(<span style="font-style: italic;">"#f"</span>)) {
+            <span style="font-weight: bold;">return</span> BoolExpr.newFalse();
+        } <span style="font-weight: bold;">else</span> <span style="font-weight: bold;">if</span> (term.equals(<span style="font-style: italic;">"#t"</span>)) {
+            <span style="font-weight: bold;">return</span> BoolExpr.newTrue();
+        } <span style="font-weight: bold;">else</span> {
+            <span style="font-weight: bold;">throw</span> <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">IllegalArgumentException</span>(<span style="font-style: italic;">"Invalid value for boolean terms: "</span> + term);
+        }
+    }
+
+    <span style="font-weight: bold; text-decoration: underline;">@Override</span>
+    <span style="font-weight: bold;">public</span> <span style="font-weight: bold; text-decoration: underline;">BoolExpr</span> <span style="font-weight: bold;">visitNegation</span>(<span style="font-weight: bold; text-decoration: underline;">BoolExprParser</span>.<span style="font-weight: bold; text-decoration: underline;">NegationContext</span> <span style="font-weight: bold; font-style: italic;">ctx</span>) {
+        <span style="font-weight: bold; text-decoration: underline;">BoolExpr</span> <span style="font-weight: bold; font-style: italic;">inner</span> = visit(ctx.bexpr());
+        <span style="font-weight: bold;">return</span> BoolExpr.newNegation(inner);
+    }
+
+    <span style="font-weight: bold; text-decoration: underline;">@Override</span>
+    <span style="font-weight: bold;">public</span> <span style="font-weight: bold; text-decoration: underline;">BoolExpr</span> <span style="font-weight: bold;">visitAndExpr</span>(<span style="font-weight: bold; text-decoration: underline;">BoolExprParser</span>.<span style="font-weight: bold; text-decoration: underline;">AndExprContext</span> <span style="font-weight: bold; font-style: italic;">ctx</span>) {
+        <span style="font-weight: bold; text-decoration: underline;">BoolExpr</span> <span style="font-weight: bold; font-style: italic;">left</span> = visit(ctx.bexpr(0));
+        <span style="font-weight: bold; text-decoration: underline;">BoolExpr</span> <span style="font-weight: bold; font-style: italic;">right</span> = visit(ctx.bexpr(1));
+        <span style="font-weight: bold;">return</span> BoolExpr.newAnd(left, right);
+    }
+
+    <span style="font-weight: bold; text-decoration: underline;">@Override</span>
+    <span style="font-weight: bold;">public</span> <span style="font-weight: bold; text-decoration: underline;">BoolExpr</span> <span style="font-weight: bold;">visitOrExpr</span>(<span style="font-weight: bold; text-decoration: underline;">BoolExprParser</span>.<span style="font-weight: bold; text-decoration: underline;">OrExprContext</span> <span style="font-weight: bold; font-style: italic;">ctx</span>) {
+        <span style="font-weight: bold; text-decoration: underline;">BoolExpr</span> <span style="font-weight: bold; font-style: italic;">left</span> = visit(ctx.bexpr(0));
+        <span style="font-weight: bold; text-decoration: underline;">BoolExpr</span> <span style="font-weight: bold; font-style: italic;">right</span> = visit(ctx.bexpr(1));
+        <span style="font-weight: bold;">return</span> BoolExpr.newOr(left, right);
+    }
+}
+</pre>
+</div>
+
+<p>
+Finally, we need to layer up the machinery for translating some "stringy" input
+through the layers of <a href="https://www.antlr.org/">ANTLR</a>, and into our representation of the expression
+language.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold;">package</span> dev.fmsea.<span style="font-weight: bold; text-decoration: underline;">aljabr</span>;
+
+<span style="font-weight: bold;">import</span> <span style="font-weight: bold; text-decoration: underline;">org</span>.<span style="font-weight: bold; text-decoration: underline;">antlr</span>.<span style="font-weight: bold; text-decoration: underline;">v4</span>.<span style="font-weight: bold; text-decoration: underline;">runtime</span>.<span style="font-weight: bold; text-decoration: underline;">CharStream</span>;
+<span style="font-weight: bold;">import</span> <span style="font-weight: bold; text-decoration: underline;">org</span>.<span style="font-weight: bold; text-decoration: underline;">antlr</span>.<span style="font-weight: bold; text-decoration: underline;">v4</span>.<span style="font-weight: bold; text-decoration: underline;">runtime</span>.<span style="font-weight: bold; text-decoration: underline;">CharStreams</span>;
+<span style="font-weight: bold;">import</span> <span style="font-weight: bold; text-decoration: underline;">org</span>.<span style="font-weight: bold; text-decoration: underline;">antlr</span>.<span style="font-weight: bold; text-decoration: underline;">v4</span>.<span style="font-weight: bold; text-decoration: underline;">runtime</span>.<span style="font-weight: bold; text-decoration: underline;">CommonTokenStream</span>;
+<span style="font-weight: bold;">import</span> <span style="font-weight: bold; text-decoration: underline;">org</span>.<span style="font-weight: bold; text-decoration: underline;">antlr</span>.<span style="font-weight: bold; text-decoration: underline;">v4</span>.<span style="font-weight: bold; text-decoration: underline;">runtime</span>.<span style="font-weight: bold; text-decoration: underline;">tree</span>.<span style="font-weight: bold; text-decoration: underline;">ParseTree</span>;
+
+<span style="font-weight: bold;">public</span> <span style="font-weight: bold;">class</span> <span style="font-weight: bold; text-decoration: underline;">BoolExprReader</span> {
+    <span style="font-weight: bold;">public</span> <span style="font-weight: bold;">static</span> <span style="font-weight: bold; text-decoration: underline;">BoolExpr</span> <span style="font-weight: bold;">parse</span>(<span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">expression</span>) {
+        <span style="font-weight: bold; text-decoration: underline;">CharStream</span> <span style="font-weight: bold; font-style: italic;">input</span> = CharStreams.fromString(expression);
+        <span style="font-weight: bold; text-decoration: underline;">BoolExprLexer</span> <span style="font-weight: bold; font-style: italic;">lexer</span> = <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">BoolExprLexer</span>(input);
+        <span style="font-weight: bold; text-decoration: underline;">CommonTokenStream</span> <span style="font-weight: bold; font-style: italic;">tokens</span> = <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">CommonTokenStream</span>(lexer);
+        <span style="font-weight: bold; text-decoration: underline;">BoolExprParser</span> <span style="font-weight: bold; font-style: italic;">parser</span> = <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">BoolExprParser</span>(tokens);
+        <span style="font-weight: bold; text-decoration: underline;">ParseTree</span> <span style="font-weight: bold; font-style: italic;">tree</span> = parser.bexpr();
+        <span style="font-weight: bold; text-decoration: underline;">BoolExprInstantiator</span> <span style="font-weight: bold; font-style: italic;">instantiator</span> = <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">BoolExprInstantiator</span>();
+        <span style="font-weight: bold;">return</span> instantiator.visit(tree);
+    }
+}
+</pre>
+</div>
+
+<p>
+This code is a rather straightforward but not particularly robust.  The code
+steps through the different layers of <a href="https://www.antlr.org/">ANTLR</a> to consume a string: breaks the
+string down into characters, runs the characters through a lexer, and then the
+tokens through a parser, ultimately transforming the expression into a parse
+tree.  Once we have the parse tree, we run it through our instantiator to
+translate it into our representation.
+</p>
+
+<p>
+This code assumes all expressions parse without exception; likely a bold
+assumption given this is an interpreter accepting user input.  Furthermore,
+this code assumes all expressions are rooted in the <code>bexpr</code> production rules of
+the grammar.  If any extensions are added and a new "root" is established, this
+code necessarily must change.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgfe15612" class="outline-2">
+<h2 id="orgfe15612">Testing the parsing machinery</h2>
+<div class="outline-text-2" id="text-orgfe15612">
+<p>
+Now that we have the reader and instantiator classes, we should be able to put
+together some tests to verify that our expression language can indeed parse.
+</p>
+
+<p>
+We shall add some parameterized tests that implicitly use the <code>StringReprVisitor</code>
+to check that the parsed string is equal to the input expression.  Create the
+following file in the <code>test</code> directory, specifically,
+<code>src/test/java/dev/fmsea/aljabr/BoolExprReaderTest.java</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold;">package</span> dev.fmsea.<span style="font-weight: bold; text-decoration: underline;">aljabr</span>;
+
+<span style="font-weight: bold;">import</span> <span style="font-weight: bold;">static</span> <span style="font-weight: bold; text-decoration: underline;">org</span>.<span style="font-weight: bold; text-decoration: underline;">junit</span>.<span style="font-weight: bold; text-decoration: underline;">jupiter</span>.<span style="font-weight: bold; text-decoration: underline;">api</span>.Assertions.<span style="font-weight: bold; text-decoration: underline;">assertEquals</span>;
+
+<span style="font-weight: bold;">import</span> <span style="font-weight: bold; text-decoration: underline;">java</span>.<span style="font-weight: bold; text-decoration: underline;">util</span>.<span style="font-weight: bold; text-decoration: underline;">stream</span>.<span style="font-weight: bold; text-decoration: underline;">Stream</span>;
+
+<span style="font-weight: bold;">import</span> <span style="font-weight: bold; text-decoration: underline;">org</span>.<span style="font-weight: bold; text-decoration: underline;">junit</span>.<span style="font-weight: bold; text-decoration: underline;">jupiter</span>.<span style="font-weight: bold; text-decoration: underline;">params</span>.<span style="font-weight: bold; text-decoration: underline;">ParameterizedTest</span>;
+<span style="font-weight: bold;">import</span> <span style="font-weight: bold; text-decoration: underline;">org</span>.<span style="font-weight: bold; text-decoration: underline;">junit</span>.<span style="font-weight: bold; text-decoration: underline;">jupiter</span>.<span style="font-weight: bold; text-decoration: underline;">params</span>.<span style="font-weight: bold; text-decoration: underline;">provider</span>.<span style="font-weight: bold; text-decoration: underline;">Arguments</span>;
+<span style="font-weight: bold;">import</span> <span style="font-weight: bold; text-decoration: underline;">org</span>.<span style="font-weight: bold; text-decoration: underline;">junit</span>.<span style="font-weight: bold; text-decoration: underline;">jupiter</span>.<span style="font-weight: bold; text-decoration: underline;">params</span>.<span style="font-weight: bold; text-decoration: underline;">provider</span>.<span style="font-weight: bold; text-decoration: underline;">MethodSource</span>;
+
+<span style="font-weight: bold;">public</span> <span style="font-weight: bold;">class</span> <span style="font-weight: bold; text-decoration: underline;">BoolExprReaderTest</span> {
+
+    <span style="font-weight: bold; text-decoration: underline;">@ParameterizedTest</span>
+    <span style="font-weight: bold; text-decoration: underline;">@MethodSource</span>(<span style="font-style: italic;">"boolexprs"</span>)
+    <span style="font-weight: bold; text-decoration: underline;">void</span> <span style="font-weight: bold;">testParse</span>(<span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">expression</span>) {
+        assertEquals(expression, BoolExprReader.parse(expression).toString());
+    }
+
+    <span style="font-weight: bold;">private</span> <span style="font-weight: bold;">static</span> <span style="font-weight: bold; text-decoration: underline;">Stream</span>&lt;? <span style="font-weight: bold;">extends</span> <span style="font-weight: bold; text-decoration: underline;">Arguments</span>&gt; <span style="font-weight: bold;">boolexprs</span>() {
+        <span style="font-weight: bold;">return</span> Stream.of(
+            <span style="font-style: italic;">"#f"</span>,
+            <span style="font-style: italic;">"#t"</span>,
+            <span style="font-style: italic;">"not #f"</span>,
+            <span style="font-style: italic;">"not #t"</span>,
+            <span style="font-style: italic;">"#t or #f"</span>,
+            <span style="font-style: italic;">"#f or #t"</span>,
+            <span style="font-style: italic;">"not #f and #t"</span>,
+            <span style="font-style: italic;">"#t or not #f"</span>,
+            <span style="font-style: italic;">"not #t or not #t"</span>
+        ).map(s -&gt; Arguments.of(s));
+    }
+}
+</pre>
+</div>
+
+<p>
+Assuming everything is correct to this point, everything should work with 10
+passing tests (the 10th is the generated test from generating the project with
+<a href="https://maven.apache.org/">Maven</a>).
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd825f06" class="outline-2">
+<h2 id="orgd825f06">Creating the REPL</h2>
+<div class="outline-text-2" id="text-orgd825f06">
+<p>
+For the penultimate step in our interpreter, we need to create the
+Read-Eval-Print-Loop or REPL.  Afterwards, we modify the generated <code>App</code> class to
+run the new <code>REPL</code> object.
+</p>
+
+<p>
+First, create the new REPL class.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold;">package</span> dev.fmsea.<span style="font-weight: bold; text-decoration: underline;">aljabr</span>;
+
+<span style="font-weight: bold;">import</span> <span style="font-weight: bold; text-decoration: underline;">java</span>.<span style="font-weight: bold; text-decoration: underline;">util</span>.<span style="font-weight: bold; text-decoration: underline;">Scanner</span>;
+
+<span style="font-weight: bold;">public</span> <span style="font-weight: bold;">class</span> <span style="font-weight: bold; text-decoration: underline;">REPL</span> <span style="font-weight: bold;">implements</span> <span style="font-weight: bold; text-decoration: underline;">Runnable</span> {
+
+    <span style="font-weight: bold;">public</span> <span style="font-weight: bold; text-decoration: underline;">void</span> <span style="font-weight: bold;">run</span>() {
+        <span style="font-weight: bold;">try</span> (<span style="font-weight: bold; text-decoration: underline;">Scanner</span> <span style="font-weight: bold; font-style: italic;">scan</span> = <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Scanner</span>(System.in)) {
+            <span style="font-weight: bold;">while</span> (<span style="font-weight: bold; text-decoration: underline;">true</span>) {
+                System.out.print(<span style="font-style: italic;">"&gt; "</span>);
+                <span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">expression</span> = scan.nextLine();
+                <span style="font-weight: bold; text-decoration: underline;">BoolExpr</span> <span style="font-weight: bold; font-style: italic;">expr</span> = BoolExprReader.parse(expression);
+                System.out.println(expr.toString());
+            }
+        }
+    }
+}
+</pre>
+</div>
+
+<p>
+We shall return to this code after we implement our boolean expression reducer.
+</p>
+
+<p>
+Finally, modify the <code>App</code> class to spin up this class.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold;">package</span> dev.fmsea.<span style="font-weight: bold; text-decoration: underline;">aljabr</span>;
+
+<span style="font-weight: bold;">public</span> <span style="font-weight: bold;">class</span> <span style="font-weight: bold; text-decoration: underline;">App</span> {
+    <span style="font-weight: bold;">public</span> <span style="font-weight: bold;">static</span> <span style="font-weight: bold; text-decoration: underline;">void</span> <span style="font-weight: bold;">main</span>(<span style="font-weight: bold; text-decoration: underline;">String</span>[] <span style="font-weight: bold; font-style: italic;">args</span>) {
+        <span style="font-weight: bold; text-decoration: underline;">REPL</span> <span style="font-weight: bold; font-style: italic;">repl</span> = <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">REPL</span>();
+
+        repl.run();
+    }
+}
+</pre>
+</div>
+
+<p>
+You can run the interpreter at this stage.  However, it only echos back the
+input expressions.  Unless the expression fails to parse, then it explodes.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org87d6b47" class="outline-2">
+<h2 id="org87d6b47">Implementing our boolean reducer</h2>
+<div class="outline-text-2" id="text-org87d6b47">
+<p>
+For the final part of our interpreter, we need to develop a process for
+reducing the given expressions down to a single truth value.  Following a
+similar model to our <code>StringReprVisitor</code>, we implement this as another visitor.
+Therefore, you may wish to start by copying the <code>StringReprVisitor</code> and implement
+"reductions" for each of the different kinds of expressions.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold;">package</span> dev.fmsea.aljabr.<span style="font-weight: bold; text-decoration: underline;">visitors</span>;
+
+<span style="font-weight: bold;">import</span> <span style="font-weight: bold; text-decoration: underline;">dev</span>.<span style="font-weight: bold; text-decoration: underline;">fmsea</span>.<span style="font-weight: bold; text-decoration: underline;">aljabr</span>.<span style="font-weight: bold; text-decoration: underline;">AndExpr</span>;
+<span style="font-weight: bold;">import</span> <span style="font-weight: bold; text-decoration: underline;">dev</span>.<span style="font-weight: bold; text-decoration: underline;">fmsea</span>.<span style="font-weight: bold; text-decoration: underline;">aljabr</span>.<span style="font-weight: bold; text-decoration: underline;">BoolExpr</span>;
+<span style="font-weight: bold;">import</span> <span style="font-weight: bold; text-decoration: underline;">dev</span>.<span style="font-weight: bold; text-decoration: underline;">fmsea</span>.<span style="font-weight: bold; text-decoration: underline;">aljabr</span>.<span style="font-weight: bold; text-decoration: underline;">BoolTerm</span>;
+<span style="font-weight: bold;">import</span> <span style="font-weight: bold; text-decoration: underline;">dev</span>.<span style="font-weight: bold; text-decoration: underline;">fmsea</span>.<span style="font-weight: bold; text-decoration: underline;">aljabr</span>.<span style="font-weight: bold; text-decoration: underline;">FalseValue</span>;
+<span style="font-weight: bold;">import</span> <span style="font-weight: bold; text-decoration: underline;">dev</span>.<span style="font-weight: bold; text-decoration: underline;">fmsea</span>.<span style="font-weight: bold; text-decoration: underline;">aljabr</span>.<span style="font-weight: bold; text-decoration: underline;">NegationExpr</span>;
+<span style="font-weight: bold;">import</span> <span style="font-weight: bold; text-decoration: underline;">dev</span>.<span style="font-weight: bold; text-decoration: underline;">fmsea</span>.<span style="font-weight: bold; text-decoration: underline;">aljabr</span>.<span style="font-weight: bold; text-decoration: underline;">OrExpr</span>;
+<span style="font-weight: bold;">import</span> <span style="font-weight: bold; text-decoration: underline;">dev</span>.<span style="font-weight: bold; text-decoration: underline;">fmsea</span>.<span style="font-weight: bold; text-decoration: underline;">aljabr</span>.<span style="font-weight: bold; text-decoration: underline;">TrueValue</span>;
+
+<span style="font-weight: bold;">public</span> <span style="font-weight: bold;">class</span> <span style="font-weight: bold; text-decoration: underline;">BoolReducer</span> <span style="font-weight: bold;">implements</span> <span style="font-weight: bold; text-decoration: underline;">BoolExpr</span>.<span style="font-weight: bold; text-decoration: underline;">Visitor</span>&lt;<span style="font-weight: bold; text-decoration: underline;">BoolTerm</span>&gt; {
+
+    <span style="font-weight: bold;">public</span> <span style="font-weight: bold; text-decoration: underline;">BoolTerm</span> <span style="font-weight: bold;">visitTrue</span>(<span style="font-weight: bold; text-decoration: underline;">TrueValue</span> <span style="font-weight: bold; font-style: italic;">trueValue</span>) {
+        <span style="font-weight: bold;">return</span> trueValue;
+    }
+
+    <span style="font-weight: bold;">public</span> <span style="font-weight: bold; text-decoration: underline;">BoolTerm</span> <span style="font-weight: bold;">visitFalse</span>(<span style="font-weight: bold; text-decoration: underline;">FalseValue</span> <span style="font-weight: bold; font-style: italic;">falseValue</span>) {
+        <span style="font-weight: bold;">return</span> falseValue;
+    }
+
+    <span style="font-weight: bold;">public</span> <span style="font-weight: bold; text-decoration: underline;">BoolTerm</span> <span style="font-weight: bold;">visitNegation</span>(<span style="font-weight: bold; text-decoration: underline;">NegationExpr</span> <span style="font-weight: bold; font-style: italic;">negation</span>) {
+        <span style="font-weight: bold; text-decoration: underline;">BoolTerm</span> <span style="font-weight: bold; font-style: italic;">inner</span> = negation.inner.accept(<span style="font-weight: bold;">this</span>);
+        <span style="font-weight: bold;">return</span> inner.value ? BoolExpr.newFalse() : BoolExpr.newTrue();
+    }
+
+    <span style="font-weight: bold;">public</span> <span style="font-weight: bold; text-decoration: underline;">BoolTerm</span> <span style="font-weight: bold;">visitAnd</span>(<span style="font-weight: bold; text-decoration: underline;">AndExpr</span> <span style="font-weight: bold; font-style: italic;">and</span>) {
+        <span style="font-weight: bold; text-decoration: underline;">BoolTerm</span> <span style="font-weight: bold; font-style: italic;">left</span> = and.left.accept(<span style="font-weight: bold;">this</span>);
+        <span style="font-weight: bold; text-decoration: underline;">BoolTerm</span> <span style="font-weight: bold; font-style: italic;">right</span> = and.right.accept(<span style="font-weight: bold;">this</span>);
+        <span style="font-weight: bold;">if</span> (left.value &amp;&amp; right.value) {
+            <span style="font-weight: bold;">return</span> BoolExpr.newTrue();
+        } <span style="font-weight: bold;">else</span> {
+            <span style="font-weight: bold;">return</span> BoolExpr.newFalse();
+        }
+    }
+
+    <span style="font-weight: bold;">public</span> <span style="font-weight: bold; text-decoration: underline;">BoolTerm</span> <span style="font-weight: bold;">visitOr</span>(<span style="font-weight: bold; text-decoration: underline;">OrExpr</span> <span style="font-weight: bold; font-style: italic;">or</span>) {
+        <span style="font-weight: bold; text-decoration: underline;">BoolTerm</span> <span style="font-weight: bold; font-style: italic;">left</span> = or.left.accept(<span style="font-weight: bold;">this</span>);
+        <span style="font-weight: bold; text-decoration: underline;">BoolTerm</span> <span style="font-weight: bold; font-style: italic;">right</span> = or.right.accept(<span style="font-weight: bold;">this</span>);
+        <span style="font-weight: bold;">if</span> (left.value || right.value) {
+            <span style="font-weight: bold;">return</span> BoolExpr.newTrue();
+        } <span style="font-weight: bold;">else</span> {
+            <span style="font-weight: bold;">return</span> BoolExpr.newFalse();
+        }
+    }
+}
+</pre>
+</div>
+
+<p>
+While we could push some of the operations back into our model, this
+representation is fine for now.  Next, we should add some tests to ensure that
+the reducer works as expected and has the appropriate operator precedence.
+</p>
+
+<p>
+To make things a little easier, add the following method to the <code>BoolExpr</code>
+abstract class:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold;">public</span> <span style="font-weight: bold; text-decoration: underline;">BoolExpr</span> <span style="font-weight: bold;">reduce</span>() {
+    <span style="font-weight: bold;">return</span> <span style="font-weight: bold;">this</span>.accept(<span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">BoolReducer</span>());
+}
+</pre>
+</div>
+
+<p>
+Next, create the following test class
+<code>src/test/java/dev/fmsea/aljabr/visitors/BoolReductionrTest.java</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold;">package</span> dev.fmsea.aljabr.<span style="font-weight: bold; text-decoration: underline;">visitors</span>;
+
+<span style="font-weight: bold;">import</span> <span style="font-weight: bold;">static</span> <span style="font-weight: bold; text-decoration: underline;">org</span>.<span style="font-weight: bold; text-decoration: underline;">junit</span>.<span style="font-weight: bold; text-decoration: underline;">jupiter</span>.<span style="font-weight: bold; text-decoration: underline;">api</span>.Assertions.<span style="font-weight: bold; text-decoration: underline;">assertEquals</span>;
+
+<span style="font-weight: bold;">import</span> <span style="font-weight: bold; text-decoration: underline;">java</span>.<span style="font-weight: bold; text-decoration: underline;">util</span>.<span style="font-weight: bold; text-decoration: underline;">stream</span>.<span style="font-weight: bold; text-decoration: underline;">Stream</span>;
+
+<span style="font-weight: bold;">import</span> <span style="font-weight: bold; text-decoration: underline;">org</span>.<span style="font-weight: bold; text-decoration: underline;">junit</span>.<span style="font-weight: bold; text-decoration: underline;">jupiter</span>.<span style="font-weight: bold; text-decoration: underline;">params</span>.<span style="font-weight: bold; text-decoration: underline;">ParameterizedTest</span>;
+<span style="font-weight: bold;">import</span> <span style="font-weight: bold; text-decoration: underline;">org</span>.<span style="font-weight: bold; text-decoration: underline;">junit</span>.<span style="font-weight: bold; text-decoration: underline;">jupiter</span>.<span style="font-weight: bold; text-decoration: underline;">params</span>.<span style="font-weight: bold; text-decoration: underline;">provider</span>.<span style="font-weight: bold; text-decoration: underline;">Arguments</span>;
+<span style="font-weight: bold;">import</span> <span style="font-weight: bold; text-decoration: underline;">org</span>.<span style="font-weight: bold; text-decoration: underline;">junit</span>.<span style="font-weight: bold; text-decoration: underline;">jupiter</span>.<span style="font-weight: bold; text-decoration: underline;">params</span>.<span style="font-weight: bold; text-decoration: underline;">provider</span>.<span style="font-weight: bold; text-decoration: underline;">MethodSource</span>;
+
+<span style="font-weight: bold;">import</span> <span style="font-weight: bold; text-decoration: underline;">dev</span>.<span style="font-weight: bold; text-decoration: underline;">fmsea</span>.<span style="font-weight: bold; text-decoration: underline;">aljabr</span>.<span style="font-weight: bold; text-decoration: underline;">BoolExprReader</span>;
+
+<span style="font-weight: bold;">public</span> <span style="font-weight: bold;">class</span> <span style="font-weight: bold; text-decoration: underline;">BoolReductionTest</span> {
+
+    <span style="font-weight: bold; text-decoration: underline;">@ParameterizedTest</span>
+    <span style="font-weight: bold; text-decoration: underline;">@MethodSource</span>(<span style="font-style: italic;">"boolexprs"</span>)
+    <span style="font-weight: bold; text-decoration: underline;">void</span> <span style="font-weight: bold;">testParse</span>(<span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">expected</span>, <span style="font-weight: bold; text-decoration: underline;">String</span> <span style="font-weight: bold; font-style: italic;">expression</span>) {
+        assertEquals(expected,
+            BoolExprReader.parse(expression).reduce().toString());
+    }
+
+    <span style="font-weight: bold;">private</span> <span style="font-weight: bold;">static</span> <span style="font-weight: bold; text-decoration: underline;">Stream</span>&lt;? <span style="font-weight: bold;">extends</span> <span style="font-weight: bold; text-decoration: underline;">Arguments</span>&gt; <span style="font-weight: bold;">boolexprs</span>() {
+        <span style="font-weight: bold;">return</span> Stream.of(
+            Arguments.of(<span style="font-style: italic;">"#f"</span>, <span style="font-style: italic;">"#f"</span>),
+            Arguments.of(<span style="font-style: italic;">"#t"</span>, <span style="font-style: italic;">"#t"</span>),
+            Arguments.of(<span style="font-style: italic;">"#t"</span>, <span style="font-style: italic;">"not #f"</span>),
+            Arguments.of(<span style="font-style: italic;">"#f"</span>, <span style="font-style: italic;">"not #t"</span>),
+            Arguments.of(<span style="font-style: italic;">"#t"</span>, <span style="font-style: italic;">"#t or #f"</span>),
+            Arguments.of(<span style="font-style: italic;">"#t"</span>, <span style="font-style: italic;">"#f or #t"</span>),
+            Arguments.of(<span style="font-style: italic;">"#t"</span>, <span style="font-style: italic;">"not #f and #t"</span>),
+            Arguments.of(<span style="font-style: italic;">"#t"</span>, <span style="font-style: italic;">"#t or not #f"</span>),
+            Arguments.of(<span style="font-style: italic;">"#f"</span>, <span style="font-style: italic;">"not #t or not #t"</span>),
+            Arguments.of(<span style="font-style: italic;">"#t"</span>, <span style="font-style: italic;">"#t or not #f and #t or #f"</span>)
+        );
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7b091a1" class="outline-2">
+<h2 id="org7b091a1">Modify the REPL to use the new reducer</h2>
+<div class="outline-text-2" id="text-org7b091a1">
+<p>
+As a final step to put the interpreter together, modify the <code>REPL</code> to use the
+new <code>reduce()</code> method.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="font-weight: bold; text-decoration: underline;">BoolExpr</span> <span style="font-weight: bold; font-style: italic;">expr</span> = BoolExprReader.parse(expression).reduce();
+</pre>
+</div>
+
+<p>
+Now, the interpreter reduces the input expressions down to a single boolean
+value.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd6d9242" class="outline-2">
+<h2 id="orgd6d9242">Future work and extensions</h2>
+<div class="outline-text-2" id="text-orgd6d9242">
+<p>
+While this interpreter does not represent a complete or even an ideal
+implementation of an interpreter, I hope it serves as a reasonable example of
+the overall approach.  Specifically, it demonstrates how to use <a href="https://maven.apache.org/">Maven</a> and <a href="https://www.antlr.org/">ANTLR</a>
+together.  Moreover, it demonstrates the <a href="https://refactoring.guru/design-patterns/visitor">Visitor Pattern</a> and how we can use
+this pattern to easily rewrite expressons from one representation to another,
+and modify expressions within a representation.  Certainly, it shows, with a
+small amount of code, we can have a fairly extensible and workable solution for
+interpreting over a small bespoke language.
+</p>
+
+<p>
+There exist plenty of opportunities to improve this interpreter.  Clearly, this
+post does not focus on error handling or interpreter ergonomics.  Moreover,
+this interpreter does not implement short-circuit evaluation over connectives.
+It fully evaluates both sides then decides the final value.  However, certain
+expressions like <code>#t or #f</code> and <code>#f and #t</code> do not need to be fully evaluated to
+determine their truth value.  As a simple extension, try modifying or extending
+the reducer to include short-circuit evaluation.  Moreover, another extension
+can be the addition of variable bindings of variable expressions.  Introducing
+function evaluation and inference rules extends this idea further.  With each
+of these additions, a nice final exercise would be to implement the concept
+reflexivity checker between two expressions.  For example, having this, we
+could show the equivalence between two expressions such as <code>P ⊃ Q</code> and <code>!P ∨ Q</code>.
+</p>
+</div>
+</div>
+</div>
+<footer id="" class="status">
+<footer>
+  <p>&copy; 2014-2025 Kenny Ballou.
+    <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Some rights
+      reserved.</a></p>
+  <p>Powered by <a href="https://gnu.org">GNU/Linux</a></p>
+</footer>
+</footer>
+</body>
+</html>
