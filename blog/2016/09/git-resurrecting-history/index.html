@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2025-04-28 Mon 17:56 -->
+<!-- 2025-05-21 Wed 16:42 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Git Resurrecting History</title>
@@ -307,11 +307,11 @@
 </ul>
 </li>
 <li><a href="#summary">Summary</a></li>
-<li><a href="#orgb2cbf7f">References</a></li>
+<li><a href="#org48df431">References</a></li>
 </ul>
 </div>
 </div>
-<div class="PREVIEW" id="orge9647f8">
+<div class="PREVIEW" id="org8b16ada">
 <p>
 We all make mistakes.  They are inevitable.  We must accept that we make them
 and move on.  But making mistakes in Git seems to be overly complex to resolve
@@ -353,7 +353,7 @@ For example, here is the first 24 lines of the reflog for this blog's
 repository:
 </p>
 
-<pre class="example" id="org53c4f02">
+<pre class="example" id="org05d2e45">
 a1bbd00 HEAD@{0}: checkout: moving from master to git_resurrection
 a1bbd00 HEAD@{1}: commit: Update paths of SSL certificate and key
 d7fd8f8 HEAD@{2}: commit: Add all targets to phony
@@ -424,7 +424,7 @@ store itself.
 For example, running <code>git fsck</code> on this repository yields the following output:
 </p>
 
-<pre class="example" id="orge584e73">
+<pre class="example" id="org97b41c4">
 ± git fsck
 Checking object directories: 100% (256/256), done.
 Checking objects: 100% (150/150), done.
@@ -435,7 +435,7 @@ dangling commit 16f6063abde9dcd8279fb2a7ddd4998aaf44acc7
 Now, if we add another option, namely, <code>--unreachable</code>, we get the following:
 </p>
 
-<pre class="example" id="orgcd4a85e">
+<pre class="example" id="org57cb54f">
 ± git fsck --unreachable
 unreachable blob 20c1e21948ab5d9553c11fa8a7230d73055c207e
 unreachable commit 16f6063abde9dcd8279fb2a7ddd4998aaf44acc7
@@ -449,7 +449,7 @@ be still eluding our search.  Adding <code>--no-reflogs</code> to
 <a href="https://www.kernel.org/pub/software/scm/git/docs/git-fsck.html"><code>git-fsck(1)</code></a> can help make these objects more visible:
 </p>
 
-<pre class="example" id="org2bae4ec">
+<pre class="example" id="org0281ac0">
 ± git fsck --unreachable --no-reflogs
 unreachable commit 00fc0164a78fe6b46e56781d434fdbb893f11534
 unreachable blob 18a484273f75e4a3dcac75cb5229a614f6090be0
@@ -532,7 +532,7 @@ don't remember the commit hash of that branch.
 For concreteness, let's create a repository that will demonstrate this problem:
 </p>
 
-<pre class="example" id="org887336f">
+<pre class="example" id="orgefe9bf6">
 $ cd $(mktemp -d)
 $ git init foobar
 $ cd foobar
@@ -559,7 +559,7 @@ create the repository wherever you please, provided you are following along.
 From here, we may decide to branch and start working on our epic topic branch:
 </p>
 
-<pre class="example" id="orgb347900">
+<pre class="example" id="org5ee9a2d">
 ± git checkout -b topic/epic_feature
 ± echo 1 &gt;&gt; foo
 ± git commit -am 'update foo: add 1'
@@ -581,7 +581,7 @@ From here, we decide that the <code>topic/epic_feature</code> branch is going an
 the <code>master</code> branch.  Therefore, we, swiftly, dump it into the ether:
 </p>
 
-<pre class="example" id="org88edc13">
+<pre class="example" id="org44b20a3">
 ± git checkout master
 Switch to branch 'master'
 ± git branch -D topic/epic_foobar
@@ -605,7 +605,7 @@ If we take a quick look at our <code>git-fsck</code> output, we might see someth
 may lead us to our commit hash:
 </p>
 
-<pre class="example" id="org0c440ef">
+<pre class="example" id="org87d912a">
 ± git fsck
 Checking object directories: 100% (256/256), done.
 </pre>
@@ -616,7 +616,7 @@ above, <code>git-fsck</code> considers objects "reachable" if they are pointed t
 reference <i>or</i> are in the reflog.  Let's add the <code>--no-reflogs</code> flag:
 </p>
 
-<pre class="example" id="org3c288e4">
+<pre class="example" id="orgcfc0f0a">
 ± git fsck --no-reflogs
 Checking object directories: 100% (256/256), done.
 dangling commit 2e0bcc62122f2d7bf895958ac8fed1ec05d4d904
@@ -626,7 +626,7 @@ dangling commit 2e0bcc62122f2d7bf895958ac8fed1ec05d4d904
 This looks more promising! Let's checkout this hash and inspect it:
 </p>
 
-<pre class="example" id="org52f386d">
+<pre class="example" id="orgeb7a390">
 ± git checkout 2e0bcc62122f2d7bf895958ac8fed1ec05d4d904
 
 Note: checking out '2e0bcc62122f2d7bf895958ac8fed1ec05d4d904'.
@@ -672,7 +672,7 @@ We will start with some commands that create and initialize the repository into
 an initial state, that is, before any mistakes are made:
 </p>
 
-<pre class="example" id="org413d725">
+<pre class="example" id="orgbde3e66">
 $ cd $(mktemp -d)
 $ git init foobar
 $ cd foobar
@@ -702,7 +702,7 @@ example and the previous example <i>will</i> be different.
 From here, our one line log should look similar to the following:
 </p>
 
-<pre class="example" id="orgb6a94cd">
+<pre class="example" id="org38e884b">
 ± git log --oneline
 3de2659 update bar: add 1
 5e6dd5f update foo: add 1
@@ -716,7 +716,7 @@ Furthermore, here is an image that describes the state of the repository.
 
 <figure>
 
-<div id="orgebba9ae" class="figure">
+<div id="org22805e3" class="figure">
 <p><img src="file:///media/git-repo-state-1.svg" alt="git-repo-state-1.svg" class="org-svg" />
 </p>
 </div>
@@ -734,7 +734,7 @@ create some new commits, but then we will squash the <i>two previous</i> commits
 Let's begin issuing commands against our repository:
 </p>
 
-<pre class="example" id="org411b60c">
+<pre class="example" id="org2af367d">
 ± git checkout master
 ± git merge --ff-only topic/foobar
 ± touch foobar
@@ -753,7 +753,7 @@ Thusly, our repository should look similar to the following image:
 
 <figure>
 
-<div id="orgb39f778" class="figure">
+<div id="orgdea1a38" class="figure">
 <p><img src="file:///media/git-repo-state-2.svg" alt="git-repo-state-2.svg" class="org-svg" />
 </p>
 </div>
@@ -763,7 +763,7 @@ Thusly, our repository should look similar to the following image:
 Now, for the mistake:
 </p>
 
-<pre class="example" id="orgbc9987e">
+<pre class="example" id="org44a19a2">
 ± git rebase -i HEAD~3
 (squash the previous commits)
 pick 3de26
@@ -777,7 +777,7 @@ This should result in a repository that looks like the following:
 
 <figure>
 
-<div id="orgc1f89e5" class="figure">
+<div id="org0e7f97d" class="figure">
 <p><img src="file:///media/git-repo-state-3.svg" alt="git-repo-state-3.svg" class="org-svg" />
 </p>
 </div>
@@ -787,7 +787,7 @@ This should result in a repository that looks like the following:
 Assuming we didn't recognize the mistake, we might attempt to merge the branch:
 </p>
 
-<pre class="example" id="orga720a15">
+<pre class="example" id="org37163af">
 ± git checkout master
 ± git merge --ff-only topic/bad
 fatal: Not possible to fast-forward, aborting.
@@ -803,7 +803,7 @@ We can see this be viewing the logs when going from <code>master</code> to <code
 then vice-versa:
 </p>
 
-<pre class="example" id="orgf899b57">
+<pre class="example" id="orgc2f6a71">
 ± git log --oneline master..topic/bad
 3b71666 update bar: add 1
 ± git log --oneline topic/bad..master
@@ -853,7 +853,7 @@ before continuing with merging the work done in the branch.
 Let's start with examining the reflog:
 </p>
 
-<pre class="example" id="orgff75bfa">
+<pre class="example" id="orgcf5a44e">
 ± git reflog
 7387d60 HEAD@{0}: checkout: moving from topic/bad to master
 3b71666 HEAD@{1}: rebase -i (finish): returning to refs/heads/topic/bad
@@ -881,7 +881,7 @@ attempted to rebase the three commits.  If we start there, we may be able to
 salvage the history.
 </p>
 
-<pre class="example" id="org347b05d">
+<pre class="example" id="org15d60a0">
 ± git checkout topic/bad
 ± git reset --hard 7647f9c
 ± git log --oneline
@@ -908,7 +908,7 @@ Perfect, we are back to the state of the branch as seen in the following image:
 
 <figure>
 
-<div id="org5d067c9" class="figure">
+<div id="org9668ec2" class="figure">
 <p><img src="file:///media/git-repo-state-2.svg" alt="git-repo-state-2.svg" class="org-svg" />
 </p>
 </div>
@@ -923,7 +923,7 @@ fast-forward or regular old merge commits.
 The first way of merging the two branches may proceed as follows:
 </p>
 
-<pre class="example" id="orgb8cb0c4">
+<pre class="example" id="org4b87813">
 ± git branch
 topic/bad
 ± git rebase master
@@ -946,7 +946,7 @@ Afterwards, our repository will look like the following figure:
 
 <figure>
 
-<div id="orgeca6c74" class="figure">
+<div id="org1a1bd09" class="figure">
 <p><img src="file:///media/git-repo-state-4.svg" alt="git-repo-state-4.svg" class="org-svg" />
 </p>
 </div>
@@ -963,7 +963,7 @@ have easily done so <i>right</i> before switching to the <code>master</code> bra
 Proceeding with a regular merge commit would proceed similar to the following:
 </p>
 
-<pre class="example" id="org3102a40">
+<pre class="example" id="org7c9df62">
 ± git checkout master
 Switched to branch 'master'
 ± git merge --no-ff topic/bad -m 'merge branch "topic/bad"'
@@ -979,7 +979,7 @@ Afterwards, our repository will look like the following figure:
 
 <figure>
 
-<div id="orgbbd8bb0" class="figure">
+<div id="org7164c37" class="figure">
 <p><img src="file:///media/git-repo-state-5.svg" alt="git-repo-state-5.svg" class="org-svg" />
 </p>
 </div>
@@ -1006,9 +1006,9 @@ when our repository eventually melts down.
 </div>
 </div>
 
-<div id="outline-container-orgb2cbf7f" class="outline-2">
-<h2 id="orgb2cbf7f">References</h2>
-<div class="outline-text-2" id="text-orgb2cbf7f">
+<div id="outline-container-org48df431" class="outline-2">
+<h2 id="org48df431">References</h2>
+<div class="outline-text-2" id="text-org48df431">
 <ul class="org-ul">
 <li><a href="https://www.kernel.org/pub/software/scm/git/docs/git-reflog.html"><code>git-reflog(1)</code></a></li>
 

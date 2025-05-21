@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2025-04-28 Mon 17:56 -->
+<!-- 2025-05-21 Wed 16:42 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Portable, Repeatable (, and Reproducible) Notebooks</title>
@@ -293,24 +293,24 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgb66fabc">Background</a>
+<li><a href="#orgcea456d">Background</a>
 <ul>
-<li><a href="#org1a9a531">Notebooks</a></li>
-<li><a href="#org27a7288">Org-Mode (+ Emacs)</a></li>
+<li><a href="#org8585199">Notebooks</a></li>
+<li><a href="#org1fe6f52">Org-Mode (+ Emacs)</a></li>
 </ul>
 </li>
-<li><a href="#org6797c15">Caveats</a></li>
-<li><a href="#orgda588bf">Candidate Solution</a>
+<li><a href="#org4b2d77f">Caveats</a></li>
+<li><a href="#org6ef4842">Candidate Solution</a>
 <ul>
-<li><a href="#orgdad4636">Reproducible</a></li>
-<li><a href="#org888e066">Portable and Repeatable</a></li>
+<li><a href="#org89b9e74">Reproducible</a></li>
+<li><a href="#org4d7f09c">Portable and Repeatable</a></li>
 </ul>
 </li>
-<li><a href="#org931c8e6">Discussion</a></li>
+<li><a href="#orge9a2c3e">Discussion</a></li>
 </ul>
 </div>
 </div>
-<div class="PREVIEW" id="orgae4fe2b">
+<div class="PREVIEW" id="org4bd42a0">
 <p>
 Notebooks represent an important improvement for interactive and iterative
 research.  However, they tend to lack portability, reproducibility, and
@@ -332,9 +332,9 @@ general.  The main contributions of this post is a series of techniques for <a h
 mode</a> to make the documents easily portable and repeatable with minimal fuss.
 </p>
 
-<div id="outline-container-orgb66fabc" class="outline-2">
-<h2 id="orgb66fabc">Background</h2>
-<div class="outline-text-2" id="text-orgb66fabc">
+<div id="outline-container-orgcea456d" class="outline-2">
+<h2 id="orgcea456d">Background</h2>
+<div class="outline-text-2" id="text-orgcea456d">
 <p>
 There exists numerous examples of different "notebook" implementations, such as
 <a href="https://jupyter.org/">Jupyter Notebooks</a>, <a href="https://www.sagemath.org/">SageMath Worksheets</a>, <a href="https://rmarkdown.rstudio.com/">R Markdown</a> and <a href="https://livebook.dev/">Elixir Livebook</a>; and
@@ -342,9 +342,9 @@ some less traditional ones, such as <a href="https://orgmode.org/">Org Mode</a> 
 </p>
 </div>
 
-<div id="outline-container-org1a9a531" class="outline-3">
-<h3 id="org1a9a531">Notebooks</h3>
-<div class="outline-text-3" id="text-org1a9a531">
+<div id="outline-container-org8585199" class="outline-3">
+<h3 id="org8585199">Notebooks</h3>
+<div class="outline-text-3" id="text-org8585199">
 <p>
 <a href="https://jupyter.org/">Jupyter Notebooks</a> is arguably the most common and prevalent notebook system out
 there, with many features.  It supports many features such as different
@@ -357,9 +357,9 @@ Caveats section below.
 </div>
 </div>
 
-<div id="outline-container-org27a7288" class="outline-3">
-<h3 id="org27a7288">Org-Mode (+ Emacs)</h3>
-<div class="outline-text-3" id="text-org27a7288">
+<div id="outline-container-org1fe6f52" class="outline-3">
+<h3 id="org1fe6f52">Org-Mode (+ Emacs)</h3>
+<div class="outline-text-3" id="text-org1fe6f52">
 <p>
 As an alternative, <a href="https://orgmode.org/">Org Mode</a> (with <a href="https://www.gnu.org/software/emacs/">Emacs</a>) offers all the desired features of
 notebooks, but similarly gets around some of the limitations typical notebook
@@ -377,9 +377,9 @@ Programming Language</a> documentation.
 </div>
 </div>
 
-<div id="outline-container-org6797c15" class="outline-2">
-<h2 id="org6797c15">Caveats</h2>
-<div class="outline-text-2" id="text-org6797c15">
+<div id="outline-container-org4b2d77f" class="outline-2">
+<h2 id="org4b2d77f">Caveats</h2>
+<div class="outline-text-2" id="text-org4b2d77f">
 <p>
 Notebooks are susceptible to a <a href="https://docs.google.com/presentation/d/1n2RlMdmv1p25Xy5thJUhkKGvjtV-dkAIsUXP-AL4ffI/edit#slide=id.g362da58057_0_1">number of issues</a> and <a href="https://orgmode.org/">Org mode</a> notebooks are no
 exception.  These issues are not specifically addressed in this post, but they
@@ -400,9 +400,9 @@ format is not top-down.
 </div>
 </div>
 
-<div id="outline-container-orgda588bf" class="outline-2">
-<h2 id="orgda588bf">Candidate Solution</h2>
-<div class="outline-text-2" id="text-orgda588bf">
+<div id="outline-container-org6ef4842" class="outline-2">
+<h2 id="org6ef4842">Candidate Solution</h2>
+<div class="outline-text-2" id="text-org6ef4842">
 <p>
 The following is <i>a</i> candidate solution to this problem.  It can and should be
 refined, but it represents a decent step in the right direction.  First, we
@@ -411,9 +411,9 @@ portability and repeatability together.
 </p>
 </div>
 
-<div id="outline-container-orgdad4636" class="outline-3">
-<h3 id="orgdad4636">Reproducible</h3>
-<div class="outline-text-3" id="text-orgdad4636">
+<div id="outline-container-org89b9e74" class="outline-3">
+<h3 id="org89b9e74">Reproducible</h3>
+<div class="outline-text-3" id="text-org89b9e74">
 <p>
 <a href="https://guix.gnu.org/">GNU Guix</a> provides the necessary reproducibility.  Specifically, using <a href="https://github.com/purcell/envrc">envrc</a> and
 <a href="https://direnv.net/">direnv</a>, a manifest is loaded and shimmed into the current environment within
@@ -426,9 +426,9 @@ version pin the entire dependency tree (down to the C compiler and GLibC).
 </div>
 </div>
 
-<div id="outline-container-org888e066" class="outline-3">
-<h3 id="org888e066">Portable and Repeatable</h3>
-<div class="outline-text-3" id="text-org888e066">
+<div id="outline-container-org4d7f09c" class="outline-3">
+<h3 id="org4d7f09c">Portable and Repeatable</h3>
+<div class="outline-text-3" id="text-org4d7f09c">
 <p>
 For a recent conference paper, I needed to repeatedly run a few thousand
 different experiments and then the aggregation and analysis of those
@@ -644,9 +644,9 @@ process.  However, that is essentially the same set of ideas repeated.
 </div>
 </div>
 
-<div id="outline-container-org931c8e6" class="outline-2">
-<h2 id="org931c8e6">Discussion</h2>
-<div class="outline-text-2" id="text-org931c8e6">
+<div id="outline-container-orge9a2c3e" class="outline-2">
+<h2 id="orge9a2c3e">Discussion</h2>
+<div class="outline-text-2" id="text-orge9a2c3e">
 <p>
 <a href="https://orgmode.org/">Org Mode</a> is a huge tool and requires a piecemeal consumption to master.  As
 such, many examples using <a href="https://orgmode.org/worg/org-contrib/babel/">Org Babel</a>, for example, do not show the full power of

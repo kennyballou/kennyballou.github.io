@@ -6,8 +6,9 @@
 <!-- 2025-05-21 Wed 16:42 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Today in Bad Plots</title>
+<title>WIP: Data Changes != Safe</title>
 <meta name="author" content="kb" />
+<meta name="description" content="When are data/config changes actually safe?" />
 <meta name="generator" content="Org Mode" />
 <style>
   #content { max-width: 60em; margin: auto; }
@@ -288,36 +289,92 @@
 </nav>
 </header>
 <div id="main" class="content">
-<h1 class="title">Today in Bad Plots</h1>
-<div class="PREVIEW" id="org4527968">
+<h1 class="title">WIP: Data Changes != Safe</h1>
 <p>
-Here are some terrible plots that tell little about data, very little.
+Often in software engineering, during the maintenance of a system, we hear this
+rule: "data changes are safer than code changes".
 </p>
-
-</div>
-
-
-<div id="orge39a5da" class="figure">
-<p><img src="zones-iteration-box.svg" alt="zones-iteration-box.svg" class="org-svg" width="99%" />
-</p>
-</div>
-
-
-<div id="org30ae950" class="figure">
-<p><img src="predicates-iteration-box.svg" alt="predicates-iteration-box.svg" class="org-svg" width="99%" />
-</p>
-</div>
-
-
-<div id="orgb08f59c" class="figure">
-<p><img src="iteration-boxes.svg" alt="iteration-boxes.svg" class="org-svg" width="99%" />
-</p>
-</div>
 
 <p>
-These are plots of the different branches within some fixed-point function and
-their general distribution.  As the title and plots might suggest,
-"distribution" is a generous term.
+Until they aren't.
+</p>
+
+<p>
+Why do data changes become less "safe" over time?  We adopt this rule so
+readily without really considering what it means.  Silently, over time, it
+changes the what and how we program a system.  Ultimately, we push more of the
+logic of the application into the data itself.  Until the "data" is itself a
+programming language!  Except, it's worse.  We did away with schemas and type
+checking and just said "it's data, what's the harm?"!
+</p>
+
+<p>
+To counter, we create tooling, versioning, and additional checks to ensure a
+data change doesn't break the system and is readily revertible.  What, oh what
+does this sound like?  Oh right, programming.
+</p>
+
+<p>
+As computer scientists, let's visit our favorite trio: Alice, Bob, and Charlie
+in an all too common paraphrasing of these kinds of changes playing out:
+</p>
+
+<blockquote>
+<p>
+Alice, Bob, and Charlie are (vibe) coding, and Bob says, "yo, I'ma push a small
+config change to the system."  After reaching in and tweaking the config knob,
+Bob yeets off for lunch.  Meanwhile, the system is burning to the ground and
+Charlie and Alice are contemplating a simpler life which includes horticulture
+or literally anything but this software stuff.
+</p>
+</blockquote>
+
+<p>
+Notice, in this, we are not discussing environmental configuration, the system
+below the application necessarily needs configuration, and those configurations
+should absolutely be codified in some configuration as code mechanism.
+However, the data/configuration changes we <i>are</i> discussing are within the
+application.  Recall an application with complex business rules with many
+different configuration knobs.  Each of these knobs interact with all the other
+knobs and switches in subtle ways but usually surprising ways!
+</p>
+
+<p>
+For a more concrete example, let's look consider a simple example within a
+state management system for a game.  Let's say we have this <code>Goblin</code> struct:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c++"><span style="font-weight: bold;">struct</span> <span style="font-weight: bold; text-decoration: underline;">Goblin</span> {
+  <span style="font-weight: bold; text-decoration: underline;">bool</span> <span style="font-weight: bold; font-style: italic;">isAlive</span>;
+  <span style="font-weight: bold; text-decoration: underline;">bool</span> <span style="font-weight: bold; font-style: italic;">isAttacking</span>;
+  <span style="font-weight: bold; font-style: italic;">/* </span><span style="font-weight: bold; font-style: italic;">All the other fields ...</span><span style="font-weight: bold; font-style: italic;"> */</span>
+}
+</pre>
+</div>
+
+<p>
+Here, we have three expected distinct configurations for instances of this
+<code>Goblin</code> struct: Alive and not Attacking; Alive and Attacking; and Dead and Not
+Attacking.  However, it's the fourth, supposedly unreachable state that causes
+endless annoyance: Dead and Attacking.  At best, guarding against this fourth
+state requires a lot of littering of <code>isAlive()</code> checks.
+</p>
+
+<p>
+Multiply this complexity by each additional boolean variable added to the
+<code>Goblin</code> struct.  You might as well add a SAT solve to each frame to keep things
+in check.
+</p>
+
+<p>
+Furthermore, it is not terrible difficult to extrapolate this simple example to
+any reasonably complex application.  Business logic encoded as data <b>is</b> a new
+programming language, one you likely do not like working with.
+</p>
+
+<p>
+tl;dr: do not create programming languages out of application data.
 </p>
 </div>
 <footer id="" class="status">

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/"
+     xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+     xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+     xmlns:georss="http://www.georss.org/georss"
+     xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+     xmlns:media="http://search.yahoo.com/mrss/"><channel>
+  <title>(WIP: Data Changes != Safe)</title>
+  <atom:link href="https://kennyballou.com/index.xml" rel="self" type="application/rss+xml" />
+  <link>https://kennyballou.com</link>
+  <description><![CDATA[When are data/config changes actually safe?]]></description>
+  <language>en</language>
+  <pubDate>Wed, 21 May 2025 16:42:50 +0000</pubDate>
+  <lastBuildDate>Wed, 21 May 2025 16:42:50 +0000</lastBuildDate>
+  <generator>Emacs 29.3 Org-mode 9.6.15</generator>
+  <webMaster>kb@devnulllabs.io (kb)</webMaster>
+  <image>
+    <url>http://orgmode.org/img/org-mode-unicorn-logo.png</url>
+    <title>(WIP: Data Changes != Safe)</title>
+    <link>https://kennyballou.com</link>
+  </image>
+
+  <p>
+    Often in software engineering, during the maintenance of a system, we hear this
+    rule: "data changes are safer than code changes".
+  </p>
+
+  <p>
+    Until they aren't.
+  </p>
+
+  <p>
+    Why do data changes become less "safe" over time?  We adopt this rule so
+    readily without really considering what it means.  Silently, over time, it
+    changes the what and how we program a system.  Ultimately, we push more of the
+    logic of the application into the data itself.  Until the "data" is itself a
+    programming language!  Except, it's worse.  We did away with schemas and type
+    checking and just said "it's data, what's the harm?"!
+  </p>
+
+  <p>
+    To counter, we create tooling, versioning, and additional checks to ensure a
+    data change doesn't break the system and is readily revertible.  What, oh what
+    does this sound like?  Oh right, programming.
+  </p>
+
+  <p>
+    As computer scientists, let's visit our favorite trio: Alice, Bob, and Charlie
+    in an all too common paraphrasing of these kinds of changes playing out:
+  </p>
+
+  <blockquote>
+    <p>
+      Alice, Bob, and Charlie are (vibe) coding, and Bob says, "yo, I'ma push a small
+      config change to the system."  After reaching in and tweaking the config knob,
+      Bob yeets off for lunch.  Meanwhile, the system is burning to the ground and
+      Charlie and Alice are contemplating a simpler life which includes horticulture
+      or literally anything but this software stuff.
+    </p>
+  </blockquote>
+
+  <p>
+    Notice, in this, we are not discussing environmental configuration, the system
+    below the application necessarily needs configuration, and those configurations
+    should absolutely be codified in some configuration as code mechanism.
+    However, the data/configuration changes we <i>are</i> discussing are within the
+    application.  Recall an application with complex business rules with many
+    different configuration knobs.  Each of these knobs interact with all the other
+    knobs and switches in subtle ways but usually surprising ways!
+  </p>
+
+  <p>
+    For a more concrete example, let's look consider a simple example within a
+    state management system for a game.  Let's say we have this <code>Goblin</code> struct:
+  </p>
+
+  <div class="org-src-container">
+    <pre class="src src-c++"><span style="font-weight: bold;">struct</span> <span style="font-weight: bold; text-decoration: underline;">Goblin</span> {
+    <span style="font-weight: bold; text-decoration: underline;">bool</span> <span style="font-weight: bold; font-style: italic;">isAlive</span>;
+    <span style="font-weight: bold; text-decoration: underline;">bool</span> <span style="font-weight: bold; font-style: italic;">isAttacking</span>;
+    <span style="font-weight: bold; font-style: italic;">/* </span><span style="font-weight: bold; font-style: italic;">All the other fields ...</span><span style="font-weight: bold; font-style: italic;"> */</span>
+    }
+  </pre>
+</div>
+
+<p>
+  Here, we have three expected distinct configurations for instances of this
+  <code>Goblin</code> struct: Alive and not Attacking; Alive and Attacking; and Dead and Not
+  Attacking.  However, it's the fourth, supposedly unreachable state that causes
+  endless annoyance: Dead and Attacking.  At best, guarding against this fourth
+  state requires a lot of littering of <code>isAlive()</code> checks.
+</p>
+
+<p>
+  Multiply this complexity by each additional boolean variable added to the
+  <code>Goblin</code> struct.  You might as well add a SAT solve to each frame to keep things
+  in check.
+</p>
+
+<p>
+  Furthermore, it is not terrible difficult to extrapolate this simple example to
+  any reasonably complex application.  Business logic encoded as data <b>is</b> a new
+  programming language, one you likely do not like working with.
+</p>
+
+<p>
+  tl;dr: do not create programming languages out of application data.
+</p>
+</channel>
+</rss>
