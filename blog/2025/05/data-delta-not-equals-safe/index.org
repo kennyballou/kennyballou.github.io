@@ -1,0 +1,73 @@
+#+TITLE: WIP: Data Changes != Safe
+#+DESCRIPTION: When are data/config changes actually safe?
+#+TAGS: WIP
+#+TAGS: 🔥
+#+TAGS: Change Management
+#+TAGS: Data Changes
+#+TAGS: Code Changes
+#+TAGS: Programming Languages
+#+TAGS: Configuration as Code
+#+DATE: 2025-05-21
+#+SLUG: data-delta-not-equals-safe
+
+Often in software engineering, during the maintenance of a system, we hear this
+rule: "data changes are safer than code changes".
+
+Until they aren't.
+
+Why do data changes become less "safe" over time?  We adopt this rule so
+readily without really considering what it means.  Silently, over time, it
+changes the what and how we program a system.  Ultimately, we push more of the
+logic of the application into the data itself.  Until the "data" is itself a
+programming language!  Except, it's worse.  We did away with schemas and type
+checking and just said "it's data, what's the harm?"!
+
+To counter, we create tooling, versioning, and additional checks to ensure a
+data change doesn't break the system and is readily revertible.  What, oh what
+does this sound like?  Oh right, programming.
+
+As computer scientists, let's visit our favorite trio: Alice, Bob, and Charlie
+in an all too common paraphrasing of these kinds of changes playing out:
+
+#+begin_quote
+Alice, Bob, and Charlie are (vibe) coding, and Bob says, "yo, I'ma push a small
+config change to the system."  After reaching in and tweaking the config knob,
+Bob yeets off for lunch.  Meanwhile, the system is burning to the ground and
+Charlie and Alice are contemplating a simpler life which includes horticulture
+or literally anything but this software stuff.
+#+end_quote
+
+Notice, in this, we are not discussing environmental configuration, the system
+below the application necessarily needs configuration, and those configurations
+should absolutely be codified in some configuration as code mechanism.
+However, the data/configuration changes we /are/ discussing are within the
+application.  Recall an application with complex business rules with many
+different configuration knobs.  Each of these knobs interact with all the other
+knobs and switches in subtle ways but usually surprising ways!
+
+For a more concrete example, let's look consider a simple example within a
+state management system for a game.  Let's say we have this =Goblin= struct:
+
+#+begin_src c++
+struct Goblin {
+  bool isAlive;
+  bool isAttacking;
+  /* All the other fields ... */
+}
+#+end_src
+
+Here, we have three expected distinct configurations for instances of this
+=Goblin= struct: Alive and not Attacking; Alive and Attacking; and Dead and Not
+Attacking.  However, it's the fourth, supposedly unreachable state that causes
+endless annoyance: Dead and Attacking.  At best, guarding against this fourth
+state requires a lot of littering of =isAlive()= checks.
+
+Multiply this complexity by each additional boolean variable added to the
+=Goblin= struct.  You might as well add a SAT solve to each frame to keep things
+in check.
+
+Furthermore, it is not terrible difficult to extrapolate this simple example to
+any reasonably complex application.  Business logic encoded as data *is* a new
+programming language, one you likely do not like working with.
+
+tl;dr: do not create programming languages out of application data.
