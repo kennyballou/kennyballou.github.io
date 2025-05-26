@@ -1,0 +1,354 @@
+#+TITLE: Installing Guix (Full LUKS + LVM)
+#+DESCRIPTION: Installation Notes and Catches for installing a fully encrypted Guix include /boot on LUKS + LVM.
+#+TAGS: Guix
+#+TAGS: GNU/Linux
+#+TAGS: Notes
+#+TAGS: Fully Encrypted System
+#+TAGS: LUKS
+#+TAGS: LVM
+#+DATE: 2025-05-26
+#+SLUG: installing-guix
+#+LINK: guix https://guix.gnu.org/
+#+LINK: grub https://www.gnu.org/software/grub
+#+LINK: dotfiles https://git.sr.ht/~kennyballou/dotfiles.git
+#+LINK: fedora https://fedoraproject.org/
+#+LINK: badblocks https://en.wikipedia.org/wiki/Badblocks
+
+#+BEGIN_PREVIEW
+Here are some notes about installing Guix SD onto a new system from an existing
+configuration.  We necessarily need to discuss disk preparation and
+partitioning.  Additionally, we discuss from the perspective of existing
+configurations.  I planned to write this back in 2022, after initially
+switching from NixOS to Guix.  I hesitated at the time since such a post would
+not have any additional value to people otherwise installing Guix.  However,
+going through the process again, I feel there are some comments to capture that
+may be beneficial to others venturing down this path.  I will save the
+discussion between NixOS and Guix for another time.  For now, let's settle on
+"scheme is more better."
+#+END_PREVIEW
+
+After having a corrupted [[grub][GRUB]] kill my previous [[guix][Guix System]], and a false sense
+of urgency, I have been running, begrudgingly, [[fedora][Fedora Workstation]] for the last
+10 months.  However, with summer here, I am eager to return to using [[guix][Guix]] as my
+primary OS.
+
+[[fedora][Fedora]] has been fine.  It seems to work for the most part.  But there just
+seems to be this constant encroaching entropy causing the system to become less
+and less stable.  Using [[guix][Guix]] as a package manager seemed to work fine in the
+beginning, but over time, it has started showing some degradation that is
+simply unworkable.  If I must scorch earth reinstall, I might as well install
+using my preferred OS and existing [[dotfiles][system configuration]].  However, in my
+attempts to switch back to [[guix][Guix]], I have uncovered some sharp edges, because of
+course.
+
+** Disk preparation steps
+:PROPERTIES:
+:ID:       b53066c9-07aa-41d4-9944-ede3d1e19dc7
+:END:
+
+First step to any fully encrypted setup is to throw a bunch of random bits onto
+the disk, the zeroth step is to check it with ~badblocks~.  Next, randomize the
+data on the disk to protect against easy statistical analysis.  Afterwards, we
+partition the drive into two primary physical partitions.  Then, we create the
+LUKS container and the LVM volumes.  Finally, we format all the different
+volumes and mount them in preparation for =system init=.
+
+*** Badblocks
+:PROPERTIES:
+:ID:       dcd8a075-847d-40ab-9f1f-ab7d7e6eac5a
+:END:
+
+Since I still needed a working machine in the meantime, I purchased a second
+drive.  This way, if the installation fails for any reason--- it did--- I can
+switch back to a working "machine".  But to be sure the new drive is in good
+working order, I tested it with [[badblocks][badblocks]]:
+
+#+begin_src bash :eval never
+badblocks -wsv -t 0xEF ${device}
+badblocks -wsv -t 0XFE ${device}
+#+end_src
+
+This does two read-write, read *DESTRUCTIVE*, passes on the new device, checking
+for any errors.
+
+Now for some, this is "enough" random scrubbing of the disk in preparation for
+an encrypted volume.  However, I disagree.  If the entire disk is a giant
+pattern of "0xFE" values, your /actual/ data shines like a bright hot star for
+statistical analysis of the data.
+
+*** Random "zeroing"
+:PROPERTIES:
+:ID:       df34dd5b-7369-49e3-9aed-2c84c8b54688
+:END:
+
+The fastest (not to be confused with "best") way I have seen to randomly write
+garbage to a drive is to use a plain ~dm-crypt~ device with a random passphrase
+and write zeros to the resulting container.
+
+#+begin_src bash :eval never
+cryptsetup open --type plain --key-file=/dev/urandom ${device} wipe-me
+dd if=/dev/zero of=/dev/mapper/wipe-me bs=4096 status=progress
+cryptsetup close
+#+end_src
+
+Also, critical for the throughput of the above command, setting the "blocksize"
+via ~bs=4096~ dramatically improves the write speed.
+
+*** Partitioning
+:PROPERTIES:
+:ID:       081d058d-e7d3-4029-9036-21ef69a207ea
+:END:
+
+Since the system uses a single device and we have a "fully encrypted" setup, we
+only need *two* partitions: first for the EFI System Partition (ESP) and second
+for the LUKS container.
+
+I created this using the interactive prompts within ~gptdisk~.  Creating the
+first partition to be 128M at the default starting sector (2048), and the
+second taking the rest of the sectors.  I denoted their partition types using
+the codes ~EF00~, and ~8308~, respectively.  Finally, I renamed them to something
+more meaningful to me: "boot" and "guix", respectively.
+
+*** Creating LUKS container
+:PROPERTIES:
+:ID:       3c202d9f-03cf-44f9-86ce-68e374441e93
+:END:
+
+With a fully encrypted system, including ~/boot~, there are some important
+limitations to keep in mind.  As of this writing, [[grub][GRUB]] does not support LUKS2
+containers nor does it support the Argon2 key derivation function.  Both of
+which are the default for recent versions of ~cryptsetup~.
+
+#+begin_quote
+This is tricky because [[grub][GRUB]] does [[https://www.gnu.org/software/grub/manual/grub/grub.html#cryptomount][claims]] to support LUKS2, however, I was unable
+to get this to work.
+#+end_quote
+
+#+begin_src bash :eval never
+cryptsetup --type luks1 \
+           --cipher aes-xts-plain64 \
+           --key-size 512 \
+           --hash sha512 \
+           --iter-time 7680 \
+           --use-random \
+           --pbkdf=pbkdf2 \
+           --verify-passphrase \
+           luksFormat \
+           ${device_part}
+#+end_src
+
+There are a few important notes here: first, the container type, as mentioned,
+should be LUKS1 type container; second, the PBKDF needs to be PBKDF2, otherwise
+[[grub][GRUB]] does not know how to unlock it; third, make sure you replace
+~${device_part}~ with the appropriate partition.  While the initial unlocking is
+quite slow because [[grub][GRUB]] does not have full access to the machine, lowering the
+iteration count is not advisable for a "secure" machine.
+
+Ensure it all works by opening the container:
+
+#+begin_src bash :eval never
+cryptsetup open ${device_part} cryptroot
+#+end_src
+
+A new device should be available under the ~/dev/mapper~ tree.
+
+**** "Correctly" naming the cryptroot
+:PROPERTIES:
+:ID:       804e9900-baaf-4fdf-93e0-c35671f3cd7d
+:END:
+
+I do not think it may be important, but it is perhaps worth mentioning: the
+name of the device should match the name used in your configuration.  Use ~blkid~
+to get the UUID if needed.
+
+#+begin_src bash :eval never
+cryptroot open ${device_part} \
+          luks-$(blkid | grep ${device_part} | awk '{print $2}' | sed 's/UUID=//' | sed 's/\"//g')
+#+end_src
+
+*** Creating the LVM containers
+:PROPERTIES:
+:ID:       926c4aa8-03a6-459f-8461-28b4518d6e20
+:END:
+
+Now, we can create the LVM containers for our partitions.
+
+#+begin_src bash :eval never
+pvcreate /dev/mapper/cryptroot
+vgcreate vg0 /dev/mapper/cryptroot
+lvcreate -L 1G vg0 -n root
+lvcreate -L 100G vg0 -n guix
+lvcreate -L 100G vg0 -n nix
+lvcreate -L 32G vg0 -n var
+lvcreate -L 32G vg0 -n opt
+lvcreate -L 32G vg0 -n tmp
+lvcreate -L 64G vg0 -n swap
+lvcreate -L 1T vg0 -n home
+#+end_src
+
+Since /everything/ lives under ~/gnu/~, the root partition really doesn't need to
+be even this large (I'm currently only using 18M on the root partition).
+However, [[guix][Guix]] currently warns about this during the initialization phase.  We
+can safely ignore this warning since we know the store writes go to a different
+partition.  As I recall, this was not a warning before, requiring the root
+partition to be quite large for the initial installation.
+
+*** Formatting
+:PROPERTIES:
+:ID:       a6ba0141-26e1-491a-91d4-14246bad7031
+:END:
+
+Now that we have all the partitions and logical volumes created, we need to
+create actual "filesystems" for each.  I have been using a combination of ~ext4~
+and ~xfs~ for a while, and it seems to work well.  While you /may/ be able to get
+away creating the ESP as an ~ext2~ partition, it is probably easier and more
+widely supported to format it using ~Fat32~.
+
+#+begin_quote
+Since version 5.15, xfs partitions default to including ~bigtime~, avoiding the
+[[https://en.wikipedia.org/wiki/Year_2038_problem][2038 problem]].  Check back in 2486...
+#+end_quote
+
+#+begin_src bash :eval never
+mkfs.vfat -F 32 -n boot ${ESP}
+mkfs.ext4 -L root /dev/mapper/vg0-root
+mkfs.ext4 -L var /dev/mapper/vg0-var
+mkfs.ext4 -L opt /dev/mapper/vg0-opt
+mkfs.ext4 -L tmp /dev/mapper/vg0-tmp
+mkfs.xfs -L guix /dev/mapper/vg0-guix
+mkfs.xfs -L nix /dev/mapper/vg0-nix
+mkfs.xfs -L home /dev/mapper/vg0-home
+#+end_src
+
+Do not forget to format the swap volume:
+
+#+begin_src bash :eval never
+mkswap /dev/mapper/vg0-swap
+#+end_src
+
+*** Mounting
+:PROPERTIES:
+:ID:       480b3626-cee2-4cc2-b150-3435da0b10c8
+:END:
+
+The penultimate step before turning over to the initialization step is to mount
+each of the partitions:
+
+#+begin_src bash :eval never
+mount /dev/mapper/vg0-root /mnt
+mkdir -p /mnt/{boot/efi,gnu,nix,opt,var,tmp,home}
+mount ${ESP} /mnt/boot/efi/
+mount /dev/mapper/vg0-guix /mnt/gnu
+mount /dev/mapper/vg0-nix /mnt/nix
+mount /dev/mapper/vg0-var /mnt/var
+mount /dev/mapper/vg0-opt /mnt/opt
+mount /dev/mapper/vg0-tmp /mnt/tmp
+mount /dev/mapper/vg0-home /mnt/home
+#+end_src
+
+You can optionally enable the swap partition for the current live installation:
+
+#+begin_src bash :eval never
+swapon /dev/mapper/vg0-swap
+#+end_src
+
+**** Nix Store
+:PROPERTIES:
+:ID:       16708b74-52c6-48ad-9902-cd81054f6dca
+:END:
+
+If you choose to run ~nix~ as an addition package manager, make sure to create
+the "store" directory, lest your first boot waits forever for such a directory
+to appear...
+
+#+begin_src bash :eval never
+mkdir -p /mnt/nix/store
+#+end_src
+
+** Cloning and modifying UUIDs
+:PROPERTIES:
+:ID:       dfdcb449-f3cf-40bb-bad1-ae4ee2bfc631
+:END:
+
+Each configuration is different, but before initializing the system, I need to
+change the UUIDs of the initial LUKS volumes within my system configuration.
+Some people have clever ways of scripting this out.  I accept this tiny amount
+of pain now which grants me the peace of mind I do not need to worry about it
+some how changing and becoming unbootable later.  I simply use ~blkid~ to get the
+UUID of the ~${device_part}~ and update the system config accordingly:
+
+#+begin_src diff
+modified   systems/axo.scm
+@@ -59,8 +59,8 @@
+ 
+     (mapped-devices
+      (list (mapped-device
+-            (source (uuid "f1e8d842-1c63-4311-803d-938f31d48d49"))
+-            (target "luks-f1e8d842-1c63-4311-803d-938f31d48d49")
++            (source (uuid "d1bcf4fd-8fe8-41b6-88dc-c83851b1f071"))
++            (target "luks-d1bcf4fd-8fe8-41b6-88dc-c83851b1f071")
+             (type luks-device-mapping))
+            (mapped-device
+             (source "vg0")
+@@ -117,7 +118,7 @@
+                     (needed-for-boot? #t)
+                     (dependencies mapped-devices)))
+             (efi (file-system
+-                   (device (uuid "5A5D-20AF" 'fat))
++                   (device (uuid "0601-7942" 'fat))
+                    (mount-point "/boot/efi")
+                    (type "vfat")
+                    (dependencies mapped-devices))))
+#+end_src
+
+** System initialization
+:PROPERTIES:
+:ID:       2a65ccbb-7257-42bb-b201-e5882589e3ae
+:END:
+
+Before starting the initialization process, start the copy-on-write service to
+ensure any changes made to the running [[guix][Guix]] system (e.g., live installation
+media) are copied to the new system's store.
+
+#+begin_src bash :eval never
+herd start cow-store /mnt
+#+end_src
+
+Now, we can move to initializing the system.
+
+#+begin_quote
+It's critical for this step that your system has network connectivity.  Test by
+pinging CloudFlare: ~ping 1.1.1.1~.
+#+end_quote
+
+From the root of the [[dotfiles]] repository, run the following command:
+
+#+begin_src bash :eval never
+guix time-machine -C ./config/guix/channels.scm -- system init \
+     -L ./ \
+     systems/${machine}.scm \
+     /mnt
+#+end_src
+
+Assuming everything works, we should be able to reboot into the new system.
+
+** After initialization steps
+:PROPERTIES:
+:ID:       a22533df-a46e-4fab-836a-bf0cc1834a33
+:END:
+
+After successfully booting into the freshly initialized system, we need to set
+the passwords of the root and default user.
+
+Switch over to a different ~tty~ and "login" as root, and set the passwords using
+~passwd~.
+
+** Parting thoughts
+:PROPERTIES:
+:ID:       17d3d45b-8203-4252-b6fc-48b3aff7858a
+:END:
+
+Because installing my typical configuration is a little heavy, I am considering
+creating a smaller configuration just for the initial installation to quickly
+get into the new system.  From there, re-configuring to the final system is a
+lot easier (and safer) than the installation media.
