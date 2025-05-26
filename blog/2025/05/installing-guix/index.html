@@ -1,0 +1,754 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2025-05-26 Mon 23:46 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Installing Guix (Full LUKS + LVM)</title>
+<meta name="author" content="kb" />
+<meta name="description" content="Installation Notes and Catches for installing a fully encrypted Guix include /boot on LUKS + LVM." />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<meta charset="utf-8">
+
+<meta name="author" content="Kenny Ballou">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<title>~kb</title>
+
+<link rel="canonical" href="/" />
+<link href="/index.xml" rel="alternate" type="application/rss+xml"
+      title="~kb/blog" />
+
+<link rel="stylesheet" href="/css/simple.css" />
+<link rel="stylesheet" href="/css/simple.add.css" />
+<link rel="stylesheet" href="/css/katex.css" />
+<link rel="stylesheet" href="/css/all.min.css" />
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<script defer type="text/javascript" src="/js/katex.js"></script>
+<script defer type="text/javascript" src="/js/katex-render.js"></script>
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://kennyballou.com/blog"> UP </a>
+ |
+ <a accesskey="H" href="https://kennyballou.com/"> HOME </a>
+</div><header id="" class="status">
+<nav>
+  <a href="/">
+    <i class="fade fas fa-home"></i>
+  </a>
+  <a href="/about.html">
+    <i class="fade fas fa-user-circle"></i>
+  </a>
+  <a href="https://git.sr.ht/~kennyballou/"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade far fa-circle fa-1x"></i>
+  </a>
+  <a href="https://github.com/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-github fa-1x"></i>
+  </a>
+  <a href="https://bitbucket.org/kballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-bitbucket fa-1x"></i>
+  </a>
+  <a href="https://orcid.org/0000-0002-6032-474X"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-orcid"></i>
+  </a>
+  <a href="https://linkedin.com/in/kennyballou"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fade fab fa-linkedin-in fa-1x"></i>
+  </a>
+  <a href="/support.html">
+    <i class="fade fas fa-heart fa-1x"></i>
+  </a>
+  <a href="/cv.pdf"
+     target="_blank">
+    <i class="fade far fa-file-pdf"></i>
+  </a>
+  <a href="/B74CC4B41148C3DB364BC21182D94B35744E1B34.asc"
+     target="_blank">
+    <i class="fade fas fa-key"></i>
+  </a>
+  <a href="/index.xml" rel="alternate"
+     type="application/rss+xml">
+    <i class="fade fas fa-rss fa-1x"></i>
+  </a>
+</nav>
+</header>
+<div id="main" class="content">
+<h1 class="title">Installing Guix (Full LUKS + LVM)</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org03f348e">Disk preparation steps</a>
+<ul>
+<li><a href="#org6277368">Badblocks</a></li>
+<li><a href="#org2dc6dfe">Random "zeroing"</a></li>
+<li><a href="#orge3ee9f0">Partitioning</a></li>
+<li><a href="#org394f035">Creating LUKS container</a>
+<ul>
+<li><a href="#org68698df">"Correctly" naming the cryptroot</a></li>
+</ul>
+</li>
+<li><a href="#orgb3ed092">Creating the LVM containers</a></li>
+<li><a href="#orgbd31885">Formatting</a></li>
+<li><a href="#orgee857e0">Mounting</a>
+<ul>
+<li><a href="#orgb14e20e">Nix Store</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org231991a">Cloning and modifying UUIDs</a></li>
+<li><a href="#org1cefb82">System initialization</a></li>
+<li><a href="#org1561ee7">After initialization steps</a></li>
+<li><a href="#orgcfe4a82">Parting thoughts</a></li>
+</ul>
+</div>
+</div>
+<div class="PREVIEW" id="org48dbd3a">
+<p>
+Here are some notes about installing Guix SD onto a new system from an existing
+configuration.  We necessarily need to discuss disk preparation and
+partitioning.  Additionally, we discuss from the perspective of existing
+configurations.  I planned to write this back in 2022, after initially
+switching from NixOS to Guix.  I hesitated at the time since such a post would
+not have any additional value to people otherwise installing Guix.  However,
+going through the process again, I feel there are some comments to capture that
+may be beneficial to others venturing down this path.  I will save the
+discussion between NixOS and Guix for another time.  For now, let's settle on
+"scheme is more better."
+</p>
+
+</div>
+
+<p>
+After having a corrupted <a href="https://www.gnu.org/software/grub">GRUB</a> kill my previous <a href="https://guix.gnu.org/">Guix System</a>, and a false sense
+of urgency, I have been running, begrudgingly, <a href="https://fedoraproject.org/">Fedora Workstation</a> for the last
+10 months.  However, with summer here, I am eager to return to using <a href="https://guix.gnu.org/">Guix</a> as my
+primary OS.
+</p>
+
+<p>
+<a href="https://fedoraproject.org/">Fedora</a> has been fine.  It seems to work for the most part.  But there just
+seems to be this constant encroaching entropy causing the system to become less
+and less stable.  Using <a href="https://guix.gnu.org/">Guix</a> as a package manager seemed to work fine in the
+beginning, but over time, it has started showing some degradation that is
+simply unworkable.  If I must scorch earth reinstall, I might as well install
+using my preferred OS and existing <a href="https://git.sr.ht/~kennyballou/dotfiles.git">system configuration</a>.  However, in my
+attempts to switch back to <a href="https://guix.gnu.org/">Guix</a>, I have uncovered some sharp edges, because of
+course.
+</p>
+
+<div id="outline-container-org03f348e" class="outline-2">
+<h2 id="org03f348e">Disk preparation steps</h2>
+<div class="outline-text-2" id="text-org03f348e">
+<p>
+First step to any fully encrypted setup is to throw a bunch of random bits onto
+the disk, the zeroth step is to check it with <code>badblocks</code>.  Next, randomize the
+data on the disk to protect against easy statistical analysis.  Afterwards, we
+partition the drive into two primary physical partitions.  Then, we create the
+LUKS container and the LVM volumes.  Finally, we format all the different
+volumes and mount them in preparation for <code>system init</code>.
+</p>
+</div>
+
+<div id="outline-container-org6277368" class="outline-3">
+<h3 id="org6277368">Badblocks</h3>
+<div class="outline-text-3" id="text-org6277368">
+<p>
+Since I still needed a working machine in the meantime, I purchased a second
+drive.  This way, if the installation fails for any reason&#x2014; it did&#x2014; I can
+switch back to a working "machine".  But to be sure the new drive is in good
+working order, I tested it with <a href="https://en.wikipedia.org/wiki/Badblocks">badblocks</a>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">badblocks -wsv -t 0xEF ${<span style="font-weight: bold; font-style: italic;">device</span>}
+badblocks -wsv -t 0XFE ${<span style="font-weight: bold; font-style: italic;">device</span>}
+</pre>
+</div>
+
+<p>
+This does two read-write, read <b>DESTRUCTIVE</b>, passes on the new device, checking
+for any errors.
+</p>
+
+<p>
+Now for some, this is "enough" random scrubbing of the disk in preparation for
+an encrypted volume.  However, I disagree.  If the entire disk is a giant
+pattern of "0xFE" values, your <i>actual</i> data shines like a bright hot star for
+statistical analysis of the data.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2dc6dfe" class="outline-3">
+<h3 id="org2dc6dfe">Random "zeroing"</h3>
+<div class="outline-text-3" id="text-org2dc6dfe">
+<p>
+The fastest (not to be confused with "best") way I have seen to randomly write
+garbage to a drive is to use a plain <code>dm-crypt</code> device with a random passphrase
+and write zeros to the resulting container.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">cryptsetup open --type plain --key-file=/dev/urandom ${<span style="font-weight: bold; font-style: italic;">device</span>} wipe-me
+dd <span style="font-weight: bold; font-style: italic;">if</span>=/dev/zero <span style="font-weight: bold; font-style: italic;">of</span>=/dev/mapper/wipe-me <span style="font-weight: bold; font-style: italic;">bs</span>=4096 <span style="font-weight: bold; font-style: italic;">status</span>=progress
+cryptsetup close
+</pre>
+</div>
+
+<p>
+Also, critical for the throughput of the above command, setting the "blocksize"
+via <code>bs=4096</code> dramatically improves the write speed.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge3ee9f0" class="outline-3">
+<h3 id="orge3ee9f0">Partitioning</h3>
+<div class="outline-text-3" id="text-orge3ee9f0">
+<p>
+Since the system uses a single device and we have a "fully encrypted" setup, we
+only need <b>two</b> partitions: first for the EFI System Partition (ESP) and second
+for the LUKS container.
+</p>
+
+<p>
+I created this using the interactive prompts within <code>gptdisk</code>.  Creating the
+first partition to be 128M at the default starting sector (2048), and the
+second taking the rest of the sectors.  I denoted their partition types using
+the codes <code>EF00</code>, and <code>8308</code>, respectively.  Finally, I renamed them to something
+more meaningful to me: "boot" and "guix", respectively.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org394f035" class="outline-3">
+<h3 id="org394f035">Creating LUKS container</h3>
+<div class="outline-text-3" id="text-org394f035">
+<p>
+With a fully encrypted system, including <code>/boot</code>, there are some important
+limitations to keep in mind.  As of this writing, <a href="https://www.gnu.org/software/grub">GRUB</a> does not support LUKS2
+containers nor does it support the Argon2 key derivation function.  Both of
+which are the default for recent versions of <code>cryptsetup</code>.
+</p>
+
+<blockquote>
+<p>
+This is tricky because <a href="https://www.gnu.org/software/grub">GRUB</a> does <a href="https://www.gnu.org/software/grub/manual/grub/grub.html#cryptomount">claims</a> to support LUKS2, however, I was unable
+to get this to work.
+</p>
+</blockquote>
+
+<div class="org-src-container">
+<pre class="src src-bash">cryptsetup --type luks1 <span style="font-style: italic;">\</span>
+           --cipher aes-xts-plain64 <span style="font-style: italic;">\</span>
+           --key-size 512 <span style="font-style: italic;">\</span>
+           --hash sha512 <span style="font-style: italic;">\</span>
+           --iter-time 7680 <span style="font-style: italic;">\</span>
+           --use-random <span style="font-style: italic;">\</span>
+           --pbkdf=pbkdf2 <span style="font-style: italic;">\</span>
+           --verify-passphrase <span style="font-style: italic;">\</span>
+           luksFormat <span style="font-style: italic;">\</span>
+           ${<span style="font-weight: bold; font-style: italic;">device_part</span>}
+</pre>
+</div>
+
+<p>
+There are a few important notes here: first, the container type, as mentioned,
+should be LUKS1 type container; second, the PBKDF needs to be PBKDF2, otherwise
+<a href="https://www.gnu.org/software/grub">GRUB</a> does not know how to unlock it; third, make sure you replace
+<code>${device_part}</code> with the appropriate partition.  While the initial unlocking is
+quite slow because <a href="https://www.gnu.org/software/grub">GRUB</a> does not have full access to the machine, lowering the
+iteration count is not advisable for a "secure" machine.
+</p>
+
+<p>
+Ensure it all works by opening the container:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">cryptsetup open ${<span style="font-weight: bold; font-style: italic;">device_part</span>} cryptroot
+</pre>
+</div>
+
+<p>
+A new device should be available under the <code>/dev/mapper</code> tree.
+</p>
+</div>
+
+<div id="outline-container-org68698df" class="outline-4">
+<h4 id="org68698df">"Correctly" naming the cryptroot</h4>
+<div class="outline-text-4" id="text-org68698df">
+<p>
+I do not think it may be important, but it is perhaps worth mentioning: the
+name of the device should match the name used in your configuration.  Use <code>blkid</code>
+to get the UUID if needed.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">cryptroot open ${<span style="font-weight: bold; font-style: italic;">device_part</span>} <span style="font-style: italic;">\</span>
+          luks-$(blkid | grep ${<span style="font-weight: bold; font-style: italic;">device_part</span>} | awk <span style="font-style: italic;">'{print $2}'</span> | sed <span style="font-style: italic;">'s/UUID=//'</span> | sed <span style="font-style: italic;">'s/\"//g'</span>)
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb3ed092" class="outline-3">
+<h3 id="orgb3ed092">Creating the LVM containers</h3>
+<div class="outline-text-3" id="text-orgb3ed092">
+<p>
+Now, we can create the LVM containers for our partitions.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">pvcreate /dev/mapper/cryptroot
+vgcreate vg0 /dev/mapper/cryptroot
+lvcreate -L 1G vg0 -n root
+lvcreate -L 100G vg0 -n guix
+lvcreate -L 100G vg0 -n nix
+lvcreate -L 32G vg0 -n var
+lvcreate -L 32G vg0 -n opt
+lvcreate -L 32G vg0 -n tmp
+lvcreate -L 64G vg0 -n swap
+lvcreate -L 1T vg0 -n home
+</pre>
+</div>
+
+<p>
+Since <i>everything</i> lives under <code>/gnu/</code>, the root partition really doesn't need to
+be even this large (I'm currently only using 18M on the root partition).
+However, <a href="https://guix.gnu.org/">Guix</a> currently warns about this during the initialization phase.  We
+can safely ignore this warning since we know the store writes go to a different
+partition.  As I recall, this was not a warning before, requiring the root
+partition to be quite large for the initial installation.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbd31885" class="outline-3">
+<h3 id="orgbd31885">Formatting</h3>
+<div class="outline-text-3" id="text-orgbd31885">
+<p>
+Now that we have all the partitions and logical volumes created, we need to
+create actual "filesystems" for each.  I have been using a combination of <code>ext4</code>
+and <code>xfs</code> for a while, and it seems to work well.  While you <i>may</i> be able to get
+away creating the ESP as an <code>ext2</code> partition, it is probably easier and more
+widely supported to format it using <code>Fat32</code>.
+</p>
+
+<blockquote>
+<p>
+Since version 5.15, xfs partitions default to including <code>bigtime</code>, avoiding the
+<a href="https://en.wikipedia.org/wiki/Year_2038_problem">2038 problem</a>.  Check back in 2486&#x2026;
+</p>
+</blockquote>
+
+<div class="org-src-container">
+<pre class="src src-bash">mkfs.vfat -F 32 -n boot ${<span style="font-weight: bold; font-style: italic;">ESP</span>}
+mkfs.ext4 -L root /dev/mapper/vg0-root
+mkfs.ext4 -L var /dev/mapper/vg0-var
+mkfs.ext4 -L opt /dev/mapper/vg0-opt
+mkfs.ext4 -L tmp /dev/mapper/vg0-tmp
+mkfs.xfs -L guix /dev/mapper/vg0-guix
+mkfs.xfs -L nix /dev/mapper/vg0-nix
+mkfs.xfs -L home /dev/mapper/vg0-home
+</pre>
+</div>
+
+<p>
+Do not forget to format the swap volume:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">mkswap /dev/mapper/vg0-swap
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgee857e0" class="outline-3">
+<h3 id="orgee857e0">Mounting</h3>
+<div class="outline-text-3" id="text-orgee857e0">
+<p>
+The penultimate step before turning over to the initialization step is to mount
+each of the partitions:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">mount /dev/mapper/vg0-root /mnt
+mkdir -p /mnt/{boot/efi,gnu,nix,opt,var,tmp,home}
+mount ${<span style="font-weight: bold; font-style: italic;">ESP</span>} /mnt/boot/efi/
+mount /dev/mapper/vg0-guix /mnt/gnu
+mount /dev/mapper/vg0-nix /mnt/nix
+mount /dev/mapper/vg0-var /mnt/var
+mount /dev/mapper/vg0-opt /mnt/opt
+mount /dev/mapper/vg0-tmp /mnt/tmp
+mount /dev/mapper/vg0-home /mnt/home
+</pre>
+</div>
+
+<p>
+You can optionally enable the swap partition for the current live installation:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">swapon /dev/mapper/vg0-swap
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgb14e20e" class="outline-4">
+<h4 id="orgb14e20e">Nix Store</h4>
+<div class="outline-text-4" id="text-orgb14e20e">
+<p>
+If you choose to run <code>nix</code> as an addition package manager, make sure to create
+the "store" directory, lest your first boot waits forever for such a directory
+to appear&#x2026;
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">mkdir -p /mnt/nix/store
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org231991a" class="outline-2">
+<h2 id="org231991a">Cloning and modifying UUIDs</h2>
+<div class="outline-text-2" id="text-org231991a">
+<p>
+Each configuration is different, but before initializing the system, I need to
+change the UUIDs of the initial LUKS volumes within my system configuration.
+Some people have clever ways of scripting this out.  I accept this tiny amount
+of pain now which grants me the peace of mind I do not need to worry about it
+some how changing and becoming unbootable later.  I simply use <code>blkid</code> to get the
+UUID of the <code>${device_part}</code> and update the system config accordingly:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-diff">modified   systems/axo.scm
+<span style="font-weight: bold;">@@ -59,8 +59,8 @@</span>
+ 
+     (mapped-devices
+      (list (mapped-device
+-            (source (uuid "f1e8d842-1c63-4311-803d-938f31d48d49"))
+-            (target "luks-f1e8d842-1c63-4311-803d-938f31d48d49")
++            (source (uuid "d1bcf4fd-8fe8-41b6-88dc-c83851b1f071"))
++            (target "luks-d1bcf4fd-8fe8-41b6-88dc-c83851b1f071")
+             (type luks-device-mapping))
+            (mapped-device
+             (source "vg0")
+<span style="font-weight: bold;">@@ -117,7 +118,7 @@</span>
+                     (needed-for-boot? #t)
+                     (dependencies mapped-devices)))
+             (efi (file-system
+-                   (device (uuid "5A5D-20AF" 'fat))
++                   (device (uuid "0601-7942" 'fat))
+                    (mount-point "/boot/efi")
+                    (type "vfat")
+                    (dependencies mapped-devices))))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1cefb82" class="outline-2">
+<h2 id="org1cefb82">System initialization</h2>
+<div class="outline-text-2" id="text-org1cefb82">
+<p>
+Before starting the initialization process, start the copy-on-write service to
+ensure any changes made to the running <a href="https://guix.gnu.org/">Guix</a> system (e.g., live installation
+media) are copied to the new system's store.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">herd start cow-store /mnt
+</pre>
+</div>
+
+<p>
+Now, we can move to initializing the system.
+</p>
+
+<blockquote>
+<p>
+It's critical for this step that your system has network connectivity.  Test by
+pinging CloudFlare: <code>ping 1.1.1.1</code>.
+</p>
+</blockquote>
+
+<p>
+From the root of the <a href="https://git.sr.ht/~kennyballou/dotfiles.git">https://git.sr.ht/~kennyballou/dotfiles.git</a> repository, run the following command:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">guix time-machine -C ./config/guix/channels.scm -- system init <span style="font-style: italic;">\</span>
+     -L ./ <span style="font-style: italic;">\</span>
+     systems/${<span style="font-weight: bold; font-style: italic;">machine</span>}.scm <span style="font-style: italic;">\</span>
+     /mnt
+</pre>
+</div>
+
+<p>
+Assuming everything works, we should be able to reboot into the new system.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1561ee7" class="outline-2">
+<h2 id="org1561ee7">After initialization steps</h2>
+<div class="outline-text-2" id="text-org1561ee7">
+<p>
+After successfully booting into the freshly initialized system, we need to set
+the passwords of the root and default user.
+</p>
+
+<p>
+Switch over to a different <code>tty</code> and "login" as root, and set the passwords using
+<code>passwd</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgcfe4a82" class="outline-2">
+<h2 id="orgcfe4a82">Parting thoughts</h2>
+<div class="outline-text-2" id="text-orgcfe4a82">
+<p>
+Because installing my typical configuration is a little heavy, I am considering
+creating a smaller configuration just for the initial installation to quickly
+get into the new system.  From there, re-configuring to the final system is a
+lot easier (and safer) than the installation media.
+</p>
+</div>
+</div>
+</div>
+<footer id="" class="status">
+<footer>
+  <p>&copy; 2014-2025 Kenny Ballou.
+    <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Some rights
+      reserved.</a></p>
+  <p>Powered by <a href="https://gnu.org">GNU/Linux</a></p>
+</footer>
+</footer>
+</body>
+</html>

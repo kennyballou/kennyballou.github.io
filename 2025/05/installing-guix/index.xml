@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/"
+     xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+     xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+     xmlns:georss="http://www.georss.org/georss"
+     xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+     xmlns:media="http://search.yahoo.com/mrss/"><channel>
+  <title>(Installing Guix (Full LUKS + LVM))</title>
+  <atom:link href="https://kennyballou.com/index.xml" rel="self" type="application/rss+xml" />
+  <link>https://kennyballou.com</link>
+  <description><![CDATA[Installation Notes and Catches for installing a fully encrypted Guix include /boot on LUKS + LVM.]]></description>
+  <language>en</language>
+  <pubDate>Mon, 26 May 2025 23:46:43 +0000</pubDate>
+  <lastBuildDate>Mon, 26 May 2025 23:46:43 +0000</lastBuildDate>
+  <generator>Emacs 29.3 Org-mode 9.6.15</generator>
+  <webMaster>kb@devnulllabs.io (kb)</webMaster>
+  <image>
+    <url>http://orgmode.org/img/org-mode-unicorn-logo.png</url>
+    <title>(Installing Guix (Full LUKS + LVM))</title>
+    <link>https://kennyballou.com</link>
+  </image>
+
+  <div class="PREVIEW" id="orga665bd8">
+    <p>
+      Here are some notes about installing Guix SD onto a new system from an existing
+      configuration.  We necessarily need to discuss disk preparation and
+      partitioning.  Additionally, we discuss from the perspective of existing
+      configurations.  I planned to write this back in 2022, after initially
+      switching from NixOS to Guix.  I hesitated at the time since such a post would
+      not have any additional value to people otherwise installing Guix.  However,
+      going through the process again, I feel there are some comments to capture that
+      may be beneficial to others venturing down this path.  I will save the
+      discussion between NixOS and Guix for another time.  For now, let's settle on
+      "scheme is more better."
+    </p>
+
+  </div>
+
+  <p>
+    After having a corrupted <a href="https://www.gnu.org/software/grub">GRUB</a> kill my previous <a href="https://guix.gnu.org/">Guix System</a>, and a false sense
+    of urgency, I have been running, begrudgingly, <a href="https://fedoraproject.org/">Fedora Workstation</a> for the last
+    10 months.  However, with summer here, I am eager to return to using <a href="https://guix.gnu.org/">Guix</a> as my
+    primary OS.
+  </p>
+
+  <p>
+    <a href="https://fedoraproject.org/">Fedora</a> has been fine.  It seems to work for the most part.  But there just
+    seems to be this constant encroaching entropy causing the system to become less
+    and less stable.  Using <a href="https://guix.gnu.org/">Guix</a> as a package manager seemed to work fine in the
+    beginning, but over time, it has started showing some degradation that is
+    simply unworkable.  If I must scorch earth reinstall, I might as well install
+    using my preferred OS and existing <a href="https://git.sr.ht/~kennyballou/dotfiles.git">system configuration</a>.  However, in my
+    attempts to switch back to <a href="https://guix.gnu.org/">Guix</a>, I have uncovered some sharp edges, because of
+    course.
+  </p>
+</channel>
+</rss>
