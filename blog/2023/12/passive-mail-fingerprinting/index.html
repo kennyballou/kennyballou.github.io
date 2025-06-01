@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2025-05-26 Mon 23:46 -->
+<!-- 2025-06-01 Sun 00:17 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Passive Mail Server Fingerprinting with DNS</title>
@@ -293,12 +293,12 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org5769715">Paranoid Queries</a></li>
-<li><a href="#orgba846c5">Legal Caveats and Caution</a></li>
+<li><a href="#org8f3a1c8">Paranoid Queries</a></li>
+<li><a href="#orge3b9f32">Legal Caveats and Caution</a></li>
 </ul>
 </div>
 </div>
-<div class="PREVIEW" id="org3594b6d">
+<div class="PREVIEW" id="org6ba246a">
 <p>
 We can easily identify mail servers with <a href="https://www.wikiwand.com/en/MX_record">MX records</a>.  Given only a server name
 for a particular organization, we can passively fingerprint the email server
@@ -322,7 +322,7 @@ provider for most organizations using a simple DNS query:
 </pre>
 </div>
 
-<pre class="example" id="org65236c1">
+<pre class="example" id="org132038d">
 
 ; &lt;&lt;&gt;&gt; DiG 9.16.38 &lt;&lt;&gt;&gt; MX kennyballou.com
 ;; global options: +cmd
@@ -356,9 +356,9 @@ such as <code>outlook.com</code> or <code>office365.us</code> or similar.
 As you can see, it is really not that difficult.
 </p>
 
-<div id="outline-container-org5769715" class="outline-2">
-<h2 id="org5769715">Paranoid Queries</h2>
-<div class="outline-text-2" id="text-org5769715">
+<div id="outline-container-org8f3a1c8" class="outline-2">
+<h2 id="org8f3a1c8">Paranoid Queries</h2>
+<div class="outline-text-2" id="text-org8f3a1c8">
 <p>
 Historically, and still for the most part today, DNS operates over a clear,
 readable data gram, UDP port 53.  As a result, if performing these queries
@@ -386,9 +386,9 @@ Cloudflare with such questions may be "dangerous".
 </div>
 </div>
 
-<div id="outline-container-orgba846c5" class="outline-2">
-<h2 id="orgba846c5">Legal Caveats and Caution</h2>
-<div class="outline-text-2" id="text-orgba846c5">
+<div id="outline-container-orge3b9f32" class="outline-2">
+<h2 id="orge3b9f32">Legal Caveats and Caution</h2>
+<div class="outline-text-2" id="text-orge3b9f32">
 <p>
 While I am certainly not a lawyer, we must of course discuss the legality of
 such queries.  Within the United States, the <a href="https://en.wikipedia.org/wiki/Computer_Fraud_and_Abuse_Act">Computer Abuse and Fraud Act</a> is

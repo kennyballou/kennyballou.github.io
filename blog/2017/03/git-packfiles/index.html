@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2025-05-26 Mon 23:46 -->
+<!-- 2025-06-01 Sun 00:17 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Git Packfiles</title>
@@ -326,18 +326,18 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org88de7dd">Packfiles</a>
+<li><a href="#orgcc4ebf6">Packfiles</a>
 <ul>
-<li><a href="#org4a3383c">Packs</a></li>
-<li><a href="#orgdb7f937">Indexes</a></li>
-<li><a href="#org06af81b">Plumbing</a></li>
+<li><a href="#org9cd09d7">Packs</a></li>
+<li><a href="#org3ad6f7b">Indexes</a></li>
+<li><a href="#org9c5dfcf">Plumbing</a></li>
 </ul>
 </li>
-<li><a href="#org802f7cb">Summary</a></li>
+<li><a href="#org3c2c2c0">Summary</a></li>
 </ul>
 </div>
 </div>
-<div class="PREVIEW" id="orga02867c">
+<div class="PREVIEW" id="org74e5dd0">
 <p>
 Previously, in <a href="https://kennyballou.com/blog/2016/01/git-in-reverse">Git in Reverse</a>, we learned about <a href="https://git-scm.com/">Git</a> and how it internally
 stores information.  Namely, we went over the <a href="http://stackoverflow.com/questions/5709687/what-are-the-loose-objects-that-the-git-gui-refers-to#5710039">"loose" object</a> format that Git
@@ -356,9 +356,9 @@ We're only going to discuss the high-level details of packfiles, there are
 <a href="https://git.kernel.org/cgit/git/git.git/tree/Documentation/technical/pack-format.txt">describe</a> the <a href="https://codewords.recurse.com/issues/three/unpacking-git-packfiles/">details</a> better.
 </p>
 
-<div id="outline-container-org88de7dd" class="outline-2">
-<h2 id="org88de7dd">Packfiles</h2>
-<div class="outline-text-2" id="text-org88de7dd">
+<div id="outline-container-orgcc4ebf6" class="outline-2">
+<h2 id="orgcc4ebf6">Packfiles</h2>
+<div class="outline-text-2" id="text-orgcc4ebf6">
 <p>
 Packfiles, like <a href="https://kennyballou.com/blog/2016/01/git-in-reverse">git objects before</a>, are an internal file
 set for storing objects in a more compressed format.  That is, instead of
@@ -378,7 +378,7 @@ repository and there are both pack, <code>.pack</code>, files and index, <code>.
 Here is the packfile that contains this repository (as of this writing):
 </p>
 
-<pre class="example" id="org8676336">
+<pre class="example" id="org40bf681">
 ± find .git/objects/pack -type f
 .git/objects/pack/pack-31966bc41ef450ccfecdfb5ef6cd98f7097eea38.pack
 .git/objects/pack/pack-31966bc41ef450ccfecdfb5ef6cd98f7097eea38.idx
@@ -396,9 +396,9 @@ We'll take a small moment to describe each in a little more detail.
 </p>
 </div>
 
-<div id="outline-container-org4a3383c" class="outline-3">
-<h3 id="org4a3383c">Packs</h3>
-<div class="outline-text-3" id="text-org4a3383c">
+<div id="outline-container-org9cd09d7" class="outline-3">
+<h3 id="org9cd09d7">Packs</h3>
+<div class="outline-text-3" id="text-org9cd09d7">
 <p>
 Packfiles are relatively straight forward, there's a 12 byte header, first four
 spell "PACK", next four provide the version, "2" as of this writing, and the
@@ -447,9 +447,9 @@ index file is created to maintain a way to peer into the packfile efficiently.
 </div>
 </div>
 
-<div id="outline-container-orgdb7f937" class="outline-3">
-<h3 id="orgdb7f937">Indexes</h3>
-<div class="outline-text-3" id="text-orgdb7f937">
+<div id="outline-container-org3ad6f7b" class="outline-3">
+<h3 id="org3ad6f7b">Indexes</h3>
+<div class="outline-text-3" id="text-org3ad6f7b">
 <p>
 Packfile indexes solve the random object access efficiency problems caused by
 heavily compacting objects into a single file.
@@ -516,9 +516,9 @@ access to objects in the repository.
 </div>
 </div>
 
-<div id="outline-container-org06af81b" class="outline-3">
-<h3 id="org06af81b">Plumbing</h3>
-<div class="outline-text-3" id="text-org06af81b">
+<div id="outline-container-org9c5dfcf" class="outline-3">
+<h3 id="org9c5dfcf">Plumbing</h3>
+<div class="outline-text-3" id="text-org9c5dfcf">
 <p>
 Git will automatically create packfiles when synchronizing a repository (e.g.,
 pushing, pulling, cloning), but they can also be created manually with the
@@ -526,7 +526,7 @@ pushing, pulling, cloning), but they can also be created manually with the
 current repository.
 </p>
 
-<pre class="example" id="orgc6b7046">
+<pre class="example" id="orgccb6019">
 ± find .git/objects -type f
 .git/objects/f2/e90bed364168fcca0893437fb569d762cdbbce
 .git/objects/f4/2946046ed0926d5c7b34772642478390a696c9
@@ -568,7 +568,7 @@ Of course, we can also examine the packfile with the
 <a href="https://git-scm.com/docs/git-verify-pack"><code>git-verify-pack</code></a> command:
 </p>
 
-<pre class="example" id="org4f771c0">
+<pre class="example" id="orgfff1f8a">
 ± git verify-pack -v .git/objects/pack/pack-1fc05518e49da3867792b704561b68d5b00e6317.idx
 f2e90bed364168fcca0893437fb569d762cdbbce commit 225 153 12
 d12254d273712af99e0585e7dd9dfea2106d5692 commit 220 145 165
@@ -607,7 +607,7 @@ This output also tells us the pack contains no deltified objects.  Let's see
 what this would look like with deltified objects:
 </p>
 
-<pre class="example" id="org89c757e">
+<pre class="example" id="orge8b9393">
 ± git gc
 Counting objects: 17, done.
 Delta compression using up to 4 threads.
@@ -676,9 +676,9 @@ within a packfile.
 </div>
 </div>
 
-<div id="outline-container-org802f7cb" class="outline-2">
-<h2 id="org802f7cb">Summary</h2>
-<div class="outline-text-2" id="text-org802f7cb">
+<div id="outline-container-org3c2c2c0" class="outline-2">
+<h2 id="org3c2c2c0">Summary</h2>
+<div class="outline-text-2" id="text-org3c2c2c0">
 <p>
 Hopefully, we now have a deeper knowledge of the compact object format Git
 uses, namely, packfiles.  Remember, the motivation for these files was not

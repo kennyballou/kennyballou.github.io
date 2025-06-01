@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2025-05-26 Mon 23:46 -->
+<!-- 2025-06-01 Sun 00:17 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Granularity of (Git) Commits</title>
@@ -294,15 +294,15 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org4a5a0b0">Introduction</a></li>
-<li><a href="#org32dac95">Single Story -&gt; Single Commit</a></li>
-<li><a href="#orgbd57099">Discrete Tasks -&gt; Multiple Atomic Commits</a></li>
-<li><a href="#org4655db6">Examples</a></li>
-<li><a href="#orgbc7cfb2">Discussion</a></li>
+<li><a href="#orgc86c0f4">Introduction</a></li>
+<li><a href="#org2154069">Single Story -&gt; Single Commit</a></li>
+<li><a href="#orgdacc2fe">Discrete Tasks -&gt; Multiple Atomic Commits</a></li>
+<li><a href="#org84ca9d8">Examples</a></li>
+<li><a href="#org271bba5">Discussion</a></li>
 </ul>
 </div>
 </div>
-<div class="PREVIEW" id="org793b99f">
+<div class="PREVIEW" id="orgb7ccec4">
 <p>
 There are <a href="https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html">many</a> <a href="https://chris.beams.io/posts/git-commit/">blog</a> <a href="https://medium.com/@joshuatauberer/write-joyous-git-commit-messages-2f98891114c4">posts</a> which extol the foundations of writing good,
 communicative commit messages.  These same posts, however, tend to otherwise
@@ -314,16 +314,16 @@ granularity.  The answer is, of course, it depends.
 
 <a href="https://xkcd.com/1296"><figure>
 
-<div id="org662731e" class="figure">
+<div id="org72ff1f0" class="figure">
 <p><img src="https://imgs.xkcd.com/comics/git_commit.png" alt="git_commit.png" />
 </p>
 <p><span class="figure-number">Figure 1: </span>Merge branch 'asdfasjkfdlas/alkdjf' into sdkjfls-final</p>
 </div>
 </figure></a>
 
-<div id="outline-container-org4a5a0b0" class="outline-2">
-<h2 id="org4a5a0b0">Introduction</h2>
-<div class="outline-text-2" id="text-org4a5a0b0">
+<div id="outline-container-orgc86c0f4" class="outline-2">
+<h2 id="orgc86c0f4">Introduction</h2>
+<div class="outline-text-2" id="text-orgc86c0f4">
 <p>
 Regardless of position on "good" or "communicative," we are often left with
 questions about the commits themselves.  How frequent should we commit?  What
@@ -353,9 +353,9 @@ doesn't have a consistent choice, <i>that</i> is what should be fixed.
 </div>
 </div>
 
-<div id="outline-container-org32dac95" class="outline-2">
-<h2 id="org32dac95">Single Story -&gt; Single Commit</h2>
-<div class="outline-text-2" id="text-org32dac95">
+<div id="outline-container-org2154069" class="outline-2">
+<h2 id="org2154069">Single Story -&gt; Single Commit</h2>
+<div class="outline-text-2" id="text-org2154069">
 <p>
 Using a single commit for tasks comes with a lot of simplicity, but the commits
 themselves will be large.  Integrating the single commit is relatively
@@ -386,9 +386,9 @@ The history of code is far messier than even I wish to admit.
 </div>
 </div>
 
-<div id="outline-container-orgbd57099" class="outline-2">
-<h2 id="orgbd57099">Discrete Tasks -&gt; Multiple Atomic Commits</h2>
-<div class="outline-text-2" id="text-orgbd57099">
+<div id="outline-container-orgdacc2fe" class="outline-2">
+<h2 id="orgdacc2fe">Discrete Tasks -&gt; Multiple Atomic Commits</h2>
+<div class="outline-text-2" id="text-orgdacc2fe">
 <p>
 Instead of using a single commit which contains every single change that was
 made to accomplish the task, we can use a single commit for each of those
@@ -447,9 +447,9 @@ web UI's, but this is certainly possible and <span class="underline">is</span> d
 </div>
 </div>
 
-<div id="outline-container-org4655db6" class="outline-2">
-<h2 id="org4655db6">Examples</h2>
-<div class="outline-text-2" id="text-org4655db6">
+<div id="outline-container-org84ca9d8" class="outline-2">
+<h2 id="org84ca9d8">Examples</h2>
+<div class="outline-text-2" id="text-org84ca9d8">
 <p>
 Let's examine some pull requests which demonstrate both approaches.  I'm going
 to point to pull requests I have submitted since I don't want to cast any
@@ -465,7 +465,7 @@ local machine's <a href="https://www.musicpd.org/">muisc player daemon</a> via t
 Repeated here is the single message and summary diff of the <a href="https://github.com/mpdel/libmpdel/pull/2">first</a> pull request:
 </p>
 
-<pre class="example" id="org52be8d5">
+<pre class="example" id="org06a02db">
 libmpdel: enable use of local UNIX sockets for MPD
 
 By using `make-network-process` we can tune the parameters for either
@@ -506,7 +506,7 @@ commit closing the larger story of enabling the UNIX socket connection type.
 Repeated here are the series of commit messages and summary differences:
 </p>
 
-<pre class="example" id="org4b3f530">
+<pre class="example" id="orgf976ee4">
 add custom variable `libmpdel-family`
 
 This can be used to switch between IPv4 and IPv6 addresses.
@@ -515,7 +515,7 @@ This can be used to switch between IPv4 and IPv6 addresses.
 libmpdel.el | 7 +++++++
 </pre>
 
-<pre class="example" id="org44bf16a">
+<pre class="example" id="org6a29912">
 Always use `make-network-process`
 
 When making a connection to MPD, whether via local UNIX socket, or TCP
@@ -530,14 +530,14 @@ written in C and the other is written in ELisp."
 libmpdel.el | 12 +++++++-----
 </pre>
 
-<pre class="example" id="orga4cc96e">
+<pre class="example" id="org9462b92">
 Add missing element to `limbpdel-profiles` docstring
 
 1 file changed, 1 insertion(+), 1 deletion(-)
 libmpdel.el | 2 +-
 </pre>
 
-<pre class="example" id="org744c24f">
+<pre class="example" id="orgbfde9aa">
 add libmpdel-family to `libmpdel-profiles`
 
 Add ability to specify the address family for connection profiles.
@@ -558,9 +558,9 @@ commit.
 </div>
 </div>
 
-<div id="outline-container-orgbc7cfb2" class="outline-2">
-<h2 id="orgbc7cfb2">Discussion</h2>
-<div class="outline-text-2" id="text-orgbc7cfb2">
+<div id="outline-container-org271bba5" class="outline-2">
+<h2 id="org271bba5">Discussion</h2>
+<div class="outline-text-2" id="text-org271bba5">
 <p>
 It's rather easy to argue for "small, atomic" commits, but I sense we have
 failed to clearly articulate what we mean by "small".  How small is "small"?

@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2025-05-26 Mon 23:46 -->
+<!-- 2025-06-01 Sun 00:17 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Coreboot for x230</title>
@@ -294,29 +294,29 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org9c1b62a">Coreboot</a></li>
-<li><a href="#orgcda15e3">Motivation</a></li>
-<li><a href="#org626777c">Necessary Equipment</a></li>
-<li><a href="#orgff6adba">Disassembly and BIOS Access</a>
+<li><a href="#orgbbcd26d">Coreboot</a></li>
+<li><a href="#org125834d">Motivation</a></li>
+<li><a href="#org367fa24">Necessary Equipment</a></li>
+<li><a href="#org53a461b">Disassembly and BIOS Access</a>
 <ul>
-<li><a href="#org1b4e675">Connecting the Raspberry Pi to the SOIC Clip</a></li>
-<li><a href="#org4eb8f39">Using the Raspberry Pi</a></li>
+<li><a href="#org98870d8">Connecting the Raspberry Pi to the SOIC Clip</a></li>
+<li><a href="#org20a0aa9">Using the Raspberry Pi</a></li>
 </ul>
 </li>
-<li><a href="#org78622e2">Configuration and Compilation</a>
+<li><a href="#org9dbbb34">Configuration and Compilation</a>
 <ul>
-<li><a href="#org1c8342f">Configuration</a></li>
-<li><a href="#orgeb5b45f">Compilation</a></li>
+<li><a href="#orgfd74235">Configuration</a></li>
+<li><a href="#org432d672">Compilation</a></li>
 </ul>
 </li>
-<li><a href="#org3338687">Flashing the New Image</a></li>
-<li><a href="#orge13753c">Common Problems</a></li>
-<li><a href="#orgc71d2c1">Summary and Auxiliary Advice</a></li>
-<li><a href="#org9c3c808">References</a></li>
+<li><a href="#orge2226f4">Flashing the New Image</a></li>
+<li><a href="#orgfa16f13">Common Problems</a></li>
+<li><a href="#org5cffe5a">Summary and Auxiliary Advice</a></li>
+<li><a href="#org20c1eb7">References</a></li>
 </ul>
 </div>
 </div>
-<div class="PREVIEW" id="orgaab443e">
+<div class="PREVIEW" id="org07a3dca">
 <p>
 In this post, we will go through the steps to get <a href="https://www.coreboot.org">coreboot</a> compiled and
 installed on a <a href="http://shop.lenovo.com/us/en/laptops/thinkpad/x-series/x230/">Lenovo x230</a> laptop.  This is a somewhat lengthy and involved
@@ -329,15 +329,15 @@ You have been warned.
 
 <figure>
 
-<div id="org9635769" class="figure">
+<div id="orgc2a181e" class="figure">
 <p><img src="./../../../../media/coreboot-x230-1.png" alt="coreboot-x230-1.png" width="70%" />
 </p>
 </div>
 </figure>
 
-<div id="outline-container-org9c1b62a" class="outline-2">
-<h2 id="org9c1b62a">Coreboot</h2>
-<div class="outline-text-2" id="text-org9c1b62a">
+<div id="outline-container-orgbbcd26d" class="outline-2">
+<h2 id="orgbbcd26d">Coreboot</h2>
+<div class="outline-text-2" id="text-orgbbcd26d">
 <blockquote>
 <p>
 coreboot is an extended firmware platform that delivers a lightning fast and
@@ -357,9 +357,9 @@ e.g., <a href="http://www.memtest.org/">memtest86+</a>.
 </div>
 </div>
 
-<div id="outline-container-orgcda15e3" class="outline-2">
-<h2 id="orgcda15e3">Motivation</h2>
-<div class="outline-text-2" id="text-orgcda15e3">
+<div id="outline-container-org125834d" class="outline-2">
+<h2 id="org125834d">Motivation</h2>
+<div class="outline-text-2" id="text-org125834d">
 <p>
 Why replace the default BIOS image in the first place? There are several
 motivations for doing this.  For one, it's <a href="https://duckduckgo.com/?q=lenovo+whitelist+bios">well
@@ -379,9 +379,9 @@ will make the laptop effectively unusable.
 </div>
 </div>
 
-<div id="outline-container-org626777c" class="outline-2">
-<h2 id="org626777c">Necessary Equipment</h2>
-<div class="outline-text-2" id="text-org626777c">
+<div id="outline-container-org367fa24" class="outline-2">
+<h2 id="org367fa24">Necessary Equipment</h2>
+<div class="outline-text-2" id="text-org367fa24">
 <p>
 Before we go into the actual steps, let's take a moment to gather all the
 necessary equipment.  Disassembly is necessary because the BIOS chip is locked
@@ -448,9 +448,9 @@ magnifying lens will be helpful in determining the exact version.
 </div>
 </div>
 
-<div id="outline-container-orgff6adba" class="outline-2">
-<h2 id="orgff6adba">Disassembly and BIOS Access</h2>
-<div class="outline-text-2" id="text-orgff6adba">
+<div id="outline-container-org53a461b" class="outline-2">
+<h2 id="org53a461b">Disassembly and BIOS Access</h2>
+<div class="outline-text-2" id="text-org53a461b">
 <p>
 <a href="http://www.myfixguide.com/manual/lenovo-thinkpad-x230-disassembly-clean-cooling-fan-remove-keyboard/">Steps</a> and <a href="https://www.ifixit.com/Device/Lenovo_Thinkpad_x230">manuals</a> for
 disassembling the laptop can be found with a simple search.  However, it's only
@@ -462,7 +462,7 @@ nothing attached while working.
 
 <figure>
 
-<div id="orgeb283bf" class="figure">
+<div id="org570b86f" class="figure">
 <p><img src="./../../../../media/coreboot-x230-2.png" alt="coreboot-x230-2.png" width="30%" />
 </p>
 </div>
@@ -487,9 +487,9 @@ to proceed, but it will be far more tedious and less comfortable.
 </p>
 </div>
 
-<div id="outline-container-org1b4e675" class="outline-3">
-<h3 id="org1b4e675">Connecting the Raspberry Pi to the SOIC Clip</h3>
-<div class="outline-text-3" id="text-org1b4e675">
+<div id="outline-container-org98870d8" class="outline-3">
+<h3 id="org98870d8">Connecting the Raspberry Pi to the SOIC Clip</h3>
+<div class="outline-text-3" id="text-org98870d8">
 <p>
 Next, we will be connecting the Raspberry Pi with the cables and clips to the
 BIOS chip.
@@ -541,12 +541,12 @@ for starting):
 </div>
 </div>
 
-<div id="outline-container-org4eb8f39" class="outline-3">
-<h3 id="org4eb8f39">Using the Raspberry Pi</h3>
-<div class="outline-text-3" id="text-org4eb8f39">
+<div id="outline-container-org20a0aa9" class="outline-3">
+<h3 id="org20a0aa9">Using the Raspberry Pi</h3>
+<div class="outline-text-3" id="text-org20a0aa9">
 <figure>
 
-<div id="org2884d2f" class="figure">
+<div id="orga7d023e" class="figure">
 <p><img src="./../../../../media/coreboot-x230-3.png" alt="coreboot-x230-3.png" width="70%" />
 </p>
 </div>
@@ -573,7 +573,7 @@ Before we begin the process of flashing, let's inspect the ROM itself.  First,
 simply run flashrom, specifying the SPI device as the programmer:
 </p>
 
-<pre class="example" id="org38e51ca">
+<pre class="example" id="orgf36416f">
 # flashrom --programmer linux_spi:dev=/dev/spidev0.0
 flashrom v0.9.9-r1955 on Linux 4.4.10-1-ARCH (armv7l)
 flashrom is free software, get the source code at https://flashrom.org
@@ -598,7 +598,7 @@ Disconnect and attach to the other.
 If you were able to read the chip number, pass it along, and try again:
 </p>
 
-<pre class="example" id="org64ff970">
+<pre class="example" id="org28bcf9e">
 # flashrom --programmer linux_spi:dev=/dev/spidev0.0 \
            --chip "MX25L3206E/MX25L3208E"
 flashrom v0.9.9-r1955 on Linux 4.4.10-1-ARCH (armv7l)
@@ -613,7 +613,7 @@ Now, we will want to create a back up image of the ROM, but we also want to
 verify we are reading correctly:
 </p>
 
-<pre class="example" id="org5d05c05">
+<pre class="example" id="org6d35ca6">
 # flashrom --programmer linux_spi:dev=/dev/spidev0.0 \
            --chip "MX25L3206E/MX25L3208E" \
            --read original.1.rom
@@ -666,9 +666,9 @@ to 8 times, once or twice for each chip type.
 </div>
 </div>
 
-<div id="outline-container-org78622e2" class="outline-2">
-<h2 id="org78622e2">Configuration and Compilation</h2>
-<div class="outline-text-2" id="text-org78622e2">
+<div id="outline-container-org9dbbb34" class="outline-2">
+<h2 id="org9dbbb34">Configuration and Compilation</h2>
+<div class="outline-text-2" id="text-org9dbbb34">
 <p>
 Half the battle to getting Coreboot onto your system is properly putting
 together the build-tools and compiling the coreboot image.  There already
@@ -687,7 +687,7 @@ tools.
 First up, get a copy of the <a href="https://www.coreboot.org/downloads.html">Coreboot Source</a>:
 </p>
 
-<pre class="example" id="org72e2ccf">
+<pre class="example" id="orgeb1fb71">
 % git clone --recursive https://review.coreboot.org/coreboot.git
 </pre>
 
@@ -700,7 +700,7 @@ initialize the project's submodules.
 Next, we will need to download the blobs archive:
 </p>
 
-<pre class="example" id="org6f05d38">
+<pre class="example" id="orgb069353">
 % curl -SLO https://www.coreboot.org/releases/coreboot-blobs-4.5.tar.xz
 </pre>
 
@@ -715,7 +715,7 @@ The link can be found from the
 Now, unpack the blobs into the <code>coreboot/3rdparty/blobs</code> folder:
 </p>
 
-<pre class="example" id="orgb7d0dae">
+<pre class="example" id="orga18002d">
 % tar -xf coreboot-blobs-4.5.tar.xz --strip-components=1 -C coreboot
 </pre>
 
@@ -725,10 +725,10 @@ finally building the coreboot image itself.
 </p>
 </div>
 
-<div id="outline-container-org1c8342f" class="outline-3">
-<h3 id="org1c8342f">Configuration</h3>
-<div class="outline-text-3" id="text-org1c8342f">
-<pre class="example" id="org6801708">
+<div id="outline-container-orgfd74235" class="outline-3">
+<h3 id="orgfd74235">Configuration</h3>
+<div class="outline-text-3" id="text-orgfd74235">
+<pre class="example" id="orgf495992">
 % cd coreboot
 </pre>
 
@@ -736,7 +736,7 @@ finally building the coreboot image itself.
 We'll start by configuring the compile options for coreboot:
 </p>
 
-<pre class="example" id="org3121392">
+<pre class="example" id="org2182411">
 ± make menuconfig
 </pre>
 
@@ -744,7 +744,7 @@ We'll start by configuring the compile options for coreboot:
 OR
 </p>
 
-<pre class="example" id="orge9dd586">
+<pre class="example" id="org358cf4a">
 ± make nconfig
 </pre>
 
@@ -752,7 +752,7 @@ OR
 Set the following options:
 </p>
 
-<pre class="example" id="orgf1bba8e">
+<pre class="example" id="org1520f0e">
 general  --|
            |-[*] Compress ramstage with LZMA
            |-[*] Include the coreboot .config file into the ROM image
@@ -788,9 +788,9 @@ These configuration options were borrowed from
 </div>
 </div>
 
-<div id="outline-container-orgeb5b45f" class="outline-3">
-<h3 id="orgeb5b45f">Compilation</h3>
-<div class="outline-text-3" id="text-orgeb5b45f">
+<div id="outline-container-org432d672" class="outline-3">
+<h3 id="org432d672">Compilation</h3>
+<div class="outline-text-3" id="text-org432d672">
 <blockquote>
 <p>
 If you were thinking of compiling the ROM on the Pi, I recommend you
@@ -803,7 +803,7 @@ you'll prefer a machine with more power.
 From here, we can build the tool-chain:
 </p>
 
-<pre class="example" id="orgaa62648">
+<pre class="example" id="org6bfcc94">
 ± make crossgcc-x64 CPUS=$(nproc)
 </pre>
 
@@ -822,7 +822,7 @@ the same effect.
 Now, we can build the coreboot image itself:
 </p>
 
-<pre class="example" id="org3d5e5c5">
+<pre class="example" id="orgc971ec8">
 ± make -j$(nproc)
 </pre>
 
@@ -838,7 +838,7 @@ image that contains only the Coreboot contents.  To do this, we will use <code>d
 to skip the first 8MB of the image, and only grab the last 4:
 </p>
 
-<pre class="example" id="org42d6fe3">
+<pre class="example" id="orgfd944c0">
 ± dd if=build/coreboot.rom bs=1M of=/tmp/x230.rom skip=8
 </pre>
 
@@ -850,15 +850,15 @@ image to the Raspberry Pi.
 </div>
 </div>
 
-<div id="outline-container-org3338687" class="outline-2">
-<h2 id="org3338687">Flashing the New Image</h2>
-<div class="outline-text-2" id="text-org3338687">
+<div id="outline-container-orge2226f4" class="outline-2">
+<h2 id="orge2226f4">Flashing the New Image</h2>
+<div class="outline-text-2" id="text-orge2226f4">
 <p>
 After the image is copied to the Pi, we can use flashrom to write the new
 image:
 </p>
 
-<pre class="example" id="org525ef90">
+<pre class="example" id="org2e6bf3c">
 # flashrom --programmer linux_spi:dev=/dev/spidev0.0
            --chip "MX25L3206E/MX25L3208E"
            --write /tmp/x230.rom
@@ -879,7 +879,7 @@ ways: using flashrom's <code>--verify</code> option, or reading the image and ru
 <code>diff</code>:
 </p>
 
-<pre class="example" id="org855e768">
+<pre class="example" id="orgc937f7e">
 # flashrom --programmer linux_spi:dev=/dev/spidev0.0
            --chip "MX25L3206E/MX25L3208E"
            --verify /tmp/x230.rom
@@ -896,7 +896,7 @@ Verifying flash... VERIFIED.
 OR
 </p>
 
-<pre class="example" id="org9bde437">
+<pre class="example" id="org7fce4d7">
 # flashrom --programmer linux_spi:dev=/dev/spidev0.0 \
            --chip "MX25L3206E/MX25L3208E" \
            --read /tmp/x230.2.rom
@@ -922,9 +922,9 @@ works!
 </div>
 </div>
 
-<div id="outline-container-orge13753c" class="outline-2">
-<h2 id="orge13753c">Common Problems</h2>
-<div class="outline-text-2" id="text-orge13753c">
+<div id="outline-container-orgfa16f13" class="outline-2">
+<h2 id="orgfa16f13">Common Problems</h2>
+<div class="outline-text-2" id="text-orgfa16f13">
 <p>
 If you're having issues flashing or reading your BIOS, check the following:
 </p>
@@ -944,9 +944,9 @@ programming</a>.
 </div>
 </div>
 
-<div id="outline-container-orgc71d2c1" class="outline-2">
-<h2 id="orgc71d2c1">Summary and Auxiliary Advice</h2>
-<div class="outline-text-2" id="text-orgc71d2c1">
+<div id="outline-container-org5cffe5a" class="outline-2">
+<h2 id="org5cffe5a">Summary and Auxiliary Advice</h2>
+<div class="outline-text-2" id="text-org5cffe5a">
 <p>
 Hopefully, you're now booting into your x230 with Coreboot.  Enjoy your new
 BIOS, whitelist free and awesome!
@@ -960,9 +960,9 @@ on <a href="https://freenode.net/">freenode</a> or <a href="https://www.coreboot
 </div>
 </div>
 
-<div id="outline-container-org9c3c808" class="outline-2">
-<h2 id="org9c3c808">References</h2>
-<div class="outline-text-2" id="text-org9c3c808">
+<div id="outline-container-org20c1eb7" class="outline-2">
+<h2 id="org20c1eb7">References</h2>
+<div class="outline-text-2" id="text-org20c1eb7">
 <ul class="org-ul">
 <li><a href="https://www.coreboot.org">coreboot homepage</a></li>
 

@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2025-05-26 Mon 23:46 -->
+<!-- 2025-06-01 Sun 00:17 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>NixOS</title>
@@ -294,20 +294,20 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org3f26234">NixOS</a>
+<li><a href="#orgb354aba">NixOS</a>
 <ul>
-<li><a href="#orgb9a9c03">Nix (the package manager)</a></li>
-<li><a href="#org7d3f524">Nix Store</a></li>
-<li><a href="#org67c8fd7">Nix Profiles</a></li>
-<li><a href="#org4e07964">System Profiles</a></li>
+<li><a href="#org3995a7c">Nix (the package manager)</a></li>
+<li><a href="#org549b76e">Nix Store</a></li>
+<li><a href="#org9c3017a">Nix Profiles</a></li>
+<li><a href="#orga85a013">System Profiles</a></li>
 </ul>
 </li>
-<li><a href="#org7fb5a86">Alternatives</a></li>
-<li><a href="#orgae99572">Impressions and Thoughts</a></li>
+<li><a href="#orgd886ae3">Alternatives</a></li>
+<li><a href="#org1e66b96">Impressions and Thoughts</a></li>
 </ul>
 </div>
 </div>
-<div class="PREVIEW" id="org77e9faa">
+<div class="PREVIEW" id="orgd31bbc8">
 <p>
 <a href="https://nixos.org/">NixOS</a> is a new kind of <a href="https://www.gnu.org">GNU</a>/<a href="https://www.kernel.org/">Linux</a> distribution, borrowing the ideas of
 functional programming languages to bring about a revolution of how we think
@@ -316,9 +316,9 @@ about operating systems and software development.
 
 </div>
 
-<div id="outline-container-org3f26234" class="outline-2">
-<h2 id="org3f26234">NixOS</h2>
-<div class="outline-text-2" id="text-org3f26234">
+<div id="outline-container-orgb354aba" class="outline-2">
+<h2 id="orgb354aba">NixOS</h2>
+<div class="outline-text-2" id="text-orgb354aba">
 <p>
 <a href="https://nixos.org/">NixOS</a> is a "functional" <a href="https://www.gnu.org">GNU</a>/<a href="https://www.kernel.org/">Linux</a> distribution
 extending the ideas of functional programming languages to operating systems.
@@ -382,9 +382,9 @@ detour through <a href="https://nixos.org/nix/">Nix</a>, the package manager.
 </p>
 </div>
 
-<div id="outline-container-orgb9a9c03" class="outline-3">
-<h3 id="orgb9a9c03">Nix (the package manager)</h3>
-<div class="outline-text-3" id="text-orgb9a9c03">
+<div id="outline-container-org3995a7c" class="outline-3">
+<h3 id="org3995a7c">Nix (the package manager)</h3>
+<div class="outline-text-3" id="text-org3995a7c">
 <p>
 Beyond the comparisons of language paradigms, there are some other <span class="underline">really</span>
 neat ideas that come from the <a href="https://nixos.org/nix/">Nix</a> family.  Specifically, I want to
@@ -431,9 +431,9 @@ by <code>A</code> is left untouched and package <code>A</code> works just the sa
 </div>
 </div>
 
-<div id="outline-container-org7d3f524" class="outline-3">
-<h3 id="org7d3f524">Nix Store</h3>
-<div class="outline-text-3" id="text-org7d3f524">
+<div id="outline-container-org549b76e" class="outline-3">
+<h3 id="org549b76e">Nix Store</h3>
+<div class="outline-text-3" id="text-org549b76e">
 <p>
 After examining the above example, how does <a href="https://nixos.org/nix/">Nix</a> accomplish this?
 </p>
@@ -451,7 +451,7 @@ directory <code>/nix/store/</code> that contains each package in its <code>hash-
 folder.  For example, let's look at <a href="https://www.mozilla.org/en-US/firefox/">Firefox</a>:
 </p>
 
-<pre class="example" id="org0dcba6a">
+<pre class="example" id="orgb764973">
 % ls -al $(which firefox)
 lrwxrwxrwx 1 root root 68 Dec 31  1969 /run/current-system/sw/bin/firefox -&gt; /nix/store/78gl44fjjira5jsgyj8vdwsnw8wdwngs-firefox-68.0/bin/firefox
 % ls -l /nix/store/78gl44fjjira5jsgyj8vdwsnw8wdwngs-firefox-68.0/
@@ -474,7 +474,7 @@ Let's examine a package that requires dynamic linking to correctly execute, the
 <a href="https://python.org">Python</a> interpreter:
 </p>
 
-<pre class="example" id="org5d2df39">
+<pre class="example" id="org37c4e2c">
 % ls -l $(which python)
 lrwxrwxrwx 1 root root 68 Dec 31  1969 /run/current-system/sw/bin/python -&gt; /nix/store/dmh36s38dcpc91grfsh6wqrm65rz5hfh-pythonOverlay/bin/python
 % ls -l /nix/store/dmh36s38dcpc91grfsh6wqrm65rz5hfh-pythonOverlay
@@ -489,7 +489,7 @@ dr-xr-xr-x 3 root root   17 Dec 31  1969 share
 Now, let's examine the linked objects:
 </p>
 
-<pre class="example" id="org6b46d64">
+<pre class="example" id="orga80ea5b">
 % ldd $(which python)
 linux-vdso.so.1 (0x00007ffd3c3d9000)
 libpython3.7m.so.1.0 =&gt; /nix/store/10rqw9cx8x2knwdaxhlyb4drla8v8zzk-python3-3.7.4/lib/libpython3.7m.so.1.0 (0x00007f6ccf964000)
@@ -513,7 +513,7 @@ Each of the linked objects, sans the kernel object, are found in the
 Furthermore, if we examine the <a href="https://python.org">Python</a> <code>lib</code> folder:
 </p>
 
-<pre class="example" id="org8820f52">
+<pre class="example" id="org7f22f3b">
 % ls -l /nix/store/dmh36s38dcpc91grfsh6wqrm65rz5hfh-pythonOverlay/lib
 total 12
 lrwxrwxrwx 1 root root   78 Dec 31  1969 libpython3.7m.so -&gt; /nix/store/10rqw9cx8x2knwdaxhlyb4drla8v8zzk-python3-3.7.4/lib/libpython3.7m.so
@@ -536,9 +536,9 @@ the package's inputs.
 </div>
 </div>
 
-<div id="outline-container-org67c8fd7" class="outline-3">
-<h3 id="org67c8fd7">Nix Profiles</h3>
-<div class="outline-text-3" id="text-org67c8fd7">
+<div id="outline-container-org9c3017a" class="outline-3">
+<h3 id="org9c3017a">Nix Profiles</h3>
+<div class="outline-text-3" id="text-org9c3017a">
 <p>
 Packages in <a href="https://nixos.org/nix/">Nix</a> are directory trees found in the <a href="https://nixos.org/nix/">Nix</a> store,
 what are profiles?  Perhaps, more appropriately, what are user environments?
@@ -550,7 +550,7 @@ a different <a href="https://www.gnu.org">GNU</a>/<a href="https://www.kernel.or
 symbolic link in the user's home directory:
 </p>
 
-<pre class="example" id="org9e52391">
+<pre class="example" id="org23460dd">
 % ls -l ~/.nix-profile
 lrwxrwxrwx 1 kb users 41 May 15  2017 /home/kb/.nix-profile -&gt; /nix/var/nix/profiles/per-user/kb/profile
 </pre>
@@ -559,7 +559,7 @@ lrwxrwxrwx 1 kb users 41 May 15  2017 /home/kb/.nix-profile -&gt; /nix/var/nix/p
 However, this link is to another link.  Let's follow the rabbit:
 </p>
 
-<pre class="example" id="orgc18259e">
+<pre class="example" id="org9c9414f">
 % ls -l /nix/var/nix/profiles/per-user/kb/profile
 lrwxrwxrwx 1 kb users 14 Jul 30 15:15 /nix/var/nix/profiles/per-user/kb/profile -&gt; profile-3-link
 </pre>
@@ -569,7 +569,7 @@ This indirect symbolic link points to a symbolic link in the same directory.
 Let's keep following:
 </p>
 
-<pre class="example" id="org25c7288">
+<pre class="example" id="orgd5375d4">
 % ls -l /nix/var/nix/profiles/per-user/kb/profile-3-link
 lrwxrwxrwx 1 kb users 60 Jul 30 15:15 /nix/var/nix/profiles/per-user/kb/profile-3-link -&gt; /nix/store/d7d6hcv8v2crb98nhh00nrr2bkh034kc-user-environment
 % ls -l /nix/store/d7d6hcv8v2crb98nhh00nrr2bkh034kc-user-environment
@@ -589,7 +589,7 @@ After following three links, we are referred to a directory tree in the
 Let's examine the <code>bin</code> directory quickly:
 </p>
 
-<pre class="example" id="orge7eb393">
+<pre class="example" id="org7897267">
 % ls -l /nix/store/d7d6hcv8v2crb98nhh00nrr2bkh034kc-user-environment/bin
 total 0
 lrwxrwxrwx 1 root root 67 Dec 31  1969 aws -&gt; /nix/store/k0hyks88khah4hvb19i0d6swsawyzz5a-awscli-1.16.170/bin/aws
@@ -605,7 +605,7 @@ lrwxrwxrwx 1 root root 75 Dec 31  1969 carnix.d -&gt; /nix/store/s11zqp9r8h4r65i
 Currently, this example profile only has two packages installed:
 </p>
 
-<pre class="example" id="orge9e0b6c">
+<pre class="example" id="org55bcc67">
 % nix-env -q
 awscli-1.16.170
 rust_carnix-0.10.0
@@ -621,7 +621,7 @@ Let's follow this example again, however, we going to modify the user
 environment by adding a package:
 </p>
 
-<pre class="example" id="org36cc116">
+<pre class="example" id="orgeada0ee">
 % nix-env -i autogen
 </pre>
 
@@ -629,7 +629,7 @@ environment by adding a package:
 Starting with second link:
 </p>
 
-<pre class="example" id="org77c1b88">
+<pre class="example" id="orgda02e15">
 % ls -l /nix/var/nix/profiles/per-user/kb/profile
 lrwxrwxrwx 1 kb users 14 Aug 13 05:52 /nix/var/nix/profiles/per-user/kb/profile -&gt; profile-4-link
 </pre>
@@ -638,7 +638,7 @@ lrwxrwxrwx 1 kb users 14 Aug 13 05:52 /nix/var/nix/profiles/per-user/kb/profile 
 The profile link now points to a different link.  Let's keep going:
 </p>
 
-<pre class="example" id="orgade7701">
+<pre class="example" id="org83fcb74">
 % ls -l /nix/var/nix/profiles/per-user/kb/profile-4-link
 lrwxrwxrwx 1 kb users 60 Aug 13 05:52 /nix/var/nix/profiles/per-user/kb/profile-4-link -&gt; /nix/store/xslnn9gs5gkgdvzgb0w3b0iggbsszag5-user-environment
 </pre>
@@ -652,7 +652,7 @@ The user-profile now points to a completely different symlink forest in the
 The old profile still exists.  Let's switch (rollback) to it:
 </p>
 
-<pre class="example" id="orgd68f2c7">
+<pre class="example" id="org066df6e">
 % nix-env --rollback                                                (1)
 switching from generation 4 to 3
 % ls -l /nix/var/nix/profiles/per-user/kb/profile
@@ -677,9 +677,9 @@ adversely affected.
 </div>
 </div>
 
-<div id="outline-container-org4e07964" class="outline-3">
-<h3 id="org4e07964">System Profiles</h3>
-<div class="outline-text-3" id="text-org4e07964">
+<div id="outline-container-orga85a013" class="outline-3">
+<h3 id="orga85a013">System Profiles</h3>
+<div class="outline-text-3" id="text-orga85a013">
 <p>
 After user profiles, we are left with system profiles.  What exactly is
 <a href="https://nixos.org/">NixOS</a>?  If any of the above provides any foreshadowing, the answer
@@ -701,7 +701,7 @@ the root of the filesystem of a <a href="https://nixos.org/">NixOS</a> system, t
 need for <code>/bin</code>, <code>/usr</code>, and <code>/lib</code>.
 </p>
 
-<pre class="example" id="orgbe70106">
+<pre class="example" id="orgff56f2f">
 % ls -l /
 total 57
 drwxr-xr-x   2 root root  4096 Aug  2 09:04 bin
@@ -729,7 +729,7 @@ These are kept around as ways to resolve issues with porting packages into the
 <a href="https://nixos.org/nix/">Nix</a> environment.
 </p>
 
-<pre class="example" id="orgc76aa82">
+<pre class="example" id="orgf12f958">
 % ls -l /bin/
 total 4
 lrwxrwxrwx 1 root root 75 Aug  2 09:04 sh -&gt; /nix/store/93h01q6yg13xdrabvqbddzbk11w6a928-bash-interactive-4.4-p23/bin/sh
@@ -756,7 +756,7 @@ all of the install programs?
 The answer: <code>/run/current-system</code>:
 </p>
 
-<pre class="example" id="orgc3ee52f">
+<pre class="example" id="org78e65e5">
 % ls -l /run/current-system
 lrwxrwxrwx 1 root root 88 Aug  2 09:04 /run/current-system -&gt; /nix/store/9c3k3ky5lg3x937984902v1d7148m7c5-nixos-system-phenex-19.03.173147.77295b0bd26
 % ls -l /nix/store/9c3k3ky5lg3x937984902v1d7148m7c5-nixos-system-phenex-19.03.173147.77295b0bd26
@@ -798,9 +798,9 @@ interaction of services and their underlying configuration.
 </div>
 </div>
 
-<div id="outline-container-org7fb5a86" class="outline-2">
-<h2 id="org7fb5a86">Alternatives</h2>
-<div class="outline-text-2" id="text-org7fb5a86">
+<div id="outline-container-orgd886ae3" class="outline-2">
+<h2 id="orgd886ae3">Alternatives</h2>
+<div class="outline-text-2" id="text-orgd886ae3">
 <p>
 Aside from <a href="https://nixos.org/">NixOS</a>, there is also <a href="https://guix.gnu.org/">Guix</a>, a <a href="https://www.gnu.org">GNU</a>
 alternative to <a href="https://nixos.org/nix/">Nix</a> and <a href="https://nixos.org/">NixOS</a>.  Many of the ideas of
@@ -839,9 +839,9 @@ be installed via the software configuration tools.
 </div>
 </div>
 
-<div id="outline-container-orgae99572" class="outline-2">
-<h2 id="orgae99572">Impressions and Thoughts</h2>
-<div class="outline-text-2" id="text-orgae99572">
+<div id="outline-container-org1e66b96" class="outline-2">
+<h2 id="org1e66b96">Impressions and Thoughts</h2>
+<div class="outline-text-2" id="text-org1e66b96">
 <p>
 <a href="https://nixos.org/nix/">Nix</a> and by extension <a href="https://nixos.org/">NixOS</a> (hopefully) solve some really
 annoying problems I tend to keep running into when developing software and
