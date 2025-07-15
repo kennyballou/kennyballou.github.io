@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2025-06-01 Sun 00:17 -->
+<!-- 2025-07-15 Tue 13:27 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>(New) Static Site Generation</title>
@@ -294,21 +294,21 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org73b240c">Motivation</a></li>
-<li><a href="#org3b84fc2">High-Level Implementation</a></li>
-<li><a href="#orgd65f89a">Detailed Implementation</a>
+<li><a href="#org8083d92">Motivation</a></li>
+<li><a href="#orgd95a8c2">High-Level Implementation</a></li>
+<li><a href="#org984102b">Detailed Implementation</a>
 <ul>
-<li><a href="#orgc7c0cc5">Post Content Generation</a></li>
-<li><a href="#org2b8dac3">Summary Page Generation</a></li>
-<li><a href="#orgda56b6d">RSS/XML Generation</a></li>
+<li><a href="#org356b1dc">Post Content Generation</a></li>
+<li><a href="#orge398641">Summary Page Generation</a></li>
+<li><a href="#orgbe8a874">RSS/XML Generation</a></li>
 </ul>
 </li>
-<li><a href="#orgb20dd83">Future Work</a></li>
-<li><a href="#orge2a8b11">Parting Thoughts</a></li>
+<li><a href="#org0da3ee4">Future Work</a></li>
+<li><a href="#org8302080">Parting Thoughts</a></li>
 </ul>
 </div>
 </div>
-<div class="PREVIEW" id="org8853cad">
+<div class="PREVIEW" id="orgaac8d9b">
 <p>
 For a few years, I've been using <a href="https://gohugo.io/">Hugo</a> for blog generation.  Recently,
 I've decided I wanted to take static site generation into a different
@@ -324,9 +324,9 @@ format and changing the generation process into a completely custom set of
 scripts.
 </p>
 
-<div id="outline-container-org73b240c" class="outline-2">
-<h2 id="org73b240c">Motivation</h2>
-<div class="outline-text-2" id="text-org73b240c">
+<div id="outline-container-org8083d92" class="outline-2">
+<h2 id="org8083d92">Motivation</h2>
+<div class="outline-text-2" id="text-org8083d92">
 <p>
 When I first set down to build a blog 5 years ago, I had a pretty basic set of
 requirements.
@@ -413,9 +413,9 @@ invocations to <a href="https://pandoc.org">Pandoc</a>.
 </div>
 </div>
 
-<div id="outline-container-org3b84fc2" class="outline-2">
-<h2 id="org3b84fc2">High-Level Implementation</h2>
-<div class="outline-text-2" id="text-org3b84fc2">
+<div id="outline-container-orgd95a8c2" class="outline-2">
+<h2 id="orgd95a8c2">High-Level Implementation</h2>
+<div class="outline-text-2" id="text-orgd95a8c2">
 <p>
 The core of the implementation of the new site generation is blog posts written
 in <a href="https://org-mode.org">Org-mode</a>, processed by several shell scripts, using
@@ -443,9 +443,9 @@ the new version to break existing links.
 </div>
 </div>
 
-<div id="outline-container-orgd65f89a" class="outline-2">
-<h2 id="orgd65f89a">Detailed Implementation</h2>
-<div class="outline-text-2" id="text-orgd65f89a">
+<div id="outline-container-org984102b" class="outline-2">
+<h2 id="org984102b">Detailed Implementation</h2>
+<div class="outline-text-2" id="text-org984102b">
 <p>
 The easy part is generating each post.  This is simply an <code>index.html</code> in the
 correct folder.  The majority of the complexities stem from the summaries and
@@ -453,9 +453,9 @@ main <code>index</code> page.
 </p>
 </div>
 
-<div id="outline-container-orgc7c0cc5" class="outline-3">
-<h3 id="orgc7c0cc5">Post Content Generation</h3>
-<div class="outline-text-3" id="text-orgc7c0cc5">
+<div id="outline-container-org356b1dc" class="outline-3">
+<h3 id="org356b1dc">Post Content Generation</h3>
+<div class="outline-text-3" id="text-org356b1dc">
 <p>
 To generate a blog post's <code>index.html</code> page, we consider the following <code>make</code>
 target:
@@ -516,15 +516,15 @@ The <code>generate_post.sh</code> script is fairly basic:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-bash"><span style="font-weight: bold; font-style: italic;">#</span><span style="font-weight: bold; font-style: italic;">!/usr/bin/</span><span style="font-weight: bold;">env</span><span style="font-weight: bold; font-style: italic;"> bash</span>
-<span style="font-weight: bold; font-style: italic;"># </span><span style="font-weight: bold; font-style: italic;">Generate HTML for blog post</span>
-
+<pre class="src src-bash"><span style="font-weight: bold; font-style: italic;">#</span><span style="font-weight: bold; font-style: italic;">!/usr/bin/</span><span style="font-weight: bold;">env</span><span style="font-weight: bold; font-style: italic;"> bash
+</span><span style="font-weight: bold; font-style: italic;"># </span><span style="font-weight: bold; font-style: italic;">Generate HTML for blog post
+</span>
 <span style="font-weight: bold; font-style: italic;">ORGIN</span>=${<span style="font-weight: bold; font-style: italic;">1</span>}
-<span style="font-weight: bold; font-style: italic;">PROJ_ROOT</span>=$(git rev-parse --show-toplevel)
-source ${<span style="font-weight: bold; font-style: italic;">PROJ_ROOT</span>}/scripts/site-templates.sh
-source ${<span style="font-weight: bold; font-style: italic;">PROJ_ROOT</span>}/scripts/org-metadata.sh
-<span style="font-weight: bold; font-style: italic;">DISPLAY_DATE</span>=$(date -d ${<span style="font-weight: bold; font-style: italic;">DATE</span>} +<span style="font-style: italic;">'%a %b %d, %Y'</span>)
-<span style="font-weight: bold; font-style: italic;">SORT_DATE</span>=$(date -d ${<span style="font-weight: bold; font-style: italic;">DATE</span>} +<span style="font-style: italic;">'%Y        %m      %d      '</span>)
+<span style="font-weight: bold; font-style: italic;">PROJ_ROOT</span>=$(<span style="font-weight: bold;">git rev-parse --show-toplevel</span>)
+<span style="font-weight: bold;">source</span> ${<span style="font-weight: bold; font-style: italic;">PROJ_ROOT</span>}/scripts/site-templates.sh
+<span style="font-weight: bold;">source</span> ${<span style="font-weight: bold; font-style: italic;">PROJ_ROOT</span>}/scripts/org-metadata.sh
+<span style="font-weight: bold; font-style: italic;">DISPLAY_DATE</span>=$(<span style="font-weight: bold;">date -d ${DATE} +'%a %b %d, %Y'</span>)
+<span style="font-weight: bold; font-style: italic;">SORT_DATE</span>=$(<span style="font-weight: bold;">date -d ${DATE} +'%Y        %m      %d      '</span>)
 
 cat ${<span style="font-weight: bold; font-style: italic;">HTML_HEADER_FILE</span>}
 cat ${<span style="font-weight: bold; font-style: italic;">HTML_SUB_HEADER_FILE</span>}
@@ -554,9 +554,9 @@ otherwise largely duplicated content.
 </div>
 </div>
 
-<div id="outline-container-org2b8dac3" class="outline-3">
-<h3 id="org2b8dac3">Summary Page Generation</h3>
-<div class="outline-text-3" id="text-org2b8dac3">
+<div id="outline-container-orge398641" class="outline-3">
+<h3 id="orge398641">Summary Page Generation</h3>
+<div class="outline-text-3" id="text-orge398641">
 <p>
 The summary page is a bit more involved to generate.  A few questions had to be
 answered before it was possible: how to generate the summary text? And how
@@ -589,13 +589,13 @@ To generate the preview content, the <code>generate_post_preview.sh</code> scrip
 </p>
 
 <div class="org-src-container">
-<pre class="src src-bash"><span style="font-weight: bold; font-style: italic;">#</span><span style="font-weight: bold; font-style: italic;">!/usr/bin/</span><span style="font-weight: bold;">env</span><span style="font-weight: bold; font-style: italic;"> bash</span>
-<span style="font-weight: bold; font-style: italic;"># </span><span style="font-weight: bold; font-style: italic;">Generate HTML post summary tags</span>
-
+<pre class="src src-bash"><span style="font-weight: bold; font-style: italic;">#</span><span style="font-weight: bold; font-style: italic;">!/usr/bin/</span><span style="font-weight: bold;">env</span><span style="font-weight: bold; font-style: italic;"> bash
+</span><span style="font-weight: bold; font-style: italic;"># </span><span style="font-weight: bold; font-style: italic;">Generate HTML post summary tags
+</span>
 <span style="font-weight: bold; font-style: italic;">ORGIN</span>=${<span style="font-weight: bold; font-style: italic;">1</span>}
-<span style="font-weight: bold; font-style: italic;">PROJ_ROOT</span>=$(git rev-parse --show-toplevel)
+<span style="font-weight: bold; font-style: italic;">PROJ_ROOT</span>=$(<span style="font-weight: bold;">git rev-parse --show-toplevel</span>)
 
-source ${<span style="font-weight: bold; font-style: italic;">PROJ_ROOT</span>}/scripts/org-metadata.sh
+<span style="font-weight: bold;">source</span> ${<span style="font-weight: bold; font-style: italic;">PROJ_ROOT</span>}/scripts/org-metadata.sh
 
 <span style="font-weight: bold;">echo</span> <span style="font-style: italic;">"${LINKS}"</span>
 <span style="font-weight: bold;">echo</span> <span style="font-style: italic;">"${PREVIEW}"</span>
@@ -619,7 +619,7 @@ From the <code>org-metadata.sh</code> script:
 
 <div class="org-src-container">
 <pre class="src src-bash"><span style="font-weight: bold; font-style: italic;">ORIGIN</span>=${<span style="font-weight: bold; font-style: italic;">1</span>}
-<span style="font-weight: bold; font-style: italic;">DATE</span>=$(awk -F<span style="font-style: italic;">': '</span> <span style="font-style: italic;">'/^#\+DATE:/ { printf "%s", $2}'</span> ${<span style="font-weight: bold; font-style: italic;">ORGIN</span>})
+<span style="font-weight: bold; font-style: italic;">DATE</span>=$(<span style="font-weight: bold;">awk -F': ' '/^#\+DATE:/ { printf "%s", $2}' ${ORGIN}</span>)
 </pre>
 </div>
 
@@ -628,23 +628,23 @@ Then, from the <code>generate_post_summary_html.sh</code> script:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-bash"><span style="font-weight: bold; font-style: italic;">#</span><span style="font-weight: bold; font-style: italic;">!/usr/bin/</span><span style="font-weight: bold;">env</span><span style="font-weight: bold; font-style: italic;"> bash</span>
-<span style="font-weight: bold; font-style: italic;"># </span><span style="font-weight: bold; font-style: italic;">Generate HTML post summary tags</span>
-
+<pre class="src src-bash"><span style="font-weight: bold; font-style: italic;">#</span><span style="font-weight: bold; font-style: italic;">!/usr/bin/</span><span style="font-weight: bold;">env</span><span style="font-weight: bold; font-style: italic;"> bash
+</span><span style="font-weight: bold; font-style: italic;"># </span><span style="font-weight: bold; font-style: italic;">Generate HTML post summary tags
+</span>
 <span style="font-weight: bold; font-style: italic;">ORGIN</span>=${<span style="font-weight: bold; font-style: italic;">1</span>}
 <span style="font-weight: bold; font-style: italic;">GENERATED_PREVIEW_FILE</span>=${<span style="font-weight: bold; font-style: italic;">2</span>}
-<span style="font-weight: bold; font-style: italic;">PROJ_ROOT</span>=$(git rev-parse --show-toplevel)
+<span style="font-weight: bold; font-style: italic;">PROJ_ROOT</span>=$(<span style="font-weight: bold;">git rev-parse --show-toplevel</span>)
 
-source ${<span style="font-weight: bold; font-style: italic;">PROJ_ROOT</span>}/scripts/org-metadata.sh
-<span style="font-weight: bold; font-style: italic;">DISPLAY_DATE</span>=$(date -d ${<span style="font-weight: bold; font-style: italic;">DATE</span>} +<span style="font-style: italic;">'%a %b %d, %Y'</span>)
-<span style="font-weight: bold; font-style: italic;">SORT_DATE</span>=$(date -d ${<span style="font-weight: bold; font-style: italic;">DATE</span>} +<span style="font-style: italic;">'%Y        %m      %d      '</span>)
-<span style="font-weight: bold; font-style: italic;">PREVIEW_CONTENT</span>=$(cat ${<span style="font-weight: bold; font-style: italic;">GENERATED_PREVIEW_FILE</span>} | pandoc -f org -t html)
+<span style="font-weight: bold;">source</span> ${<span style="font-weight: bold; font-style: italic;">PROJ_ROOT</span>}/scripts/org-metadata.sh
+<span style="font-weight: bold; font-style: italic;">DISPLAY_DATE</span>=$(<span style="font-weight: bold;">date -d ${DATE} +'%a %b %d, %Y'</span>)
+<span style="font-weight: bold; font-style: italic;">SORT_DATE</span>=$(<span style="font-weight: bold;">date -d ${DATE} +'%Y        %m      %d      '</span>)
+<span style="font-weight: bold; font-style: italic;">PREVIEW_CONTENT</span>=$(<span style="font-weight: bold;">cat ${GENERATED_PREVIEW_FILE} | pandoc -f org -t html</span>)
 
 <span style="font-weight: bold;">echo</span> -n <span style="font-style: italic;">"${SORT_DATE}"</span>
 <span style="font-weight: bold;">echo</span> -n <span style="font-style: italic;">'&lt;article class="post"&gt;&lt;header&gt;'</span>
 <span style="font-weight: bold;">echo</span> -n <span style="font-style: italic;">"&lt;h2&gt;&lt;a href=\"${SLUG}\"&gt;${TITLE}&lt;/a&gt;&lt;/h2&gt;"</span>
 <span style="font-weight: bold;">echo</span> -n <span style="font-style: italic;">"&lt;div class=\"post-meta\"&gt;${DISPLAY_DATE}&lt;/div&gt;&lt;/header&gt;"</span>
-<span style="font-weight: bold;">echo</span> -n <span style="font-style: italic;">"&lt;blockquote&gt;$(echo ${PREVIEW_CONTENT})&lt;/blockquote&gt;"</span>
+<span style="font-weight: bold;">echo</span> -n <span style="font-style: italic;">"&lt;blockquote&gt;$(</span><span style="font-weight: bold;">echo ${PREVIEW_CONTENT}</span><span style="font-style: italic;">)&lt;/blockquote&gt;"</span>
 <span style="font-weight: bold;">echo</span> -n <span style="font-style: italic;">'&lt;ul class="tags"&gt;&lt;li&gt;&lt;i class="fa fa-tags"&gt;&lt;/i&gt;&lt;/li&gt;'</span>
 <span style="font-weight: bold;">echo</span> -n <span style="font-style: italic;">"${TAGS}"</span> | awk <span style="font-style: italic;">'{ printf "&lt;li&gt;%s&lt;/li&gt;", $0}'</span>
 <span style="font-weight: bold;">echo</span> -n <span style="font-style: italic;">'&lt;/ul&gt;'</span>
@@ -660,12 +660,12 @@ Finally, this is all put together with the <code>generate_index_html.sh</code> s
 </p>
 
 <div class="org-src-container">
-<pre class="src src-bash"><span style="font-weight: bold; font-style: italic;">#</span><span style="font-weight: bold; font-style: italic;">!/usr/bin/</span><span style="font-weight: bold;">env</span><span style="font-weight: bold; font-style: italic;"> bash</span>
-<span style="font-weight: bold; font-style: italic;"># </span><span style="font-weight: bold; font-style: italic;">Generate index.html page</span>
-
+<pre class="src src-bash"><span style="font-weight: bold; font-style: italic;">#</span><span style="font-weight: bold; font-style: italic;">!/usr/bin/</span><span style="font-weight: bold;">env</span><span style="font-weight: bold; font-style: italic;"> bash
+</span><span style="font-weight: bold; font-style: italic;"># </span><span style="font-weight: bold; font-style: italic;">Generate index.html page
+</span>
 <span style="font-weight: bold; font-style: italic;">INPUT_FILES</span>=${<span style="font-weight: bold; font-style: italic;">@</span>}
-<span style="font-weight: bold; font-style: italic;">PROJ_ROOT</span>=$(git rev-parse --show-toplevel)
-source ${<span style="font-weight: bold; font-style: italic;">PROJ_ROOT</span>}/scripts/site-templates.sh
+<span style="font-weight: bold; font-style: italic;">PROJ_ROOT</span>=$(<span style="font-weight: bold;">git rev-parse --show-toplevel</span>)
+<span style="font-weight: bold;">source</span> ${<span style="font-weight: bold; font-style: italic;">PROJ_ROOT</span>}/scripts/site-templates.sh
 
 cat <span style="font-style: italic;">"${HTML_HEADER_FILE}"</span>
 <span style="font-weight: bold;">echo</span> <span style="font-style: italic;">"&lt;body&gt;"</span>
@@ -693,9 +693,9 @@ post summaries onto the <code>index.html</code> page.
 </div>
 </div>
 
-<div id="outline-container-orgda56b6d" class="outline-3">
-<h3 id="orgda56b6d">RSS/XML Generation</h3>
-<div class="outline-text-3" id="text-orgda56b6d">
+<div id="outline-container-orgbe8a874" class="outline-3">
+<h3 id="orgbe8a874">RSS/XML Generation</h3>
+<div class="outline-text-3" id="text-orgbe8a874">
 <p>
 I also wanted to keep the RSS/XML feeds going.  However, as it turns out,
 generating the RSS feed was achieved by performing essentially the same steps
@@ -705,9 +705,9 @@ used for generating the summary <code>index.html</code> page.
 </div>
 </div>
 
-<div id="outline-container-orgb20dd83" class="outline-2">
-<h2 id="orgb20dd83">Future Work</h2>
-<div class="outline-text-2" id="text-orgb20dd83">
+<div id="outline-container-org0da3ee4" class="outline-2">
+<h2 id="org0da3ee4">Future Work</h2>
+<div class="outline-text-2" id="text-org0da3ee4">
 <p>
 There is a fairly obvious limitation of the summary page generation, but only
 really obvious if I write more content.  There was and is no current archive
@@ -719,9 +719,9 @@ is generated using <a href="https://gohugo.io/">Hugo</a> or generated via the ne
 </div>
 </div>
 
-<div id="outline-container-orge2a8b11" class="outline-2">
-<h2 id="orge2a8b11">Parting Thoughts</h2>
-<div class="outline-text-2" id="text-orge2a8b11">
+<div id="outline-container-org8302080" class="outline-2">
+<h2 id="org8302080">Parting Thoughts</h2>
+<div class="outline-text-2" id="text-org8302080">
 <p>
 Like many projects, this was started because I personally was dissatisfied with
 the current state of options.  However, that said, I did not write these
