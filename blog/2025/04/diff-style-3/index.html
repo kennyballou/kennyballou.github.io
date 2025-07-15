@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2025-07-15 Tue 13:27 -->
+<!-- 2025-07-15 Tue 13:31 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Use Diff Conflict Style 3</title>
@@ -294,15 +294,15 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org0d941e6">Context</a></li>
-<li><a href="#orgc06f6d6">diff3</a></li>
-<li><a href="#orgc648aff">Using this conflict resolution style in Git</a></li>
-<li><a href="#org3eb3acf">Zealous Diff3</a></li>
-<li><a href="#org276f952">More options to consider</a></li>
+<li><a href="#org2209750">Context</a></li>
+<li><a href="#org6480443">diff3</a></li>
+<li><a href="#orgc50cd06">Using this conflict resolution style in Git</a></li>
+<li><a href="#org78c36f9">Zealous Diff3</a></li>
+<li><a href="#orgfdc611f">More options to consider</a></li>
 </ul>
 </div>
 </div>
-<div class="preview" id="org73aab5a">
+<div class="preview" id="org0cc0ddc">
 <p>
 Please, just turn on diff style 3.  Thank me later.  I do not know the
 historical reason this setting is not the default, but if you ask me to help
@@ -312,9 +312,9 @@ configure this setting.
 
 </div>
 
-<div id="outline-container-org0d941e6" class="outline-2">
-<h2 id="org0d941e6">Context</h2>
-<div class="outline-text-2" id="text-org0d941e6">
+<div id="outline-container-org2209750" class="outline-2">
+<h2 id="org2209750">Context</h2>
+<div class="outline-text-2" id="text-org2209750">
 <p>
 When dealing with conflicts, merge or otherwise, one of the options for your
 VCS is to modify the files with "conflict markers".  These are those crazy
@@ -347,9 +347,9 @@ this output says nothing of the shared context from whence they came.
 </div>
 </div>
 
-<div id="outline-container-orgc06f6d6" class="outline-2">
-<h2 id="orgc06f6d6">diff3</h2>
-<div class="outline-text-2" id="text-orgc06f6d6">
+<div id="outline-container-org6480443" class="outline-2">
+<h2 id="org6480443">diff3</h2>
+<div class="outline-text-2" id="text-org6480443">
 <p>
 Instead, by using <code>diff3</code>, the base context is provided along with the
 conflicting differences:
@@ -390,9 +390,9 @@ result in a conflict.
 </div>
 </div>
 
-<div id="outline-container-orgc648aff" class="outline-2">
-<h2 id="orgc648aff">Using this conflict resolution style in Git</h2>
-<div class="outline-text-2" id="text-orgc648aff">
+<div id="outline-container-orgc50cd06" class="outline-2">
+<h2 id="orgc50cd06">Using this conflict resolution style in Git</h2>
+<div class="outline-text-2" id="text-orgc50cd06">
 <p>
 Use the following <a href="https://git-scm.com/docs/git-config">command</a> to use this style of conflict resolution within <a href="https://www.git-scm.org/">Git</a>:
 </p>
@@ -414,9 +414,9 @@ Or copy the following into your <code>~/.git/config</code>:
 </div>
 </div>
 
-<div id="outline-container-org3eb3acf" class="outline-2">
-<h2 id="org3eb3acf">Zealous Diff3</h2>
-<div class="outline-text-2" id="text-org3eb3acf">
+<div id="outline-container-org78c36f9" class="outline-2">
+<h2 id="org78c36f9">Zealous Diff3</h2>
+<div class="outline-text-2" id="text-org78c36f9">
 <p>
 Since <a href="https://www.git-scm.org/">Git</a> Version 2.35.0, there exists a new conflict style, <code>zdiff3</code> for Zealous
 diff3 style.  This style <a href="https://stackoverflow.com/questions/71252026/how-do-i-use-zealous-diff3-with-git-and-what-are-the-pros-and-cons">attempts</a> to create better/easier resolutions, which I
@@ -430,9 +430,9 @@ more.
 </div>
 </div>
 
-<div id="outline-container-org276f952" class="outline-2">
-<h2 id="org276f952">More options to consider</h2>
-<div class="outline-text-2" id="text-org276f952">
+<div id="outline-container-orgfdc611f" class="outline-2">
+<h2 id="orgfdc611f">More options to consider</h2>
+<div class="outline-text-2" id="text-orgfdc611f">
 <p>
 <a href="https://jvns.ca/">Julia Evans</a> has an excellent <a href="https://jvns.ca/blog/2024/02/16/popular-git-config-options/">post</a> summarizing popular configuration options for
 <a href="https://www.git-scm.org/">Git</a> which you should check out.

@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2025-07-15 Tue 13:27 -->
+<!-- 2025-07-15 Tue 13:31 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>AWS ECS Container Overrides for Events Targets</title>
@@ -294,14 +294,14 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org7d5c647">Problem</a></li>
-<li><a href="#orgf42b370">Exploring the Problem</a></li>
-<li><a href="#orgb2a0de8">Solution</a></li>
-<li><a href="#orgcab86c1">Conclusion</a></li>
+<li><a href="#org43d973e">Problem</a></li>
+<li><a href="#org2d9ddf8">Exploring the Problem</a></li>
+<li><a href="#orgc29c284">Solution</a></li>
+<li><a href="#org927d92f">Conclusion</a></li>
 </ul>
 </div>
 </div>
-<div class="PREVIEW" id="org07f17e1">
+<div class="PREVIEW" id="orgcbb4f14">
 <p>
 Using <a href="https://aws.amazon.com/cloudformation/">AWS CloudFormation</a> to configure <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/WhatIsCloudWatchEvents.html">AWS CloudWatch Events</a> to target <a href="https://aws.amazon.com/ecs/">ECS</a> is
 not as well documented as it should be.  Here, we walk-through a highly
@@ -326,9 +326,9 @@ When the documentation fails you, use the source.
 What to do when there isn't source (code) available?
 </p>
 
-<div id="outline-container-org7d5c647" class="outline-2">
-<h2 id="org7d5c647">Problem</h2>
-<div class="outline-text-2" id="text-org7d5c647">
+<div id="outline-container-org43d973e" class="outline-2">
+<h2 id="org43d973e">Problem</h2>
+<div class="outline-text-2" id="text-org43d973e">
 <p>
 While attempting to make some infrastucture changes, I wanted to create a
 scheduled <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/WhatIsCloudWatchEvents.html">event</a> to target a specific
@@ -389,9 +389,9 @@ happens.
 </div>
 </div>
 
-<div id="outline-container-orgf42b370" class="outline-2">
-<h2 id="orgf42b370">Exploring the Problem</h2>
-<div class="outline-text-2" id="text-orgf42b370">
+<div id="outline-container-org2d9ddf8" class="outline-2">
+<h2 id="org2d9ddf8">Exploring the Problem</h2>
+<div class="outline-text-2" id="text-org2d9ddf8">
 <blockquote>
 <p>
 Otherwising shooting in the dark&#x2026;
@@ -412,7 +412,7 @@ However, this failed in <a href="https://aws.amazon.com/cloudformation/">CloudFo
 follwing message:
 </p>
 
-<pre class="example" id="orgce0d5aa">
+<pre class="example" id="org191f8f1">
 JSON syntax error in input for target ...
 </pre>
 
@@ -468,9 +468,9 @@ hand.
 </div>
 </div>
 
-<div id="outline-container-orgb2a0de8" class="outline-2">
-<h2 id="orgb2a0de8">Solution</h2>
-<div class="outline-text-2" id="text-orgb2a0de8">
+<div id="outline-container-orgc29c284" class="outline-2">
+<h2 id="orgc29c284">Solution</h2>
+<div class="outline-text-2" id="text-orgc29c284">
 <p>
 However, the "Input" key is a string encoded JSON structure, so the full
 solution is the following snippet:
@@ -508,9 +508,9 @@ This structure may seem familiar.  This structure is documented in the
 </div>
 </div>
 
-<div id="outline-container-orgcab86c1" class="outline-2">
-<h2 id="orgcab86c1">Conclusion</h2>
-<div class="outline-text-2" id="text-orgcab86c1">
+<div id="outline-container-org927d92f" class="outline-2">
+<h2 id="org927d92f">Conclusion</h2>
+<div class="outline-text-2" id="text-org927d92f">
 <p>
 The connection between "Input" is a JSON encoded string and pass the
 "containerOverrides" structure is missing or not obvious at best.  Hopefully,
