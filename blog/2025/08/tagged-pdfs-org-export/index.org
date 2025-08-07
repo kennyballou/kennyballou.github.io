@@ -1,0 +1,192 @@
+#+TITLE: Tagged PDFs via Org Export
+#+DESCRIPTION: Adding accessibility tags to PDFs when using Org Mode Export
+#+TAGS: GNU/Linux
+#+TAGS: Emacs
+#+TAGS: Org-Mode
+#+TAGS: PDF
+#+TAGS: LaTeX
+#+TAGS: WCAG
+#+DATE: 2025-08-08
+#+SLUG: tagged-pdfs-org-export
+#+LINK: emacs https://www.gnu.org/software/emacs
+#+LINK: wcag https://www.ada.gov/resources/2024-03-08-web-rule/
+#+LINK: org-mode https://orgmode.org/
+#+LINK: org-mode-export https://orgmode.org/manual/Exporting.html
+#+LINK: latex https://www.latex-project.org/
+#+LINK: latex-tagged-pdf https://www.latex-project.org/news/2024/07/08/tagging/
+#+LINK: beamer https://ctan.org/pkg/beamer
+#+LINK: markdown https://www.markdownguide.org/
+#+LINK: pandoc https://pandoc.org/
+#+LINK: lualatex https://www.luatex.org/
+#+LINK: larsen-2023-maki-acces https://dx.doi.org/10.1090/noti2606
+#+LINK: latex-and-accessibility https://blogs.ed.ac.uk/isintern/2023/08/15/lewis-forbes-latex-and-accessibility/
+#+LINK: wiki-lms https://en.wikipedia.org/wiki/Learning_management_system
+
+#+begin_preview
+The new version of the [[wcag][WCAG]] requires PDFs (and all online content posted to
+[[wiki-lms][LMS]]) to be properly tagged for screen readers.  However, this has been
+essentially impossible when using [[latex][LaTeX]] and, therefore, [[org-mode][Org Mode]] exports.
+Certainly, it is still not perfect today, however, we can add a few simple
+tweaks and get most of the way there.
+#+end_preview
+
+* Context
+:PROPERTIES:
+:ID:       dbd43e1a-6550-4bd5-b00b-e9915b2ebff7
+:PUBDATE:  2025-08-07 Thu 08:59
+:END:
+
+** Web Content Accessibility Guidelines
+:PROPERTIES:
+:ID:       a5ac5891-1ffe-4694-a0bc-0a764fd76ee6
+:END:
+
+A new version of the [[wcag][Web Content Accessibility Guidelines (WCAG)]] is here and
+means that many educational resources need to be accessible by default.
+Therefore, it can no longer be an after thought.  This, as a forcing function,
+may result in some unfortunate "alternative texts" to check the accessibility
+check boxes.
+
+** Org Mode and LaTeX
+:PROPERTIES:
+:ID:       88b20c64-5cdf-4449-b6ee-c297ffed61cd
+:END:
+
+Plain-text documents written in [[org-mode][Org Mode]] markup can be relatively easily
+[[org-mode-export][exported]] into several different output formats, including HTML, [[latex][LaTeX]], [[beamer][Beamer]],
+[[markdown][Markdown]], and several others.  While quite not as versatile as [[pandoc][Pandoc]], it can
+support many formats, including punting to [[pandoc][Pandoc]].
+
+** PDF and LaTeX
+:PROPERTIES:
+:ID:       866b20e5-083d-4441-950f-739a7fbb19ff
+:END:
+
+The Portable Document Format (PDF) has support for embedding screen reader
+"tags" which instruct the screen reader how to process the document, providing
+a sensible ordering of the content when read.  However, documents produced
+using [[latex][LaTeX]] have lacked these tags.  Adding them required specialized, closed
+source software.
+
+Fortunately, significant [[latex-tagged-pdf][progress]] has been made to essentially automatically
+add tagging to documents created using [[latex][LaTeX]].  It remains to make this
+accessible to [[org-mode][Org Mode]] [[org-mode-export][exported]] documents.
+
+* Adding Tags to PDFs
+:PROPERTIES:
+:ID:       852e9758-dd3c-47d8-9287-6695f5d01b2a
+:PUBDATE:  2025-08-07 Thu 08:59
+:END:
+
+The core of what needs to be done to add tagging to PDFs is to add a few lines
+to the preamble of the [[latex][LaTeX]] document.
+
+Specifically, add the following line *before* the documentclass:
+
+#+begin_src latex
+\DocumentMetadata{%
+  lang = en,
+  pdfversion = 2.0,
+  pdfstandard = ua-2,
+  pdfstandard = a-4,
+  testphase = {phase-III, title, table, math, firstaid}
+}
+\documentclass{article}
+% ...
+#+end_src
+
+Additionally, it is necessary to add language information to the document as
+well.  This can be achieved with a few additional preamble lines:
+
+#+begin_src latex
+\usepackage{polyglossia}
+\setdefaultlanguage[variant=US]{english}
+#+end_src
+
+Finally, we must use a different [[latex][LaTeX]] compiler, specifically, this method
+works best with [[lualatex][LuaLaTeX]] compiler:
+
+#+begin_src bash
+latexmk -pdf -lualatex ${document}.tex
+#+end_src
+
+* Adding Tags to PDFs in Org Mode
+:PROPERTIES:
+:ID:       eab86a5a-599b-4964-8304-b4d2bb1cd2fb
+:PUBDATE:  2025-08-07 Thu 08:59
+:END:
+
+To accomplish the above for documents that start their existence as [[org-mode][Org Mode]]
+documents, we need to add a few more things.  To the best of my knowledge, it
+is not immediately achievable to add a preamble to the [[latex][LaTeX]] export process.
+
+The easiest way, as of this writing, to achieve tagged PDFs within [[org-mode][Org Mode]] is
+to add a variable and extend ~org-latex-classes~:
+
+#+begin_src elisp
+(defvar org-latex-metadata
+  ""
+  "LaTeX preamble metadata, file data to appear _before_ DOCUMENTCLASS...")
+(setq org-latex-metadata "\\DocumentMetadata{lang = en, pdfversion = 2.0, pdfstandard = ua-2, pdfstandard = a-4, testphase = {phase-III, title, table, math, firstaid}}")
+#+end_src
+
+Then, update or extend the available [[latex][LaTeX]] classes such that the preamble is
+prepended before the ~\documentclass~ line:
+
+#+begin_src elisp
+(setq org-latex-classes
+      `(("beamer" "\\documentclass[11pt]{beamer}"
+         ("\\section{%s}" . "\\section*{%s}")
+         ("\\subsection{%s}" . "\\subsection*{%s}")
+         ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))
+        ("article" ,(concat org-latex-metadata "\n" "\\documentclass[11pt]{article}")
+         ("\\section{%s}" . "\\section*{%s}")
+         ("\\subsection{%s}" . "\\subsection*{%s}")
+         ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+         ("\\paragraph{%s}" . "\\paragraph*{%s}")
+         ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
+#+end_src
+
+This way, when [[emacs][Emacs]] exports the source document to an article or a [[beamer][Beamer]]
+presentation, the intermediate [[latex][LaTeX]] document contains the appropriate
+metadata.
+
+Do not forget to add the above packages and settings to the preamble of your
+[[org-mode][Org]] documents.
+
+#+begin_src org
+,#+LATEX_HEADER: \usepackage{polyglossia}
+,#+LATEX_HEADER: \setdefaultlanguage[variant=US]{english}
+#+end_src
+
+* LaTeX PDF Process
+:PROPERTIES:
+:ID:       97763519-a353-4dd5-ba7c-db25a4fe1888
+:PUBDATE:  2025-08-07 Thu 08:59
+:END:
+
+Additionally, you may find it useful to use the following command for
+generating the documents correctly, updating ~org-latex-pdf-process~:
+
+#+begin_src elisp
+(setq org-latex-pdf-process
+      '("latexmk -f -pdf -%latex -interaction=nonstopmode -shell-escape -output-directory=%o %f"))
+#+end_src
+
+This uses the ~LATEX_COMPILER~ header so that documents can specify their own
+compiler choices.  However, for accessibility, it is likely best to use
+~lualatex~.
+
+* Conclusion
+:PROPERTIES:
+:ID:       215ddd80-9f7e-4fe2-969a-d8916f4686db
+:PUBDATE:  2025-08-07 Thu 08:59
+:END:
+
+Over time, the process for creating appropriately tagged and accessible PDFs
+through [[latex][LaTeX]] and [[beamer][Beamer]] has improved significantly.
+
+I still find the [[beamer][Beammer]] tagged presentations to be slightly broken for
+presentation, but workable as documents when used for reference.  However, a
+larger point of generating two separate documents is to use one for teaching
+and presenting, and the other as reference notes for students.
