@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/"
+     xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+     xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+     xmlns:georss="http://www.georss.org/georss"
+     xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+     xmlns:media="http://search.yahoo.com/mrss/"><channel>
+  <title>(Tagged PDFs via Org Export)</title>
+  <atom:link href="https://kennyballou.com/index.xml" rel="self" type="application/rss+xml" />
+  <link>https://kennyballou.com</link>
+  <description><![CDATA[Adding accessibility tags to PDFs when using Org Mode Export]]></description>
+  <language>en</language>
+  <pubDate>Fri, 08 Aug 2025 16:46:21 +0000</pubDate>
+  <lastBuildDate>Fri, 08 Aug 2025 16:46:21 +0000</lastBuildDate>
+  <generator>Emacs 29.3 Org-mode 9.6.15</generator>
+  <webMaster>kb@devnulllabs.io (kb)</webMaster>
+  <image>
+    <url>http://orgmode.org/img/org-mode-unicorn-logo.png</url>
+    <title>(Tagged PDFs via Org Export)</title>
+    <link>https://kennyballou.com</link>
+  </image>
+
+  <div class="preview" id="org734e31a">
+    <p>
+      The new version of the <a href="https://www.ada.gov/resources/2024-03-08-web-rule/">WCAG</a> requires PDFs (and all online content posted to
+      <a href="https://en.wikipedia.org/wiki/Learning_management_system">LMS</a>) to be properly tagged for screen readers.  However, this has been
+      essentially impossible when using <a href="https://www.latex-project.org/">LaTeX</a> and, therefore, <a href="https://orgmode.org/">Org Mode</a> exports.
+      Certainly, it is still not perfect today, however, we can add a few simple
+      tweaks and get most of the way there.
+    </p>
+
+  </div>
+
+  <item>
+    <title>Context</title>
+    <link>https://kennyballou.com/index.html#org8e42681</link>
+    <author>kb</author>
+    <guid isPermaLink="false">https://kennyballou.com/index.html#org8e42681</guid>
+    <pubDate>Thu, 07 Aug 2025 08:59:00 +0000</pubDate>
+
+    <description><![CDATA[]]></description>
+  </item>
+
+  <item>
+    <title>Adding Tags to PDFs</title>
+    <link>https://kennyballou.com/index.html#org217fd8e</link>
+    <author>kb</author>
+    <guid isPermaLink="false">https://kennyballou.com/index.html#org217fd8e</guid>
+    <pubDate>Thu, 07 Aug 2025 08:59:00 +0000</pubDate>
+
+    <description><![CDATA[<p>
+    The core of what needs to be done to add tagging to PDFs is to add a few lines
+    to the preamble of the <a href="https://www.latex-project.org/">LaTeX</a> document.
+    </p>
+
+    <p>
+    Specifically, add the following line <b>before</b> the documentclass:
+    </p>
+
+    <div class="org-src-container">
+    <pre class="src src-latex"><span style="font-weight: bold;">\DocumentMetadata</span>{<span style="font-weight: bold; font-style: italic;">%
+    </span>  lang = en,
+    pdfversion = 2.0,
+    pdfstandard = ua-2,
+    pdfstandard = a-4,
+    testphase = {phase-III, title, table, math, firstaid}
+    }
+    <span style="font-weight: bold;">\documentclass</span>{<span style="font-weight: bold;">article</span>}
+    <span style="font-weight: bold; font-style: italic;">% </span><span style="font-weight: bold; font-style: italic;">...</span>
+    </pre>
+    </div>
+
+    <p>
+    Additionally, it is necessary to add language information to the document as
+    well.  This can be achieved with a few additional preamble lines:
+    </p>
+
+    <div class="org-src-container">
+    <pre class="src src-latex"><span style="font-weight: bold;">\usepackage</span>{<span style="font-weight: bold;">polyglossia</span>}
+    <span style="font-weight: bold;">\setdefaultlanguage</span>[variant=US]{english}
+    </pre>
+    </div>
+
+    <p>
+    Finally, we must use a different <a href="https://www.latex-project.org/">LaTeX</a> compiler, specifically, this method
+    works best with <a href="https://www.luatex.org/">LuaLaTeX</a> compiler:
+    </p>
+
+    <div class="org-src-container">
+    <pre class="src src-bash">latexmk -pdf -lualatex ${<span style="font-weight: bold; font-style: italic;">document</span>}.tex
+    </pre>
+    </div>
+    ]]></description>
+  </item>
+
+  <item>
+    <title>Adding Tags to PDFs in Org Mode</title>
+    <link>https://kennyballou.com/index.html#orgc0f2a7c</link>
+    <author>kb</author>
+    <guid isPermaLink="false">https://kennyballou.com/index.html#orgc0f2a7c</guid>
+    <pubDate>Thu, 07 Aug 2025 08:59:00 +0000</pubDate>
+
+    <description><![CDATA[<p>
+    To accomplish the above for documents that start their existence as <a href="https://orgmode.org/">Org Mode</a>
+    documents, we need to add a few more things.  To the best of my knowledge, it
+    is not immediately achievable to add a preamble to the <a href="https://www.latex-project.org/">LaTeX</a> export process.
+    </p>
+
+    <p>
+    The easiest way, as of this writing, to achieve tagged PDFs within <a href="https://orgmode.org/">Org Mode</a> is
+    to add a variable and extend <code>org-latex-classes</code>:
+    </p>
+
+    <div class="org-src-container">
+    <pre class="src src-elisp">(<span style="font-weight: bold;">defvar</span> <span style="font-weight: bold; font-style: italic;">org-latex-metadata</span>
+    <span style="font-style: italic;">""</span>
+    <span style="font-style: italic;">"LaTeX preamble metadata, file data to appear _before_ DOCUMENTCLASS..."</span>)
+    (<span style="font-weight: bold;">setq</span> org-latex-metadata <span style="font-style: italic;">"\\DocumentMetadata{lang = en, pdfversion = 2.0, pdfstandard = ua-2, pdfstandard = a-4, testphase = {phase-III, title, table, math, firstaid}}"</span>)
+    </pre>
+    </div>
+
+    <p>
+    Then, update or extend the available <a href="https://www.latex-project.org/">LaTeX</a> classes such that the preamble is
+    prepended before the <code>\documentclass</code> line:
+    </p>
+
+    <div class="org-src-container">
+    <pre class="src src-elisp">(<span style="font-weight: bold;">setq</span> org-latex-classes
+    `((<span style="font-style: italic;">"beamer"</span> <span style="font-style: italic;">"\\documentclass[11pt]{beamer}"</span>
+    (<span style="font-style: italic;">"\\section{%s}"</span> . <span style="font-style: italic;">"\\section*{%s}"</span>)
+    (<span style="font-style: italic;">"\\subsection{%s}"</span> . <span style="font-style: italic;">"\\subsection*{%s}"</span>)
+    (<span style="font-style: italic;">"\\subsubsection{%s}"</span> . <span style="font-style: italic;">"\\subsubsection*{%s}"</span>))
+    (<span style="font-style: italic;">"article"</span> ,(concat org-latex-metadata <span style="font-style: italic;">"\n"</span> <span style="font-style: italic;">"\\documentclass[11pt]{article}"</span>)
+    (<span style="font-style: italic;">"\\section{%s}"</span> . <span style="font-style: italic;">"\\section*{%s}"</span>)
+    (<span style="font-style: italic;">"\\subsection{%s}"</span> . <span style="font-style: italic;">"\\subsection*{%s}"</span>)
+    (<span style="font-style: italic;">"\\subsubsection{%s}"</span> . <span style="font-style: italic;">"\\subsubsection*{%s}"</span>)
+    (<span style="font-style: italic;">"\\paragraph{%s}"</span> . <span style="font-style: italic;">"\\paragraph*{%s}"</span>)
+    (<span style="font-style: italic;">"\\subparagraph{%s}"</span> . <span style="font-style: italic;">"\\subparagraph*{%s}"</span>))))
+    </pre>
+    </div>
+
+    <p>
+    This way, when <a href="https://www.gnu.org/software/emacs">Emacs</a> exports the source document to an article or a <a href="https://ctan.org/pkg/beamer">Beamer</a>
+    presentation, the intermediate <a href="https://www.latex-project.org/">LaTeX</a> document contains the appropriate
+    metadata.
+    </p>
+
+    <p>
+    Do not forget to add the above packages and settings to the preamble of your
+    <a href="https://orgmode.org/">Org</a> documents.
+    </p>
+
+    <div class="org-src-container">
+    <pre class="src src-org"><span style="font-weight: bold; font-style: italic;">#+LATEX_HEADER: \usepackage{polyglossia}</span>
+    <span style="font-weight: bold; font-style: italic;">#+LATEX_HEADER: \setdefaultlanguage[variant=US]{english}</span>
+    </pre>
+    </div>
+    ]]></description>
+  </item>
+
+  <item>
+    <title>LaTeX PDF Process</title>
+    <link>https://kennyballou.com/index.html#orgff408f3</link>
+    <author>kb</author>
+    <guid isPermaLink="false">https://kennyballou.com/index.html#orgff408f3</guid>
+    <pubDate>Thu, 07 Aug 2025 08:59:00 +0000</pubDate>
+
+    <description><![CDATA[<p>
+    Additionally, you may find it useful to use the following command for
+    generating the documents correctly, updating <code>org-latex-pdf-process</code>:
+    </p>
+
+    <div class="org-src-container">
+    <pre class="src src-elisp">(<span style="font-weight: bold;">setq</span> org-latex-pdf-process
+    '(<span style="font-style: italic;">"latexmk -f -pdf -%latex -interaction=nonstopmode -shell-escape -output-directory=%o %f"</span>))
+    </pre>
+    </div>
+
+    <p>
+    This uses the <code>LATEX_COMPILER</code> header so that documents can specify their own
+    compiler choices.  However, for accessibility, it is likely best to use
+    <code>lualatex</code>.
+    </p>
+    ]]></description>
+  </item>
+
+  <item>
+    <title>Conclusion</title>
+    <link>https://kennyballou.com/index.html#org1fc4476</link>
+    <author>kb</author>
+    <guid isPermaLink="false">https://kennyballou.com/index.html#org1fc4476</guid>
+    <pubDate>Thu, 07 Aug 2025 08:59:00 +0000</pubDate>
+
+    <description><![CDATA[<p>
+    Over time, the process for creating appropriately tagged and accessible PDFs
+    through <a href="https://www.latex-project.org/">LaTeX</a> and <a href="https://ctan.org/pkg/beamer">Beamer</a> has improved significantly.
+    </p>
+
+    <p>
+    I still find the <a href="https://ctan.org/pkg/beamer">Beammer</a> tagged presentations to be slightly broken for
+    presentation, but workable as documents when used for reference.  However, a
+    larger point of generating two separate documents is to use one for teaching
+    and presenting, and the other as reference notes for students.
+    </p>
+    ]]></description>
+  </item>
+</channel>
+</rss>

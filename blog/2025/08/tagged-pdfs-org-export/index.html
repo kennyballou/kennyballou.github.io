@@ -6,9 +6,9 @@
 <!-- 2025-08-08 Fri 16:46 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Conky Mail Notifications using Maildirs</title>
+<title>Tagged PDFs via Org Export</title>
 <meta name="author" content="kb" />
-<meta name="description" content="How to configure ~conky~ to use local ~maildirs~" />
+<meta name="description" content="Adding accessibility tags to PDFs when using Org Mode Export" />
 <meta name="generator" content="Org Mode" />
 <style>
   #content { max-width: 60em; margin: auto; }
@@ -289,130 +289,233 @@
 </nav>
 </header>
 <div id="main" class="content">
-<h1 class="title">Conky Mail Notifications using Maildirs</h1>
-<div class="PREVIEW" id="org2d933b3">
+<h1 class="title">Tagged PDFs via Org Export</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org6b5ae30">Context</a>
+<ul>
+<li><a href="#orgc4caee1">Web Content Accessibility Guidelines</a></li>
+<li><a href="#org018bd29">Org Mode and LaTeX</a></li>
+<li><a href="#orgbf78e0d">PDF and LaTeX</a></li>
+</ul>
+</li>
+<li><a href="#org58942f6">Adding Tags to PDFs</a></li>
+<li><a href="#orgbf3a3db">Adding Tags to PDFs in Org Mode</a></li>
+<li><a href="#org7d9a6e7">LaTeX PDF Process</a></li>
+<li><a href="#org591952d">Conclusion</a></li>
+</ul>
+</div>
+</div>
+<div class="preview" id="orgaa04012">
 <p>
-Configuring <a href="https://github.com/brndnmtthws/conky"><code>conky</code></a> to display a count and symbol of new mail turned out to be
-more tricky than I had originally anticipated.  This small post quickly
-explores the issues and my own misunderstandings that led to a working <a href="https://github.com/brndnmtthws/conky"><code>conky</code></a>
-configuration and a better understanding of <a href="https://en.wikipedia.org/wiki/Maildir"><code>maildir</code></a>.
+The new version of the <a href="https://www.ada.gov/resources/2024-03-08-web-rule/">WCAG</a> requires PDFs (and all online content posted to
+<a href="https://en.wikipedia.org/wiki/Learning_management_system">LMS</a>) to be properly tagged for screen readers.  However, this has been
+essentially impossible when using <a href="https://www.latex-project.org/">LaTeX</a> and, therefore, <a href="https://orgmode.org/">Org Mode</a> exports.
+Certainly, it is still not perfect today, however, we can add a few simple
+tweaks and get most of the way there.
 </p>
 
 </div>
 
-<blockquote>
+<div id="outline-container-org6b5ae30" class="outline-2">
+<h2 id="org6b5ae30">Context</h2>
+<div class="outline-text-2" id="text-org6b5ae30">
+</div>
+
+<div id="outline-container-orgc4caee1" class="outline-3">
+<h3 id="orgc4caee1">Web Content Accessibility Guidelines</h3>
+<div class="outline-text-3" id="text-orgc4caee1">
 <p>
-When the documentation fails you, use the source.
+A new version of the <a href="https://www.ada.gov/resources/2024-03-08-web-rule/">Web Content Accessibility Guidelines (WCAG)</a> is here and
+means that many educational resources need to be accessible by default.
+Therefore, it can no longer be an after thought.  This, as a forcing function,
+may result in some unfortunate "alternative texts" to check the accessibility
+check boxes.
 </p>
-</blockquote>
+</div>
+</div>
+
+<div id="outline-container-org018bd29" class="outline-3">
+<h3 id="org018bd29">Org Mode and LaTeX</h3>
+<div class="outline-text-3" id="text-org018bd29">
+<p>
+Plain-text documents written in <a href="https://orgmode.org/">Org Mode</a> markup can be relatively easily
+<a href="https://orgmode.org/manual/Exporting.html">exported</a> into several different output formats, including HTML, <a href="https://www.latex-project.org/">LaTeX</a>, <a href="https://ctan.org/pkg/beamer">Beamer</a>,
+<a href="https://www.markdownguide.org/">Markdown</a>, and several others.  While quite not as versatile as <a href="https://pandoc.org/">Pandoc</a>, it can
+support many formats, including punting to <a href="https://pandoc.org/">Pandoc</a>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbf78e0d" class="outline-3">
+<h3 id="orgbf78e0d">PDF and LaTeX</h3>
+<div class="outline-text-3" id="text-orgbf78e0d">
+<p>
+The Portable Document Format (PDF) has support for embedding screen reader
+"tags" which instruct the screen reader how to process the document, providing
+a sensible ordering of the content when read.  However, documents produced
+using <a href="https://www.latex-project.org/">LaTeX</a> have lacked these tags.  Adding them required specialized, closed
+source software.
+</p>
 
 <p>
-I've been trying to configure <a href="https://github.com/brndnmtthws/conky"><code>conky</code></a> to show an icon if
-there is new mail in my local <a href="https://en.wikipedia.org/wiki/Maildir"><code>maildir</code></a>.  However, I'm
-seemingly unable to achieve the desired result.
+Fortunately, significant <a href="https://www.latex-project.org/news/2024/07/08/tagging/">progress</a> has been made to essentially automatically
+add tagging to documents created using <a href="https://www.latex-project.org/">LaTeX</a>.  It remains to make this
+accessible to <a href="https://orgmode.org/">Org Mode</a> <a href="https://orgmode.org/manual/Exporting.html">exported</a> documents.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org58942f6" class="outline-2">
+<h2 id="org58942f6">Adding Tags to PDFs</h2>
+<div class="outline-text-2" id="text-org58942f6">
+<p>
+The core of what needs to be done to add tagging to PDFs is to add a few lines
+to the preamble of the <a href="https://www.latex-project.org/">LaTeX</a> document.
 </p>
 
 <p>
-Here is a trimmed down version of my <a href="https://github.com/brndnmtthws/conky"><code>conky</code></a> configuration
-for reference:
+Specifically, add the following line <b>before</b> the documentclass:
 </p>
 
-<blockquote>
-<p>
-This is using <a href="https://github.com/brndnmtthws/conky"><code>conky</code></a>'s new 1.10 syntax.
-</p>
-</blockquote>
-
-<pre class="example" id="org8bd58c0">
-conky.config = {
-    out_to_x = false,
-    own_window = false,
-    out_to_console = true,
-    background = false,
-};
-
-conky.text = [[
-    ${mails ${HOME}/.mail/} 
-]];
+<div class="org-src-container">
+<pre class="src src-latex"><span style="font-weight: bold;">\DocumentMetadata</span>{<span style="font-weight: bold; font-style: italic;">%
+</span>  lang = en,
+  pdfversion = 2.0,
+  pdfstandard = ua-2,
+  pdfstandard = a-4,
+  testphase = {phase-III, title, table, math, firstaid}
+}
+<span style="font-weight: bold;">\documentclass</span>{<span style="font-weight: bold;">article</span>}
+<span style="font-weight: bold; font-style: italic;">% </span><span style="font-weight: bold; font-style: italic;">...</span>
 </pre>
+</div>
 
 <p>
-However, when attempting to run this through <a href="https://github.com/brndnmtthws/conky"><code>conky</code></a>, I
-receive the following error:
+Additionally, it is necessary to add language information to the document as
+well.  This can be achieved with a few additional preamble lines:
 </p>
 
-<pre class="example" id="orgbc5f12b">
-conky: cannot open directory
+<div class="org-src-container">
+<pre class="src src-latex"><span style="font-weight: bold;">\usepackage</span>{<span style="font-weight: bold;">polyglossia</span>}
+<span style="font-weight: bold;">\setdefaultlanguage</span>[variant=US]{english}
 </pre>
+</div>
 
 <p>
-I also tried adding the <code>mail_spool</code> configuration setting to the
-<code>conky.config</code> table and removing the folder from the <code>${mails}</code> variable.
-Furthermore, I tried both of the above using the <code>${new_mails}</code> variable as
-well, similarly to no avail.
+Finally, we must use a different <a href="https://www.latex-project.org/">LaTeX</a> compiler, specifically, this method
+works best with <a href="https://www.luatex.org/">LuaLaTeX</a> compiler:
 </p>
 
-<blockquote>
-<p>
-I actually receive a different error suggesting that <code>mail_spool</code> is no
-longer a valid configuration setting.
-<a href="https://github.com/brndnmtthws/conky/search?utf8=%E2%9C%93&amp;q=mail_spool&amp;type=">Searching the code base</a>, I feel this is
-accurate.
-</p>
-</blockquote>
-
-<p>
-Another variation of the above I have tried is to try quoting the directory
-path, which failed with a different error suggesting <a href="https://github.com/brndnmtthws/conky"><code>conky</code></a>
-is attempting to literally open the quoted folder.
-</p>
-
-<p>
-It wasn't until I read the source of <a href="https://github.com/brndnmtthws/conky/blob/master/src/mail.cc#L255"><code>conky</code></a> that I
-was able to figure out what the <i>actual</i> issue was.
-</p>
-
-<p>
-What was not obvious to me from the documentation was that <code>$mails</code> and friends
-request a literal <a href="https://en.wikipedia.org/wiki/Maildir"><code>maildir</code></a> as its parameter.  This means,
-it's required to specify a folder with the triplet of folders: <code>cur</code>, <code>new</code>,
-and <code>tmp</code> under it.  Without which, <a href="https://github.com/brndnmtthws/conky"><code>conky</code></a> returns the error
-"cannot open directory" because <a href="https://github.com/brndnmtthws/conky"><code>conky</code></a> is trying to open the
-directory <code>{provided-mail-directory}/cur</code> instead of the provided directory.
-</p>
-
-<p>
-Therefore, to solve my issue, I had changed the path given to <code>$mails</code> to the
-following:
-</p>
-
-<pre class="example" id="orgecfc212">
-${mails ${HOME}/{email-account}/INBOX}
+<div class="org-src-container">
+<pre class="src src-bash">latexmk -pdf -lualatex ${<span style="font-weight: bold; font-style: italic;">document</span>}.tex
 </pre>
+</div>
+</div>
+</div>
 
+<div id="outline-container-orgbf3a3db" class="outline-2">
+<h2 id="orgbf3a3db">Adding Tags to PDFs in Org Mode</h2>
+<div class="outline-text-2" id="text-orgbf3a3db">
 <p>
-Where <code>{email-account}</code> is the email account I want updates for.
+To accomplish the above for documents that start their existence as <a href="https://orgmode.org/">Org Mode</a>
+documents, we need to add a few more things.  To the best of my knowledge, it
+is not immediately achievable to add a preamble to the <a href="https://www.latex-project.org/">LaTeX</a> export process.
 </p>
 
 <p>
-This has been a frustrating experience, and the documentation around
-<a href="https://github.com/brndnmtthws/conky"><code>conky</code></a> is unfortunately out of date.  But this is partially
-my own fault, my understanding of <a href="https://en.wikipedia.org/wiki/Maildir"><code>maildir</code></a> was incorrect and
-certainly led me astray.
+The easiest way, as of this writing, to achieve tagged PDFs within <a href="https://orgmode.org/">Org Mode</a> is
+to add a variable and extend <code>org-latex-classes</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-elisp">(<span style="font-weight: bold;">defvar</span> <span style="font-weight: bold; font-style: italic;">org-latex-metadata</span>
+  <span style="font-style: italic;">""</span>
+  <span style="font-style: italic;">"LaTeX preamble metadata, file data to appear _before_ DOCUMENTCLASS..."</span>)
+(<span style="font-weight: bold;">setq</span> org-latex-metadata <span style="font-style: italic;">"\\DocumentMetadata{lang = en, pdfversion = 2.0, pdfstandard = ua-2, pdfstandard = a-4, testphase = {phase-III, title, table, math, firstaid}}"</span>)
+</pre>
+</div>
+
+<p>
+Then, update or extend the available <a href="https://www.latex-project.org/">LaTeX</a> classes such that the preamble is
+prepended before the <code>\documentclass</code> line:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-elisp">(<span style="font-weight: bold;">setq</span> org-latex-classes
+      `((<span style="font-style: italic;">"beamer"</span> <span style="font-style: italic;">"\\documentclass[11pt]{beamer}"</span>
+         (<span style="font-style: italic;">"\\section{%s}"</span> . <span style="font-style: italic;">"\\section*{%s}"</span>)
+         (<span style="font-style: italic;">"\\subsection{%s}"</span> . <span style="font-style: italic;">"\\subsection*{%s}"</span>)
+         (<span style="font-style: italic;">"\\subsubsection{%s}"</span> . <span style="font-style: italic;">"\\subsubsection*{%s}"</span>))
+        (<span style="font-style: italic;">"article"</span> ,(concat org-latex-metadata <span style="font-style: italic;">"\n"</span> <span style="font-style: italic;">"\\documentclass[11pt]{article}"</span>)
+         (<span style="font-style: italic;">"\\section{%s}"</span> . <span style="font-style: italic;">"\\section*{%s}"</span>)
+         (<span style="font-style: italic;">"\\subsection{%s}"</span> . <span style="font-style: italic;">"\\subsection*{%s}"</span>)
+         (<span style="font-style: italic;">"\\subsubsection{%s}"</span> . <span style="font-style: italic;">"\\subsubsection*{%s}"</span>)
+         (<span style="font-style: italic;">"\\paragraph{%s}"</span> . <span style="font-style: italic;">"\\paragraph*{%s}"</span>)
+         (<span style="font-style: italic;">"\\subparagraph{%s}"</span> . <span style="font-style: italic;">"\\subparagraph*{%s}"</span>))))
+</pre>
+</div>
+
+<p>
+This way, when <a href="https://www.gnu.org/software/emacs">Emacs</a> exports the source document to an article or a <a href="https://ctan.org/pkg/beamer">Beamer</a>
+presentation, the intermediate <a href="https://www.latex-project.org/">LaTeX</a> document contains the appropriate
+metadata.
 </p>
 
 <p>
-I'm debating whether to submit a pull request for expanding the documentation
-around <a href="https://en.wikipedia.org/wiki/Maildir"><code>maildir</code></a> usage in the <code>$*mails</code> variables but it's
-likely my own misunderstanding of <a href="https://en.wikipedia.org/wiki/Maildir"><code>maildir</code></a> that led me to so
-much issue.
+Do not forget to add the above packages and settings to the preamble of your
+<a href="https://orgmode.org/">Org</a> documents.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-org"><span style="font-weight: bold; font-style: italic;">#+LATEX_HEADER: \usepackage{polyglossia}</span>
+<span style="font-weight: bold; font-style: italic;">#+LATEX_HEADER: \setdefaultlanguage[variant=US]{english}</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7d9a6e7" class="outline-2">
+<h2 id="org7d9a6e7">LaTeX PDF Process</h2>
+<div class="outline-text-2" id="text-org7d9a6e7">
+<p>
+Additionally, you may find it useful to use the following command for
+generating the documents correctly, updating <code>org-latex-pdf-process</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-elisp">(<span style="font-weight: bold;">setq</span> org-latex-pdf-process
+      '(<span style="font-style: italic;">"latexmk -f -pdf -%latex -interaction=nonstopmode -shell-escape -output-directory=%o %f"</span>))
+</pre>
+</div>
+
+<p>
+This uses the <code>LATEX_COMPILER</code> header so that documents can specify their own
+compiler choices.  However, for accessibility, it is likely best to use
+<code>lualatex</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org591952d" class="outline-2">
+<h2 id="org591952d">Conclusion</h2>
+<div class="outline-text-2" id="text-org591952d">
+<p>
+Over time, the process for creating appropriately tagged and accessible PDFs
+through <a href="https://www.latex-project.org/">LaTeX</a> and <a href="https://ctan.org/pkg/beamer">Beamer</a> has improved significantly.
 </p>
 
 <p>
-Next, onto <a href="https://github.com/brndnmtthws/conky"><code>conky</code></a>'s use of <code>if_match</code> and <code>$battery_short</code>
-to display different battery symbols based on "charging", "discharging" and
-"full" states.
+I still find the <a href="https://ctan.org/pkg/beamer">Beammer</a> tagged presentations to be slightly broken for
+presentation, but workable as documents when used for reference.  However, a
+larger point of generating two separate documents is to use one for teaching
+and presenting, and the other as reference notes for students.
 </p>
+</div>
+</div>
 </div>
 <footer id="" class="status">
 <footer>

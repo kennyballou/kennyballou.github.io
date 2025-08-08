@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2025-07-15 Tue 13:31 -->
+<!-- 2025-08-08 Fri 16:46 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Vim Tips 2015-03-17</title>
@@ -294,13 +294,13 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org11e6c0c">Folds</a></li>
-<li><a href="#orgd2c6f3f">Substitution Range</a></li>
-<li><a href="#orgbc34eb1">References</a></li>
+<li><a href="#org38266ae">Folds</a></li>
+<li><a href="#org54bc017">Substitution Range</a></li>
+<li><a href="#orgb032fed">References</a></li>
 </ul>
 </div>
 </div>
-<div class="PREVIEW" id="org6c92b1a">
+<div class="PREVIEW" id="org9d972d4">
 <p>
 This is the start of a series of posts about better Vim usage.  It's yet to be
 determined how often and how frequent this will run, but expect more than just
@@ -309,9 +309,9 @@ this first post.
 
 </div>
 
-<div id="outline-container-org11e6c0c" class="outline-2">
-<h2 id="org11e6c0c">Folds</h2>
-<div class="outline-text-2" id="text-org11e6c0c">
+<div id="outline-container-org38266ae" class="outline-2">
+<h2 id="org38266ae">Folds</h2>
+<div class="outline-text-2" id="text-org38266ae">
 <p>
 When using manual folding, creating a fold in Vim is as easy as one command:
 </p>
@@ -348,9 +348,9 @@ For more information about folding and the other modes, visit the
 </div>
 </div>
 
-<div id="outline-container-orgd2c6f3f" class="outline-2">
-<h2 id="orgd2c6f3f">Substitution Range</h2>
-<div class="outline-text-2" id="text-orgd2c6f3f">
+<div id="outline-container-org54bc017" class="outline-2">
+<h2 id="org54bc017">Substitution Range</h2>
+<div class="outline-text-2" id="text-org54bc017">
 <p>
 Here are some more explicit examples of the range options provided when doing
 substitutions:
@@ -360,7 +360,7 @@ substitutions:
 To substitute the first occurrence of the pattern in the current line:
 </p>
 
-<pre class="example" id="orgcf87f82">
+<pre class="example" id="org8a5fc09">
 :s/foo/bar
 </pre>
 
@@ -368,7 +368,7 @@ To substitute the first occurrence of the pattern in the current line:
 All occurrences:
 </p>
 
-<pre class="example" id="org495c095">
+<pre class="example" id="org9da9e03">
 :s/foo/bar/g
 </pre>
 
@@ -376,7 +376,7 @@ All occurrences:
 Entire file, first occurrence:
 </p>
 
-<pre class="example" id="org3363a01">
+<pre class="example" id="orgb72cf6c">
 :%s/foo/bar/
 </pre>
 
@@ -384,7 +384,7 @@ Entire file, first occurrence:
 Entire file, all occurrences:
 </p>
 
-<pre class="example" id="org7eb6a51">
+<pre class="example" id="orgf7243dc">
 :%s/foo/bar/g
 </pre>
 
@@ -392,7 +392,7 @@ Entire file, all occurrences:
 Now for something completely different, specific ranges:
 </p>
 
-<pre class="example" id="orga46bdca">
+<pre class="example" id="orgbbeb35a">
 :&lt;starting line&gt;,&lt;ending line&gt;s/foo/bar[/g]
 </pre>
 
@@ -400,7 +400,7 @@ Now for something completely different, specific ranges:
 End today's kicker: changing from a line to the end of the file:
 </p>
 
-<pre class="example" id="orge325e3d">
+<pre class="example" id="org5b18651">
 :&lt;start&gt;,$s/foo/bar[/g]
 </pre>
 
@@ -411,9 +411,9 @@ available in Vim.
 </div>
 </div>
 
-<div id="outline-container-orgbc34eb1" class="outline-2">
-<h2 id="orgbc34eb1">References</h2>
-<div class="outline-text-2" id="text-orgbc34eb1">
+<div id="outline-container-orgb032fed" class="outline-2">
+<h2 id="orgb032fed">References</h2>
+<div class="outline-text-2" id="text-orgb032fed">
 <ul class="org-ul">
 <li><a href="http://zzapper.co.uk/vimtips.html">Vim Tips</a></li>
 
