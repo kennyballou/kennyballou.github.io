@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2025-08-11 Mon 05:50 -->
+<!-- 2026-01-03 Sat 20:00 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Elixir/Erlang Hot Swapping Code</title>
@@ -294,25 +294,25 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org62ef278">Hot Code Swapping: Basics</a>
+<li><a href="#org08bb595">Hot Code Swapping: Basics</a>
 <ul>
-<li><a href="#org70b1a82">Example</a></li>
-<li><a href="#org0ad41bc">Example: <code>iex</code></a></li>
+<li><a href="#orgde7d354">Example</a></li>
+<li><a href="#orgd957235">Example: <code>iex</code></a></li>
 </ul>
 </li>
-<li><a href="#orgfbdbf25">Relups</a>
+<li><a href="#org96e7236">Relups</a>
 <ul>
-<li><a href="#org7c31c5c">Erlang Applications</a></li>
-<li><a href="#orgc0cb7f7">Erlang Releases</a></li>
-<li><a href="#orga3117f1">Appups and Relups</a></li>
+<li><a href="#org41b40a1">Erlang Applications</a></li>
+<li><a href="#org6a15280">Erlang Releases</a></li>
+<li><a href="#orgdae3c0e">Appups and Relups</a></li>
 <li><a href="#generating-releases-and-upgrades-with-elixir">Generating Releases and Upgrades with Elixir</a></li>
 </ul>
 </li>
-<li><a href="#org33d0371">Summary</a></li>
+<li><a href="#orgd0a0bd4">Summary</a></li>
 </ul>
 </div>
 </div>
-<div class="PREVIEW" id="orgbeb1ac3">
+<div class="PREVIEW" id="orgd6056df">
 <p>
 One of the untold benefits of having a runtime is the ability for that runtime
 to enable loading and unloading code while the runtime is active.  Since the
@@ -354,9 +354,9 @@ This post will be a small tour through how Elixir and Erlang can perform code
 hot swapping, and how this can be useful for deployments.
 </p>
 
-<div id="outline-container-org62ef278" class="outline-2">
-<h2 id="org62ef278">Hot Code Swapping: Basics</h2>
-<div class="outline-text-2" id="text-org62ef278">
+<div id="outline-container-org08bb595" class="outline-2">
+<h2 id="org08bb595">Hot Code Swapping: Basics</h2>
+<div class="outline-text-2" id="text-org08bb595">
 <p>
 There are several functions defined in the <a href="http://erlang.org/doc/man/sys.html"><code>:sys</code></a> and
 <a href="http://erlang.org/doc/man/code.html"><code>:code</code></a> modules that are required for this first example.
@@ -386,15 +386,15 @@ the restarted process's <code>code_change/3</code> function.
 </p>
 </div>
 
-<div id="outline-container-org70b1a82" class="outline-3">
-<h3 id="org70b1a82">Example</h3>
-<div class="outline-text-3" id="text-org70b1a82">
+<div id="outline-container-orgde7d354" class="outline-3">
+<h3 id="orgde7d354">Example</h3>
+<div class="outline-text-3" id="text-orgde7d354">
 <p>
 Let's assume we have a particularly simple module, say <code>KV</code>, similar to
 the following:
 </p>
 
-<pre class="example" id="org7b64b40">
+<pre class="example" id="org04f0af4">
 defmodule KV do
   use GenServer
 
@@ -432,7 +432,7 @@ Save this into a file, say, <code>kv.ex</code>.  Next we will compile it and loa
 into an <code>iex</code> session:
 </p>
 
-<pre class="example" id="orgd023512">
+<pre class="example" id="org92e4130">
 % elixirc kv.ex
 % iex
 iex&gt; l KV
@@ -443,7 +443,7 @@ iex&gt; l KV
 We can start the process and try it out:
 </p>
 
-<pre class="example" id="orgc6109a1">
+<pre class="example" id="orgbf85b6c">
 iex&gt; KV.start_link
 {:ok, #PID&lt;0.84.0&gt;}
 iex&gt; KV.get(:a)
@@ -459,7 +459,7 @@ Now, let's say we wish to add some logging to the handling of the <code>:get</co
 and <code>:put</code> messages.  We will apply a patch similar to the following:
 </p>
 
-<pre class="example" id="org39cdf1b">
+<pre class="example" id="orgb168ece">
 --- a/kv.ex
 +++ b/kv.ex
 @@ -1,7 +1,8 @@
@@ -491,7 +491,7 @@ Without closing the current <code>iex</code> session, apply the patch to the fil
 and compile the module:
 </p>
 
-<pre class="example" id="orgb25d1ae">
+<pre class="example" id="orgdd39598">
 % patch kv.ex kv.ex.patch
 % elixirc kv.ex
 </pre>
@@ -508,7 +508,7 @@ Now, in the still open <code>iex</code> session, let's begin the black magic
 incantations:
 </p>
 
-<pre class="example" id="org93de467">
+<pre class="example" id="orge7e5a52">
 iex&gt; :code.load_file KV
 {:module, KV}
 iex&gt; :sys.suspend(KV)
@@ -523,7 +523,7 @@ iex&gt; :sys.resume(KV)
 Now, we should be able to test it again:
 </p>
 
-<pre class="example" id="org894b468">
+<pre class="example" id="org4258596">
 iex&gt; KV.get(:a)
 21:28:47.989 [info]  Elixir.KV: Handling get request for a
 42
@@ -544,9 +544,9 @@ reloading API, there are better ways to achieve the same result.
 </div>
 </div>
 
-<div id="outline-container-org0ad41bc" class="outline-3">
-<h3 id="org0ad41bc">Example: <code>iex</code></h3>
-<div class="outline-text-3" id="text-org0ad41bc">
+<div id="outline-container-orgd957235" class="outline-3">
+<h3 id="orgd957235">Example: <code>iex</code></h3>
+<div class="outline-text-3" id="text-orgd957235">
 <p>
 There are several functions available to us when using <code>iex</code> that
 essentially perform the above actions for us:
@@ -569,7 +569,7 @@ Therefore, using these, we can simplify what we did in the previous example to
 simply a call to <code>r/1</code>:
 </p>
 
-<pre class="example" id="org4efd890">
+<pre class="example" id="org55120f2">
 iex&gt; r KV
 warning: redefining module KV (current version loaded from Elixir.KV.beam)
   kv.ex:1
@@ -599,9 +599,9 @@ deployments.
 </div>
 </div>
 
-<div id="outline-container-orgfbdbf25" class="outline-2">
-<h2 id="orgfbdbf25">Relups</h2>
-<div class="outline-text-2" id="text-orgfbdbf25">
+<div id="outline-container-org96e7236" class="outline-2">
+<h2 id="org96e7236">Relups</h2>
+<div class="outline-text-2" id="text-org96e7236">
 <p>
 Fortunately, there is another set of tooling that allows us to more
 easily deploy releases, and more pointedly, perform upgrades: Relups.
@@ -610,9 +610,9 @@ concepts.
 </p>
 </div>
 
-<div id="outline-container-org7c31c5c" class="outline-3">
-<h3 id="org7c31c5c">Erlang Applications</h3>
-<div class="outline-text-3" id="text-org7c31c5c">
+<div id="outline-container-org41b40a1" class="outline-3">
+<h3 id="org41b40a1">Erlang Applications</h3>
+<div class="outline-text-3" id="text-org41b40a1">
 <p>
 As part of Erlang "Applications", there is a related file, the
 <a href="http://erlang.org/doc/man/app.html"><code>.app</code></a> file.  This resource file describes the application:
@@ -626,7 +626,7 @@ Here's an example <code>.app</code> file from the <a href="https://git.devnullla
 application:
 </p>
 
-<pre class="example" id="org4f78a8a">
+<pre class="example" id="orge698926">
 ± cat _build/dev/lib/octochat/ebin/octochat.app
 {application,octochat,
          [{registered,[]},
@@ -652,9 +652,9 @@ application requires to run.
 </div>
 </div>
 
-<div id="outline-container-orgc0cb7f7" class="outline-3">
-<h3 id="orgc0cb7f7">Erlang Releases</h3>
-<div class="outline-text-3" id="text-orgc0cb7f7">
+<div id="outline-container-org6a15280" class="outline-3">
+<h3 id="org6a15280">Erlang Releases</h3>
+<div class="outline-text-3" id="text-org6a15280">
 <p>
 An Erlang "release", similar to Erlang application, is an entire system: the
 Erlang VM, the dependent set of applications, and arguments for the Erlang VM.
@@ -666,7 +666,7 @@ After building a release for the Octochat application with the
 following:
 </p>
 
-<pre class="example" id="org5c137d2">
+<pre class="example" id="org8f873db">
 ± cat rel/octochat/releases/0.3.3/octochat.rel
 {release,{"octochat","0.3.3"},
      {erts,"8.1"},
@@ -689,9 +689,9 @@ tuple.
 </div>
 </div>
 
-<div id="outline-container-orga3117f1" class="outline-3">
-<h3 id="orga3117f1">Appups and Relups</h3>
-<div class="outline-text-3" id="text-orga3117f1">
+<div id="outline-container-orgdae3c0e" class="outline-3">
+<h3 id="orgdae3c0e">Appups and Relups</h3>
+<div class="outline-text-3" id="text-orgdae3c0e">
 <p>
 As the naming might suggest, "appups" and "relups" are the "upgrade"
 versions of applications and releases, respectively.  Appups describe how
@@ -710,7 +710,7 @@ type specification for each.
 Here is the syntax structure for the <code>appup</code> resource file:
 </p>
 
-<pre class="example" id="org537e96c">
+<pre class="example" id="orgf9368ff">
 {Vsn,
   [{UpFromVsn, Instructions}, ...],
   [{DownToVsn, Instructions}, ...]}.
@@ -731,7 +731,7 @@ resource file for the octochat application generated using
 <a href="https://github.com/bitwalker/distillery">distillery</a>:
 </p>
 
-<pre class="example" id="org137f194">
+<pre class="example" id="org9e334ba">
 ± cat rel/octochat/lib/octochat-0.2.1/ebin/octochat.appup
 {"0.2.1",
  [{"0.2.0",[{load_module,'Elixir.Octochat.Echo',[]}]}],
@@ -765,7 +765,7 @@ process of upgrading applications.
 Next, let's look at the syntax structure of a <code>relup</code> resource file:
 </p>
 
-<pre class="example" id="org6fdeb83">
+<pre class="example" id="orgd36963d">
 {Vsn,
  [{UpFromVsn, Descr, Instructions}, ...],
  [{DownToVsn, Descr, Instructions}, ...]}.
@@ -784,7 +784,7 @@ Now, let's look at an example <code>relup</code> file for the same release of
 octochat:
 </p>
 
-<pre class="example" id="org45dfb30">
+<pre class="example" id="org8b26453">
 ± cat rel/octochat/releases/0.2.1/relup
 {"0.2.1",
  [{"0.2.0",[],
@@ -802,7 +802,7 @@ This file is a little more dense, but still adheres to the basic triple syntax
 we just examined.  Let's take a closer look at the upgrade instructions:
 </p>
 
-<pre class="example" id="org8d0c0f3">
+<pre class="example" id="orge23123f">
 [{load_object_code,{octochat,"0.2.1",['Elixir.Octochat.Echo']}},
  point_of_no_return,
  {load,{'Elixir.Octochat.Echo',brutal_purge,brutal_purge}}]
@@ -860,7 +860,7 @@ necessary.
 Add the <a href="https://github.com/bitwalker/distillery">distillery</a> application to your <code>deps</code> list:
 </p>
 
-<pre class="example" id="org9707518">
+<pre class="example" id="org39f7b5a">
 {:distillery, "~&gt; 0.10"}
 </pre>
 
@@ -868,7 +868,7 @@ Add the <a href="https://github.com/bitwalker/distillery">distillery</a> applica
 Perform the requisite dependency download:
 </p>
 
-<pre class="example" id="org0fd3801">
+<pre class="example" id="org12bdf22">
 ± mix deps.get
 </pre>
 
@@ -876,7 +876,7 @@ Perform the requisite dependency download:
 Then, to build your first production release, you can use the following:
 </p>
 
-<pre class="example" id="orgf22ffcb">
+<pre class="example" id="orge4ca280">
 ± MIX_ENV=prod mix release --env prod
 </pre>
 
@@ -915,7 +915,7 @@ Elixir, it may look similar to the following:
 Copy the release tarball to the target system:
 </p>
 
-<pre class="example" id="org5d0c0d2">
+<pre class="example" id="org4339368">
 ± scp rel/octochat/releases/0.3.2/octochat.tar.gz target_system:/opt/apps/.
 </pre></li>
 
@@ -923,7 +923,7 @@ Copy the release tarball to the target system:
 On the target system, unpack the release:
 </p>
 
-<pre class="example" id="orgcdc86dc">
+<pre class="example" id="orgfcf9410">
 ± ssh target_system
 (ts)# cd /opt/apps
 (ts)# mkdir -p octochat
@@ -934,7 +934,7 @@ On the target system, unpack the release:
 Start the system:
 </p>
 
-<pre class="example" id="org301f4f1">
+<pre class="example" id="org1c9b995">
 (ts)# cd octochat
 (ts)# bin/octochat start
 </pre></li>
@@ -949,7 +949,7 @@ Next, after making some applications changes and bumping the project version,
 we can generate an upgrade release using the following command:
 </p>
 
-<pre class="example" id="org7b3b11a">
+<pre class="example" id="org8f85c30">
 ± MIX_ENV=prod mix release --upgrade
 </pre>
 
@@ -965,7 +965,7 @@ there should be a new folder for the new version, and a <code>relup</code> file 
 upgrade:
 </p>
 
-<pre class="example" id="orgadbee9e">
+<pre class="example" id="org082fc27">
 ± cat rel/octochat/releases/0.3.3/octochat.rel
 {release,{"octochat","0.3.3"},
      {erts,"8.1"},
@@ -1006,7 +1006,7 @@ After it's unpacked, upgrading the release can be done via a stop and start, or
 we can issue the <code>upgrade</code> command:
 </p>
 
-<pre class="example" id="orgf3c5eb8">
+<pre class="example" id="org5cd5d39">
 (ts)# bin/octochat stop
 (ts)# bin/octochat start
 </pre>
@@ -1015,7 +1015,7 @@ we can issue the <code>upgrade</code> command:
 Or:
 </p>
 
-<pre class="example" id="orgd37dbb7">
+<pre class="example" id="orgb35ba7c">
 (ts)# bin/octochat upgrade "0.3.3"
 </pre>
 
@@ -1033,9 +1033,9 @@ necessary since the upgrade process may require more than simply jumping to the
 </div>
 </div>
 
-<div id="outline-container-org33d0371" class="outline-2">
-<h2 id="org33d0371">Summary</h2>
-<div class="outline-text-2" id="text-org33d0371">
+<div id="outline-container-orgd0a0bd4" class="outline-2">
+<h2 id="orgd0a0bd4">Summary</h2>
+<div class="outline-text-2" id="text-orgd0a0bd4">
 <p>
 Release management is a complex topic, upgrading without restarting seemingly
 even more so.  However, the process <i>can</i> be understood, and knowing how the

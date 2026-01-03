@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2025-08-11 Mon 05:50 -->
+<!-- 2026-01-03 Sat 20:00 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Installing Guix (Full LUKS + LVM)</title>
@@ -294,33 +294,33 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org0238c75">Disk preparation steps</a>
+<li><a href="#orgb713577">Disk preparation steps</a>
 <ul>
-<li><a href="#org01b94e4">Badblocks</a></li>
-<li><a href="#orgffeb36e">Random "zeroing"</a></li>
-<li><a href="#orge479809">Partitioning</a></li>
-<li><a href="#orgd7f00ac">Creating LUKS container</a>
+<li><a href="#orgd9c4c7e">Badblocks</a></li>
+<li><a href="#orgcc636d8">Random "zeroing"</a></li>
+<li><a href="#orga9434e8">Partitioning</a></li>
+<li><a href="#orgc84eeac">Creating LUKS container</a>
 <ul>
-<li><a href="#orgbc9e0be">"Correctly" naming the cryptroot</a></li>
+<li><a href="#orgb156a77">"Correctly" naming the cryptroot</a></li>
 </ul>
 </li>
-<li><a href="#org69e4770">Creating the LVM containers</a></li>
-<li><a href="#org902182e">Formatting</a></li>
-<li><a href="#org010c4df">Mounting</a>
+<li><a href="#org37924c7">Creating the LVM containers</a></li>
+<li><a href="#orgb122855">Formatting</a></li>
+<li><a href="#orgafac05c">Mounting</a>
 <ul>
-<li><a href="#org6bed1b5">Nix Store</a></li>
+<li><a href="#org0e90be2">Nix Store</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org9303fbe">Cloning and modifying UUIDs</a></li>
-<li><a href="#org98c3a13">System initialization</a></li>
-<li><a href="#org5ef86ad">After initialization steps</a></li>
-<li><a href="#org4d8148f">Parting thoughts</a></li>
+<li><a href="#org50cb7ee">Cloning and modifying UUIDs</a></li>
+<li><a href="#org9b374c8">System initialization</a></li>
+<li><a href="#org09d25a5">After initialization steps</a></li>
+<li><a href="#org30ba8d9">Parting thoughts</a></li>
 </ul>
 </div>
 </div>
-<div class="PREVIEW" id="org12ad83f">
+<div class="PREVIEW" id="orga9aac1b">
 <p>
 Here are some notes about installing Guix SD onto a new system from an existing
 configuration.  We necessarily need to discuss disk preparation and
@@ -354,9 +354,9 @@ attempts to switch back to <a href="https://guix.gnu.org/">Guix</a>, I have unco
 course.
 </p>
 
-<div id="outline-container-org0238c75" class="outline-2">
-<h2 id="org0238c75">Disk preparation steps</h2>
-<div class="outline-text-2" id="text-org0238c75">
+<div id="outline-container-orgb713577" class="outline-2">
+<h2 id="orgb713577">Disk preparation steps</h2>
+<div class="outline-text-2" id="text-orgb713577">
 <p>
 First step to any fully encrypted setup is to throw a bunch of random bits onto
 the disk, the zeroth step is to check it with <code>badblocks</code>.  Next, randomize the
@@ -367,9 +367,9 @@ volumes and mount them in preparation for <code>system init</code>.
 </p>
 </div>
 
-<div id="outline-container-org01b94e4" class="outline-3">
-<h3 id="org01b94e4">Badblocks</h3>
-<div class="outline-text-3" id="text-org01b94e4">
+<div id="outline-container-orgd9c4c7e" class="outline-3">
+<h3 id="orgd9c4c7e">Badblocks</h3>
+<div class="outline-text-3" id="text-orgd9c4c7e">
 <p>
 Since I still needed a working machine in the meantime, I purchased a second
 drive.  This way, if the installation fails for any reason&#x2014; it did&#x2014; I can
@@ -397,9 +397,9 @@ statistical analysis of the data.
 </div>
 </div>
 
-<div id="outline-container-orgffeb36e" class="outline-3">
-<h3 id="orgffeb36e">Random "zeroing"</h3>
-<div class="outline-text-3" id="text-orgffeb36e">
+<div id="outline-container-orgcc636d8" class="outline-3">
+<h3 id="orgcc636d8">Random "zeroing"</h3>
+<div class="outline-text-3" id="text-orgcc636d8">
 <p>
 The fastest (not to be confused with "best") way I have seen to randomly write
 garbage to a drive is to use a plain <code>dm-crypt</code> device with a random passphrase
@@ -420,9 +420,9 @@ via <code>bs=4096</code> dramatically improves the write speed.
 </div>
 </div>
 
-<div id="outline-container-orge479809" class="outline-3">
-<h3 id="orge479809">Partitioning</h3>
-<div class="outline-text-3" id="text-orge479809">
+<div id="outline-container-orga9434e8" class="outline-3">
+<h3 id="orga9434e8">Partitioning</h3>
+<div class="outline-text-3" id="text-orga9434e8">
 <p>
 Since the system uses a single device and we have a "fully encrypted" setup, we
 only need <b>two</b> partitions: first for the EFI System Partition (ESP) and second
@@ -439,9 +439,9 @@ more meaningful to me: "boot" and "guix", respectively.
 </div>
 </div>
 
-<div id="outline-container-orgd7f00ac" class="outline-3">
-<h3 id="orgd7f00ac">Creating LUKS container</h3>
-<div class="outline-text-3" id="text-orgd7f00ac">
+<div id="outline-container-orgc84eeac" class="outline-3">
+<h3 id="orgc84eeac">Creating LUKS container</h3>
+<div class="outline-text-3" id="text-orgc84eeac">
 <p>
 With a fully encrypted system, including <code>/boot</code>, there are some important
 limitations to keep in mind.  As of this writing, <a href="https://www.gnu.org/software/grub">GRUB</a> does not support LUKS2
@@ -493,9 +493,9 @@ A new device should be available under the <code>/dev/mapper</code> tree.
 </p>
 </div>
 
-<div id="outline-container-orgbc9e0be" class="outline-4">
-<h4 id="orgbc9e0be">"Correctly" naming the cryptroot</h4>
-<div class="outline-text-4" id="text-orgbc9e0be">
+<div id="outline-container-orgb156a77" class="outline-4">
+<h4 id="orgb156a77">"Correctly" naming the cryptroot</h4>
+<div class="outline-text-4" id="text-orgb156a77">
 <p>
 I do not think it may be important, but it is perhaps worth mentioning: the
 name of the device should match the name used in your configuration.  Use <code>blkid</code>
@@ -511,9 +511,9 @@ to get the UUID if needed.
 </div>
 </div>
 
-<div id="outline-container-org69e4770" class="outline-3">
-<h3 id="org69e4770">Creating the LVM containers</h3>
-<div class="outline-text-3" id="text-org69e4770">
+<div id="outline-container-org37924c7" class="outline-3">
+<h3 id="org37924c7">Creating the LVM containers</h3>
+<div class="outline-text-3" id="text-org37924c7">
 <p>
 Now, we can create the LVM containers for our partitions.
 </p>
@@ -543,9 +543,9 @@ partition to be quite large for the initial installation.
 </div>
 </div>
 
-<div id="outline-container-org902182e" class="outline-3">
-<h3 id="org902182e">Formatting</h3>
-<div class="outline-text-3" id="text-org902182e">
+<div id="outline-container-orgb122855" class="outline-3">
+<h3 id="orgb122855">Formatting</h3>
+<div class="outline-text-3" id="text-orgb122855">
 <p>
 Now that we have all the partitions and logical volumes created, we need to
 create actual "filesystems" for each.  I have been using a combination of <code>ext4</code>
@@ -584,9 +584,9 @@ Do not forget to format the swap volume:
 </div>
 </div>
 
-<div id="outline-container-org010c4df" class="outline-3">
-<h3 id="org010c4df">Mounting</h3>
-<div class="outline-text-3" id="text-org010c4df">
+<div id="outline-container-orgafac05c" class="outline-3">
+<h3 id="orgafac05c">Mounting</h3>
+<div class="outline-text-3" id="text-orgafac05c">
 <p>
 The penultimate step before turning over to the initialization step is to mount
 each of the partitions:
@@ -615,9 +615,9 @@ You can optionally enable the swap partition for the current live installation:
 </div>
 </div>
 
-<div id="outline-container-org6bed1b5" class="outline-4">
-<h4 id="org6bed1b5">Nix Store</h4>
-<div class="outline-text-4" id="text-org6bed1b5">
+<div id="outline-container-org0e90be2" class="outline-4">
+<h4 id="org0e90be2">Nix Store</h4>
+<div class="outline-text-4" id="text-org0e90be2">
 <p>
 If you choose to run <code>nix</code> as an addition package manager, make sure to create
 the "store" directory, lest your first boot waits forever for such a directory
@@ -633,9 +633,9 @@ to appear&#x2026;
 </div>
 </div>
 
-<div id="outline-container-org9303fbe" class="outline-2">
-<h2 id="org9303fbe">Cloning and modifying UUIDs</h2>
-<div class="outline-text-2" id="text-org9303fbe">
+<div id="outline-container-org50cb7ee" class="outline-2">
+<h2 id="org50cb7ee">Cloning and modifying UUIDs</h2>
+<div class="outline-text-2" id="text-org50cb7ee">
 <p>
 Each configuration is different, but before initializing the system, I need to
 change the UUIDs of the initial LUKS volumes within my system configuration.
@@ -672,9 +672,9 @@ UUID of the <code>${device_part}</code> and update the system config accordingly
 </div>
 </div>
 
-<div id="outline-container-org98c3a13" class="outline-2">
-<h2 id="org98c3a13">System initialization</h2>
-<div class="outline-text-2" id="text-org98c3a13">
+<div id="outline-container-org9b374c8" class="outline-2">
+<h2 id="org9b374c8">System initialization</h2>
+<div class="outline-text-2" id="text-org9b374c8">
 <p>
 Before starting the initialization process, start the copy-on-write service to
 ensure any changes made to the running <a href="https://guix.gnu.org/">Guix</a> system (e.g., live installation
@@ -715,9 +715,9 @@ Assuming everything works, we should be able to reboot into the new system.
 </div>
 </div>
 
-<div id="outline-container-org5ef86ad" class="outline-2">
-<h2 id="org5ef86ad">After initialization steps</h2>
-<div class="outline-text-2" id="text-org5ef86ad">
+<div id="outline-container-org09d25a5" class="outline-2">
+<h2 id="org09d25a5">After initialization steps</h2>
+<div class="outline-text-2" id="text-org09d25a5">
 <p>
 After successfully booting into the freshly initialized system, we need to set
 the passwords of the root and default user.
@@ -730,9 +730,9 @@ Switch over to a different <code>tty</code> and "login" as root, and set the pas
 </div>
 </div>
 
-<div id="outline-container-org4d8148f" class="outline-2">
-<h2 id="org4d8148f">Parting thoughts</h2>
-<div class="outline-text-2" id="text-org4d8148f">
+<div id="outline-container-org30ba8d9" class="outline-2">
+<h2 id="org30ba8d9">Parting thoughts</h2>
+<div class="outline-text-2" id="text-org30ba8d9">
 <p>
 Because installing my typical configuration is a little heavy, I am considering
 creating a smaller configuration just for the initial installation to quickly
