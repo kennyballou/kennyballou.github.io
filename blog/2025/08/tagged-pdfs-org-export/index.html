@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2026-01-03 Sat 20:00 -->
+<!-- 2026-01-06 Tue 18:28 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Tagged PDFs via Org Export</title>
@@ -294,21 +294,21 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org7f1b798">Context</a>
+<li><a href="#org4e93530">Context</a>
 <ul>
-<li><a href="#org857144c">Web Content Accessibility Guidelines</a></li>
-<li><a href="#orgff2a94e">Org Mode and LaTeX</a></li>
-<li><a href="#org17f3272">PDF and LaTeX</a></li>
+<li><a href="#orga018948">Web Content Accessibility Guidelines</a></li>
+<li><a href="#org8febd0f">Org Mode and LaTeX</a></li>
+<li><a href="#org51b0965">PDF and LaTeX</a></li>
 </ul>
 </li>
-<li><a href="#orgd02ddd9">Adding Tags to PDFs</a></li>
-<li><a href="#orge5a90c3">Adding Tags to PDFs in Org Mode</a></li>
-<li><a href="#org7dbc685">LaTeX PDF Process</a></li>
-<li><a href="#org4fc62f5">Conclusion</a></li>
+<li><a href="#org27ad584">Adding Tags to PDFs</a></li>
+<li><a href="#org02c9580">Adding Tags to PDFs in Org Mode</a></li>
+<li><a href="#org3140917">LaTeX PDF Process</a></li>
+<li><a href="#org85cf608">Conclusion</a></li>
 </ul>
 </div>
 </div>
-<div class="preview" id="org7023a92">
+<div class="preview" id="orgdd5003d">
 <p>
 The new version of the <a href="https://www.ada.gov/resources/2024-03-08-web-rule/">WCAG</a> requires PDFs (and all online content posted to
 <a href="https://en.wikipedia.org/wiki/Learning_management_system">LMS</a>) to be properly tagged for screen readers.  However, this has been
@@ -319,14 +319,14 @@ tweaks and get most of the way there.
 
 </div>
 
-<div id="outline-container-org7f1b798" class="outline-2">
-<h2 id="org7f1b798">Context</h2>
-<div class="outline-text-2" id="text-org7f1b798">
+<div id="outline-container-org4e93530" class="outline-2">
+<h2 id="org4e93530">Context</h2>
+<div class="outline-text-2" id="text-org4e93530">
 </div>
 
-<div id="outline-container-org857144c" class="outline-3">
-<h3 id="org857144c">Web Content Accessibility Guidelines</h3>
-<div class="outline-text-3" id="text-org857144c">
+<div id="outline-container-orga018948" class="outline-3">
+<h3 id="orga018948">Web Content Accessibility Guidelines</h3>
+<div class="outline-text-3" id="text-orga018948">
 <p>
 A new version of the <a href="https://www.ada.gov/resources/2024-03-08-web-rule/">Web Content Accessibility Guidelines (WCAG)</a> is here and
 means that many educational resources need to be accessible by default.
@@ -337,9 +337,9 @@ check boxes.
 </div>
 </div>
 
-<div id="outline-container-orgff2a94e" class="outline-3">
-<h3 id="orgff2a94e">Org Mode and LaTeX</h3>
-<div class="outline-text-3" id="text-orgff2a94e">
+<div id="outline-container-org8febd0f" class="outline-3">
+<h3 id="org8febd0f">Org Mode and LaTeX</h3>
+<div class="outline-text-3" id="text-org8febd0f">
 <p>
 Plain-text documents written in <a href="https://orgmode.org/">Org Mode</a> markup can be relatively easily
 <a href="https://orgmode.org/manual/Exporting.html">exported</a> into several different output formats, including HTML, <a href="https://www.latex-project.org/">LaTeX</a>, <a href="https://ctan.org/pkg/beamer">Beamer</a>,
@@ -349,9 +349,9 @@ support many formats, including punting to <a href="https://pandoc.org/">Pandoc<
 </div>
 </div>
 
-<div id="outline-container-org17f3272" class="outline-3">
-<h3 id="org17f3272">PDF and LaTeX</h3>
-<div class="outline-text-3" id="text-org17f3272">
+<div id="outline-container-org51b0965" class="outline-3">
+<h3 id="org51b0965">PDF and LaTeX</h3>
+<div class="outline-text-3" id="text-org51b0965">
 <p>
 The Portable Document Format (PDF) has support for embedding screen reader
 "tags" which instruct the screen reader how to process the document, providing
@@ -369,9 +369,9 @@ accessible to <a href="https://orgmode.org/">Org Mode</a> <a href="https://orgmo
 </div>
 </div>
 
-<div id="outline-container-orgd02ddd9" class="outline-2">
-<h2 id="orgd02ddd9">Adding Tags to PDFs</h2>
-<div class="outline-text-2" id="text-orgd02ddd9">
+<div id="outline-container-org27ad584" class="outline-2">
+<h2 id="org27ad584">Adding Tags to PDFs</h2>
+<div class="outline-text-2" id="text-org27ad584">
 <p>
 The core of what needs to be done to add tagging to PDFs is to add a few lines
 to the preamble of the <a href="https://www.latex-project.org/">LaTeX</a> document.
@@ -417,9 +417,9 @@ works best with <a href="https://www.luatex.org/">LuaLaTeX</a> compiler:
 </div>
 </div>
 
-<div id="outline-container-orge5a90c3" class="outline-2">
-<h2 id="orge5a90c3">Adding Tags to PDFs in Org Mode</h2>
-<div class="outline-text-2" id="text-orge5a90c3">
+<div id="outline-container-org02c9580" class="outline-2">
+<h2 id="org02c9580">Adding Tags to PDFs in Org Mode</h2>
+<div class="outline-text-2" id="text-org02c9580">
 <p>
 To accomplish the above for documents that start their existence as <a href="https://orgmode.org/">Org Mode</a>
 documents, we need to add a few more things.  To the best of my knowledge, it
@@ -478,9 +478,9 @@ Do not forget to add the above packages and settings to the preamble of your
 </div>
 </div>
 
-<div id="outline-container-org7dbc685" class="outline-2">
-<h2 id="org7dbc685">LaTeX PDF Process</h2>
-<div class="outline-text-2" id="text-org7dbc685">
+<div id="outline-container-org3140917" class="outline-2">
+<h2 id="org3140917">LaTeX PDF Process</h2>
+<div class="outline-text-2" id="text-org3140917">
 <p>
 Additionally, you may find it useful to use the following command for
 generating the documents correctly, updating <code>org-latex-pdf-process</code>:
@@ -500,16 +500,16 @@ compiler choices.  However, for accessibility, it is likely best to use
 </div>
 </div>
 
-<div id="outline-container-org4fc62f5" class="outline-2">
-<h2 id="org4fc62f5">Conclusion</h2>
-<div class="outline-text-2" id="text-org4fc62f5">
+<div id="outline-container-org85cf608" class="outline-2">
+<h2 id="org85cf608">Conclusion</h2>
+<div class="outline-text-2" id="text-org85cf608">
 <p>
 Over time, the process for creating appropriately tagged and accessible PDFs
 through <a href="https://www.latex-project.org/">LaTeX</a> and <a href="https://ctan.org/pkg/beamer">Beamer</a> has improved significantly.
 </p>
 
 <p>
-I still find the <a href="https://ctan.org/pkg/beamer">Beammer</a> tagged presentations to be slightly broken for
+I still find the <a href="https://ctan.org/pkg/beamer">Beamer</a> tagged presentations to be slightly broken for
 presentation, but workable as documents when used for reference.  However, a
 larger point of generating two separate documents is to use one for teaching
 and presenting, and the other as reference notes for students.
