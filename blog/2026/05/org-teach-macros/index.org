@@ -1,0 +1,133 @@
+#+TITLE: Org Teach Export Macros
+#+DESCRIPTION: Extending org-teach to dynamically choose appropriate attributes
+#+TAGS: Emacs
+#+TAGS: Org-Mode
+#+TAGS: PDF
+#+TAGS: LaTeX
+#+TAGS: Beamer
+#+TAGS: Teaching
+#+DATE: 2026-05-08
+#+SLUG: org-teach-macros
+#+LINK: emacs https://www.gnu.org/software/emacs
+#+LINK: org-mode https://orgmode.org/
+#+LINK: org-mode-export https://orgmode.org/manual/Exporting.html
+#+LINK: org-teach https://git.sr.ht/~jamesendreshowell/org-teach
+#+LINK: latex https://www.latex-project.org/
+#+LINK: latex-beamer https://ctan.org/pkg/beamer
+#+LINK: jameshowell https://git.sr.ht/~jamesendreshowell/
+#+LINK: yasnippet https://joaotavora.github.io/yasnippet/
+#+LINK: github https://github.com
+#+LINK: gitlab https://www.gitlab.com
+
+#+begin_preview
+After using [[jameshowell][James Howell's]] [[org-teach][Org Teach]] for a number of semesters, there was one
+thing that was bothering me with the reproduction of images (and code) between
+slides and handouts.  Chiefly, images may have different scaling requirements
+depending on whether the target output is the slide deck or the handout.
+Initially, I simply built each document, manually replacing the appropriate
+~#+ATTR_LATEX~ lines to suit.  Of course, this cannot stand.
+#+end_preview
+
+[[org-mode][Org mode]] has excellent [[org-mode-export][export]] options, particularly for PDF output via [[latex][LaTeX]].
+Combined with some macros and standard files, and [[org-mode][Org mode]] provides some
+significant functionality for creating and publishing documents in multiple
+formats.  To that end, I have used [[org-teach][Org Teach]] since I started teaching, and I
+have thoroughly enjoyed the experience.  More importantly, my students have
+overwhelmingly preferred it, one student asking me to tell the other lecturers
+to similarly structure their content.
+
+Including images into the final output is as easy as linking to the image file
+using the standard [[org-mode][Org]] linking syntax, e.g., ~[[URL][Description]]~.
+Furthermore, we can provide customized [[latex][LaTeX]] options to these links using
+~#+ATTR_LATEX~ lines immediately preceding these image links.  Similarly [[org-mode][Org]]
+supports ~#+ATTR_BEAMER~ which differentiates options only available when
+exporting [[latex-beamer][Beamer]] slides.
+
+Unfortunately, not all export elements go through the same code.  For example,
+using ~#+ATTR_BEAMER~ with images or code fragments does not in fact modify the
+behavior since it is not merged into the dictionary of options by the different
+translation functions within [[org-mode][Org mode]].  Thus, when an image is particularly
+tall for a slide, perhaps we want to cap its height with ~:height
+0.7\textheight~.  However, for the handout, this would mean the image is now
+70% of the page.  Thus, we need a mechanism to set the height for both export
+targets without going crazy.
+
+#+begin_quote
+To be clear, a better solution is to patch these functions within [[org-mode][Org]] such that
+it merges ~#+ATTR_BEAMER~ and ~#+ATTR_LATEX~ in a sensible way depending on the
+backend.  In other words, when exporting to a regular [[latex][LaTeX]] PDF, e.g.,
+handouts, the exporter ignores ~#+ATTR_BEAMER~ lines.  However, when exporting to
+[[latex-beamer][Beamer]], the exporter merges and replaces any values in the original
+~#+ATTR_LATEX~ with the values found in ~#+ATTR_BEAMER~.  Unfortunately, this is
+beyond my time capacity.
+#+end_quote
+
+Instead of leveraging a proper solution, I wrote a set of (quite simple) macros
+to accomplish 80% of the desired result (the remaining 20% to resolve is the
+unfortunate but necessary duplication of common values between the two macros'
+arguments).
+
+That is, I have defined the following macros:
+
+#+begin_src org
+,#+MACRO: opts-if-beamer (eval (if (eq org-export-current-backend 'beamer) (format "#+ATTR_LATEX: %s" $1) "#+ATTR_LATEX:"))
+,#+MACRO: opts-if-latex  (eval (if (eq org-export-current-backend 'latex) (format "#+ATTR_LATEX: %s" $1) "#+ATTR_LATEX:"))
+#+end_src
+
+They are used as shown in the following example:
+
+#+begin_src org
+{{{opts-if-beamer(:placment [H] :center t :alt "")}}}
+{{{opts-if-latex(:placment [H] :center t :alt "")}}}
+[[./link/to/image.png]]
+#+end_src
+
+Both macros take an argument and format it into the output [[org-mode][Org]] source
+immediately before the export engine takes over (you know, because macro
+expansion is a preprocessing step of translation).  Considering first the
+~org-if-beamer~ macro, if the target backend is [[latex-beamer][Beamer]], its ~eval~ returns the
+appropriate ~#+ATTR_LATEX~ line with the arguments included.  Otherwise, if it is
+not, then it simply inserts a blank ~#+ATTR_LATEX~ line.  Dually so for the the
+~opts-if-latex~ macro.
+
+#+begin_quote
+The blank ~#+ATTR_LATEX~ is necessary as the exporter merges all grouped
+~#+ATTR_LATEX~ lines together.  Thus, without this line, the output is likely to
+have a spurious blank line separating the ~ATTR~ lines, yielding undesired
+outputs.
+#+end_quote
+
+These macros look like a lot of text to add each time an image needs insertion,
+and that is true.  However, I have added a [[yasnippet][Yasnippet]] for [[org-mode][Org]] files to alleviate
+this specific suffering.  Now, I simply type ~<ins-image>TAB~ and I get the above
+macro lines.
+
+As an added benefit, I have found that these macros work quite well for source
+listings as well.  Sometimes, I would like to display lots of source lines (~20
+lines).  However, this many lines do not fit well onto a [[latex-beamer][Beamer]] slide.  Thus,
+the font needs down scaling for the specific listing.  However, the scaling
+should remain for the handout.  Without any changes, we can use the same macros
+to accomplish this.
+
+#+begin_src org
+{{{opts-if-beamer(:options fontsize=\tiny)}}}
+{{{opts-if-latex()}}}
+,#+begin_src scheme
+(define (sum seq)
+  (if (null? seq)
+      0
+      (+ (car seq) (sum (cdr seq)))))
+
+(display (sum '(5 6 1 8 3 7)))
+(display "\n")
+,#+end_src
+#+end_src
+
+Moving forward, while I enjoy the ability to easily create two kinds of
+documents: one for presenting and one for handouts, I am reflecting on the
+delivery modality some.  That is, I may be experimenting with this process
+more.  Furthermore, given the recent +dumpster fire+ Canvas outage, I have put
+some thought into posting the handouts through [[github][GitHub]] or [[gitlab][GitLab]] pages.
+Unfortunately, this would mean I need to support another export backend.  So
+far, this seems doable by switching to a ~cond~ instead, but would mean there is
+now an ordering requirement between the macros, gross.
