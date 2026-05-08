@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2026-01-06 Tue 18:28 -->
+<!-- 2026-05-08 Fri 23:09 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Granularity of (Git) Commits</title>
@@ -208,7 +208,9 @@
 <link rel="stylesheet" href="/css/simple.css" />
 <link rel="stylesheet" href="/css/simple.add.css" />
 <link rel="stylesheet" href="/css/katex.css" />
-<link rel="stylesheet" href="/css/all.min.css" />
+<link rel="stylesheet" href="/css/fontawesome.css" />
+<link rel="stylesheet" href="/css/brands.css" />
+<link rel="stylesheet" href="/css/solid.css" />
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <script defer type="text/javascript" src="/js/katex.js"></script>
 <script defer type="text/javascript" src="/js/katex-render.js"></script>
@@ -241,50 +243,50 @@
 </div><header id="" class="status">
 <nav>
   <a href="/">
-    <i class="fade fas fa-home"></i>
+    <i class="fade fa-solid fa-home"></i>
   </a>
   <a href="/about.html">
-    <i class="fade fas fa-user-circle"></i>
+    <i class="fade fa-solid fa-user-circle"></i>
   </a>
   <a href="https://git.sr.ht/~kennyballou/"
      target="_blank"
      rel="noopener noreferrer">
-    <i class="fade far fa-circle fa-1x"></i>
+    <i class="fade fa-regular fa-circle fa-1x"></i>
   </a>
   <a href="https://github.com/kennyballou"
      target="_blank"
      rel="noopener noreferrer">
-    <i class="fade fab fa-github fa-1x"></i>
+    <i class="fade fa-brands fa-github fa-1x"></i>
   </a>
-  <a href="https://bitbucket.org/kballou"
+  <a href="https://codeberg.org/kennyballou"
      target="_blank"
      rel="noopener noreferrer">
-    <i class="fade fab fa-bitbucket fa-1x"></i>
+    <i class="fade fa-regular fa-code-branch fa-1x"></i>
   </a>
   <a href="https://orcid.org/0000-0002-6032-474X"
      target="_blank"
      rel="noopener noreferrer">
-    <i class="fade fab fa-orcid"></i>
+    <i class="fade fa-brands fa-orcid"></i>
   </a>
   <a href="https://linkedin.com/in/kennyballou"
      target="_blank"
      rel="noopener noreferrer">
-    <i class="fade fab fa-linkedin-in fa-1x"></i>
+    <i class="fade fa-brands fa-linkedin-in fa-1x"></i>
   </a>
   <a href="/support.html">
-    <i class="fade fas fa-heart fa-1x"></i>
+    <i class="fade fa-solid fa-heart fa-1x"></i>
   </a>
   <a href="/cv.pdf"
      target="_blank">
-    <i class="fade far fa-file-pdf"></i>
+    <i class="fade fa-regular fa-file-pdf"></i>
   </a>
   <a href="/B74CC4B41148C3DB364BC21182D94B35744E1B34.asc"
      target="_blank">
-    <i class="fade fas fa-key"></i>
+    <i class="fade fa-solid fa-key"></i>
   </a>
   <a href="/index.xml" rel="alternate"
      type="application/rss+xml">
-    <i class="fade fas fa-rss fa-1x"></i>
+    <i class="fade fa-solid fa-rss fa-1x"></i>
   </a>
 </nav>
 </header>
@@ -294,15 +296,15 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgcede6a5">Introduction</a></li>
-<li><a href="#org4cb114d">Single Story -&gt; Single Commit</a></li>
-<li><a href="#orgd3d92ac">Discrete Tasks -&gt; Multiple Atomic Commits</a></li>
-<li><a href="#orgab2697f">Examples</a></li>
-<li><a href="#org88a2127">Discussion</a></li>
+<li><a href="#org10e7a14">Introduction</a></li>
+<li><a href="#org0c748c4">Single Story -&gt; Single Commit</a></li>
+<li><a href="#orge0e8c52">Discrete Tasks -&gt; Multiple Atomic Commits</a></li>
+<li><a href="#orgafd609e">Examples</a></li>
+<li><a href="#orgdba0a1b">Discussion</a></li>
 </ul>
 </div>
 </div>
-<div class="PREVIEW" id="orgfc43b10">
+<div class="PREVIEW" id="orgc5a946d">
 <p>
 There are <a href="https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html">many</a> <a href="https://chris.beams.io/posts/git-commit/">blog</a> <a href="https://medium.com/@joshuatauberer/write-joyous-git-commit-messages-2f98891114c4">posts</a> which extol the foundations of writing good,
 communicative commit messages.  These same posts, however, tend to otherwise
@@ -314,16 +316,16 @@ granularity.  The answer is, of course, it depends.
 
 <a href="https://xkcd.com/1296"><figure>
 
-<div id="orgf7214c8" class="figure">
+<div id="orgc639065" class="figure">
 <p><img src="https://imgs.xkcd.com/comics/git_commit.png" alt="git_commit.png" />
 </p>
 <p><span class="figure-number">Figure 1: </span>Merge branch 'asdfasjkfdlas/alkdjf' into sdkjfls-final</p>
 </div>
 </figure></a>
 
-<div id="outline-container-orgcede6a5" class="outline-2">
-<h2 id="orgcede6a5">Introduction</h2>
-<div class="outline-text-2" id="text-orgcede6a5">
+<div id="outline-container-org10e7a14" class="outline-2">
+<h2 id="org10e7a14">Introduction</h2>
+<div class="outline-text-2" id="text-org10e7a14">
 <p>
 Regardless of position on "good" or "communicative," we are often left with
 questions about the commits themselves.  How frequent should we commit?  What
@@ -353,9 +355,9 @@ doesn't have a consistent choice, <i>that</i> is what should be fixed.
 </div>
 </div>
 
-<div id="outline-container-org4cb114d" class="outline-2">
-<h2 id="org4cb114d">Single Story -&gt; Single Commit</h2>
-<div class="outline-text-2" id="text-org4cb114d">
+<div id="outline-container-org0c748c4" class="outline-2">
+<h2 id="org0c748c4">Single Story -&gt; Single Commit</h2>
+<div class="outline-text-2" id="text-org0c748c4">
 <p>
 Using a single commit for tasks comes with a lot of simplicity, but the commits
 themselves will be large.  Integrating the single commit is relatively
@@ -386,9 +388,9 @@ The history of code is far messier than even I wish to admit.
 </div>
 </div>
 
-<div id="outline-container-orgd3d92ac" class="outline-2">
-<h2 id="orgd3d92ac">Discrete Tasks -&gt; Multiple Atomic Commits</h2>
-<div class="outline-text-2" id="text-orgd3d92ac">
+<div id="outline-container-orge0e8c52" class="outline-2">
+<h2 id="orge0e8c52">Discrete Tasks -&gt; Multiple Atomic Commits</h2>
+<div class="outline-text-2" id="text-orge0e8c52">
 <p>
 Instead of using a single commit which contains every single change that was
 made to accomplish the task, we can use a single commit for each of those
@@ -447,9 +449,9 @@ web UI's, but this is certainly possible and <span class="underline">is</span> d
 </div>
 </div>
 
-<div id="outline-container-orgab2697f" class="outline-2">
-<h2 id="orgab2697f">Examples</h2>
-<div class="outline-text-2" id="text-orgab2697f">
+<div id="outline-container-orgafd609e" class="outline-2">
+<h2 id="orgafd609e">Examples</h2>
+<div class="outline-text-2" id="text-orgafd609e">
 <p>
 Let's examine some pull requests which demonstrate both approaches.  I'm going
 to point to pull requests I have submitted since I don't want to cast any
@@ -465,7 +467,7 @@ local machine's <a href="https://www.musicpd.org/">muisc player daemon</a> via t
 Repeated here is the single message and summary diff of the <a href="https://github.com/mpdel/libmpdel/pull/2">first</a> pull request:
 </p>
 
-<pre class="example" id="org9b8a016">
+<pre class="example" id="org00ee2dc">
 libmpdel: enable use of local UNIX sockets for MPD
 
 By using `make-network-process` we can tune the parameters for either
@@ -506,7 +508,7 @@ commit closing the larger story of enabling the UNIX socket connection type.
 Repeated here are the series of commit messages and summary differences:
 </p>
 
-<pre class="example" id="org5d20364">
+<pre class="example" id="orgf1cffa0">
 add custom variable `libmpdel-family`
 
 This can be used to switch between IPv4 and IPv6 addresses.
@@ -515,7 +517,7 @@ This can be used to switch between IPv4 and IPv6 addresses.
 libmpdel.el | 7 +++++++
 </pre>
 
-<pre class="example" id="orgf39279d">
+<pre class="example" id="org07f7fe3">
 Always use `make-network-process`
 
 When making a connection to MPD, whether via local UNIX socket, or TCP
@@ -530,14 +532,14 @@ written in C and the other is written in ELisp."
 libmpdel.el | 12 +++++++-----
 </pre>
 
-<pre class="example" id="orgceb88ee">
+<pre class="example" id="org9e2258c">
 Add missing element to `limbpdel-profiles` docstring
 
 1 file changed, 1 insertion(+), 1 deletion(-)
 libmpdel.el | 2 +-
 </pre>
 
-<pre class="example" id="orgf2596b5">
+<pre class="example" id="org757d451">
 add libmpdel-family to `libmpdel-profiles`
 
 Add ability to specify the address family for connection profiles.
@@ -558,9 +560,9 @@ commit.
 </div>
 </div>
 
-<div id="outline-container-org88a2127" class="outline-2">
-<h2 id="org88a2127">Discussion</h2>
-<div class="outline-text-2" id="text-org88a2127">
+<div id="outline-container-orgdba0a1b" class="outline-2">
+<h2 id="orgdba0a1b">Discussion</h2>
+<div class="outline-text-2" id="text-orgdba0a1b">
 <p>
 It's rather easy to argue for "small, atomic" commits, but I sense we have
 failed to clearly articulate what we mean by "small".  How small is "small"?

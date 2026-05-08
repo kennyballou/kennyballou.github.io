@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2026-01-06 Tue 18:28 -->
+<!-- 2026-05-08 Fri 23:09 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Org Projects with Gantt Charts</title>
@@ -207,7 +207,9 @@
 <link rel="stylesheet" href="/css/simple.css" />
 <link rel="stylesheet" href="/css/simple.add.css" />
 <link rel="stylesheet" href="/css/katex.css" />
-<link rel="stylesheet" href="/css/all.min.css" />
+<link rel="stylesheet" href="/css/fontawesome.css" />
+<link rel="stylesheet" href="/css/brands.css" />
+<link rel="stylesheet" href="/css/solid.css" />
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <script defer type="text/javascript" src="/js/katex.js"></script>
 <script defer type="text/javascript" src="/js/katex-render.js"></script>
@@ -272,50 +274,50 @@
 </div><header id="" class="status">
 <nav>
   <a href="/">
-    <i class="fade fas fa-home"></i>
+    <i class="fade fa-solid fa-home"></i>
   </a>
   <a href="/about.html">
-    <i class="fade fas fa-user-circle"></i>
+    <i class="fade fa-solid fa-user-circle"></i>
   </a>
   <a href="https://git.sr.ht/~kennyballou/"
      target="_blank"
      rel="noopener noreferrer">
-    <i class="fade far fa-circle fa-1x"></i>
+    <i class="fade fa-regular fa-circle fa-1x"></i>
   </a>
   <a href="https://github.com/kennyballou"
      target="_blank"
      rel="noopener noreferrer">
-    <i class="fade fab fa-github fa-1x"></i>
+    <i class="fade fa-brands fa-github fa-1x"></i>
   </a>
-  <a href="https://bitbucket.org/kballou"
+  <a href="https://codeberg.org/kennyballou"
      target="_blank"
      rel="noopener noreferrer">
-    <i class="fade fab fa-bitbucket fa-1x"></i>
+    <i class="fade fa-regular fa-code-branch fa-1x"></i>
   </a>
   <a href="https://orcid.org/0000-0002-6032-474X"
      target="_blank"
      rel="noopener noreferrer">
-    <i class="fade fab fa-orcid"></i>
+    <i class="fade fa-brands fa-orcid"></i>
   </a>
   <a href="https://linkedin.com/in/kennyballou"
      target="_blank"
      rel="noopener noreferrer">
-    <i class="fade fab fa-linkedin-in fa-1x"></i>
+    <i class="fade fa-brands fa-linkedin-in fa-1x"></i>
   </a>
   <a href="/support.html">
-    <i class="fade fas fa-heart fa-1x"></i>
+    <i class="fade fa-solid fa-heart fa-1x"></i>
   </a>
   <a href="/cv.pdf"
      target="_blank">
-    <i class="fade far fa-file-pdf"></i>
+    <i class="fade fa-regular fa-file-pdf"></i>
   </a>
   <a href="/B74CC4B41148C3DB364BC21182D94B35744E1B34.asc"
      target="_blank">
-    <i class="fade fas fa-key"></i>
+    <i class="fade fa-solid fa-key"></i>
   </a>
   <a href="/index.xml" rel="alternate"
      type="application/rss+xml">
-    <i class="fade fas fa-rss fa-1x"></i>
+    <i class="fade fa-solid fa-rss fa-1x"></i>
   </a>
 </nav>
 </header>
@@ -325,21 +327,21 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org5e7cbc2">Background</a>
+<li><a href="#org7287011">Background</a>
 <ul>
-<li><a href="#orgac0a2c6">Prior Art</a></li>
-<li><a href="#orgdba3238">Rationale</a></li>
+<li><a href="#org6b7a344">Prior Art</a></li>
+<li><a href="#org27ee591">Rationale</a></li>
 </ul>
 </li>
-<li><a href="#orga58a042">Implementation</a></li>
-<li><a href="#orgf1792dd">Usage</a></li>
-<li><a href="#org5ac1dc9">Examples</a></li>
-<li><a href="#orgd4cb842">Limitations</a></li>
-<li><a href="#org55b1073">Future Work/Improvements</a></li>
+<li><a href="#org930c708">Implementation</a></li>
+<li><a href="#org57e822d">Usage</a></li>
+<li><a href="#org2195787">Examples</a></li>
+<li><a href="#org9f0c6c2">Limitations</a></li>
+<li><a href="#orgb19fe19">Future Work/Improvements</a></li>
 </ul>
 </div>
 </div>
-<div class="PREVIEW" id="org3cca431">
+<div class="PREVIEW" id="orgc95a19f">
 <p>
 <a href="https://orgmode.org/">Org-Mode</a> is a great way to store <code>TODO</code> items, store notes, and keep track of
 projects.  However, possibly due to ignorance of what is available, getting a
@@ -365,9 +367,9 @@ breakdown, but the point remains, some amount of tasks left over as a whole do
 not communicate the holistic progress and prediction towards completion.
 </p>
 
-<div id="outline-container-org5e7cbc2" class="outline-2">
-<h2 id="org5e7cbc2">Background</h2>
-<div class="outline-text-2" id="text-org5e7cbc2">
+<div id="outline-container-org7287011" class="outline-2">
+<h2 id="org7287011">Background</h2>
+<div class="outline-text-2" id="text-org7287011">
 <p>
 <a href="https://en.wikipedia.org/wiki/Gantt_chart">Gantt charts</a> model project schedules as a sort of bar chart.  Dependencies and
 links can be shown to draw the critical path of the project and the timeline of
@@ -383,9 +385,9 @@ some chosen granularity of time units such as days, months, or years.
 </p>
 </div>
 
-<div id="outline-container-orgac0a2c6" class="outline-3">
-<h3 id="orgac0a2c6">Prior Art</h3>
-<div class="outline-text-3" id="text-orgac0a2c6">
+<div id="outline-container-org6b7a344" class="outline-3">
+<h3 id="org6b7a344">Prior Art</h3>
+<div class="outline-text-3" id="text-org6b7a344">
 <p>
 There are several existing projects which attempt to generate <a href="https://en.wikipedia.org/wiki/Gantt_chart">Gantt charts</a> from
 <a href="https://orgmode.org/">Org TODO entries</a>.  Specifically, <a href="https://orgmode.org/">Org mode</a> supports exporting directly to
@@ -395,9 +397,9 @@ third-party packages such as <a href="https://github.com/legalnonsense/elgantt/"
 </div>
 </div>
 
-<div id="outline-container-orgdba3238" class="outline-3">
-<h3 id="orgdba3238">Rationale</h3>
-<div class="outline-text-3" id="text-orgdba3238">
+<div id="outline-container-org27ee591" class="outline-3">
+<h3 id="org27ee591">Rationale</h3>
+<div class="outline-text-3" id="text-org27ee591">
 <p>
 Given that there are existing solutions to generating <a href="https://en.wikipedia.org/wiki/Gantt_chart">Gantt charts</a> from <a href="https://orgmode.org/">Org
 mode</a> entries, why create another one?  The other solutions require either the
@@ -409,9 +411,9 @@ information already present entries to generate the charts.
 </div>
 </div>
 
-<div id="outline-container-orga58a042" class="outline-2">
-<h2 id="orga58a042">Implementation</h2>
-<div class="outline-text-2" id="text-orga58a042">
+<div id="outline-container-org930c708" class="outline-2">
+<h2 id="org930c708">Implementation</h2>
+<div class="outline-text-2" id="text-org930c708">
 <blockquote>
 <p>
 Currently, the implementation is not packaged, but that may change at a future
@@ -571,9 +573,9 @@ no duration to the tasks.
 </div>
 </div>
 
-<div id="outline-container-orgf1792dd" class="outline-2">
-<h2 id="orgf1792dd">Usage</h2>
-<div class="outline-text-2" id="text-orgf1792dd">
+<div id="outline-container-org57e822d" class="outline-2">
+<h2 id="org57e822d">Usage</h2>
+<div class="outline-text-2" id="text-org57e822d">
 <p>
 Add the following block to the subtree of entries.
 </p>
@@ -595,9 +597,9 @@ either be "days" or "months".
 </div>
 </div>
 
-<div id="outline-container-org5ac1dc9" class="outline-2">
-<h2 id="org5ac1dc9">Examples</h2>
-<div class="outline-text-2" id="text-org5ac1dc9">
+<div id="outline-container-org2195787" class="outline-2">
+<h2 id="org2195787">Examples</h2>
+<div class="outline-text-2" id="text-org2195787">
 <p>
 To highlight how this function works, we consider the following example <a href="https://orgmode.org/">Org</a>
 <a href="https://kennyballou.com/blog/2022/06/org-projects-with-gantt/example.org">file</a>.  At the top level, there is an entry for all projects.  Because this is
@@ -715,22 +717,22 @@ dark mode.
 </div>
 
 
-<div id="org9afeb57" class="figure">
+<div id="org3e7f8d4" class="figure">
 <p><img src="../../../../blog/2022/06/org-projects-with-gantt/gantt-1.svg" alt="gantt-1.svg" class="org-svg" />
 </p>
 </div>
 
 
-<div id="orgfc405a2" class="figure">
+<div id="org27e588c" class="figure">
 <p><img src="../../../../blog/2022/06/org-projects-with-gantt/gantt-2.svg" alt="gantt-2.svg" class="org-svg" />
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgd4cb842" class="outline-2">
-<h2 id="orgd4cb842">Limitations</h2>
-<div class="outline-text-2" id="text-orgd4cb842">
+<div id="outline-container-org9f0c6c2" class="outline-2">
+<h2 id="org9f0c6c2">Limitations</h2>
+<div class="outline-text-2" id="text-org9f0c6c2">
 <p>
 This process is currently pretty limited, see future work for improvements.
 One notable limitation, however, to make the charts fit on the page, the titles
@@ -742,9 +744,9 @@ improved.
 </div>
 </div>
 
-<div id="outline-container-org55b1073" class="outline-2">
-<h2 id="org55b1073">Future Work/Improvements</h2>
-<div class="outline-text-2" id="text-org55b1073">
+<div id="outline-container-orgb19fe19" class="outline-2">
+<h2 id="orgb19fe19">Future Work/Improvements</h2>
+<div class="outline-text-2" id="text-orgb19fe19">
 <p>
 The tasks can be automatically linked via <code>\ganttlinkedbar</code> and this would be
 natively supported by <a href="https://orgmode.org/manual/TODO-dependencies.html#TODO-dependencies">TODO dependencies</a>.  Alternatively, adding links could be

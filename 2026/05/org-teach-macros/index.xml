@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/"
+     xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+     xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+     xmlns:georss="http://www.georss.org/georss"
+     xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+     xmlns:media="http://search.yahoo.com/mrss/"><channel>
+  <title>(Org Teach Export Macros)</title>
+  <atom:link href="https://kennyballou.com/index.xml" rel="self" type="application/rss+xml" />
+  <link>https://kennyballou.com</link>
+  <description><![CDATA[Extending org-teach to dynamically choose appropriate attributes]]></description>
+  <language>en</language>
+  <pubDate>Fri, 08 May 2026 23:09:59 +0000</pubDate>
+  <lastBuildDate>Fri, 08 May 2026 23:09:59 +0000</lastBuildDate>
+  <generator>Emacs 29.3 Org-mode 9.6.15</generator>
+  <webMaster>kb@devnulllabs.io (kb)</webMaster>
+  <image>
+    <url>http://orgmode.org/img/org-mode-unicorn-logo.png</url>
+    <title>(Org Teach Export Macros)</title>
+    <link>https://kennyballou.com</link>
+  </image>
+
+  <div class="preview" id="orga8269fd">
+    <p>
+      After using <a href="https://git.sr.ht/~jamesendreshowell/">James Howell's</a> <a href="https://git.sr.ht/~jamesendreshowell/org-teach">Org Teach</a> for a number of semesters, there was one
+      thing that was bothering me with the reproduction of images (and code) between
+      slides and handouts.  Chiefly, images may have different scaling requirements
+      depending on whether the target output is the slide deck or the handout.
+      Initially, I simply built each document, manually replacing the appropriate
+      <code>#+ATTR_LATEX</code> lines to suit.  Of course, this cannot stand.
+    </p>
+
+  </div>
+
+  <p>
+    <a href="https://orgmode.org/">Org mode</a> has excellent <a href="https://orgmode.org/manual/Exporting.html">export</a> options, particularly for PDF output via <a href="https://www.latex-project.org/">LaTeX</a>.
+    Combined with some macros and standard files, and <a href="https://orgmode.org/">Org mode</a> provides some
+    significant functionality for creating and publishing documents in multiple
+    formats.  To that end, I have used <a href="https://git.sr.ht/~jamesendreshowell/org-teach">Org Teach</a> since I started teaching, and I
+    have thoroughly enjoyed the experience.  More importantly, my students have
+    overwhelmingly preferred it, one student asking me to tell the other lecturers
+    to similarly structure their content.
+  </p>
+
+  <p>
+    Including images into the final output is as easy as linking to the image file
+    using the standard <a href="https://orgmode.org/">Org</a> linking syntax, e.g., <code>[[URL][Description]]</code>.
+    Furthermore, we can provide customized <a href="https://www.latex-project.org/">LaTeX</a> options to these links using
+    <code>#+ATTR_LATEX</code> lines immediately preceding these image links.  Similarly <a href="https://orgmode.org/">Org</a>
+    supports <code>#+ATTR_BEAMER</code> which differentiates options only available when
+    exporting <a href="https://ctan.org/pkg/beamer">Beamer</a> slides.
+  </p>
+
+  <p>
+    Unfortunately, not all export elements go through the same code.  For example,
+    using <code>#+ATTR_BEAMER</code> with images or code fragments does not in fact modify the
+    behavior since it is not merged into the dictionary of options by the different
+    translation functions within <a href="https://orgmode.org/">Org mode</a>.  Thus, when an image is particularly
+    tall for a slide, perhaps we want to cap its height with <code>:height
+    0.7\textheight</code>.  However, for the handout, this would mean the image is now
+    70% of the page.  Thus, we need a mechanism to set the height for both export
+    targets without going crazy.
+  </p>
+
+  <blockquote>
+    <p>
+      To be clear, a better solution is to patch these functions within <a href="https://orgmode.org/">Org</a> such that
+      it merges <code>#+ATTR_BEAMER</code> and <code>#+ATTR_LATEX</code> in a sensible way depending on the
+      backend.  In other words, when exporting to a regular <a href="https://www.latex-project.org/">LaTeX</a> PDF, e.g.,
+      handouts, the exporter ignores <code>#+ATTR_BEAMER</code> lines.  However, when exporting to
+      <a href="https://ctan.org/pkg/beamer">Beamer</a>, the exporter merges and replaces any values in the original
+      <code>#+ATTR_LATEX</code> with the values found in <code>#+ATTR_BEAMER</code>.  Unfortunately, this is
+      beyond my time capacity.
+    </p>
+  </blockquote>
+
+  <p>
+    Instead of leveraging a proper solution, I wrote a set of (quite simple) macros
+    to accomplish 80% of the desired result (the remaining 20% to resolve is the
+    unfortunate but necessary duplication of common values between the two macros'
+    arguments).
+  </p>
+
+  <p>
+    That is, I have defined the following macros:
+  </p>
+
+  <div class="org-src-container">
+    <pre class="src src-org"><span style="font-weight: bold; font-style: italic;">#+MACRO: opts-if-beamer (eval (if (eq org-export-current-backend 'beamer) (format "#+ATTR_LATEX: %s" $1) "#+ATTR_LATEX:"))</span>
+    <span style="font-weight: bold; font-style: italic;">#+MACRO: opts-if-latex  (eval (if (eq org-export-current-backend 'latex) (format "#+ATTR_LATEX: %s" $1) "#+ATTR_LATEX:"))</span>
+    </pre>
+  </div>
+
+  <p>
+    They are used as shown in the following example:
+  </p>
+
+  <div class="org-src-container">
+    <pre class="src src-org"><span style="text-decoration: underline;">{{{opts-if-beamer(:placment [H] :center t :alt "")}}}</span>
+    <span style="text-decoration: underline;">{{{opts-if-latex(:placment [H] :center t :alt "")}}}</span>
+    <span style="text-decoration: underline;"><a href="./link/to/image.png">./link/to/image.png</a></span>
+    </pre>
+  </div>
+
+  <p>
+    Both macros take an argument and format it into the output <a href="https://orgmode.org/">Org</a> source
+    immediately before the export engine takes over (you know, because macro
+    expansion is a preprocessing step of translation).  Considering first the
+    <code>org-if-beamer</code> macro, if the target backend is <a href="https://ctan.org/pkg/beamer">Beamer</a>, its <code>eval</code> returns the
+    appropriate <code>#+ATTR_LATEX</code> line with the arguments included.  Otherwise, if it is
+    not, then it simply inserts a blank <code>#+ATTR_LATEX</code> line.  Dually so for the the
+    <code>opts-if-latex</code> macro.
+  </p>
+
+  <blockquote>
+    <p>
+      The blank <code>#+ATTR_LATEX</code> is necessary as the exporter merges all grouped
+      <code>#+ATTR_LATEX</code> lines together.  Thus, without this line, the output is likely to
+      have a spurious blank line separating the <code>ATTR</code> lines, yielding undesired
+      outputs.
+    </p>
+  </blockquote>
+
+  <p>
+    These macros look like a lot of text to add each time an image needs insertion,
+    and that is true.  However, I have added a <a href="https://joaotavora.github.io/yasnippet/">Yasnippet</a> for <a href="https://orgmode.org/">Org</a> files to alleviate
+    this specific suffering.  Now, I simply type <code>&lt;ins-image&gt;TAB</code> and I get the above
+    macro lines.
+  </p>
+
+  <p>
+    As an added benefit, I have found that these macros work quite well for source
+    listings as well.  Sometimes, I would like to display lots of source lines (~20
+    lines).  However, this many lines do not fit well onto a <a href="https://ctan.org/pkg/beamer">Beamer</a> slide.  Thus,
+    the font needs down scaling for the specific listing.  However, the scaling
+    should remain for the handout.  Without any changes, we can use the same macros
+    to accomplish this.
+  </p>
+
+  <div class="org-src-container">
+    <pre class="src src-org"><span style="text-decoration: underline;">{{{opts-if-beamer(:options fontsize=\tiny)}}}</span>
+    <span style="text-decoration: underline;">{{{opts-if-latex()}}}</span>
+    <span style="font-weight: bold; font-style: italic;">#+begin_src scheme
+    </span>(<span style="font-weight: bold;">define</span> (<span style="font-weight: bold;">sum</span> seq)
+    (<span style="font-weight: bold;">if</span> (null? seq)
+    0
+    (+ (car seq) (sum (cdr seq)))))
+
+    (display (sum '(5 6 1 8 3 7)))
+    (display <span style="font-style: italic;">"\n"</span>)
+    <span style="font-weight: bold; font-style: italic;">#+end_src</span>
+    </pre>
+  </div>
+
+  <p>
+    Moving forward, while I enjoy the ability to easily create two kinds of
+    documents: one for presenting and one for handouts, I am reflecting on the
+    delivery modality some.  That is, I may be experimenting with this process
+    more.  Furthermore, given the recent <del>dumpster fire</del> Canvas outage, I have put
+    some thought into posting the handouts through <a href="https://github.com">GitHub</a> or <a href="https://www.gitlab.com">GitLab</a> pages.
+    Unfortunately, this would mean I need to support another export backend.  So
+    far, this seems doable by switching to a <code>cond</code> instead, but would mean there is
+    now an ordering requirement between the macros, gross.
+  </p>
+</channel>
+</rss>

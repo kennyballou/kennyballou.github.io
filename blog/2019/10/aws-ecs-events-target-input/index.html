@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2026-01-06 Tue 18:28 -->
+<!-- 2026-05-08 Fri 23:09 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>AWS ECS Container Overrides for Events Targets</title>
@@ -208,7 +208,9 @@
 <link rel="stylesheet" href="/css/simple.css" />
 <link rel="stylesheet" href="/css/simple.add.css" />
 <link rel="stylesheet" href="/css/katex.css" />
-<link rel="stylesheet" href="/css/all.min.css" />
+<link rel="stylesheet" href="/css/fontawesome.css" />
+<link rel="stylesheet" href="/css/brands.css" />
+<link rel="stylesheet" href="/css/solid.css" />
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <script defer type="text/javascript" src="/js/katex.js"></script>
 <script defer type="text/javascript" src="/js/katex-render.js"></script>
@@ -241,50 +243,50 @@
 </div><header id="" class="status">
 <nav>
   <a href="/">
-    <i class="fade fas fa-home"></i>
+    <i class="fade fa-solid fa-home"></i>
   </a>
   <a href="/about.html">
-    <i class="fade fas fa-user-circle"></i>
+    <i class="fade fa-solid fa-user-circle"></i>
   </a>
   <a href="https://git.sr.ht/~kennyballou/"
      target="_blank"
      rel="noopener noreferrer">
-    <i class="fade far fa-circle fa-1x"></i>
+    <i class="fade fa-regular fa-circle fa-1x"></i>
   </a>
   <a href="https://github.com/kennyballou"
      target="_blank"
      rel="noopener noreferrer">
-    <i class="fade fab fa-github fa-1x"></i>
+    <i class="fade fa-brands fa-github fa-1x"></i>
   </a>
-  <a href="https://bitbucket.org/kballou"
+  <a href="https://codeberg.org/kennyballou"
      target="_blank"
      rel="noopener noreferrer">
-    <i class="fade fab fa-bitbucket fa-1x"></i>
+    <i class="fade fa-regular fa-code-branch fa-1x"></i>
   </a>
   <a href="https://orcid.org/0000-0002-6032-474X"
      target="_blank"
      rel="noopener noreferrer">
-    <i class="fade fab fa-orcid"></i>
+    <i class="fade fa-brands fa-orcid"></i>
   </a>
   <a href="https://linkedin.com/in/kennyballou"
      target="_blank"
      rel="noopener noreferrer">
-    <i class="fade fab fa-linkedin-in fa-1x"></i>
+    <i class="fade fa-brands fa-linkedin-in fa-1x"></i>
   </a>
   <a href="/support.html">
-    <i class="fade fas fa-heart fa-1x"></i>
+    <i class="fade fa-solid fa-heart fa-1x"></i>
   </a>
   <a href="/cv.pdf"
      target="_blank">
-    <i class="fade far fa-file-pdf"></i>
+    <i class="fade fa-regular fa-file-pdf"></i>
   </a>
   <a href="/B74CC4B41148C3DB364BC21182D94B35744E1B34.asc"
      target="_blank">
-    <i class="fade fas fa-key"></i>
+    <i class="fade fa-solid fa-key"></i>
   </a>
   <a href="/index.xml" rel="alternate"
      type="application/rss+xml">
-    <i class="fade fas fa-rss fa-1x"></i>
+    <i class="fade fa-solid fa-rss fa-1x"></i>
   </a>
 </nav>
 </header>
@@ -294,14 +296,14 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgab826be">Problem</a></li>
-<li><a href="#orge62902d">Exploring the Problem</a></li>
-<li><a href="#org8e13b50">Solution</a></li>
-<li><a href="#org5931825">Conclusion</a></li>
+<li><a href="#org91a42f9">Problem</a></li>
+<li><a href="#org896779a">Exploring the Problem</a></li>
+<li><a href="#orgb2498e1">Solution</a></li>
+<li><a href="#org926c866">Conclusion</a></li>
 </ul>
 </div>
 </div>
-<div class="PREVIEW" id="org8883821">
+<div class="PREVIEW" id="org51f6026">
 <p>
 Using <a href="https://aws.amazon.com/cloudformation/">AWS CloudFormation</a> to configure <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/WhatIsCloudWatchEvents.html">AWS CloudWatch Events</a> to target <a href="https://aws.amazon.com/ecs/">ECS</a> is
 not as well documented as it should be.  Here, we walk-through a highly
@@ -326,9 +328,9 @@ When the documentation fails you, use the source.
 What to do when there isn't source (code) available?
 </p>
 
-<div id="outline-container-orgab826be" class="outline-2">
-<h2 id="orgab826be">Problem</h2>
-<div class="outline-text-2" id="text-orgab826be">
+<div id="outline-container-org91a42f9" class="outline-2">
+<h2 id="org91a42f9">Problem</h2>
+<div class="outline-text-2" id="text-org91a42f9">
 <p>
 While attempting to make some infrastucture changes, I wanted to create a
 scheduled <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/WhatIsCloudWatchEvents.html">event</a> to target a specific
@@ -389,9 +391,9 @@ happens.
 </div>
 </div>
 
-<div id="outline-container-orge62902d" class="outline-2">
-<h2 id="orge62902d">Exploring the Problem</h2>
-<div class="outline-text-2" id="text-orge62902d">
+<div id="outline-container-org896779a" class="outline-2">
+<h2 id="org896779a">Exploring the Problem</h2>
+<div class="outline-text-2" id="text-org896779a">
 <blockquote>
 <p>
 Otherwising shooting in the dark&#x2026;
@@ -412,7 +414,7 @@ However, this failed in <a href="https://aws.amazon.com/cloudformation/">CloudFo
 follwing message:
 </p>
 
-<pre class="example" id="org6e07678">
+<pre class="example" id="org8ddf07a">
 JSON syntax error in input for target ...
 </pre>
 
@@ -468,9 +470,9 @@ hand.
 </div>
 </div>
 
-<div id="outline-container-org8e13b50" class="outline-2">
-<h2 id="org8e13b50">Solution</h2>
-<div class="outline-text-2" id="text-org8e13b50">
+<div id="outline-container-orgb2498e1" class="outline-2">
+<h2 id="orgb2498e1">Solution</h2>
+<div class="outline-text-2" id="text-orgb2498e1">
 <p>
 However, the "Input" key is a string encoded JSON structure, so the full
 solution is the following snippet:
@@ -508,9 +510,9 @@ This structure may seem familiar.  This structure is documented in the
 </div>
 </div>
 
-<div id="outline-container-org5931825" class="outline-2">
-<h2 id="org5931825">Conclusion</h2>
-<div class="outline-text-2" id="text-org5931825">
+<div id="outline-container-org926c866" class="outline-2">
+<h2 id="org926c866">Conclusion</h2>
+<div class="outline-text-2" id="text-org926c866">
 <p>
 The connection between "Input" is a JSON encoded string and pass the
 "containerOverrides" structure is missing or not obvious at best.  Hopefully,

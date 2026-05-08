@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2026-01-06 Tue 18:28 -->
+<!-- 2026-05-08 Fri 23:09 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Blog Content Deploy with AWS Code Commit and Code Build</title>
@@ -208,7 +208,9 @@
 <link rel="stylesheet" href="/css/simple.css" />
 <link rel="stylesheet" href="/css/simple.add.css" />
 <link rel="stylesheet" href="/css/katex.css" />
-<link rel="stylesheet" href="/css/all.min.css" />
+<link rel="stylesheet" href="/css/fontawesome.css" />
+<link rel="stylesheet" href="/css/brands.css" />
+<link rel="stylesheet" href="/css/solid.css" />
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <script defer type="text/javascript" src="/js/katex.js"></script>
 <script defer type="text/javascript" src="/js/katex-render.js"></script>
@@ -241,50 +243,50 @@
 </div><header id="" class="status">
 <nav>
   <a href="/">
-    <i class="fade fas fa-home"></i>
+    <i class="fade fa-solid fa-home"></i>
   </a>
   <a href="/about.html">
-    <i class="fade fas fa-user-circle"></i>
+    <i class="fade fa-solid fa-user-circle"></i>
   </a>
   <a href="https://git.sr.ht/~kennyballou/"
      target="_blank"
      rel="noopener noreferrer">
-    <i class="fade far fa-circle fa-1x"></i>
+    <i class="fade fa-regular fa-circle fa-1x"></i>
   </a>
   <a href="https://github.com/kennyballou"
      target="_blank"
      rel="noopener noreferrer">
-    <i class="fade fab fa-github fa-1x"></i>
+    <i class="fade fa-brands fa-github fa-1x"></i>
   </a>
-  <a href="https://bitbucket.org/kballou"
+  <a href="https://codeberg.org/kennyballou"
      target="_blank"
      rel="noopener noreferrer">
-    <i class="fade fab fa-bitbucket fa-1x"></i>
+    <i class="fade fa-regular fa-code-branch fa-1x"></i>
   </a>
   <a href="https://orcid.org/0000-0002-6032-474X"
      target="_blank"
      rel="noopener noreferrer">
-    <i class="fade fab fa-orcid"></i>
+    <i class="fade fa-brands fa-orcid"></i>
   </a>
   <a href="https://linkedin.com/in/kennyballou"
      target="_blank"
      rel="noopener noreferrer">
-    <i class="fade fab fa-linkedin-in fa-1x"></i>
+    <i class="fade fa-brands fa-linkedin-in fa-1x"></i>
   </a>
   <a href="/support.html">
-    <i class="fade fas fa-heart fa-1x"></i>
+    <i class="fade fa-solid fa-heart fa-1x"></i>
   </a>
   <a href="/cv.pdf"
      target="_blank">
-    <i class="fade far fa-file-pdf"></i>
+    <i class="fade fa-regular fa-file-pdf"></i>
   </a>
   <a href="/B74CC4B41148C3DB364BC21182D94B35744E1B34.asc"
      target="_blank">
-    <i class="fade fas fa-key"></i>
+    <i class="fade fa-solid fa-key"></i>
   </a>
   <a href="/index.xml" rel="alternate"
      type="application/rss+xml">
-    <i class="fade fas fa-rss fa-1x"></i>
+    <i class="fade fa-solid fa-rss fa-1x"></i>
   </a>
 </nav>
 </header>
@@ -294,16 +296,16 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org4d1250a">Overview</a></li>
-<li><a href="#org94ca997">CloudFormation</a></li>
-<li><a href="#orgd877de9"><code>buildspec.yml</code></a></li>
-<li><a href="#org8e1cbc1">Docker</a></li>
-<li><a href="#orgda26515">Git Remote</a></li>
-<li><a href="#org650d9ab">Parting Thoughts</a></li>
+<li><a href="#orgc8f8e61">Overview</a></li>
+<li><a href="#orgb7fe0f8">CloudFormation</a></li>
+<li><a href="#org8b546b7"><code>buildspec.yml</code></a></li>
+<li><a href="#org1b74e22">Docker</a></li>
+<li><a href="#org6367d6a">Git Remote</a></li>
+<li><a href="#org0b6ee0a">Parting Thoughts</a></li>
 </ul>
 </div>
 </div>
-<div class="PREVIEW" id="org85cdf15">
+<div class="PREVIEW" id="orgaf25e5b">
 <p>
 In a previous post, I discussed a new <a href="https://kennyballou.com/blog/2019/03/static-site-generation">static site
 generation</a> process being used for this <a href="https://kennyballou.com">blog</a>.  More recently, I
@@ -314,9 +316,9 @@ want to briefly discuss how it's now, finally, being auto deployed via
 
 </div>
 
-<div id="outline-container-org4d1250a" class="outline-2">
-<h2 id="org4d1250a">Overview</h2>
-<div class="outline-text-2" id="text-org4d1250a">
+<div id="outline-container-orgc8f8e61" class="outline-2">
+<h2 id="orgc8f8e61">Overview</h2>
+<div class="outline-text-2" id="text-orgc8f8e61">
 <p>
 The basic idea is fairly straight forward and is typical of most continuous
 deployment pipelines found elsewhere.  Upon pushing to a particular branch,
@@ -355,9 +357,9 @@ repositories</a>.
 </div>
 </div>
 
-<div id="outline-container-org94ca997" class="outline-2">
-<h2 id="org94ca997">CloudFormation</h2>
-<div class="outline-text-2" id="text-org94ca997">
+<div id="outline-container-orgb7fe0f8" class="outline-2">
+<h2 id="orgb7fe0f8">CloudFormation</h2>
+<div class="outline-text-2" id="text-orgb7fe0f8">
 <p>
 Let's consider the specifics of creating the necessary components in
 <a href="https://aws.amazon.com/cloudformation/">AWS CloudFormation</a>.
@@ -633,9 +635,9 @@ necessary.
 </div>
 </div>
 
-<div id="outline-container-orgd877de9" class="outline-2">
-<h2 id="orgd877de9"><code>buildspec.yml</code></h2>
-<div class="outline-text-2" id="text-orgd877de9">
+<div id="outline-container-org8b546b7" class="outline-2">
+<h2 id="org8b546b7"><code>buildspec.yml</code></h2>
+<div class="outline-text-2" id="text-org8b546b7">
 <p>
 Depending on how complicated the blog content is, the <code>buildspec.yml</code> file can
 be trivial to very complex.  If most of the build instructions are already
@@ -664,9 +666,9 @@ Realistically, a line could be removed but is left for clarity.
 </div>
 </div>
 
-<div id="outline-container-org8e1cbc1" class="outline-2">
-<h2 id="org8e1cbc1">Docker</h2>
-<div class="outline-text-2" id="text-org8e1cbc1">
+<div id="outline-container-org1b74e22" class="outline-2">
+<h2 id="org1b74e22">Docker</h2>
+<div class="outline-text-2" id="text-org1b74e22">
 <p>
 Since this blog is <a href="https://kennyballou.com/blog/2019/03/static-site-generation">built using</a> <a href="https://pandoc.org/">Pandoc</a>
 and some <a href="https://www.gnu.org/software/bash/">Bash scripts</a>, a custom <a href="https://hub.docker.com/repository/docker/kennyballou/debian-pandoc">build image</a>
@@ -684,9 +686,9 @@ images from <a href="https://aws.amazon.com/">AWS</a> may be possible.
 </div>
 </div>
 
-<div id="outline-container-orgda26515" class="outline-2">
-<h2 id="orgda26515">Git Remote</h2>
-<div class="outline-text-2" id="text-orgda26515">
+<div id="outline-container-org6367d6a" class="outline-2">
+<h2 id="org6367d6a">Git Remote</h2>
+<div class="outline-text-2" id="text-org6367d6a">
 <p>
 A <a href="https://git-scm.com/">git</a> repository may have any number of remote repositories associated
 with it.  Consider forked projects or repositories on <a href="https://github.com/">GitHub</a> for a
@@ -754,9 +756,9 @@ branch, push to the different remote:
 </div>
 </div>
 
-<div id="outline-container-org650d9ab" class="outline-2">
-<h2 id="org650d9ab">Parting Thoughts</h2>
-<div class="outline-text-2" id="text-org650d9ab">
+<div id="outline-container-org0b6ee0a" class="outline-2">
+<h2 id="org0b6ee0a">Parting Thoughts</h2>
+<div class="outline-text-2" id="text-org0b6ee0a">
 <p>
 Honestly, there may be easier and cheaper ways to host some simple
 infrastructure for running and building projects.  <a href="https://github.com/">GitHub</a> now has

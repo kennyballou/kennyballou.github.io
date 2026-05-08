@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2026-01-06 Tue 18:28 -->
+<!-- 2026-05-08 Fri 23:09 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Tagged PDFs via Org Export</title>
@@ -208,7 +208,9 @@
 <link rel="stylesheet" href="/css/simple.css" />
 <link rel="stylesheet" href="/css/simple.add.css" />
 <link rel="stylesheet" href="/css/katex.css" />
-<link rel="stylesheet" href="/css/all.min.css" />
+<link rel="stylesheet" href="/css/fontawesome.css" />
+<link rel="stylesheet" href="/css/brands.css" />
+<link rel="stylesheet" href="/css/solid.css" />
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <script defer type="text/javascript" src="/js/katex.js"></script>
 <script defer type="text/javascript" src="/js/katex-render.js"></script>
@@ -241,50 +243,50 @@
 </div><header id="" class="status">
 <nav>
   <a href="/">
-    <i class="fade fas fa-home"></i>
+    <i class="fade fa-solid fa-home"></i>
   </a>
   <a href="/about.html">
-    <i class="fade fas fa-user-circle"></i>
+    <i class="fade fa-solid fa-user-circle"></i>
   </a>
   <a href="https://git.sr.ht/~kennyballou/"
      target="_blank"
      rel="noopener noreferrer">
-    <i class="fade far fa-circle fa-1x"></i>
+    <i class="fade fa-regular fa-circle fa-1x"></i>
   </a>
   <a href="https://github.com/kennyballou"
      target="_blank"
      rel="noopener noreferrer">
-    <i class="fade fab fa-github fa-1x"></i>
+    <i class="fade fa-brands fa-github fa-1x"></i>
   </a>
-  <a href="https://bitbucket.org/kballou"
+  <a href="https://codeberg.org/kennyballou"
      target="_blank"
      rel="noopener noreferrer">
-    <i class="fade fab fa-bitbucket fa-1x"></i>
+    <i class="fade fa-regular fa-code-branch fa-1x"></i>
   </a>
   <a href="https://orcid.org/0000-0002-6032-474X"
      target="_blank"
      rel="noopener noreferrer">
-    <i class="fade fab fa-orcid"></i>
+    <i class="fade fa-brands fa-orcid"></i>
   </a>
   <a href="https://linkedin.com/in/kennyballou"
      target="_blank"
      rel="noopener noreferrer">
-    <i class="fade fab fa-linkedin-in fa-1x"></i>
+    <i class="fade fa-brands fa-linkedin-in fa-1x"></i>
   </a>
   <a href="/support.html">
-    <i class="fade fas fa-heart fa-1x"></i>
+    <i class="fade fa-solid fa-heart fa-1x"></i>
   </a>
   <a href="/cv.pdf"
      target="_blank">
-    <i class="fade far fa-file-pdf"></i>
+    <i class="fade fa-regular fa-file-pdf"></i>
   </a>
   <a href="/B74CC4B41148C3DB364BC21182D94B35744E1B34.asc"
      target="_blank">
-    <i class="fade fas fa-key"></i>
+    <i class="fade fa-solid fa-key"></i>
   </a>
   <a href="/index.xml" rel="alternate"
      type="application/rss+xml">
-    <i class="fade fas fa-rss fa-1x"></i>
+    <i class="fade fa-solid fa-rss fa-1x"></i>
   </a>
 </nav>
 </header>
@@ -294,21 +296,21 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org4e93530">Context</a>
+<li><a href="#org535cbf6">Context</a>
 <ul>
-<li><a href="#orga018948">Web Content Accessibility Guidelines</a></li>
-<li><a href="#org8febd0f">Org Mode and LaTeX</a></li>
-<li><a href="#org51b0965">PDF and LaTeX</a></li>
+<li><a href="#orgfa17fea">Web Content Accessibility Guidelines</a></li>
+<li><a href="#orgac5f04b">Org Mode and LaTeX</a></li>
+<li><a href="#orge442466">PDF and LaTeX</a></li>
 </ul>
 </li>
-<li><a href="#org27ad584">Adding Tags to PDFs</a></li>
-<li><a href="#org02c9580">Adding Tags to PDFs in Org Mode</a></li>
-<li><a href="#org3140917">LaTeX PDF Process</a></li>
-<li><a href="#org85cf608">Conclusion</a></li>
+<li><a href="#orga1a1743">Adding Tags to PDFs</a></li>
+<li><a href="#org9254199">Adding Tags to PDFs in Org Mode</a></li>
+<li><a href="#orga6a8342">LaTeX PDF Process</a></li>
+<li><a href="#orgdb43523">Conclusion</a></li>
 </ul>
 </div>
 </div>
-<div class="preview" id="orgdd5003d">
+<div class="preview" id="orgeadf1bc">
 <p>
 The new version of the <a href="https://www.ada.gov/resources/2024-03-08-web-rule/">WCAG</a> requires PDFs (and all online content posted to
 <a href="https://en.wikipedia.org/wiki/Learning_management_system">LMS</a>) to be properly tagged for screen readers.  However, this has been
@@ -319,14 +321,14 @@ tweaks and get most of the way there.
 
 </div>
 
-<div id="outline-container-org4e93530" class="outline-2">
-<h2 id="org4e93530">Context</h2>
-<div class="outline-text-2" id="text-org4e93530">
+<div id="outline-container-org535cbf6" class="outline-2">
+<h2 id="org535cbf6">Context</h2>
+<div class="outline-text-2" id="text-org535cbf6">
 </div>
 
-<div id="outline-container-orga018948" class="outline-3">
-<h3 id="orga018948">Web Content Accessibility Guidelines</h3>
-<div class="outline-text-3" id="text-orga018948">
+<div id="outline-container-orgfa17fea" class="outline-3">
+<h3 id="orgfa17fea">Web Content Accessibility Guidelines</h3>
+<div class="outline-text-3" id="text-orgfa17fea">
 <p>
 A new version of the <a href="https://www.ada.gov/resources/2024-03-08-web-rule/">Web Content Accessibility Guidelines (WCAG)</a> is here and
 means that many educational resources need to be accessible by default.
@@ -337,9 +339,9 @@ check boxes.
 </div>
 </div>
 
-<div id="outline-container-org8febd0f" class="outline-3">
-<h3 id="org8febd0f">Org Mode and LaTeX</h3>
-<div class="outline-text-3" id="text-org8febd0f">
+<div id="outline-container-orgac5f04b" class="outline-3">
+<h3 id="orgac5f04b">Org Mode and LaTeX</h3>
+<div class="outline-text-3" id="text-orgac5f04b">
 <p>
 Plain-text documents written in <a href="https://orgmode.org/">Org Mode</a> markup can be relatively easily
 <a href="https://orgmode.org/manual/Exporting.html">exported</a> into several different output formats, including HTML, <a href="https://www.latex-project.org/">LaTeX</a>, <a href="https://ctan.org/pkg/beamer">Beamer</a>,
@@ -349,9 +351,9 @@ support many formats, including punting to <a href="https://pandoc.org/">Pandoc<
 </div>
 </div>
 
-<div id="outline-container-org51b0965" class="outline-3">
-<h3 id="org51b0965">PDF and LaTeX</h3>
-<div class="outline-text-3" id="text-org51b0965">
+<div id="outline-container-orge442466" class="outline-3">
+<h3 id="orge442466">PDF and LaTeX</h3>
+<div class="outline-text-3" id="text-orge442466">
 <p>
 The Portable Document Format (PDF) has support for embedding screen reader
 "tags" which instruct the screen reader how to process the document, providing
@@ -369,9 +371,9 @@ accessible to <a href="https://orgmode.org/">Org Mode</a> <a href="https://orgmo
 </div>
 </div>
 
-<div id="outline-container-org27ad584" class="outline-2">
-<h2 id="org27ad584">Adding Tags to PDFs</h2>
-<div class="outline-text-2" id="text-org27ad584">
+<div id="outline-container-orga1a1743" class="outline-2">
+<h2 id="orga1a1743">Adding Tags to PDFs</h2>
+<div class="outline-text-2" id="text-orga1a1743">
 <p>
 The core of what needs to be done to add tagging to PDFs is to add a few lines
 to the preamble of the <a href="https://www.latex-project.org/">LaTeX</a> document.
@@ -417,9 +419,9 @@ works best with <a href="https://www.luatex.org/">LuaLaTeX</a> compiler:
 </div>
 </div>
 
-<div id="outline-container-org02c9580" class="outline-2">
-<h2 id="org02c9580">Adding Tags to PDFs in Org Mode</h2>
-<div class="outline-text-2" id="text-org02c9580">
+<div id="outline-container-org9254199" class="outline-2">
+<h2 id="org9254199">Adding Tags to PDFs in Org Mode</h2>
+<div class="outline-text-2" id="text-org9254199">
 <p>
 To accomplish the above for documents that start their existence as <a href="https://orgmode.org/">Org Mode</a>
 documents, we need to add a few more things.  To the best of my knowledge, it
@@ -478,9 +480,9 @@ Do not forget to add the above packages and settings to the preamble of your
 </div>
 </div>
 
-<div id="outline-container-org3140917" class="outline-2">
-<h2 id="org3140917">LaTeX PDF Process</h2>
-<div class="outline-text-2" id="text-org3140917">
+<div id="outline-container-orga6a8342" class="outline-2">
+<h2 id="orga6a8342">LaTeX PDF Process</h2>
+<div class="outline-text-2" id="text-orga6a8342">
 <p>
 Additionally, you may find it useful to use the following command for
 generating the documents correctly, updating <code>org-latex-pdf-process</code>:
@@ -500,9 +502,9 @@ compiler choices.  However, for accessibility, it is likely best to use
 </div>
 </div>
 
-<div id="outline-container-org85cf608" class="outline-2">
-<h2 id="org85cf608">Conclusion</h2>
-<div class="outline-text-2" id="text-org85cf608">
+<div id="outline-container-orgdb43523" class="outline-2">
+<h2 id="orgdb43523">Conclusion</h2>
+<div class="outline-text-2" id="text-orgdb43523">
 <p>
 Over time, the process for creating appropriately tagged and accessible PDFs
 through <a href="https://www.latex-project.org/">LaTeX</a> and <a href="https://ctan.org/pkg/beamer">Beamer</a> has improved significantly.

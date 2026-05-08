@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2026-01-06 Tue 18:28 -->
+<!-- 2026-05-08 Fri 23:09 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>GPG Key Transition</title>
@@ -208,7 +208,9 @@
 <link rel="stylesheet" href="/css/simple.css" />
 <link rel="stylesheet" href="/css/simple.add.css" />
 <link rel="stylesheet" href="/css/katex.css" />
-<link rel="stylesheet" href="/css/all.min.css" />
+<link rel="stylesheet" href="/css/fontawesome.css" />
+<link rel="stylesheet" href="/css/brands.css" />
+<link rel="stylesheet" href="/css/solid.css" />
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <script defer type="text/javascript" src="/js/katex.js"></script>
 <script defer type="text/javascript" src="/js/katex-render.js"></script>
@@ -273,50 +275,50 @@
 </div><header id="" class="status">
 <nav>
   <a href="/">
-    <i class="fade fas fa-home"></i>
+    <i class="fade fa-solid fa-home"></i>
   </a>
   <a href="/about.html">
-    <i class="fade fas fa-user-circle"></i>
+    <i class="fade fa-solid fa-user-circle"></i>
   </a>
   <a href="https://git.sr.ht/~kennyballou/"
      target="_blank"
      rel="noopener noreferrer">
-    <i class="fade far fa-circle fa-1x"></i>
+    <i class="fade fa-regular fa-circle fa-1x"></i>
   </a>
   <a href="https://github.com/kennyballou"
      target="_blank"
      rel="noopener noreferrer">
-    <i class="fade fab fa-github fa-1x"></i>
+    <i class="fade fa-brands fa-github fa-1x"></i>
   </a>
-  <a href="https://bitbucket.org/kballou"
+  <a href="https://codeberg.org/kennyballou"
      target="_blank"
      rel="noopener noreferrer">
-    <i class="fade fab fa-bitbucket fa-1x"></i>
+    <i class="fade fa-regular fa-code-branch fa-1x"></i>
   </a>
   <a href="https://orcid.org/0000-0002-6032-474X"
      target="_blank"
      rel="noopener noreferrer">
-    <i class="fade fab fa-orcid"></i>
+    <i class="fade fa-brands fa-orcid"></i>
   </a>
   <a href="https://linkedin.com/in/kennyballou"
      target="_blank"
      rel="noopener noreferrer">
-    <i class="fade fab fa-linkedin-in fa-1x"></i>
+    <i class="fade fa-brands fa-linkedin-in fa-1x"></i>
   </a>
   <a href="/support.html">
-    <i class="fade fas fa-heart fa-1x"></i>
+    <i class="fade fa-solid fa-heart fa-1x"></i>
   </a>
   <a href="/cv.pdf"
      target="_blank">
-    <i class="fade far fa-file-pdf"></i>
+    <i class="fade fa-regular fa-file-pdf"></i>
   </a>
   <a href="/B74CC4B41148C3DB364BC21182D94B35744E1B34.asc"
      target="_blank">
-    <i class="fade fas fa-key"></i>
+    <i class="fade fa-solid fa-key"></i>
   </a>
   <a href="/index.xml" rel="alternate"
      type="application/rss+xml">
-    <i class="fade fas fa-rss fa-1x"></i>
+    <i class="fade fa-solid fa-rss fa-1x"></i>
   </a>
 </nav>
 </header>
@@ -338,7 +340,7 @@
 </ul>
 </div>
 </div>
-<div class="PREVIEW" id="org0a0062a">
+<div class="PREVIEW" id="orgdb91648">
 <p>
 Today I'm announcing my <a href="https://gnupg.org/">GPG</a> transition from my old, and now expired, <a href="https://gnupg.org/">GPG</a> key:
 <a href="https://pgp.mit.edu/pks/lookup?op=get&amp;search=0x1066BA71A5F56C58">DAEE96513758BF6337F71E491066BA71A5F56C58</a> and
@@ -368,7 +370,7 @@ re-authenticating me.
 Specifically, the old keys were:
 </p>
 
-<pre class="example" id="org738e04e">
+<pre class="example" id="org5cf48eb">
 pub   rsa4096 2014-06-12 [expired: 2017-06-27]
 DAEE 9651 3758 BF63 37F7 1E49 1066 BA71 A5F5 6C58
 </pre>
@@ -377,7 +379,7 @@ DAEE 9651 3758 BF63 37F7 1E49 1066 BA71 A5F5 6C58
 and,
 </p>
 
-<pre class="example" id="orgcf8ddea">
+<pre class="example" id="orgd094dc2">
 pub   rsa4096 2015-01-30 [expires: 2018-01-30]
 8FCA F4F0 CBB0 BB9C 590C 8ED1 1CFA 8A9C D949 D956
 </pre>
@@ -386,7 +388,7 @@ pub   rsa4096 2015-01-30 [expires: 2018-01-30]
 The new key is:
 </p>
 
-<pre class="example" id="org5242a51">
+<pre class="example" id="org234716e">
 pub   rsa4096 2017-06-27 [expires: 2022-06-26]
 932F 3E8E 1C0F 4A98 95D7 B8B8 B0CA A28A 0295 8308
 </pre>
@@ -395,7 +397,7 @@ pub   rsa4096 2017-06-27 [expires: 2022-06-26]
 To fetch my new key from a key server, use the following:
 </p>
 
-<pre class="example" id="org1683ba5">
+<pre class="example" id="orgf8fb101">
 gpg --keyserver pool.sks-keyservers.net --recv-key 0xB0CAA28A02958308
 </pre>
 
@@ -404,7 +406,7 @@ Or, if you prefer, you may also download the new key from
 <a href="https://kennyballou.com/kballou.pub.asc">this blog</a>:
 </p>
 
-<pre class="example" id="orgafc8b5b">
+<pre class="example" id="orgb8a78c4">
 curl -fsL https://kennyballou.com/kballou.asc -O
 </pre>
 
@@ -412,7 +414,7 @@ curl -fsL https://kennyballou.com/kballou.asc -O
 The new key can be verified with the old key:
 </p>
 
-<pre class="example" id="org4c1a1d5">
+<pre class="example" id="orga207b25">
 gpg --check-sigs 0xB0CAA28A02958308
 </pre>
 
@@ -421,7 +423,7 @@ If you do not have the old key, or would like to double check, the fingerprint
 can be verified against the one above:
 </p>
 
-<pre class="example" id="org6d9f4d6">
+<pre class="example" id="org01f5759">
 gpg --fingerprint 0xB0CAA28A02958308
 </pre>
 
@@ -430,7 +432,7 @@ If you have all of the keys, <a href="https://kennyballou.com/blog/2017/08/gpg-k
 verified to be signed by all keys:
 </p>
 
-<pre class="example" id="org5d44e05">
+<pre class="example" id="org93daf2c">
 gpg --verify gpg-transition.org.asc
 </pre>
 
@@ -440,7 +442,7 @@ it's compatible with your key signing policy, I would greatly appreciate it if
 you would sign my key:
 </p>
 
-<pre class="example" id="org17006d3">
+<pre class="example" id="org39d331a">
 gpg --sign-key 0xB0CAA28A02958308
 </pre>
 
@@ -449,7 +451,7 @@ Finally, if you could upload these signatures, I would appreciate it.  You can
 either upload the signatures to a public key server directly:
 </p>
 
-<pre class="example" id="org31360ee">
+<pre class="example" id="org44b6c79">
 gpg --keyserver pool.sks-keyservers.net \
     --send-key 0xB0CAA28A02958308
 </pre>
@@ -458,7 +460,7 @@ gpg --keyserver pool.sks-keyservers.net \
 Or you can send me an email with the new signatures:
 </p>
 
-<pre class="example" id="orgdca39b7">
+<pre class="example" id="org04efcc7">
 gpg --armor --export 0xB0CAA28A02958308
 </pre>
 </div>
