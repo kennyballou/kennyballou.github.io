@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2026-07-01 Wed 00:27 -->
+<!-- 2026-10-02 Fri 16:35 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>NixOS Setup and Configuration</title>
@@ -296,23 +296,23 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org39e845d">NixOS</a></li>
-<li><a href="#org226204d">System Installation and Configuration</a>
+<li><a href="#orga45aa8b">NixOS</a></li>
+<li><a href="#org8110d95">System Installation and Configuration</a>
 <ul>
-<li><a href="#org0fa03d1">Laptop</a>
+<li><a href="#org96628d2">Laptop</a>
 <ul>
-<li><a href="#orga85ed0b">Disk Preparation</a></li>
+<li><a href="#org2b95b1c">Disk Preparation</a></li>
 </ul>
 </li>
-<li><a href="#orgf9a90f0">Desktop</a>
+<li><a href="#org203cc47">Desktop</a>
 <ul>
-<li><a href="#org7f43422">Disk Preparation</a></li>
+<li><a href="#orgf1dbb18">Disk Preparation</a></li>
 </ul>
 </li>
-<li><a href="#orgfca9828">NixOS Configuration and Installation</a>
+<li><a href="#org4a8e414">NixOS Configuration and Installation</a>
 <ul>
-<li><a href="#org5b4478d">UEFI Notes</a></li>
-<li><a href="#orgda297b8">Docker, <code>nftables</code>, and NixOS Notes</a></li>
+<li><a href="#org423906c">UEFI Notes</a></li>
+<li><a href="#orgbc8769c">Docker, <code>nftables</code>, and NixOS Notes</a></li>
 </ul>
 </li>
 </ul>
@@ -320,7 +320,7 @@
 </ul>
 </div>
 </div>
-<div class="PREVIEW" id="orgcb6076b">
+<div class="PREVIEW" id="org184837b">
 <p>
 A brief overview (read instructions) on setting up a new <a href="https://nixos.org/">NixOS</a> system with <a href="https://www.sourceware.org/lvm2/">LVM</a>
 on <a href="https://gitlab.com/cryptsetup/cryptsetup/blob/master/README.md">LUKS</a> on <a href="http://neil.brown.name/blog/mdadm">md</a>.  We go through drive preparation, basic <a href="https://nixos.org/">NixOS</a> installation
@@ -330,9 +330,9 @@ system from configuration.
 
 </div>
 
-<div id="outline-container-org39e845d" class="outline-2">
-<h2 id="org39e845d">NixOS</h2>
-<div class="outline-text-2" id="text-org39e845d">
+<div id="outline-container-orga45aa8b" class="outline-2">
+<h2 id="orga45aa8b">NixOS</h2>
+<div class="outline-text-2" id="text-orga45aa8b">
 <p>
 <a href="https://kennyballou.com/blog/2019/07/nixos">Previously</a>, we introduced the concepts and ideas behind
 <a href="https://nixos.org/">NixOS</a> and by extension <a href="https://nixos.org/nix/">nix</a>, the package manager.  We,
@@ -341,9 +341,9 @@ therefore, will not be reiterating the discussion here.
 </div>
 </div>
 
-<div id="outline-container-org226204d" class="outline-2">
-<h2 id="org226204d">System Installation and Configuration</h2>
-<div class="outline-text-2" id="text-org226204d">
+<div id="outline-container-org8110d95" class="outline-2">
+<h2 id="org8110d95">System Installation and Configuration</h2>
+<div class="outline-text-2" id="text-org8110d95">
 <p>
 Installing <a href="https://nixos.org/">NixOS</a> is fairly straight forward.  However, that is a
 relative term.  My experience is with <a href="https://www.archlinux.org/">Arch Linux</a> and more
@@ -377,14 +377,14 @@ I am assuming the use of the <a href="https://nixos.org/">NixOS</a> live-install
 </blockquote>
 </div>
 
-<div id="outline-container-org0fa03d1" class="outline-3">
-<h3 id="org0fa03d1">Laptop</h3>
-<div class="outline-text-3" id="text-org0fa03d1">
+<div id="outline-container-org96628d2" class="outline-3">
+<h3 id="org96628d2">Laptop</h3>
+<div class="outline-text-3" id="text-org96628d2">
 </div>
 
-<div id="outline-container-orga85ed0b" class="outline-4">
-<h4 id="orga85ed0b">Disk Preparation</h4>
-<div class="outline-text-4" id="text-orga85ed0b">
+<div id="outline-container-org2b95b1c" class="outline-4">
+<h4 id="org2b95b1c">Disk Preparation</h4>
+<div class="outline-text-4" id="text-org2b95b1c">
 <blockquote>
 <p>
 I am assuming the use of the <a href="https://nixos.org/">NixOS</a> live installation medium.
@@ -406,7 +406,7 @@ Lines beginning with <code>#</code> are commands to be executed as the <code>roo
 </p>
 </blockquote>
 
-<pre class="example" id="org9c80371">
+<pre class="example" id="orgbfbf199">
 # cryptsetup open --type plain --key-file=/dev/urandom ${device} wipe-me
 # dd if=/dev/zero of=/dev/mapper/wipe-me status=progress
 # cryptsetup close
@@ -429,7 +429,7 @@ enough entropy for more than one device.
 Concretely, this may look like:
 </p>
 
-<pre class="example" id="orgbb41e24">
+<pre class="example" id="org400ea96">
 # cryptsetup open --type plain --key-file=/dev/urandom /dev/sda wipe-me
 # dd if=/dev/zero of=/dev/mapper/wipe-me status=progress
 # cryptsetup close
@@ -452,7 +452,7 @@ After partitioning the disk, the partition table should look similar to the
 following:
 </p>
 
-<pre class="example" id="org48de031">
+<pre class="example" id="org69f919c">
 Device       Start        End    Sectors  Size Type
 /dev/sda1     2048       6143       4096    2M BIOS boot
 /dev/sda2     6144    1054719    1048576  512M Linux filesystem
@@ -476,7 +476,7 @@ We will create two mirrors for this configuration, one for the <code>/boot</code
 partition and another for the <a href="https://gitlab.com/cryptsetup/cryptsetup/blob/master/README.md"><code>LUKS</code></a> container:
 </p>
 
-<pre class="example" id="org3aba7ca">
+<pre class="example" id="orgf50a0c8">
 # mdadm --create /dev/md1 --level=mirror --raid-devices=2 /dev/sda2 /dev/sdb2
 # mdadm --create /dev/md2 --level=mirror --raid-devices=2 /dev/sda3 /dev/sdb3
 </pre>
@@ -490,7 +490,7 @@ and the format the <code>/boot</code> partition.
 Boot Partition:
 </p>
 
-<pre class="example" id="orgfebb08a">
+<pre class="example" id="orga0d6167">
 # mkfs.ext4 -L boot /dev/md1
 </pre>
 
@@ -509,7 +509,7 @@ have been looking into the other <code>AES</code> finalists such as
 </p>
 </blockquote>
 
-<pre class="example" id="orga90b8e8">
+<pre class="example" id="org36635bd">
 # cryptsetup -v \
              --type luks \
              --cipher twofish-xts-plain64 \
@@ -526,7 +526,7 @@ have been looking into the other <code>AES</code> finalists such as
 Once the <a href="https://gitlab.com/cryptsetup/cryptsetup/blob/master/README.md"><code>LUKS</code></a> container is created, open it:
 </p>
 
-<pre class="example" id="org790b7e8">
+<pre class="example" id="org2f2c67a">
 # cryptsetup open /dev/md2 cryptroot
 </pre>
 
@@ -534,7 +534,7 @@ Once the <a href="https://gitlab.com/cryptsetup/cryptsetup/blob/master/README.md
 Now, we can begin creating the <a href="https://www.sourceware.org/lvm2/"><code>LVM</code></a> volumes:
 </p>
 
-<pre class="example" id="orgd9178c5">
+<pre class="example" id="org090af02">
 # pvcreate /dev/mapper/cryptroot
 # vgcreate vg0 /dev/mapper/cryptroot
 # lvcreate -L 1G vg0 -n root
@@ -558,7 +558,7 @@ this directory.
 Now we need to format the volumes:
 </p>
 
-<pre class="example" id="org0b51081">
+<pre class="example" id="org387adff">
 # mkfs.ext4 -L root /dev/mapper/vg0-root
 # mkfs.ext4 -L var /dev/mapper/vg0-var
 # mkfs.ext4 -L opt /dev/mapper/vg0-opt
@@ -583,7 +583,7 @@ Next, we will mount these volumes into various folders to begin the
 installation, creating the folder trees as necessary to mount:
 </p>
 
-<pre class="example" id="orgfc2f167">
+<pre class="example" id="orgeef73d5">
 # mount /dev/mapper/vg0-root /mnt/
 # mkdir -p /mnt/{var,nix,home,boot,opt}
 # mount /dev/md1 /mnt/boot
@@ -598,9 +598,9 @@ installation, creating the folder trees as necessary to mount:
 </div>
 </div>
 
-<div id="outline-container-orgf9a90f0" class="outline-3">
-<h3 id="orgf9a90f0">Desktop</h3>
-<div class="outline-text-3" id="text-orgf9a90f0">
+<div id="outline-container-org203cc47" class="outline-3">
+<h3 id="org203cc47">Desktop</h3>
+<div class="outline-text-3" id="text-org203cc47">
 <p>
 The desktop preparation and configuration are very similar to the laptop.
 However, as noted above, the complication comes from the fact that instead of a
@@ -609,14 +609,14 @@ essentially the same.
 </p>
 </div>
 
-<div id="outline-container-org7f43422" class="outline-4">
-<h4 id="org7f43422">Disk Preparation</h4>
-<div class="outline-text-4" id="text-org7f43422">
+<div id="outline-container-orgf1dbb18" class="outline-4">
+<h4 id="orgf1dbb18">Disk Preparation</h4>
+<div class="outline-text-4" id="text-orgf1dbb18">
 <p>
 We first start by securely erasing all the devices:
 </p>
 
-<pre class="example" id="org538e820">
+<pre class="example" id="org87207af">
 # cryptsetup open --type plain --key-file /dev/urandom /dev/nvme0n1 wipe-me
 # dd if=/dev/zero of=/dev/mapper/wipe-me
 # cryptsetup close wipe-me
@@ -635,7 +635,7 @@ drive.
 Next, we will begin by partitioning each of the devices:
 </p>
 
-<pre class="example" id="org2dc404f">
+<pre class="example" id="org07e916b">
 # gdisk /dev/nvme0n1
 Command (? for help): n
 Partition number (1-128, default 1): 1
@@ -668,7 +668,7 @@ for <b>each</b> device.
 After partitioning the drives, we will construct the <a href="https://en.wikipedia.org/wiki/RAID">mirrors</a>:
 </p>
 
-<pre class="example" id="org3aba61a">
+<pre class="example" id="org8d9c039">
 # mdadm --create /dev/md1 --level=mirror --raid-devices=2 --metadata 1.0 /dev/nvme0n1p1 /dev/nvme1n1p1
 # mdadm --create /dev/md2 --level=mirror --raid-devices=2 /dev/nvme0n1p2 /dev/nvme1n1p2
 # mdadm --create /dev/md3 --level=mirror --raid-devices=2 /dev/sda1 /dev/sdb1
@@ -687,7 +687,7 @@ To monitor the progress of the mirror synchronization, use the following
 command:
 </p>
 
-<pre class="example" id="org25b1c5a">
+<pre class="example" id="org65c4641">
 # watch cat /proc/mdstat
 </pre>
 
@@ -710,7 +710,7 @@ partition.  This is a <code>UEFI</code> system, therefore, we will be using <cod
 filesystem.
 </p>
 
-<pre class="example" id="org232b4a4">
+<pre class="example" id="orga10caf0">
 # mkfs.vfat -n boot /dev/md1
 </pre>
 
@@ -718,7 +718,7 @@ filesystem.
 Now, we must create the various <a href="https://gitlab.com/cryptsetup/cryptsetup/blob/master/README.md"><code>LUKS</code></a> containers:
 </p>
 
-<pre class="example" id="orgee27e67">
+<pre class="example" id="org66659b4">
 # cryptsetup -v \
              --type luks \
              --cipher twofish-xts-plain64 \
@@ -755,7 +755,7 @@ Now, we must create the various <a href="https://gitlab.com/cryptsetup/cryptsetu
 Next, we will open and start creating our <a href="https://www.sourceware.org/lvm2/"><code>LVM</code></a> volumes:
 </p>
 
-<pre class="example" id="org822a36f">
+<pre class="example" id="org511a938">
 # cryptsetup open /dev/md2 cvg0
 # cryptsetup open /dev/md3 cvg1
 # cryptsetup open /dev/md4 cvg2
@@ -765,7 +765,7 @@ Next, we will open and start creating our <a href="https://www.sourceware.org/lv
 Now the <a href="https://www.sourceware.org/lvm2/"><code>LVM</code></a> setup:
 </p>
 
-<pre class="example" id="org1933720">
+<pre class="example" id="org9ea245f">
 # pvcreate /dev/mapper/cvg0
 # vgcreate vg0 /dev/mapper/cvg0
 # pvcreate /dev/mapper/cvg1
@@ -779,7 +779,7 @@ Now that the volume groups are created, we will start creating the actual
 logical volumes:
 </p>
 
-<pre class="example" id="org784a9d7">
+<pre class="example" id="orgb8cbda4">
 # lvcreate -L 1G -n root vg0
 # lvcreate -L 100G -n nix vg0
 # lvcreate -L 15G -n opt vg0
@@ -793,7 +793,7 @@ logical volumes:
 Finally, we can format each of the partitions:
 </p>
 
-<pre class="example" id="org561b284">
+<pre class="example" id="orgf8714a7">
 # mkfs.ext4 -L root /dev/mapper/vg0-root
 # mkfs.ext4 -L opt /dev/mapper/vg0-opt
 # mkfs.xfs -L nix /dev/mapper/vg0-nix
@@ -808,7 +808,7 @@ Before moving onto the next step, we first need to mount each of volumes in the
 desired path:
 </p>
 
-<pre class="example" id="org4bafa77">
+<pre class="example" id="orgf12d094">
 # mount /dev/mapper/vg0-root /mnt
 # mkdir -p /mnt/{boot,home,nix,var,opt}
 # mount /dev/md1 /mnt/boot
@@ -823,15 +823,15 @@ desired path:
 </div>
 </div>
 
-<div id="outline-container-orgfca9828" class="outline-3">
-<h3 id="orgfca9828">NixOS Configuration and Installation</h3>
-<div class="outline-text-3" id="text-orgfca9828">
+<div id="outline-container-org4a8e414" class="outline-3">
+<h3 id="org4a8e414">NixOS Configuration and Installation</h3>
+<div class="outline-text-3" id="text-org4a8e414">
 <p>
 Once the disk preparation is complete, we can follow the steps from the
 <a href="https://nixos.org/nixos/manual/index.html">NixOS Manual</a> to create the initial configuration:
 </p>
 
-<pre class="example" id="org93af8cf">
+<pre class="example" id="org35654cb">
 # nixos-generate-config --root /mnt
 </pre>
 
@@ -850,7 +850,7 @@ system.  Change the following steps as necessary.
 </p>
 </blockquote>
 
-<pre class="example" id="org91ffc30">
+<pre class="example" id="org6e5e2ec">
 # nix-env -i git
 # cd /mnt/etc/
 # mv nixos nixos.bak
@@ -868,7 +868,7 @@ machine or a rebuild, I typically merge the differences between the
 installation.
 </p>
 
-<pre class="example" id="org396a78f">
+<pre class="example" id="org53f264e">
 nixos-install --no-root-passwd
 </pre>
 
@@ -879,9 +879,9 @@ as if it was always there.
 </p>
 </div>
 
-<div id="outline-container-org5b4478d" class="outline-4">
-<h4 id="org5b4478d">UEFI Notes</h4>
-<div class="outline-text-4" id="text-org5b4478d">
+<div id="outline-container-org423906c" class="outline-4">
+<h4 id="org423906c">UEFI Notes</h4>
+<div class="outline-text-4" id="text-org423906c">
 <p>
 Aside from learning about the <code>mdadm</code> metadata placement being an issue for
 <a href="https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface">UEFI</a> systems to boot, I also had played around with the various
@@ -958,9 +958,9 @@ search location for the motherboard, consulted before the NVRAM settings.
 </div>
 </div>
 
-<div id="outline-container-orgda297b8" class="outline-4">
-<h4 id="orgda297b8">Docker, <code>nftables</code>, and NixOS Notes</h4>
-<div class="outline-text-4" id="text-orgda297b8">
+<div id="outline-container-orgbc8769c" class="outline-4">
+<h4 id="orgbc8769c">Docker, <code>nftables</code>, and NixOS Notes</h4>
+<div class="outline-text-4" id="text-orgbc8769c">
 <p>
 In developing the system configuration, I came across some issues with respect
 to <a href="https://www.docker.com/">Docker</a> and <a href="https://wiki.nftables.org/wiki-nftables/index.php/Main_Page"><code>nftables</code></a>.  The

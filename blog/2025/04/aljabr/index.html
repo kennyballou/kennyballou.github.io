@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2026-07-01 Wed 00:27 -->
+<!-- 2026-10-02 Fri 16:35 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>alJabr: An example interpreter project using Maven and ANTLR</title>
@@ -328,28 +328,28 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org405601b">Introduction</a></li>
-<li><a href="#orgbac81d8">Maven Quickstart</a>
+<li><a href="#org9a3eea9">Introduction</a></li>
+<li><a href="#org10b6b0f">Maven Quickstart</a>
 <ul>
-<li><a href="#org5814a94">Maven phases and build lifecycles</a></li>
-<li><a href="#orged68d65">POM Changes</a></li>
+<li><a href="#orgd85c3cb">Maven phases and build lifecycles</a></li>
+<li><a href="#org30543a2">POM Changes</a></li>
 </ul>
 </li>
-<li><a href="#org028581a">Boolean expressions</a></li>
-<li><a href="#org0ada9c7">ANTLR quickstart</a></li>
-<li><a href="#org596848c">Specifying our boolean language</a></li>
-<li><a href="#org876dd28">Integrating with Maven</a></li>
-<li><a href="#org62eb15c">Representing expressions</a></li>
-<li><a href="#org7bf2c69">Translating between ANTLR and our internal representation</a></li>
-<li><a href="#org794e761">Testing the parsing machinery</a></li>
-<li><a href="#orgbec260f">Creating the REPL</a></li>
-<li><a href="#org735c236">Implementing our boolean reducer</a></li>
-<li><a href="#orgf7f130c">Modify the REPL to use the new reducer</a></li>
-<li><a href="#orgbf9be02">Future work and extensions</a></li>
+<li><a href="#orgf0ae10a">Boolean expressions</a></li>
+<li><a href="#orge5348d2">ANTLR quickstart</a></li>
+<li><a href="#org4daee60">Specifying our boolean language</a></li>
+<li><a href="#orge71b176">Integrating with Maven</a></li>
+<li><a href="#orgf07f5d4">Representing expressions</a></li>
+<li><a href="#org5f708d1">Translating between ANTLR and our internal representation</a></li>
+<li><a href="#orgfbecd46">Testing the parsing machinery</a></li>
+<li><a href="#orgbbf9ae1">Creating the REPL</a></li>
+<li><a href="#org04e40a4">Implementing our boolean reducer</a></li>
+<li><a href="#org23679dd">Modify the REPL to use the new reducer</a></li>
+<li><a href="#orgcaa33d5">Future work and extensions</a></li>
 </ul>
 </div>
 </div>
-<div class="preview" id="org8907ac2">
+<div class="preview" id="org5af7367">
 <p>
 In this post, we build an interpreter over boolean expressions using <a href="https://www.antlr.org/">ANTLR</a> and
 <a href="https://maven.apache.org/">Maven</a>.  The code for the project is hosted on <a href="https://github.com/fmsea/alJabr/tree/0c4e8daefdbdbb5289ba3b12fb6e72314e55eb5c">GitHub</a>, released under the <a href="https://www.gnu.org/licenses/gpl-3.0">GPL</a>
@@ -361,9 +361,9 @@ system.
 
 </div>
 
-<div id="outline-container-org405601b" class="outline-2">
-<h2 id="org405601b">Introduction</h2>
-<div class="outline-text-2" id="text-org405601b">
+<div id="outline-container-org9a3eea9" class="outline-2">
+<h2 id="org9a3eea9">Introduction</h2>
+<div class="outline-text-2" id="text-org9a3eea9">
 <p>
 Often in software projects, a common problem involves parsing and processing
 different input files or formats to accomplish different tasks.  Many software
@@ -381,9 +381,9 @@ tool.
 </div>
 </div>
 
-<div id="outline-container-orgbac81d8" class="outline-2">
-<h2 id="orgbac81d8">Maven Quickstart</h2>
-<div class="outline-text-2" id="text-orgbac81d8">
+<div id="outline-container-org10b6b0f" class="outline-2">
+<h2 id="org10b6b0f">Maven Quickstart</h2>
+<div class="outline-text-2" id="text-org10b6b0f">
 <p>
 We begin with a new Java project.  <a href="https://maven.apache.org/">Maven</a> is an established and venerable tool
 for working with Java or <a href="https://en.wikipedia.org/wiki/Java_virtual_machine">JVM</a> hosted projects.  We opt for choosing a tool like
@@ -412,7 +412,7 @@ and available on <a href="https://github.com/">GitHub</a>, to build and test the
 This generates the following directory structure:
 </p>
 
-<pre class="example" id="org497b545">
+<pre class="example" id="orgbfe7c57">
 aljabr
 |-- pom.xml
 `-- src
@@ -446,9 +446,9 @@ test this code using the following <a href="https://maven.apache.org/">Maven</a>
 </div>
 </div>
 
-<div id="outline-container-org5814a94" class="outline-3">
-<h3 id="org5814a94">Maven phases and build lifecycles</h3>
-<div class="outline-text-3" id="text-org5814a94">
+<div id="outline-container-orgd85c3cb" class="outline-3">
+<h3 id="orgd85c3cb">Maven phases and build lifecycles</h3>
+<div class="outline-text-3" id="text-orgd85c3cb">
 <p>
 Unlike tools like <a href="https://ant.apache.org/">Ant</a> or <a href="https://www.gnu.org/software/make/">Make</a>, <a href="https://maven.apache.org/">Maven</a> comes with a predefined set of phases or
 "targets" to use the former parlance.  These phases help construct a project
@@ -479,9 +479,9 @@ See the <a href="https://maven.apache.org/guides/introduction/introduction-to-th
 </div>
 </div>
 
-<div id="outline-container-orged68d65" class="outline-3">
-<h3 id="orged68d65">POM Changes</h3>
-<div class="outline-text-3" id="text-orged68d65">
+<div id="outline-container-org30543a2" class="outline-3">
+<h3 id="org30543a2">POM Changes</h3>
+<div class="outline-text-3" id="text-org30543a2">
 <p>
 While the above command does indeed generate a lot of the necessary <code>pom.xml</code>
 file, there are a few changes that may be necessary to make the project work.
@@ -494,9 +494,9 @@ Afterwards, I remove the now empty <code>pluginManagement</code> portion of the 
 </div>
 </div>
 
-<div id="outline-container-org028581a" class="outline-2">
-<h2 id="org028581a">Boolean expressions</h2>
-<div class="outline-text-2" id="text-org028581a">
+<div id="outline-container-orgf0ae10a" class="outline-2">
+<h2 id="orgf0ae10a">Boolean expressions</h2>
+<div class="outline-text-2" id="text-orgf0ae10a">
 <p>
 The language we use for this demonstration is simply the boolean expressions we
 are used to within most programming languages.  We have logical or,
@@ -628,9 +628,9 @@ language.
 </div>
 </div>
 
-<div id="outline-container-org0ada9c7" class="outline-2">
-<h2 id="org0ada9c7">ANTLR quickstart</h2>
-<div class="outline-text-2" id="text-org0ada9c7">
+<div id="outline-container-orge5348d2" class="outline-2">
+<h2 id="orge5348d2">ANTLR quickstart</h2>
+<div class="outline-text-2" id="text-orge5348d2">
 <p>
 As mentioned in the introduction, <a href="https://www.antlr.org/">ANTLR</a> is a parser generator which we can use
 to build the machinery for parsing our boolean expression language and creating
@@ -641,7 +641,7 @@ representation of our language.  The following image is an example from the
 </p>
 
 
-<div id="orgaa808cc" class="figure">
+<div id="org3b76bd7" class="figure">
 <p><img src="../../../../media/antlr.png" alt="&quot;Example from the ANTLR website&quot;" />
 </p>
 </div>
@@ -652,9 +652,9 @@ A full introduction to <a href="https://en.wikipedia.org/wiki/Backus%E2%80%93Nau
 </div>
 </div>
 
-<div id="outline-container-org596848c" class="outline-2">
-<h2 id="org596848c">Specifying our boolean language</h2>
-<div class="outline-text-2" id="text-org596848c">
+<div id="outline-container-org4daee60" class="outline-2">
+<h2 id="org4daee60">Specifying our boolean language</h2>
+<div class="outline-text-2" id="text-org4daee60">
 <p>
 Before we can construct even a handcrafted parser, we need to know what our
 language looks like.  Since our initial language goals are pretty
@@ -773,9 +773,9 @@ project: <code>src/main/antlr4/dev/fmsea/aljabr/BoolExpr.g4</code>.
 </div>
 </div>
 
-<div id="outline-container-org876dd28" class="outline-2">
-<h2 id="org876dd28">Integrating with Maven</h2>
-<div class="outline-text-2" id="text-org876dd28">
+<div id="outline-container-orge71b176" class="outline-2">
+<h2 id="orge71b176">Integrating with Maven</h2>
+<div class="outline-text-2" id="text-orge71b176">
 <p>
 We need to add a few dependencies to our project so that we can compile against
 the generated <a href="https://www.antlr.org/">ANTLR</a> code:
@@ -870,9 +870,9 @@ source files should be found in the following folder after compilation:
 </div>
 </div>
 
-<div id="outline-container-org62eb15c" class="outline-2">
-<h2 id="org62eb15c">Representing expressions</h2>
-<div class="outline-text-2" id="text-org62eb15c">
+<div id="outline-container-orgf07f5d4" class="outline-2">
+<h2 id="orgf07f5d4">Representing expressions</h2>
+<div class="outline-text-2" id="text-orgf07f5d4">
 <p>
 While we could directly use <a href="https://www.antlr.org/">ANTLR</a>'s representation for our objects, it is often
 better to create our own internal representation.
@@ -1125,9 +1125,9 @@ class to make constructing new expressions easier.  Add the following to the
 </div>
 </div>
 
-<div id="outline-container-org7bf2c69" class="outline-2">
-<h2 id="org7bf2c69">Translating between ANTLR and our internal representation</h2>
-<div class="outline-text-2" id="text-org7bf2c69">
+<div id="outline-container-org5f708d1" class="outline-2">
+<h2 id="org5f708d1">Translating between ANTLR and our internal representation</h2>
+<div class="outline-text-2" id="text-org5f708d1">
 <p>
 Now that we have our own internal representation for our boolean expressions,
 we need to implement a translator that rewrites terms in the <a href="https://www.antlr.org/">ANTLR</a>
@@ -1229,9 +1229,9 @@ code necessarily must change.
 </div>
 </div>
 
-<div id="outline-container-org794e761" class="outline-2">
-<h2 id="org794e761">Testing the parsing machinery</h2>
-<div class="outline-text-2" id="text-org794e761">
+<div id="outline-container-orgfbecd46" class="outline-2">
+<h2 id="orgfbecd46">Testing the parsing machinery</h2>
+<div class="outline-text-2" id="text-orgfbecd46">
 <p>
 Now that we have the reader and instantiator classes, we should be able to put
 together some tests to verify that our expression language can indeed parse.
@@ -1288,9 +1288,9 @@ passing tests (the 10th is the generated test from generating the project with
 </div>
 </div>
 
-<div id="outline-container-orgbec260f" class="outline-2">
-<h2 id="orgbec260f">Creating the REPL</h2>
-<div class="outline-text-2" id="text-orgbec260f">
+<div id="outline-container-orgbbf9ae1" class="outline-2">
+<h2 id="orgbbf9ae1">Creating the REPL</h2>
+<div class="outline-text-2" id="text-orgbbf9ae1">
 <p>
 For the penultimate step in our interpreter, we need to create the
 Read-Eval-Print-Loop or REPL.  Afterwards, we modify the generated <code>App</code> class to
@@ -1350,9 +1350,9 @@ input expressions.  Unless the expression fails to parse, then it explodes.
 </div>
 </div>
 
-<div id="outline-container-org735c236" class="outline-2">
-<h2 id="org735c236">Implementing our boolean reducer</h2>
-<div class="outline-text-2" id="text-org735c236">
+<div id="outline-container-org04e40a4" class="outline-2">
+<h2 id="org04e40a4">Implementing our boolean reducer</h2>
+<div class="outline-text-2" id="text-org04e40a4">
 <p>
 For the final part of our interpreter, we need to develop a process for
 reducing the given expressions down to a single truth value.  Following a
@@ -1475,9 +1475,9 @@ Next, create the following test class
 </div>
 </div>
 
-<div id="outline-container-orgf7f130c" class="outline-2">
-<h2 id="orgf7f130c">Modify the REPL to use the new reducer</h2>
-<div class="outline-text-2" id="text-orgf7f130c">
+<div id="outline-container-org23679dd" class="outline-2">
+<h2 id="org23679dd">Modify the REPL to use the new reducer</h2>
+<div class="outline-text-2" id="text-org23679dd">
 <p>
 As a final step to put the interpreter together, modify the <code>REPL</code> to use the
 new <code>reduce()</code> method.
@@ -1495,9 +1495,9 @@ value.
 </div>
 </div>
 
-<div id="outline-container-orgbf9be02" class="outline-2">
-<h2 id="orgbf9be02">Future work and extensions</h2>
-<div class="outline-text-2" id="text-orgbf9be02">
+<div id="outline-container-orgcaa33d5" class="outline-2">
+<h2 id="orgcaa33d5">Future work and extensions</h2>
+<div class="outline-text-2" id="text-orgcaa33d5">
 <p>
 While this interpreter does not represent a complete or even an ideal
 implementation of an interpreter, I hope it serves as a reasonable example of
