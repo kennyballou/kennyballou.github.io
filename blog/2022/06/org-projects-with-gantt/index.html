@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2026-10-02 Fri 16:35 -->
+<!-- 2026-10-05 Mon 21:21 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Org Projects with Gantt Charts</title>
@@ -327,21 +327,21 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org0dad948">Background</a>
+<li><a href="#orgddd08bf">Background</a>
 <ul>
-<li><a href="#orgbdfabfc">Prior Art</a></li>
-<li><a href="#org5a31276">Rationale</a></li>
+<li><a href="#orgb51e95d">Prior Art</a></li>
+<li><a href="#org4c9c0e1">Rationale</a></li>
 </ul>
 </li>
-<li><a href="#org81c2a6a">Implementation</a></li>
-<li><a href="#orgb99cd62">Usage</a></li>
-<li><a href="#org1bf9dc5">Examples</a></li>
-<li><a href="#orgc60af98">Limitations</a></li>
-<li><a href="#orgbfc607f">Future Work/Improvements</a></li>
+<li><a href="#org09f68b9">Implementation</a></li>
+<li><a href="#org901f7bf">Usage</a></li>
+<li><a href="#org41ee996">Examples</a></li>
+<li><a href="#org3bf1b10">Limitations</a></li>
+<li><a href="#org7cddcc8">Future Work/Improvements</a></li>
 </ul>
 </div>
 </div>
-<div class="PREVIEW" id="org5863290">
+<div class="PREVIEW" id="orgbd4ea01">
 <p>
 <a href="https://orgmode.org/">Org-Mode</a> is a great way to store <code>TODO</code> items, store notes, and keep track of
 projects.  However, possibly due to ignorance of what is available, getting a
@@ -367,9 +367,9 @@ breakdown, but the point remains, some amount of tasks left over as a whole do
 not communicate the holistic progress and prediction towards completion.
 </p>
 
-<div id="outline-container-org0dad948" class="outline-2">
-<h2 id="org0dad948">Background</h2>
-<div class="outline-text-2" id="text-org0dad948">
+<div id="outline-container-orgddd08bf" class="outline-2">
+<h2 id="orgddd08bf">Background</h2>
+<div class="outline-text-2" id="text-orgddd08bf">
 <p>
 <a href="https://en.wikipedia.org/wiki/Gantt_chart">Gantt charts</a> model project schedules as a sort of bar chart.  Dependencies and
 links can be shown to draw the critical path of the project and the timeline of
@@ -385,9 +385,9 @@ some chosen granularity of time units such as days, months, or years.
 </p>
 </div>
 
-<div id="outline-container-orgbdfabfc" class="outline-3">
-<h3 id="orgbdfabfc">Prior Art</h3>
-<div class="outline-text-3" id="text-orgbdfabfc">
+<div id="outline-container-orgb51e95d" class="outline-3">
+<h3 id="orgb51e95d">Prior Art</h3>
+<div class="outline-text-3" id="text-orgb51e95d">
 <p>
 There are several existing projects which attempt to generate <a href="https://en.wikipedia.org/wiki/Gantt_chart">Gantt charts</a> from
 <a href="https://orgmode.org/">Org TODO entries</a>.  Specifically, <a href="https://orgmode.org/">Org mode</a> supports exporting directly to
@@ -397,9 +397,9 @@ third-party packages such as <a href="https://github.com/legalnonsense/elgantt/"
 </div>
 </div>
 
-<div id="outline-container-org5a31276" class="outline-3">
-<h3 id="org5a31276">Rationale</h3>
-<div class="outline-text-3" id="text-org5a31276">
+<div id="outline-container-org4c9c0e1" class="outline-3">
+<h3 id="org4c9c0e1">Rationale</h3>
+<div class="outline-text-3" id="text-org4c9c0e1">
 <p>
 Given that there are existing solutions to generating <a href="https://en.wikipedia.org/wiki/Gantt_chart">Gantt charts</a> from <a href="https://orgmode.org/">Org
 mode</a> entries, why create another one?  The other solutions require either the
@@ -411,9 +411,9 @@ information already present entries to generate the charts.
 </div>
 </div>
 
-<div id="outline-container-org81c2a6a" class="outline-2">
-<h2 id="org81c2a6a">Implementation</h2>
-<div class="outline-text-2" id="text-org81c2a6a">
+<div id="outline-container-org09f68b9" class="outline-2">
+<h2 id="org09f68b9">Implementation</h2>
+<div class="outline-text-2" id="text-org09f68b9">
 <blockquote>
 <p>
 Currently, the implementation is not packaged, but that may change at a future
@@ -573,9 +573,9 @@ no duration to the tasks.
 </div>
 </div>
 
-<div id="outline-container-orgb99cd62" class="outline-2">
-<h2 id="orgb99cd62">Usage</h2>
-<div class="outline-text-2" id="text-orgb99cd62">
+<div id="outline-container-org901f7bf" class="outline-2">
+<h2 id="org901f7bf">Usage</h2>
+<div class="outline-text-2" id="text-org901f7bf">
 <p>
 Add the following block to the subtree of entries.
 </p>
@@ -597,9 +597,9 @@ either be "days" or "months".
 </div>
 </div>
 
-<div id="outline-container-org1bf9dc5" class="outline-2">
-<h2 id="org1bf9dc5">Examples</h2>
-<div class="outline-text-2" id="text-org1bf9dc5">
+<div id="outline-container-org41ee996" class="outline-2">
+<h2 id="org41ee996">Examples</h2>
+<div class="outline-text-2" id="text-org41ee996">
 <p>
 To highlight how this function works, we consider the following example <a href="https://orgmode.org/">Org</a>
 <a href="https://kennyballou.com/blog/2022/06/org-projects-with-gantt/example.org">file</a>.  At the top level, there is an entry for all projects.  Because this is
@@ -717,22 +717,22 @@ dark mode.
 </div>
 
 
-<div id="org2c3c054" class="figure">
+<div id="orgd26e44b" class="figure">
 <p><img src="../../../../blog/2022/06/org-projects-with-gantt/gantt-1.svg" alt="gantt-1.svg" class="org-svg" />
 </p>
 </div>
 
 
-<div id="org7e3582e" class="figure">
+<div id="orge44cc21" class="figure">
 <p><img src="../../../../blog/2022/06/org-projects-with-gantt/gantt-2.svg" alt="gantt-2.svg" class="org-svg" />
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgc60af98" class="outline-2">
-<h2 id="orgc60af98">Limitations</h2>
-<div class="outline-text-2" id="text-orgc60af98">
+<div id="outline-container-org3bf1b10" class="outline-2">
+<h2 id="org3bf1b10">Limitations</h2>
+<div class="outline-text-2" id="text-org3bf1b10">
 <p>
 This process is currently pretty limited, see future work for improvements.
 One notable limitation, however, to make the charts fit on the page, the titles
@@ -744,9 +744,9 @@ improved.
 </div>
 </div>
 
-<div id="outline-container-orgbfc607f" class="outline-2">
-<h2 id="orgbfc607f">Future Work/Improvements</h2>
-<div class="outline-text-2" id="text-orgbfc607f">
+<div id="outline-container-org7cddcc8" class="outline-2">
+<h2 id="org7cddcc8">Future Work/Improvements</h2>
+<div class="outline-text-2" id="text-org7cddcc8">
 <p>
 The tasks can be automatically linked via <code>\ganttlinkedbar</code> and this would be
 natively supported by <a href="https://orgmode.org/manual/TODO-dependencies.html#TODO-dependencies">TODO dependencies</a>.  Alternatively, adding links could be

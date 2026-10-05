@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2026-10-02 Fri 16:35 -->
+<!-- 2026-10-05 Mon 21:21 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Releasing Elixir/OTP applications to the World</title>
@@ -296,21 +296,21 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orge108476">Problem</a>
+<li><a href="#org59e52e6">Problem</a>
 <ul>
-<li><a href="#org874dca6">Shared Objects</a></li>
-<li><a href="#orgddf4d4c">Erlang Libraries</a></li>
-<li><a href="#org6470c4d">Docker or Virtualization</a></li>
-<li><a href="#org842e673">OTP as Project Dependency</a></li>
+<li><a href="#org52fdfd6">Shared Objects</a></li>
+<li><a href="#orgce52839">Erlang Libraries</a></li>
+<li><a href="#orgd3aadf6">Docker or Virtualization</a></li>
+<li><a href="#org847db44">OTP as Project Dependency</a></li>
 </ul>
 </li>
-<li><a href="#org39b0a6a">Non-Solution Solutions</a></li>
-<li><a href="#org22ab3bd">Solutions(?)</a></li>
-<li><a href="#org1530b75">Moving Forward</a></li>
+<li><a href="#org0dd8e3d">Non-Solution Solutions</a></li>
+<li><a href="#orga12c5ac">Solutions(?)</a></li>
+<li><a href="#orgd8e6949">Moving Forward</a></li>
 </ul>
 </div>
 </div>
-<div class="PREVIEW" id="org4a9e2b6">
+<div class="PREVIEW" id="org43fa1eb">
 <p>
 Developing Elixir/OTP applications is an enlightening, mind-boggling, and
 ultimately enjoyable experience.  There are so many features of the language
@@ -360,9 +360,9 @@ and Erlang/Elixir stack on the production system is slightly unnerving for it's
 own set of reasons.
 </p>
 
-<div id="outline-container-orge108476" class="outline-2">
-<h2 id="orge108476">Problem</h2>
-<div class="outline-text-2" id="text-orge108476">
+<div id="outline-container-org59e52e6" class="outline-2">
+<h2 id="org59e52e6">Problem</h2>
+<div class="outline-text-2" id="text-org59e52e6">
 <p>
 Here are some selected quotes; I'm not trying to pick on anyone in particular
 or the community at large, but I'm trying to show a representation of why this
@@ -413,9 +413,9 @@ machines are running the <code>AMD64</code> instruction sets, the architectures 
 </p>
 </div>
 
-<div id="outline-container-org874dca6" class="outline-3">
-<h3 id="org874dca6">Shared Objects</h3>
-<div class="outline-text-3" id="text-org874dca6">
+<div id="outline-container-org52fdfd6" class="outline-3">
+<h3 id="org52fdfd6">Shared Objects</h3>
+<div class="outline-text-3" id="text-org52fdfd6">
 <p>
 Let's start with the most simplistic issue, different versions of shared
 objects.
@@ -445,16 +445,16 @@ was built or what features the deployed application needs.
 </div>
 </div>
 
-<div id="outline-container-orgddf4d4c" class="outline-3">
-<h3 id="orgddf4d4c">Erlang Libraries</h3>
-<div class="outline-text-3" id="text-orgddf4d4c">
+<div id="outline-container-orgce52839" class="outline-3">
+<h3 id="orgce52839">Erlang Libraries</h3>
+<div class="outline-text-3" id="text-orgce52839">
 <p>
 We may try to resolve this issue by adding a particular <code>rel/relx.config</code> file
 to our Elixir project.  Specifically, we will <i>not</i> bundle ERTS, opting to use
 the target's ERTS instead.
 </p>
 
-<pre class="example" id="org887665e">
+<pre class="example" id="org9c77e72">
 {include_erts, false}.
 </pre>
 
@@ -499,9 +499,9 @@ We are left to attempt more solutions.
 </div>
 </div>
 
-<div id="outline-container-org6470c4d" class="outline-3">
-<h3 id="org6470c4d">Docker or Virtualization</h3>
-<div class="outline-text-3" id="text-org6470c4d">
+<div id="outline-container-orgd3aadf6" class="outline-3">
+<h3 id="orgd3aadf6">Docker or Virtualization</h3>
+<div class="outline-text-3" id="text-orgd3aadf6">
 <p>
 Next, since we do want to ultimately get our build running in a CI/CD
 environment, we may look toward virutalization/containerization.  Being
@@ -537,15 +537,15 @@ That's not going to work.
 </div>
 </div>
 
-<div id="outline-container-org842e673" class="outline-3">
-<h3 id="org842e673">OTP as Project Dependency</h3>
-<div class="outline-text-3" id="text-org842e673">
+<div id="outline-container-org847db44" class="outline-3">
+<h3 id="org847db44">OTP as Project Dependency</h3>
+<div class="outline-text-3" id="text-org847db44">
 <p>
 Another option we might try is make Erlang a build dependency of our Elixir
 application, this <i>could</i> be achieved via the following structure:
 </p>
 
-<pre class="example" id="org0d8d167">
+<pre class="example" id="orgaa22d5f">
 {:otp,
  "~&gt; 18.3.2",
  github: "erlang/otp",
@@ -562,7 +562,7 @@ application, this <i>could</i> be achieved via the following structure:
 Then using <code>rel/relx.config</code> with:
 </p>
 
-<pre class="example" id="org6616d43">
+<pre class="example" id="org8236cc9">
 {include_erts, "/tmp/erlang"}.
 </pre>
 
@@ -607,9 +607,9 @@ about it as well.
 </div>
 </div>
 
-<div id="outline-container-org39b0a6a" class="outline-2">
-<h2 id="org39b0a6a">Non-Solution Solutions</h2>
-<div class="outline-text-2" id="text-org39b0a6a">
+<div id="outline-container-org0dd8e3d" class="outline-2">
+<h2 id="org0dd8e3d">Non-Solution Solutions</h2>
+<div class="outline-text-2" id="text-org0dd8e3d">
 <p>
 Of course, all of these above issues can be solved by "just building on the
 target machine" or by simply using <code>mix run</code> on the target instead.  However, I
@@ -633,9 +633,9 @@ upgrading can continue.
 </div>
 </div>
 
-<div id="outline-container-org22ab3bd" class="outline-2">
-<h2 id="org22ab3bd">Solutions(?)</h2>
-<div class="outline-text-2" id="text-org22ab3bd">
+<div id="outline-container-orga12c5ac" class="outline-2">
+<h2 id="orga12c5ac">Solutions(?)</h2>
+<div class="outline-text-2" id="text-orga12c5ac">
 <p>
 What are we to do? How are we to build Erlang/Elixir/OTP applications as part
 of our CI/CD pipeline? Particularly, how are we to build our applications on a
@@ -684,9 +684,9 @@ on the production farm itself.
 </div>
 </div>
 
-<div id="outline-container-org1530b75" class="outline-2">
-<h2 id="org1530b75">Moving Forward</h2>
-<div class="outline-text-2" id="text-org1530b75">
+<div id="outline-container-orgd8e6949" class="outline-2">
+<h2 id="orgd8e6949">Moving Forward</h2>
+<div class="outline-text-2" id="text-orgd8e6949">
 <p>
 Releasing software isn't in a particularly hard class of problems, but it does
 have its challenges.  Some languages attempt to solve this challenge in its
