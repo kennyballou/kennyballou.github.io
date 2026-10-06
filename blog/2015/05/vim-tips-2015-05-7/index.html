@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2026-10-05 Mon 21:21 -->
+<!-- 2026-10-06 Tue 06:12 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Vim Tips 2015-05-07</title>
@@ -296,22 +296,22 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org0ec021d">Visual Mode</a>
+<li><a href="#org54103d2">Visual Mode</a>
 <ul>
-<li><a href="#org69d4be6">Visual Mode Basics</a></li>
-<li><a href="#org8346e67">Some Examples</a></li>
+<li><a href="#org3dd38d6">Visual Mode Basics</a></li>
+<li><a href="#org0e6f2b0">Some Examples</a></li>
 </ul>
 </li>
-<li><a href="#orgf07d953">Macros</a>
+<li><a href="#orga8eafc7">Macros</a>
 <ul>
-<li><a href="#orge556e83">Macro Basics</a></li>
-<li><a href="#orge190d6e">Some Examples</a></li>
+<li><a href="#orgdfcd854">Macro Basics</a></li>
+<li><a href="#org2969f01">Some Examples</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
-<div class="PREVIEW" id="org01ab7fc">
+<div class="PREVIEW" id="org7b92009">
 <p>
 Many Vim users may have, accidentally or not, discovered the dot (<code>.</code>) command
 in Vim.  It's a main stay for a lot of Vim users and is clearly one of those
@@ -326,9 +326,9 @@ More often than not, the visual selection mode and one-off macros are a better
 choice.
 </p>
 
-<div id="outline-container-org0ec021d" class="outline-2">
-<h2 id="org0ec021d">Visual Mode</h2>
-<div class="outline-text-2" id="text-org0ec021d">
+<div id="outline-container-org54103d2" class="outline-2">
+<h2 id="org54103d2">Visual Mode</h2>
+<div class="outline-text-2" id="text-org54103d2">
 <p>
 I won't go into all of the cool things that can be accomplished with Vim's
 visual mode, but I will showcase a few examples where the visual editor is
@@ -341,9 +341,9 @@ of changes, quickly.
 </p>
 </div>
 
-<div id="outline-container-org69d4be6" class="outline-3">
-<h3 id="org69d4be6">Visual Mode Basics</h3>
-<div class="outline-text-3" id="text-org69d4be6">
+<div id="outline-container-org3dd38d6" class="outline-3">
+<h3 id="org3dd38d6">Visual Mode Basics</h3>
+<div class="outline-text-3" id="text-org3dd38d6">
 <p>
 To enter visual mode, it is as simple as pressing <code>^v</code> or <code>ctrl-v</code>.  Next you
 will want to select what you want to change with your typical movement commands
@@ -356,16 +356,16 @@ a few.
 </div>
 </div>
 
-<div id="outline-container-org8346e67" class="outline-3">
-<h3 id="org8346e67">Some Examples</h3>
-<div class="outline-text-3" id="text-org8346e67">
+<div id="outline-container-org0e6f2b0" class="outline-3">
+<h3 id="org0e6f2b0">Some Examples</h3>
+<div class="outline-text-3" id="text-org0e6f2b0">
 <p>
 For (a bad) example, if you need to comment out a contiguous set of lines, you
 can easily accomplish this with the visual mode.
 </p>
 
 
-<div class="embed-video" id="orgeba40f7">
+<div class="embed-video" id="orga25baf3">
 <video controls="controls" width="90%" height="90%">
 <source src="/media/videos/comment.ogg" type="video/ogg"/>
 <p>
@@ -381,7 +381,7 @@ mode to fix code indentation when changing block-level indentation or when
 copying code into a markdown file.
 </p>
 
-<div class="embed-video" id="orgc5d6e13">
+<div class="embed-video" id="orgd8fc1ee">
 <video controls="controls" width="90%" height="90%">
 <source src="/media/videos/indent.ogg" type="video/ogg"/>
 <p>
@@ -398,7 +398,7 @@ aligned, if not see macros below or <a href="https://kennyballou.com/blog/2015/0
 ranges</a> from the previous tip).
 </p>
 
-<div class="embed-video" id="org8dc6147">
+<div class="embed-video" id="orgceabe86">
 <video controls="controls" width="90%" height="90%">
 <source src="/media/videos/cw.ogg" type="video/ogg"/>
 <p>
@@ -416,9 +416,9 @@ For more information on Visual Mode, you can check Vim's
 </div>
 </div>
 
-<div id="outline-container-orgf07d953" class="outline-2">
-<h2 id="orgf07d953">Macros</h2>
-<div class="outline-text-2" id="text-orgf07d953">
+<div id="outline-container-orga8eafc7" class="outline-2">
+<h2 id="orga8eafc7">Macros</h2>
+<div class="outline-text-2" id="text-orga8eafc7">
 <p>
 For when visual mode may not be enough or when the change is repetitive in
 operations but not in columns or what have you, it's time to bust out the
@@ -427,9 +427,9 @@ to record and store each macro.
 </p>
 </div>
 
-<div id="outline-container-orge556e83" class="outline-3">
-<h3 id="orge556e83">Macro Basics</h3>
-<div class="outline-text-3" id="text-orge556e83">
+<div id="outline-container-orgdfcd854" class="outline-3">
+<h3 id="orgdfcd854">Macro Basics</h3>
+<div class="outline-text-3" id="text-orgdfcd854">
 <p>
 To record a macro, it's as simple as <code>q&lt;register-label&gt;&lt;commands&gt;q</code>.  That is,
 press <code>q</code>, select a register (a-z1-0), enter your commands as if you were using
@@ -445,9 +445,9 @@ You can also replay the last macro with <code>@@</code>.
 </div>
 </div>
 
-<div id="outline-container-orge190d6e" class="outline-3">
-<h3 id="orge190d6e">Some Examples</h3>
-<div class="outline-text-3" id="text-orge190d6e">
+<div id="outline-container-org2969f01" class="outline-3">
+<h3 id="org2969f01">Some Examples</h3>
+<div class="outline-text-3" id="text-org2969f01">
 <p>
 As a simplistic example, we can use a macro to convert it into, say, JSON (this
 example is clearly taken from the <a href="http://vim.wikia.com/wiki/Macros">Vim Wikia</a>).
@@ -457,7 +457,7 @@ example is clearly taken from the <a href="http://vim.wikia.com/wiki/Macros">Vim
 Let's say we have the following data:
 </p>
 
-<pre class="example" id="org89981e7">
+<pre class="example" id="org9380dba">
 one     first example
 two     second example
 three   third example
@@ -468,7 +468,7 @@ four    fourth example
 And we want to change it to the following:
 </p>
 
-<pre class="example" id="orga50f657">
+<pre class="example" id="org4ec9822">
 data = {
     'one': 'first example',
     'two': 'second example',
@@ -490,7 +490,7 @@ of 'one', we will press <code>qd</code> to record our macro to the <code>d</code
 Next, we will want to change the tabbing by performing a substitution:
 </p>
 
-<pre class="example" id="org7498f5c">
+<pre class="example" id="org5c0d1e9">
 :s/\s\+/': '
 </pre>
 
@@ -498,7 +498,7 @@ Next, we will want to change the tabbing by performing a substitution:
 Then, we will insert our first tick with:
 </p>
 
-<pre class="example" id="orgf66f15f">
+<pre class="example" id="orgeb63206">
 I'
 </pre>
 
@@ -506,7 +506,7 @@ I'
 And append the last tick and comma with:
 </p>
 
-<pre class="example" id="orgdece9fb">
+<pre class="example" id="orgbd0b3ab">
 A',
 </pre>
 
@@ -517,7 +517,7 @@ correct position for the next execution.  Therefore, move the cursor the
 begging of the line and move down one line:
 </p>
 
-<pre class="example" id="org50d1dea">
+<pre class="example" id="orge8cd506">
 0j
 </pre>
 
@@ -533,7 +533,7 @@ We should now be able to press <code>3@d</code> and watch as the rest of the lin
 To finish up the example, we'll manually enter <code>data = {</code> and the tailing <code>}</code>.
 </p>
 
-<div class="embed-video" id="org41145d9">
+<div class="embed-video" id="orgffa6256">
 <video controls="controls" width="90%" height="90%">
 <source src="/media/videos/macros.ogg" type="video/ogg" />
 <p>
