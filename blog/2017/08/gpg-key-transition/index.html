@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2026-10-06 Tue 06:12 -->
+<!-- 2026-10-07 Wed 17:48 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>GPG Key Transition</title>
@@ -340,7 +340,7 @@
 </ul>
 </div>
 </div>
-<div class="PREVIEW" id="org3671292">
+<div class="PREVIEW" id="orgac24a08">
 <p>
 Today I'm announcing my <a href="https://gnupg.org/">GPG</a> transition from my old, and now expired, <a href="https://gnupg.org/">GPG</a> key:
 <a href="https://pgp.mit.edu/pks/lookup?op=get&amp;search=0x1066BA71A5F56C58">DAEE96513758BF6337F71E491066BA71A5F56C58</a> and
@@ -370,7 +370,7 @@ re-authenticating me.
 Specifically, the old keys were:
 </p>
 
-<pre class="example" id="org4221c99">
+<pre class="example" id="org4788608">
 pub   rsa4096 2014-06-12 [expired: 2017-06-27]
 DAEE 9651 3758 BF63 37F7 1E49 1066 BA71 A5F5 6C58
 </pre>
@@ -379,7 +379,7 @@ DAEE 9651 3758 BF63 37F7 1E49 1066 BA71 A5F5 6C58
 and,
 </p>
 
-<pre class="example" id="org6ab7210">
+<pre class="example" id="org284b79b">
 pub   rsa4096 2015-01-30 [expires: 2018-01-30]
 8FCA F4F0 CBB0 BB9C 590C 8ED1 1CFA 8A9C D949 D956
 </pre>
@@ -388,7 +388,7 @@ pub   rsa4096 2015-01-30 [expires: 2018-01-30]
 The new key is:
 </p>
 
-<pre class="example" id="org8324a24">
+<pre class="example" id="orgd878dd5">
 pub   rsa4096 2017-06-27 [expires: 2022-06-26]
 932F 3E8E 1C0F 4A98 95D7 B8B8 B0CA A28A 0295 8308
 </pre>
@@ -397,7 +397,7 @@ pub   rsa4096 2017-06-27 [expires: 2022-06-26]
 To fetch my new key from a key server, use the following:
 </p>
 
-<pre class="example" id="org0a973ed">
+<pre class="example" id="orgd0bdec3">
 gpg --keyserver pool.sks-keyservers.net --recv-key 0xB0CAA28A02958308
 </pre>
 
@@ -406,7 +406,7 @@ Or, if you prefer, you may also download the new key from
 <a href="https://kennyballou.com/kballou.pub.asc">this blog</a>:
 </p>
 
-<pre class="example" id="orgc2d08be">
+<pre class="example" id="orgbe3cffe">
 curl -fsL https://kennyballou.com/kballou.asc -O
 </pre>
 
@@ -414,7 +414,7 @@ curl -fsL https://kennyballou.com/kballou.asc -O
 The new key can be verified with the old key:
 </p>
 
-<pre class="example" id="org18b1bf6">
+<pre class="example" id="org33a64aa">
 gpg --check-sigs 0xB0CAA28A02958308
 </pre>
 
@@ -423,7 +423,7 @@ If you do not have the old key, or would like to double check, the fingerprint
 can be verified against the one above:
 </p>
 
-<pre class="example" id="org10a5ec9">
+<pre class="example" id="org13e8c3a">
 gpg --fingerprint 0xB0CAA28A02958308
 </pre>
 
@@ -432,7 +432,7 @@ If you have all of the keys, <a href="https://kennyballou.com/blog/2017/08/gpg-k
 verified to be signed by all keys:
 </p>
 
-<pre class="example" id="org984f378">
+<pre class="example" id="org8ac02b9">
 gpg --verify gpg-transition.org.asc
 </pre>
 
@@ -442,7 +442,7 @@ it's compatible with your key signing policy, I would greatly appreciate it if
 you would sign my key:
 </p>
 
-<pre class="example" id="orgba4294f">
+<pre class="example" id="orga56f8f5">
 gpg --sign-key 0xB0CAA28A02958308
 </pre>
 
@@ -451,7 +451,7 @@ Finally, if you could upload these signatures, I would appreciate it.  You can
 either upload the signatures to a public key server directly:
 </p>
 
-<pre class="example" id="orgb7f3108">
+<pre class="example" id="org7181884">
 gpg --keyserver pool.sks-keyservers.net \
     --send-key 0xB0CAA28A02958308
 </pre>
@@ -460,7 +460,7 @@ gpg --keyserver pool.sks-keyservers.net \
 Or you can send me an email with the new signatures:
 </p>
 
-<pre class="example" id="orge52d618">
+<pre class="example" id="org76e7f92">
 gpg --armor --export 0xB0CAA28A02958308
 </pre>
 </div>
